@@ -71,7 +71,7 @@ set CLASSPATH=%APP_HOME%\lib\code-1.0-SNAPSHOT.jar
 
 
 @rem Execute code
-"%JAVA_EXE%" %DEFAULT_JVM_OPTS% %JAVA_OPTS% %CODE_OPTS%  -classpath "%CLASSPATH%" main.java.Launcher %*
+"%JAVA_EXE%" %DEFAULT_JVM_OPTS% %JAVA_OPTS% %CODE_OPTS%  -classpath "%CLASSPATH%" Launcher %*
 
 :end
 @rem End local scope for the variables with windows NT shell
