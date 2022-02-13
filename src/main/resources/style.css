@@ -1,0 +1,31 @@
+@font-face {
+    font-family: 'Blokletters Balpen';
+    src: url('Blokletters-Balpen.ttf');
+}
+
+.root {
+    -fx-background-color: #E8DED2;
+    -fx-font-family: 'Blokletters Balpen';
+}
+.button {
+    -fx-background-color: #BFA888;
+    -fx-text-fill: #FFF8EC;
+    -fx-background-radius: 7px;
+}
+.button:disabled {
+    -fx-background-color: #BFA888;
+    -fx-text-fill: #FFF8EC;
+    -fx-background-radius: 7px;
+    -fx-opacity: 1;
+}
+.button:hover {
+    -fx-background-color: #b8995e;
+    -fx-scale-x: 1.035;
+    -fx-scale-y: 1.035
+}
+.button:pressed {
+    -fx-text-fill: #D6C0A4;
+}
+#pause_menu {
+    -fx-background-color: rgba(0, 0, 0, 0.175);
+}
