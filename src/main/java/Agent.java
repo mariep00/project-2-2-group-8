@@ -1,18 +1,18 @@
 public class Agent {
-    private double position_X;
-    private double position_Y;
-    private double radius;
-    private double speed;
-    private double base_speed;
-    private double sprint_speed;
+    private int position_X;
+    private int position_Y;
+    private int radius;
+    private int speed;
+    private int base_speed;
+    private int sprint_speed;
     private String orientation;
     private Agent_AI agent_ai;
 
-    public Agent(double position_X, double position_Y, double radius, double base_speed, double sprint_speed, String orientation, Agent_AI agent_ai) {
+    public Agent(int position_X, int position_Y, int radius, int base_speed, int sprint_speed, String orientation, Agent_AI agent_ai) {
         this.position_X =position_X;
         this.position_Y = position_Y;
         this.radius = radius;
-        this.speed = 0.0;
+        this.speed = 0;
         this.base_speed = base_speed;
         this.sprint_speed = sprint_speed;
         this.orientation = orientation;
@@ -35,7 +35,7 @@ public class Agent {
         this.orientation = orientation;
     }
 
-    public boolean isHit(double target_point_X, double target_point_Y) {
+    public boolean isHit(int target_point_X, int target_point_Y) {
         double distance = Math.sqrt(Math.pow((this.position_X - target_point_X), 2)) + Math.sqrt(Math.pow((this.position_Y - target_point_Y), 2));
         return distance <= this.radius;
     }

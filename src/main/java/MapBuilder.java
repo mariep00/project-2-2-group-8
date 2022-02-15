@@ -74,7 +74,7 @@ public class MapBuilder {
                         break;
                     case "width":
                         width = Integer.parseInt(value);
-                        map.createMap(width, height, scaling);
+                        map.createMap(width, height);
                         break;
                     case "numGuards":
                         map.setNumGuards(Integer.parseInt(value));
@@ -105,7 +105,7 @@ public class MapBuilder {
                         break;
                     case "teleport":
                         System.out.println("case teleport");
-                        map.setTeleport(Integer.parseInt(items[0]), Integer.parseInt(items[1]), Integer.parseInt(items[2]), Integer.parseInt(items[3]), Integer.parseInt(items[4]), Integer.parseInt(items[5]), Double.parseDouble(items[6]));
+                        map.setTeleport(Integer.parseInt(items[0]), Integer.parseInt(items[1]), Integer.parseInt(items[2]), Integer.parseInt(items[3]), Integer.parseInt(items[4]), Integer.parseInt(items[5]), items[6].toString());
                         break;
                     case "shaded":
                         System.out.println("shaded case");

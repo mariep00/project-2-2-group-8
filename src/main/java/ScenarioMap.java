@@ -73,10 +73,10 @@ public class ScenarioMap extends Map{
 
     public Teleport getTeleport (int index) {
         return teleporters.get(index-8);
-    }
+    } // -8?
 
-    public void setTeleport (int x1, int y1, int x2, int y2, int x3, int y3, double rotation) {
-        Teleport tmp = new Teleport(x1, y1, x2, y2, x3, y3, rotation);
+    public void setTeleport (int x1, int y1, int x2, int y2, int x3, int y3, String orientation) {
+        Teleport tmp = new Teleport(x1, y1, x2, y2, x3, y3, orientation);
         teleporters.add(tmp);
         tmp.setIndex(teleporters.indexOf(tmp)+8);
         insertElement(x1, y1, x2, y2, tmp.getIndex());

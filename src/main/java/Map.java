@@ -1,26 +1,26 @@
 public class Map {
-    
+
     private int[][] mapGrid;
     public int width;
     public int height;
 
     public Map () {
-        
+
     }
 
-    public int[][] getMap () {
+    public int[][] getMap() {
         return mapGrid;
+    }
+
+    public void setMap(int [][] newMap) {
+        this.mapGrid = newMap;
     }
 
     public int getTile (int x, int y) {
         return mapGrid[y][x];
     }
 
-    public void createMap(int width, int height, float scaling) {
-        //this.width = Math.round(width/scaling);
-        //this.height = Math.round(height/scaling);
-        this.width = width+1;
-        this.height = height+1;
+    public void createMap(int width, int height) {
         mapGrid = new int[this.height][this.width];
     }
 
@@ -31,7 +31,4 @@ public class Map {
             }
         }
     }
-
-
-
 }
