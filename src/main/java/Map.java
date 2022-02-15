@@ -1,11 +1,21 @@
 public class Map {
 
-    private int[][] mapGrid;
-    public int width;
-    public int height;
+    protected int[][] mapGrid;
+    protected int height;
+    protected int width;
 
-    public Map () {
+    public Map(int height, int width) {
+        this.height = height;
+        this.width = width;
+        mapGrid = new int[this.height][this.width];
+    }
 
+    public int getHeight() {
+        return this.height;
+    }
+
+    public int getWidth() {
+        return this.width;
     }
 
     public int[][] getMap() {
@@ -18,10 +28,6 @@ public class Map {
 
     public int getTile (int x, int y) {
         return mapGrid[y][x];
-    }
-
-    public void createMap(int width, int height) {
-        mapGrid = new int[this.height][this.width];
     }
 
     public void insertElement(int x1, int y1, int x2, int y2, int elementId) {

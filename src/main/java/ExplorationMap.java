@@ -3,63 +3,72 @@ public class ExplorationMap extends Map {
     private int origin_X; // origin: top left
     private int origin_Y;
 
-    public ExplorationMap(int origin_X, int origin_Y) {
-        super();
+    public ExplorationMap(int origin_X, int origin_Y, int height, int width) {
+        super(height, width);
         this.origin_X = origin_X;
         this.origin_Y = origin_Y;
     }
 
-    public void leftExtend() {
-        int[][] map = this.getMap();
-        int height = map.length;
-        int width = map[0].length;
-        int[][] tmp = new int[height][width*2];
-        for(int i = 0; i < map.length; i++) {
-            for(int j = 0; j < map[i].length; j++) {
-                tmp[i][j+width] = map[i][j];
+    private void leftExtend() {
+        int[][] tmp = new int[this.height][this.width*2];
+        for(int i = 0; i < this.mapGrid.length; i++) {
+            for(int j = 0; j < this.mapGrid[i].length; j++) {
+                tmp[i][j+this.width] = this.mapGrid[i][j];
             }
         }
-        this.origin_Y = this.origin_Y + height;
+        this.width = this.width*2;
+        this.origin_Y = this.origin_Y + this.height;
         setMap(tmp);
     }
 
-    public void rightExtend() {
-        int[][] map = this.getMap();
-        int height = map.length;
-        int width = map[0].length;
-        int[][] tmp = new int[height][width * 2];
-        for(int i = 0; i < map.length; i++) {
-            for(int j = 0; j < map[i].length; j++) {
-                tmp[i][j] = map[i][j];
+    private void rightExtend() {
+        int[][] tmp = new int[this.height][this.width*2];
+        for(int i = 0; i < this.mapGrid.length; i++) {
+            for(int j = 0; j < this.mapGrid[i].length; j++) {
+                tmp[i][j] = this.mapGrid[i][j];
             }
         }
+        this.width = this.width*2;
         setMap(tmp);
     }
 
-    public void topExtend() {
-        int[][] map = this.getMap();
-        int height = map.length;
-        int width = map[0].length;
-        int[][] tmp = new int[height*2][width];
-        for(int i = 0; i < map.length; i++) {
-            for(int j = 0; j < map[i].length; j++) {
-                tmp[i+height][j] = map[i][j];
+    private void topExtend() {
+        int[][] tmp = new int[this.height*2][this.width];
+        for(int i = 0; i < this.mapGrid.length; i++) {
+            for(int j = 0; j < this.mapGrid[i].length; j++) {
+                tmp[i+this.height][j] = this.mapGrid[i][j];
             }
         }
-        this.origin_X = this.origin_X + height;
+        this.height = this.height*2;
+        this.origin_X = this.origin_X + this.height;
         setMap(tmp);
     }
 
-    public void bottomExtend() {
-        int[][] map = this.getMap();
-        int height = map.length;
-        int width = map[0].length;
-        int[][] tmp = new int[height * 2][width];
-        for(int i = 0; i < map.length; i++) {
-            for(int j = 0; j < map[i].length; j++) {
-                tmp[i][j] = map[i][j];
+    private void bottomExtend() {
+        int[][] tmp = new int[this.height*2][this.width];
+        for(int i = 0; i < this.mapGrid.length; i++) {
+            for(int j = 0; j < this.mapGrid[i].length; j++) {
+                tmp[i][j] = this.mapGrid[i][j];
             }
         }
+        this.height = this.height*2;
         setMap(tmp);
+    }
+
+    public void insertElement(int x1, int y1, int elementId) {
+        if((x1 - this.origin_X) < 0) {
+            this.bottomExtend();
+        }
+        else if((x1 - this.origin_X) > this.getWidth()) {
+            this.topExtend();
+        }
+        else if((y1 - this.origin_Y) < 0) {
+            this.leftExtend();
+        }
+        else if((y1 - this.origin_Y) > this.getHeight()) {
+            this.rightExtend();
+        }
+
+        this.mapGrid[x1][y1] = elementId;
     }
 }
