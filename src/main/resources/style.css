@@ -1,16 +1,17 @@
 @font-face {
-    font-family: 'Blokletters Balpen';
-    src: url('Blokletters-Balpen.ttf');
+    font-family: 'Lato-Regular';
+    src: url('fonts/Lato-Regular.ttf');
 }
 
 .root {
     -fx-background-color: #E8DED2;
-    -fx-font-family: 'Blokletters Balpen';
+    -fx-font-family: 'Lato';
 }
 .button {
     -fx-background-color: #BFA888;
     -fx-text-fill: #FFF8EC;
     -fx-background-radius: 7px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 3,0,2,3);
 }
 .button:disabled {
     -fx-background-color: #BFA888;
@@ -28,4 +29,18 @@
 }
 #pause_menu {
     -fx-background-color: rgba(0, 0, 0, 0.175);
+}
+#dialog_content_header {
+    -fx-font-size: 25;
+}
+#dialog_content {
+    -fx-font_size: 21;
+}
+#dialog_ok_button {
+    -fx-background-color: #7171be;
+    -fx-text-fill: white;
+}
+#dialog_ok_button:hover {
+    -fx-background-color: #6363d9;
+    -fx-text-fill: white;
 }

@@ -1,17 +1,22 @@
 package gui;
 
+import javafx.animation.Transition;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
-public class ScenarioMenu extends Application {
+public class ScenarioMenu extends Application implements TransitionInterface {
     private Stage stage;
+    private final ArrayList<Transition> transitions = new ArrayList<>();
 
     /**
      * Start method which is called by JavaFX
@@ -23,14 +28,27 @@ public class ScenarioMenu extends Application {
         this.stage = stage;
         Button buttonCreateMap = new Button("Create map");
         Button buttonLoadMap = new Button("Load map");
-        HBox hBox = new HBox();
-        hBox.getChildren().addAll(buttonCreateMap, buttonLoadMap);
-        hBox.setSpacing(100);
-        hBox.setAlignment(Pos.CENTER);
-        Scene scene = new Scene(hBox);
 
+        VBox vbox = new VBox(30, buttonLoadMap, buttonCreateMap);
+        vbox.setAlignment(Pos.CENTER);
+
+        buttonLoadMap.setPrefWidth(270);
+        buttonLoadMap.setPrefHeight(80);
+        buttonCreateMap.setPrefWidth(270);
+        buttonCreateMap.setPrefHeight(80);
+
+        buttonLoadMap.setStyle("-fx-font-size: " + 19 + "px;");
+        buttonCreateMap.setStyle("-fx-font-size: " + 19 + "px;");
+
+        BorderPane borderPane = new BorderPane(vbox);
+
+        Scene scene = new Scene(borderPane);
         MainGUI.setupScene(this, scene, stage);
+
+        vbox.setOpacity(0);
+
         stage.setScene(scene);
+        loadSceneTransition(vbox);
 
         buttonLoadMap.setOnAction(e -> {
             FileChooser fileChooser = new FileChooser();
@@ -38,5 +56,10 @@ public class ScenarioMenu extends Application {
             File selectedFile = fileChooser.showOpenDialog(stage);
             // Load game with the selected file
         });
+    }
+
+    @Override
+    public List<Transition> getTransitions() {
+        return transitions;
     }
 }

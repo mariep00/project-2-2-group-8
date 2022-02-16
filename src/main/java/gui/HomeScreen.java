@@ -3,7 +3,6 @@ package gui;
 import javafx.animation.*;
 import javafx.application.Application;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
@@ -17,14 +16,12 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
-public class HomeScreen extends Application {
-    private final double initialButtonFontSize = 19;
-
+public class HomeScreen extends Application implements TransitionInterface {
     private Stage stage;
-    private ArrayList<Transition> transitions = new ArrayList<>();
-
+    private final ArrayList<Transition> transitions = new ArrayList<>();
     private final double windowWidth;
     private final double windowHeight;
 
@@ -71,7 +68,6 @@ public class HomeScreen extends Application {
         logo.setFitWidth(200);
         logo.setFitHeight(80);
 
-        // Create all three buttons we need
         Button playButton = new Button("Play game");
         Button quitButton = new Button("Quit game");
         VBox vbox = new VBox( 30,playButton, quitButton);
@@ -87,12 +83,13 @@ public class HomeScreen extends Application {
         borderPane.setCenter(vbox);
         vbox.setAlignment(Pos.TOP_CENTER);
 
-        playButton.prefWidthProperty().bind(vbox.widthProperty());
-        playButton.prefHeightProperty().bind(vbox.heightProperty());
-        quitButton.prefWidthProperty().bind(vbox.widthProperty());
-        quitButton.prefHeightProperty().bind(vbox.heightProperty());
-        playButton.setStyle("-fx-font-size: " + initialButtonFontSize + "px;");
-        quitButton.setStyle("-fx-font-size: " + initialButtonFontSize + "px;");
+        playButton.setPrefWidth(270);
+        playButton.setPrefHeight(80);
+        quitButton.setPrefWidth(270);
+        quitButton.setPrefHeight(80);
+
+        playButton.setStyle("-fx-font-size: " + 19 + "px;");
+        quitButton.setStyle("-fx-font-size: " + 19 + "px;");
 
         // Set the opacities to 0, so they can fade in using the animation
         logo.setOpacity(0);
@@ -106,19 +103,20 @@ public class HomeScreen extends Application {
         stage.setResizable(false);
 
         stage.show();
-        showTransitions(vbox, logo);
+        loadHomeScreenTransition(vbox, logo);
 
-        playButton.setOnAction(e -> new ScenarioMenu().start(stage));
+        ImageView finalLogo = logo;
+        playButton.setOnAction(e -> quitSceneTransition(() -> new ScenarioMenu().start(stage), vbox, finalLogo));
         quitButton.setOnAction(e -> MainGUI.quitToDesktopAlert(stage));
     }
 
     /**
      * This method creates and executes the transitions for the logo and buttons
      *
-     * @param vbox VBox that contains the three buttons
+     * @param vbox VBox that contains the two buttons
      * @param logo ImageView that contains the logo
      */
-    private void showTransitions(VBox vbox, ImageView logo) {
+    private void loadHomeScreenTransition(VBox vbox, ImageView logo) {
         // Create the path transition for the logo
         Path logoPath = new Path();
         MoveTo moveFrom = new MoveTo(logo.getX() + logo.getFitWidth() / 2, -logo.getFitHeight());
@@ -137,6 +135,7 @@ public class HomeScreen extends Application {
         parallelTransitionLogo.play();
         // When the logo transitions are done, we want to execute the buttons transitions
         parallelTransitionLogo.setOnFinished(e -> {
+            transitions.remove(parallelTransitionLogo);
             // First we create the fade in transition for the buttons
             FadeTransition fadeTransitionButtons = new FadeTransition(Duration.seconds(1.2));
             fadeTransitionButtons.setFromValue(0);
@@ -156,32 +155,16 @@ public class HomeScreen extends Application {
 
             // When the transitions are done we want to enable window resizing again
             parallelTransitionButtons.setOnFinished(e2 -> {
-                stage.setResizable(true);
+                //stage.setResizable(true);
+                transitions.remove(parallelTransitionButtons);
                 vbox.setDisable(false);
             });
         });
     }
 
-    /**
-     * Method to pause the transitions currently playing
-     */
-    public void pauseTransitions() {
-        for (Transition transition : transitions) {
-            if (transition.statusProperty().getValue() == Animation.Status.RUNNING) {
-                transition.pause();
-            }
-        }
-    }
-
-    /**
-     * Method to continue the transitions that were playing
-     */
-    public void continueTransitions() {
-        for (Transition transition : transitions) {
-            if (transition.statusProperty().getValue() == Animation.Status.PAUSED) {
-                transition.play();
-            }
-        }
+    @Override
+    public List<Transition> getTransitions() {
+        return transitions;
     }
 
     public static void main(String[] args) {

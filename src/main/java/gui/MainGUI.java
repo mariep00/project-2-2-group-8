@@ -1,12 +1,16 @@
 package gui;
 
 import javafx.application.Platform;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
@@ -42,16 +46,67 @@ public class MainGUI {
      * @param stage     stage where the method is called from
      */
     public static void quitToDesktopAlert(Stage stage) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to quit to the desktop?");
+        Alert alert = getDefaultAlert(Alert.AlertType.CONFIRMATION);
         ((Button) alert.getDialogPane().lookupButton(ButtonType.OK)).setText("Quit");
+        ((Label)((GridPane)alert.getDialogPane().getContent()).getChildren().get(0)).setText("Quit to desktop");
+        ((Label)((GridPane)alert.getDialogPane().getContent()).getChildren().get(1)).setText("Are you sure you want to quit to the desktop?");
         alert.initOwner(stage);
-        alert.setTitle("");
-        alert.setHeaderText("");
         alert.showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {
                 Platform.exit();
             }
         });
+    }
+
+    /**
+     * Method that will show a dialog to confirm going back to the main menu
+     * @param stage         stage where the method is called from
+     * @param runnable      runnable that needs to be executed before going back to the main menu
+     */
+    public static void backToMainMenuAlert(Stage stage, @Nullable Runnable runnable) {
+        Alert alert = getDefaultAlert(Alert.AlertType.CONFIRMATION);
+        ((Button) alert.getDialogPane().lookupButton(ButtonType.OK)).setText("Back to main menu");
+        ((Label)((GridPane)alert.getDialogPane().getContent()).getChildren().get(0)).setText("Back to main menu");
+        ((Label)((GridPane)alert.getDialogPane().getContent()).getChildren().get(1)).setText("Are you sure you want to go back to the main menu?");
+        alert.initOwner(stage);
+        alert.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.OK) {
+                if (runnable != null) runnable.run();
+                stage.close();
+                new HomeScreen(stage.getWidth(), stage.getHeight()).start(stage);
+            }
+        });
+    }
+
+    /**
+     * Method to get the default a dialog with the default style
+     * @param type      the type of the alert
+     * @return          the alert
+     */
+
+    private static Alert getDefaultAlert(Alert.AlertType type) {
+        Alert alert = new Alert(type);
+        alert.setTitle("");
+        alert.setHeaderText("");
+        alert.setGraphic(null);
+        ((Button) alert.getDialogPane().lookupButton(ButtonType.OK)).setId("dialog_ok_button");
+        ((Button) alert.getDialogPane().lookupButton(ButtonType.OK)).setPrefWidth(150);
+        ((Button) alert.getDialogPane().lookupButton(ButtonType.OK)).setPrefHeight(30);
+        alert.getDialogPane().setPrefWidth(425);
+        alert.getDialogPane().setPrefHeight(175);
+
+        GridPane gridPane = new GridPane();
+        Label label1 = new Label();
+        label1.setId("dialog_content_header");
+        Label label2 = new Label();
+        label2.setId("dialog_content");
+        gridPane.add(label1, 0, 0);
+        gridPane.add(label2, 0, 1);
+        GridPane.setMargin(label1, new Insets(7, 10, 0, 10));
+        GridPane.setMargin(label2, new Insets(15, 10, 0, 10));
+        alert.getDialogPane().setContent(gridPane);
+
+        return alert;
     }
 
     /**
@@ -64,12 +119,10 @@ public class MainGUI {
         scene.setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.ESCAPE) {
                 if (pauseMenu == null) {
-                    pauseTransitions(classObject);
+                    if (classObject instanceof TransitionInterface) {
+                        ((TransitionInterface) classObject).pauseTransitions(((TransitionInterface) classObject).getTransitions());
+                    }
                     pauseMenu = new PauseMenu(classObject, scene, stage);
-                }
-                else {
-                    pauseMenu.closePauseMenu(scene);
-                    continueTransitions(classObject);
                 }
             }
         });
@@ -78,30 +131,17 @@ public class MainGUI {
     /**
      * Method to close the pause menu
      */
-    public static void closePauseMenu() {
+    public static void closePauseMenu(Object classObject) {
+        if (classObject instanceof TransitionInterface) {
+            ((TransitionInterface) classObject).continueTransitions(((TransitionInterface) classObject).getTransitions());
+        }
         pauseMenu = null;
     }
 
     /**
-     * Method to pause the transitions currently playing
-     * @param classObject   object of the class where the pause menu is opened from
+     * Method to get the stylesheet url string
+     * @return      string with the path to the stylesheet
      */
-    public static void pauseTransitions(Object classObject) {
-        if (classObject instanceof HomeScreen) {
-            ((HomeScreen) classObject).pauseTransitions();
-        }
-    }
-
-    /**
-     * Method to continue the transitions that were playing
-     * @param classObject   object of the class where the pause menu is opened from
-     */
-    public static void continueTransitions(Object classObject) {
-        if (classObject instanceof HomeScreen) {
-            ((HomeScreen) classObject).continueTransitions();
-        }
-    }
-
     public static String getStylesheet() {
         return Objects.requireNonNull(MainGUI.class.getResource("/style.css")).toString();
     }
