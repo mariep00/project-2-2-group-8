@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-public class ScenarioMap extends Map{
+public class ScenarioMap extends Map {
 
     private String name = "";
     private int gameMode = 0;
@@ -12,6 +12,7 @@ public class ScenarioMap extends Map{
     private ArrayList<Teleport> teleporters;
 
     public ScenarioMap() {
+        // check
         teleporters = new ArrayList<Teleport>();
     }
 

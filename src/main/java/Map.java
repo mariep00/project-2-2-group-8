@@ -4,6 +4,10 @@ public class Map {
     protected int height;
     protected int width;
 
+    public Map() {
+
+    }
+
     public Map(int height, int width) {
         this.height = height;
         this.width = width;

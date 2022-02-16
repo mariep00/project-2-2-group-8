@@ -57,16 +57,16 @@ public class ExplorationMap extends Map {
 
     public void insertElement(int x1, int y1, int elementId) {
         if((x1 - this.origin_X) < 0) {
-            this.bottomExtend();
-        }
-        else if((x1 - this.origin_X) > this.getWidth()) {
-            this.topExtend();
-        }
-        else if((y1 - this.origin_Y) < 0) {
             this.leftExtend();
         }
-        else if((y1 - this.origin_Y) > this.getHeight()) {
+        else if((x1 - this.origin_X) > this.getWidth()) {
             this.rightExtend();
+        }
+        else if((y1 - this.origin_Y) < 0) {
+            this.topExtend();
+        }
+        else if((y1 - this.origin_Y) > this.getHeight()) {
+            this.bottomExtend();
         }
 
         this.mapGrid[x1][y1] = elementId;
