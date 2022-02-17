@@ -76,6 +76,13 @@ public class MapCreator extends Application implements TransitionInterface {
         listView.getItems().add(new ListItem("Wall", new Image(this.getClass().getResource("/tiles/wall.png").toString())));
         listView.getItems().add(new ListItem("Window", new Image(this.getClass().getResource("/tiles/window.png").toString())));
         listView.getItems().add(new ListItem("Door", new Image(this.getClass().getResource("/tiles/door.png").toString())));
+        listView.getItems().add(new ListItem("WallBotLeftCor", new Image(this.getClass().getResource("/tiles/botleftcorner.png").toString())));
+        listView.getItems().add(new ListItem("WallTopLeftCor", new Image(this.getClass().getResource("/tiles/topleftcorner.png").toString())));
+        listView.getItems().add(new ListItem("WallBotRightCor", new Image(this.getClass().getResource("/tiles/botrightcorner.png").toString())));
+        listView.getItems().add(new ListItem("WallTopRightCor", new Image(this.getClass().getResource("/tiles/toprightcorner.png").toString())));
+        listView.getItems().add(new ListItem("WallLeftRight", new Image(this.getClass().getResource("/tiles/leftright.png").toString())));
+        listView.getItems().add(new ListItem("WallTopBot", new Image(this.getClass().getResource("/tiles/top_bot.png").toString())));
+
         return listView;
     }
 
@@ -84,7 +91,6 @@ public class MapCreator extends Application implements TransitionInterface {
         Scale scaleTransform = new Scale(zoomingFactor, zoomingFactor, MouseInfo.getPointerInfo().getLocation().x-gridPane.getBoundsInLocal().getMinX(), MouseInfo.getPointerInfo().getLocation().y-gridPane.getBoundsInLocal().getMinY());
         gridPane.getTransforms().add(scaleTransform);
     }
-
     @Override
     public List<Transition> getTransitions() {
         return new ArrayList<>();
