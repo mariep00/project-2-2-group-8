@@ -1,16 +1,20 @@
+package Graph;
+
+import Graph.Graph;
+
 import java.util.LinkedList;
 
-public class GraphAdjacencyList<T> implements Graph<T> {
+public class GraphAdjacencyList<Node> implements Graph<Node> {
 
-    LinkedList<Vertices<T>> list;
+    LinkedList<Vertices<Node>> list;
 
     public GraphAdjacencyList()
     {
-        list = new LinkedList<Vertices<T>>();
+        list = new LinkedList<Vertices<Node>>();
     }
 
-    // whether there’s an edge from x to y
-    public boolean adjacent(T x, T y)
+    // whether there’s an edge from x to y
+    public boolean adjacent(Node x, Node y)
     {
         boolean adj = false;
         for(int i = 0; i< list.size(); i++)
@@ -27,10 +31,10 @@ public class GraphAdjacencyList<T> implements Graph<T> {
         return adj;
     }
 
-    //all vertices y s.t. there’s an edge from x to y
-    public LinkedList<T> neighbors(T x)
+    //all vertices y s.t. there’s an edge from x to y
+    public LinkedList<Node> neighbors(Node x)
     {
-        LinkedList<T> nb = null;
+        LinkedList<Node> nb = null;
 
         for (int l=0; l< list.size(); l++)
         {
@@ -42,14 +46,14 @@ public class GraphAdjacencyList<T> implements Graph<T> {
         return nb;
     }
 
-    //adds the vertex x
-    public void addVertex(T x)
+    //adds the vertex x
+    public void addVertex(Node x)
     {
-        list.addFirst(new Vertices<T>(x)); //add or addFirst
+        list.addFirst(new Vertices<Node>(x)); //add or addFirst
     }
 
-    //removes the vertex x
-    public void removeVertex(T x)
+    //removes the vertex x
+    public void removeVertex(Node x)
     {
         for(int k=0;k< list.size(); k++)
         {
@@ -64,8 +68,8 @@ public class GraphAdjacencyList<T> implements Graph<T> {
         }
     }
 
-    //adds edge from the vertices x to y
-    public void addEdge(T x, T y)
+    //adds edge from the vertices x to y
+    public void addEdge(Node x, Node y)
     {
         for(int o = 0;o<list.size();o++)
         {
@@ -81,8 +85,8 @@ public class GraphAdjacencyList<T> implements Graph<T> {
         }
     }
 
-    //removes edge from the vertices x to y
-    public void removeEdge(T x, T y)
+    //removes edge from the vertices x to y
+    public void removeEdge(Node x, Node y)
     {
         for(int o = 0;o<list.size();o++)
         {
@@ -101,31 +105,31 @@ public class GraphAdjacencyList<T> implements Graph<T> {
     }
 
 
-    class Vertices<T>
+    class Vertices<Node>
     {
-        LinkedList<T> edge_list;
-        T element;
-        public Vertices(T e)
+        LinkedList<Node> edge_list;
+        Node element;
+        public Vertices(Node e)
         {
-            edge_list = new LinkedList<T>();
+            edge_list = new LinkedList<Node>();
             element=e;
         }
 
-        public LinkedList<T> getEdges(){
+        public LinkedList<Node> getEdges(){
             return edge_list;
         }
         
-        public T getElement()
+        public Node getElement()
         {
             return element;
         }
 
-        public void addEdge(T y)
+        public void addEdge(Node y)
         {
             edge_list.addFirst(y);
         }
 
-        public void removeEdge(T y)
+        public void removeEdge(Node y)
         {
             for(int n=0;n<edge_list.size();n++)
             {
