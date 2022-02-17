@@ -49,10 +49,10 @@ public class MapCreator extends Application implements TransitionInterface {
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
 
-        Button buttonReset = new Button("Reset");
-        Button buttonAllFloor = new Button("Button all floor");
-        Button buttonExport = new Button("Export");
-        Button buttonPlayGame = new Button("Play game");
+        Button buttonReset = new Button("Reset map");
+        Button buttonAllFloor = new Button("Set all to floor");
+        Button buttonExport = new Button("Export map");
+        Button buttonPlayGame = new Button("Play game with map");
         HBox hbox = new HBox(15, buttonReset, buttonAllFloor, buttonExport, buttonPlayGame);
         hbox.setAlignment(Pos.CENTER_RIGHT);
         BorderPane borderPane = new BorderPane(scrollPane);
@@ -60,6 +60,9 @@ public class MapCreator extends Application implements TransitionInterface {
         borderPane.setLeft(listView);
         borderPane.setTop(hbox);
         BorderPane.setMargin(hbox, new Insets(5, 5, 5, 5));
+
+        scrollPane.setStyle("-fx-focus-color: transparent;");
+        listView.setStyle("-fx-focus-color: transparent;");
 
         Scene scene = new Scene(borderPane);
         MainGUI.setupScene(this, scene, stage);
@@ -93,21 +96,20 @@ public class MapCreator extends Application implements TransitionInterface {
     private ListView<ListItem> getListViewPopulated() {
         ListView<ListItem> listView = new ListView();
         listView.getItems().add(new ListItem("Floor", new Image(this.getClass().getResource("/tiles/floor.jpg").toString())));
-        listView.getItems().add(new ListItem("WallBotLeftCor", new Image(this.getClass().getResource("/tiles/botleftcorner.png").toString())));
-        listView.getItems().add(new ListItem("WallTopLeftCor", new Image(this.getClass().getResource("/tiles/topleftcorner.png").toString())));
-        listView.getItems().add(new ListItem("WallBotRightCor", new Image(this.getClass().getResource("/tiles/botrightcorner.png").toString())));
-        listView.getItems().add(new ListItem("WallTopRightCor", new Image(this.getClass().getResource("/tiles/toprightcorner.png").toString())));
-        listView.getItems().add(new ListItem("WallLeftRight", new Image(this.getClass().getResource("/tiles/leftright.png").toString())));
-        listView.getItems().add(new ListItem("WallTopBot", new Image(this.getClass().getResource("/tiles/top_bot.png").toString())));
+        listView.getItems().add(new ListItem("Wall", new Image(this.getClass().getResource("/tiles/wall.jpg").toString())));
+        listView.getItems().add(new ListItem("Window", new Image(this.getClass().getResource("/tiles/window.png").toString())));
+        listView.getItems().add(new ListItem("Door", new Image(this.getClass().getResource("/tiles/door.jpg").toString())));
+        listView.getItems().add(new ListItem("Door rotated", new Image(this.getClass().getResource("/tiles/door_90.jpg").toString())));
+        listView.getItems().add(new ListItem("Character", new Image(this.getClass().getResource("/tiles/character.png").toString())));
 
         return listView;
     }
 
     private void zooming(GridPane gridPane, double zoomingFactor) {
-        System.out.println(gridPane.getTranslateX() + ", " + gridPane.getTranslateY());
-        Scale scaleTransform = new Scale(zoomingFactor, zoomingFactor, MouseInfo.getPointerInfo().getLocation().x-gridPane.getBoundsInLocal().getMinX(), MouseInfo.getPointerInfo().getLocation().y-gridPane.getBoundsInLocal().getMinY());
+        Scale scaleTransform = new Scale(zoomingFactor, zoomingFactor, MouseInfo.getPointerInfo().getLocation().x, MouseInfo.getPointerInfo().getLocation().y);
         gridPane.getTransforms().add(scaleTransform);
     }
+
     @Override
     public List<Transition> getTransitions() {
         return transitions;
