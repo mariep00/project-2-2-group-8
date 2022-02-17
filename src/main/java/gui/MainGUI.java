@@ -8,6 +8,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import org.jetbrains.annotations.Nullable;
@@ -116,7 +117,7 @@ public class MainGUI {
      * @param stage         stage that contains the scene which needs a pause menu
      */
     private static void initializePauseMenu(Object classObject, Scene scene, Stage stage) {
-        scene.setOnKeyPressed(e -> {
+        scene.addEventFilter(KeyEvent.KEY_PRESSED, e -> {
             if (e.getCode() == KeyCode.ESCAPE) {
                 if (pauseMenu == null) {
                     if (classObject instanceof TransitionInterface) {

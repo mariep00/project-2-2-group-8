@@ -19,6 +19,5 @@ class Tile extends ImageView {
                 setImage(MapCreator.gridImage);
             }
         });
-
     }
 }
