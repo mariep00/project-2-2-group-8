@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-public class ScenarioMap extends Map {
+public class ScenarioMap extends Map{
 
     private String name = "";
     private int gameMode = 0;
@@ -12,7 +12,6 @@ public class ScenarioMap extends Map {
     private ArrayList<Teleport> teleporters;
 
     public ScenarioMap() {
-        // check
         teleporters = new ArrayList<Teleport>();
     }
 
@@ -74,13 +73,17 @@ public class ScenarioMap extends Map {
 
     public Teleport getTeleport (int index) {
         return teleporters.get(index-8);
-    } // -8?
+    }
 
-    public void setTeleport (int x1, int y1, int x2, int y2, int x3, int y3, String orientation) {
-        Teleport tmp = new Teleport(x1, y1, x2, y2, x3, y3, orientation);
+    public void setTeleport (int x1, int y1, int x2, int y2, int x3, int y3, double rotation) {
+        Teleport tmp = new Teleport(x1, y1, x2, y2, x3, y3, rotation);
         teleporters.add(tmp);
         tmp.setIndex(teleporters.indexOf(tmp)+8);
         insertElement(x1, y1, x2, y2, tmp.getIndex());
+    }
+
+    public Tile checkType(Vector2D pos) {
+        return mapGrid[pos.getY()][pos.getX()];
     }
 
 }

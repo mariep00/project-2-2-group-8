@@ -3,25 +3,30 @@ import java.util.ArrayList;
 public class FOV {
     
     private double visionAngle;
-    private double visionRange;
+    private double normalVisionRange;
+    private double currentVisionRange;
     private double direction;
-    private Vector2D absolutePosition;
+    private Vector2D position;
 
     private VisionMap visionGrid;
+    private int[][] areaMap;
 
-    public FOV (double visionAngle, double visionRange, Vector2D absolutePosition, double direction) {
-        this.visionAngle = visionAngle;
-        this.visionRange = visionRange;
-        this.direction = direction;
-        this.absolutePosition = absolutePosition;
-        visionGrid = new VisionMap(visionRange);
+    public FOV (double normalVisionRange) {
+        this.normalVisionRange = normalVisionRange;
+        visionGrid = new VisionMap(normalVisionRange);
     }
 
     public int[][] getMap () {
         return visionGrid.getMap();
     }
 
-    public void calculate () {
+    public void calculate (double visionAngle, double newVisionRange, int[][] areaMap, double direction) {
+        this.visionAngle = visionAngle;
+        this.direction = direction;
+        this.areaMap = areaMap;
+        if(newVisionRange!=normalVisionRange) { currentVisionRange = newVisionRange;
+        } else { currentVisionRange = normalVisionRange;}
+
         //Mark all Tiles that could be visible for the Agent
         //Marked as 1 in the VisionMap
         initiateViewingField();
@@ -143,5 +148,37 @@ public class FOV {
 
         return neighbours;
     }
-    
+
+    private void rayTracing (Vector2D[] endpoints) {
+        
+        boolean finished = false;
+        while (!finished) {
+            for (int i=0; i<endpoints.length; i++) {
+
+            }
+        }
+    }
+
+    private Vector2D[] rayTracingLine (Vector2D p0, Vector2D p1) {
+        ArrayList<Vector2D> line = new ArrayList<Vector2D>();
+        int n = calcualteDistance(p0, p1);
+        for (int i=0; hitWall()||i<=n; i++) {
+            double t = ((double)i)/n;
+            line.add(lerpPoint(p0, p1, t));
+        }
+        Vector2D[] pointsLine = new Vector2D[line.size()];
+        pointsLine = line.toArray(pointsLine);
+        return pointsLine;
+    }
+/*
+    private double[] getAnglesRT (double[] sides) {
+        if (sides[0]<sides[1]) {
+
+        }
+    }
+*/
+
+    private boolean hitWall() {
+        return false;
+    }  
 }
