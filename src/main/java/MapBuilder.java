@@ -92,24 +92,22 @@ public class MapBuilder {
                         map.setBaseSpeedGuard(Double.parseDouble(value));
                         break;
                     case "targetArea":
-                        map.insertElement(Integer.parseInt(items[0]), Integer.parseInt(items[1]), Integer.parseInt(items[2]), Integer.parseInt(items[3]), 5);
+                        map.insertElement(Integer.parseInt(items[0]), Integer.parseInt(items[1]), Integer.parseInt(items[2]), Integer.parseInt(items[3]), new Tile(Tile.Type.TARGETAREA));
                         break;
                     case "spawnAreaIntruders":
-                        map.insertElement(Integer.parseInt(items[0]), Integer.parseInt(items[1]), Integer.parseInt(items[2]), Integer.parseInt(items[3]), 3);
+                        map.insertElement(Integer.parseInt(items[0]), Integer.parseInt(items[1]), Integer.parseInt(items[2]), Integer.parseInt(items[3]), new Tile(Tile.Type.SPAWNAREAINTRUDERS));
                         break;
                     case "spawnAreaGuards":
-                        map.insertElement(Integer.parseInt(items[0]), Integer.parseInt(items[1]), Integer.parseInt(items[2]), Integer.parseInt(items[3]), 4);
+                        map.insertElement(Integer.parseInt(items[0]), Integer.parseInt(items[1]), Integer.parseInt(items[2]), Integer.parseInt(items[3]), new Tile(Tile.Type.SPAWNAREAGUARDS));
                         break;
                     case "wall":
-                        map.insertElement(Integer.parseInt(items[0]), Integer.parseInt(items[1]), Integer.parseInt(items[2]), Integer.parseInt(items[3]), 1);
+                        map.insertElement(Integer.parseInt(items[0]), Integer.parseInt(items[1]), Integer.parseInt(items[2]), Integer.parseInt(items[3]), new Tile(Tile.Type.WALL));
                         break;
                     case "teleport":
-                        System.out.println("case teleport");
                         map.setTeleport(Integer.parseInt(items[0]), Integer.parseInt(items[1]), Integer.parseInt(items[2]), Integer.parseInt(items[3]), Integer.parseInt(items[4]), Integer.parseInt(items[5]), Double.parseDouble(items[6]));
                         break;
                     case "shaded":
-                        System.out.println("shaded case");
-                        map.insertElement(Integer.parseInt(items[0]), Integer.parseInt(items[1]), Integer.parseInt(items[2]), Integer.parseInt(items[3]), 2);
+                        map.setShaded(Integer.parseInt(items[0]), Integer.parseInt(items[1]), Integer.parseInt(items[2]), Integer.parseInt(items[3]));
                         break;
                     case "texture":
                         break;

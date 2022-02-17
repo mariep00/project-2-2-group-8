@@ -7,7 +7,7 @@ public class Tile {
         TELEPORT(0, false);
 
         int index;
-        final boolean shaded;
+        boolean shaded;
 
         Type (int index, boolean shaded) {
             this.index = index;
@@ -25,16 +25,30 @@ public class Tile {
         public void setIndex(int index) {
             this.index = index;
         }
+
+        public void setShaded (boolean shaded) {this.shaded = shaded;}
     }
 
     private final Type type;
 
-        public Tile () {
+    public Tile () {
             type = Type.FLOOR;
+    }
+
+    public Tile (Type type) {
+        this.type = type;
     }
 
     public Type getType() {
         return this.type;
+    }
+
+    public void setIndex(int index) {
+        this.type.setIndex(index);
+    }
+
+    public void setShaded(boolean shaded) {
+        this.type.setShaded(shaded);
     }
 
 }

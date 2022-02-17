@@ -10,7 +10,7 @@ public class Controller {
         
     }
 
-    public void calculateFOV(Vector2D agentPosition, ) {
+    public void calculateFOV(Vector2D agentPosition) {
 
     }
 
@@ -23,6 +23,10 @@ public class Controller {
         int x = agentSpawnLocations.get(agentId).getX()+relPos.getX();
         int y = agentSpawnLocations.get(agentId).getY()+relPos.getY();
         return new Vector2D(x, y);
+    }
+
+    public void tick() {
+
     }
 
 }

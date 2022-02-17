@@ -79,7 +79,17 @@ public class ScenarioMap extends Map{
         Teleport tmp = new Teleport(x1, y1, x2, y2, x3, y3, rotation);
         teleporters.add(tmp);
         tmp.setIndex(teleporters.indexOf(tmp)+8);
-        insertElement(x1, y1, x2, y2, tmp.getIndex());
+        Tile tile = new Tile(Tile.Type.TELEPORT);
+        tile.setIndex(tmp.getIndex());
+        insertElement(x1, y1, x2, y2, tile);
+    }
+
+    public void setShaded (int x1, int y1, int x2, int y2) {
+        for (int i=y1; i<y2; i++) {
+            for (int j=x1; j<x2; j++) {
+                mapGrid[i][j].setShaded(true);
+            }
+        }
     }
 
     public Tile checkType(Vector2D pos) {

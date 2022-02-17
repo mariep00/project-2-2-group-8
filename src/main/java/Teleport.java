@@ -9,9 +9,9 @@ public class Teleport {
 
     private int xExit;
     private int yExit;
-    private String orientation;
+    private double orientation;
     
-    public Teleport (int x1, int y1, int x2, int y2, int x3, int y3, String orientation) {
+    public Teleport (int x1, int y1, int x2, int y2, int x3, int y3, double orientation) {
         this.x1 = x1;
         this.x2 = x2;
         this.y1 = y1;
@@ -53,7 +53,7 @@ public class Teleport {
         return this.yExit;
     }
 
-    public String getOrientation() {
+    public double getOrientation() {
         return this.orientation;
     }
 }

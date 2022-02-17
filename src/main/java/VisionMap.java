@@ -31,7 +31,6 @@ public class VisionMap extends Map{
         inVision = vectors.toArray(inVision);
         return inVision;
 
-
     }
 
 }
