@@ -1,5 +1,6 @@
 package gui;
 
+import gui.map_creator.MapCreator;
 import javafx.animation.Transition;
 import javafx.application.Application;
 import javafx.geometry.Pos;
@@ -56,6 +57,7 @@ public class ScenarioMenu extends Application implements TransitionInterface {
             File selectedFile = fileChooser.showOpenDialog(stage);
             // Load game with the selected file
         });
+        buttonCreateMap.setOnAction(e -> quitSceneTransition(() -> new MapCreator().start(stage), vbox));
     }
 
     @Override

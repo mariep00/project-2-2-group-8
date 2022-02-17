@@ -94,5 +94,6 @@ public interface TransitionInterface {
         transitions.remove(transition);
     }
 
+    @NotNull
     List<Transition> getTransitions();
 }
