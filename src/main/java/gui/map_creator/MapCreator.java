@@ -38,9 +38,9 @@ public class MapCreator extends Application implements TransitionInterface {
         final int nrOfTilesWidth = 80;
         final int nrOfTilesHeight = 80;
 
-        gridImage = new Image(this.getClass().getResource("/tiles/grid_square.png").toString());
+        gridImage = new Image(this.getClass().getResource("/tiles/base/grid_square.png").toString());
         ListView<ListItem> listView = getListViewPopulated();
-        listView.setPrefWidth(100);
+        listView.setPrefWidth(150);
 
         selectedListItem = listView.getItems().get(0);
         GridPane gridPane = new GridPane();
@@ -49,7 +49,7 @@ public class MapCreator extends Application implements TransitionInterface {
         Tile[][] tiles = new Tile[nrOfTilesWidth][nrOfTilesHeight];
         for (int i = 0; i < nrOfTilesWidth; i++) {
             for (int j = 0; j < nrOfTilesHeight; j++) {
-                Tile tile = new Tile(gridImage);
+                Tile tile = new Tile(new TileImage(gridImage));
                 gridPane.add(tile, i, j);
                 tiles[i][j] = tile;
             }
@@ -89,14 +89,14 @@ public class MapCreator extends Application implements TransitionInterface {
         buttonReset.setOnAction(e -> {
             for (Node node : gridPane.getChildren()) {
                 if (node instanceof Tile) {
-                    ((Tile) node).changeImageToGrid();
+                    ((Tile) node).resetTile();
                 }
             }
         });
         buttonAllFloor.setOnAction(e -> {
             for (Node node : gridPane.getChildren()) {
                 if (node instanceof Tile) {
-                    ((Tile) node).setImage(listView.getItems().get(0).image);
+                    ((Tile) node).setBaseImage(listView.getItems().get(0).image);
                 }
             }
         });
@@ -110,10 +110,10 @@ public class MapCreator extends Application implements TransitionInterface {
 
             if (indexX < tiles.length && indexY < tiles[0].length && indexX >= 0 && indexY >= 0) {
                 if (e.isPrimaryButtonDown()) {
-                    tiles[indexX][indexY].changeImageToSelected();
+                    tiles[indexX][indexY].setImageToSelected();
                 }
                 else if (e.isSecondaryButtonDown()) {
-                    tiles[indexX][indexY].changeImageToGrid();
+                    tiles[indexX][indexY].resetTile();
                 }
             }
         });
@@ -121,13 +121,17 @@ public class MapCreator extends Application implements TransitionInterface {
 
     private ListView<ListItem> getListViewPopulated() {
         ListView<ListItem> listView = new ListView();
-        listView.getItems().add(new ListItem("Floor", new Image(this.getClass().getResource("/tiles/floor.jpg").toString())));
-        listView.getItems().add(new ListItem("Wall", new Image(this.getClass().getResource("/tiles/wall.jpg").toString())));
-        listView.getItems().add(new ListItem("Window", new Image(this.getClass().getResource("/tiles/window.png").toString())));
-        listView.getItems().add(new ListItem("Door", new Image(this.getClass().getResource("/tiles/door.jpg").toString())));
-        listView.getItems().add(new ListItem("Door rotated", new Image(this.getClass().getResource("/tiles/door_90.jpg").toString())));
-        listView.getItems().add(new ListItem("Character", new Image(this.getClass().getResource("/tiles/character.png").toString())));
-
+        listView.getItems().add(new ListItem("Floor", ImageType.BASE,new Image(this.getClass().getResource("/tiles/base/floor.jpg").toString())));
+        listView.getItems().add(new ListItem("Wall center", ImageType.BASE,new Image(this.getClass().getResource("/tiles/base/wall_center.jpg").toString())));
+        listView.getItems().add(new ListItem("Wall front", ImageType.BASE,new Image(this.getClass().getResource("/tiles/base/wall_front.jpg").toString())));
+        listView.getItems().add(new ListItem("Wall left", ImageType.BASE,new Image(this.getClass().getResource("/tiles/base/wall_left.jpg").toString())));
+        listView.getItems().add(new ListItem("Wall right", ImageType.BASE,new Image(this.getClass().getResource("/tiles/base/wall_right.jpg").toString())));
+        listView.getItems().add(new ListItem("Wall sides", ImageType.BASE,new Image(this.getClass().getResource("/tiles/base/wall_sides.jpg").toString())));
+        listView.getItems().add(new ListItem("Wall top", ImageType.BASE,new Image(this.getClass().getResource("/tiles/base/wall_top.jpg").toString())));
+        listView.getItems().add(new ListItem("Wall top corner left", ImageType.BASE,new Image(this.getClass().getResource("/tiles/base/wall_top_corner_left.jpg").toString())));
+        listView.getItems().add(new ListItem("Wall top corner right", ImageType.BASE,new Image(this.getClass().getResource("/tiles/base/wall_top_corner_right.jpg").toString())));
+        listView.getItems().add(new ListItem("Wall top cornered", ImageType.BASE,new Image(this.getClass().getResource("/tiles/base/wall_top_cornered.jpg").toString())));
+        listView.getItems().add(new ListItem("Guard", ImageType.CHARACTER,new Image(this.getClass().getResource("/tiles/character/guard/guard.png").toString())));
         return listView;
     }
 
@@ -143,14 +147,22 @@ public class MapCreator extends Application implements TransitionInterface {
 }
 
 class ListItem {
-    Image image;
     String name;
+    ImageType imageType;
+    Image image;
 
-    public ListItem(String name, Image image) {
+    public ListItem(String name, ImageType imageType, Image image) {
         this.name = name;
+        this.imageType = imageType;
         this.image = image;
     }
 
     public String toString() { return name; }
+}
+
+enum ImageType {
+    BASE,
+    CHARACTER,
+    OTHER
 }
 
