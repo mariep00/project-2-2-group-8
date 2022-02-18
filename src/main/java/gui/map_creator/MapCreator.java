@@ -4,6 +4,7 @@ import gui.MainGUI;
 import gui.TransitionInterface;
 import javafx.animation.Transition;
 import javafx.application.Application;
+import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -12,6 +13,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -31,23 +33,29 @@ public class MapCreator extends Application implements TransitionInterface {
     @Override
     public void start(Stage stage) {
         this.stage = stage;
+
+        //TODO Change this to the size the user wants --> make input for it
+        final int nrOfTilesWidth = 80;
+        final int nrOfTilesHeight = 80;
+
         gridImage = new Image(this.getClass().getResource("/tiles/grid_square.png").toString());
         ListView<ListItem> listView = getListViewPopulated();
+        listView.setPrefWidth(100);
 
         selectedListItem = listView.getItems().get(0);
         GridPane gridPane = new GridPane();
         gridPane.setAlignment(Pos.CENTER);
-        for (int i = 0; i < 60; i++) {
-            for (int j = 0; j < 60; j++) {
-                gridPane.add(new Tile(gridImage), i, j);
+
+        Tile[][] tiles = new Tile[nrOfTilesWidth][nrOfTilesHeight];
+        for (int i = 0; i < nrOfTilesWidth; i++) {
+            for (int j = 0; j < nrOfTilesHeight; j++) {
+                Tile tile = new Tile(gridImage);
+                gridPane.add(tile, i, j);
+                tiles[i][j] = tile;
             }
         }
+
         ScrollPane scrollPane = new ScrollPane(gridPane);
-        scrollPane.setFitToWidth(true);
-        scrollPane.setFitToHeight(true);
-        scrollPane.setPannable(true);
-        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
 
         Button buttonReset = new Button("Reset map");
         Button buttonAllFloor = new Button("Set all to floor");
@@ -68,19 +76,20 @@ public class MapCreator extends Application implements TransitionInterface {
         MainGUI.setupScene(this, scene, stage);
         listView.setOpacity(0);
         scrollPane.setOpacity(0);
+        hbox.setOpacity(0);
         stage.setScene(scene);
-        loadSceneTransition(1.5, listView, scrollPane, hbox);
+        loadSceneTransition( listView, scrollPane, hbox);
 
         listView.getSelectionModel().selectedItemProperty().addListener(e -> {
             selectedListItem = listView.getSelectionModel().getSelectedItem();
         });
         scrollPane.setOnZoom(e -> {
-            zooming(gridPane, e.getZoomFactor());
+            //zooming(gridPane, e.getZoomFactor());
         });
         buttonReset.setOnAction(e -> {
             for (Node node : gridPane.getChildren()) {
                 if (node instanceof Tile) {
-                    ((Tile) node).setImage(gridImage);
+                    ((Tile) node).changeImageToGrid();
                 }
             }
         });
@@ -88,6 +97,23 @@ public class MapCreator extends Application implements TransitionInterface {
             for (Node node : gridPane.getChildren()) {
                 if (node instanceof Tile) {
                     ((Tile) node).setImage(listView.getItems().get(0).image);
+                }
+            }
+        });
+        gridPane.addEventHandler(MouseEvent.MOUSE_DRAGGED, e -> {
+            Bounds boundsGridPaneInScene = gridPane.localToScene(gridPane.getBoundsInLocal());
+            double posX = e.getSceneX() - boundsGridPaneInScene.getMinX();
+            double posY = e.getSceneY() - boundsGridPaneInScene.getMinY();
+
+            int indexX = (int) Math.floor((posX / Tile.tileSize));
+            int indexY = (int) Math.floor((posY / Tile.tileSize));
+
+            if (indexX < tiles.length && indexY < tiles[0].length && indexX >= 0 && indexY >= 0) {
+                if (e.isPrimaryButtonDown()) {
+                    tiles[indexX][indexY].changeImageToSelected();
+                }
+                else if (e.isSecondaryButtonDown()) {
+                    tiles[indexX][indexY].changeImageToGrid();
                 }
             }
         });
@@ -127,3 +153,4 @@ class ListItem {
 
     public String toString() { return name; }
 }
+

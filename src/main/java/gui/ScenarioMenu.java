@@ -49,7 +49,7 @@ public class ScenarioMenu extends Application implements TransitionInterface {
         vbox.setOpacity(0);
 
         stage.setScene(scene);
-        loadSceneTransition(vbox);
+        loadSceneTransition( vbox);
 
         buttonLoadMap.setOnAction(e -> {
             FileChooser fileChooser = new FileChooser();
