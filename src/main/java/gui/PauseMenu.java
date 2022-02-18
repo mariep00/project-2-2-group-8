@@ -62,10 +62,6 @@ public class PauseMenu {
         scene.getRoot().setEffect(new GaussianBlur());
         pauseStage.show();
 
-        // If this is uncommented, the escape menu will fade in instead of immediately being present
-        //vbox.setOpacity(0);
-        //MainGUI.loadSceneTransition(0.15, vbox);
-
         pauseScene.setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.ESCAPE) {
                 closePauseMenu(scene, classObject);
