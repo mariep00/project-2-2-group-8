@@ -5,10 +5,10 @@ public class Agent {
     private int speed;
     private int base_speed;
     private int sprint_speed;
-    private String orientation;
+    private double orientation;
     private Agent_AI agent_ai;
 
-    public Agent(int position_X, int position_Y, int radius, int base_speed, int sprint_speed, String orientation, Agent_AI agent_ai) {
+    public Agent(int position_X, int position_Y, int radius, int base_speed, int sprint_speed, double orientation, Agent_AI agent_ai) {
         this.position_X =position_X;
         this.position_Y = position_Y;
         this.radius = radius;
@@ -31,7 +31,7 @@ public class Agent {
         this.speed = sprint_speed;
     }
 
-    public void setOrientation(String orientation) {
+    public void setOrientation(double orientation) {
         this.orientation = orientation;
     }
 
@@ -41,11 +41,11 @@ public class Agent {
     }
 
     public void tick() {
-        switch (this.orientation) {
-            case "NORTH" -> this.position_Y += this.speed;
-            case "EAST" -> this.position_X += this.speed;
-            case "SOUTH" -> this.position_Y -= this.speed;
-            case "WEST" -> this.position_X -= this.speed;
+        switch (Double.toString(this.orientation)) {
+            case "0" -> this.position_Y += this.speed;
+            case "90" -> this.position_X += this.speed;
+            case "180" -> this.position_Y -= this.speed;
+            case "270" -> this.position_X -= this.speed;
         }
     }
 }

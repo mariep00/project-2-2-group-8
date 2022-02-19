@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-public class ScenarioMap extends Map{
+public class ScenarioMap extends Map {
 
     private String name = "";
     private int gameMode = 0;

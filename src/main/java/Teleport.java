@@ -9,16 +9,16 @@ public class Teleport {
 
     private int xExit;
     private int yExit;
-    private double orientation;
+    private double rotation;
     
-    public Teleport (int x1, int y1, int x2, int y2, int x3, int y3, double orientation) {
+    public Teleport (int x1, int y1, int x2, int y2, int x3, int y3, double rotation) {
         this.x1 = x1;
         this.x2 = x2;
         this.y1 = y1;
         this.y2 = y2;
         xExit = x3;
         yExit = y3;
-        this.orientation = orientation;
+        this.rotation = rotation;
     }
 
     public int getIndex() {
@@ -53,7 +53,7 @@ public class Teleport {
         return this.yExit;
     }
 
-    public double getOrientation() {
-        return this.orientation;
+    public double getRotation() {
+        return this.rotation;
     }
 }

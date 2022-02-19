@@ -74,7 +74,7 @@ public class MapBuilder {
                         break;
                     case "width":
                         width = Integer.parseInt(value);
-                        map.createMap(width, height, scaling);
+                        //map.createMap(width, height);
                         break;
                     case "numGuards":
                         map.setNumGuards(Integer.parseInt(value));

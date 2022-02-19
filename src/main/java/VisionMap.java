@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-public class VisionMap extends Map{
+public class VisionMap extends Map {
     
     private Vector2D center;
 
@@ -21,7 +21,7 @@ public class VisionMap extends Map{
         ArrayList<Vector2D> vectors = new ArrayList<>();
         for (int i=0; i<mapGrid.length; i++) {
             for (int j=0; j<mapGrid[i].length; j++) {
-                if (mapGrid[i][j] == 1) {
+                if(mapGrid[i][j].getType().isShaded()) {
                     Vector2D tmp = new Vector2D(j, i);
                     vectors.add(tmp);
                 }

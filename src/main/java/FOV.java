@@ -1,3 +1,4 @@
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 public class FOV {
@@ -16,7 +17,7 @@ public class FOV {
         visionGrid = new VisionMap(normalVisionRange);
     }
 
-    public int[][] getMap () {
+    public Tile[][] getMap () {
         return visionGrid.getMap();
     }
 
@@ -37,24 +38,24 @@ public class FOV {
         double[] angles2 = calculateAngles(direction, visionAngle/2);
         Vector2D center = visionGrid.getCenter();
 
-        Vector2D p1 = calculatePoint(center, visionRange, angles[0]);
-        Vector2D p2 = calculatePoint(center, visionRange, angles2[0]);
-        Vector2D p3 = calculatePoint(center, visionRange, direction);
-        Vector2D p4 = calculatePoint(center, visionRange, angles2[1]);
-        Vector2D p5 = calculatePoint(center, visionRange, angles[1]);
+        Vector2D p1 = calculatePoint(center, normalVisionRange, angles[0]);
+        Vector2D p2 = calculatePoint(center, normalVisionRange, angles2[0]);
+        Vector2D p3 = calculatePoint(center, normalVisionRange, direction);
+        Vector2D p4 = calculatePoint(center, normalVisionRange, angles2[1]);
+        Vector2D p5 = calculatePoint(center, normalVisionRange, angles[1]);
 
         Vector2D[] line1 = calculateLine(center, p1);
-        visionGrid.insertElement(line1, 1);
+        visionGrid.insertElement(line1, new Tile(Tile.Type.WALL));
         Vector2D[] line2 = calculateLine(center, p5);
-        visionGrid.insertElement(line2, 1);
+        visionGrid.insertElement(line2, new Tile(Tile.Type.WALL));
         Vector2D[] line3 = calculateLine(p1, p2);
-        visionGrid.insertElement(line3, 1);
+        visionGrid.insertElement(line3, new Tile(Tile.Type.WALL));
         Vector2D[] line4 = calculateLine(p2, p3);
-        visionGrid.insertElement(line4, 1);
+        visionGrid.insertElement(line4, new Tile(Tile.Type.WALL));
         Vector2D[] line5 = calculateLine(p3, p4);
-        visionGrid.insertElement(line5, 1);
+        visionGrid.insertElement(line5, new Tile(Tile.Type.WALL));
         Vector2D[] line6 = calculateLine(p4, p5);
-        visionGrid.insertElement(line6, 1);
+        visionGrid.insertElement(line6, new Tile(Tile.Type.WALL));
 
         floodFill(lerpPoint(center, p2, 0.5));
 
@@ -118,13 +119,13 @@ public class FOV {
 
         ArrayList<Vector2D> frontiers = new ArrayList<>();
         frontiers.add(start);
-        visionGrid.setTile(start.getX(), start.getY(), 1);
+        visionGrid.setTile(start.getX(), start.getY(), new Tile(Tile.Type.WALL));
         while (frontiers.size()>0) {
             for (int i=0; i<frontiers.size(); i++) {
                 Vector2D[] adj = getNeighbours(frontiers.get(i));
                 for (int j=0;j<adj.length;j++) {
-                    if (visionGrid.getTile(adj[j].getX(), adj[j].getY()) == 0) {
-                        visionGrid.setTile(adj[j].getX(), adj[j].getY(), 1);
+                    if(visionGrid.getTile(adj[j].getX(), adj[j].getY()).getType() == Tile.Type.FLOOR) {
+                        visionGrid.setTile(adj[j].getX(), adj[j].getY(), new Tile(Tile.Type.WALL));
                         frontiers.add(adj[j]);
                     }
                 }
