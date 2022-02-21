@@ -50,7 +50,8 @@ public class MainGUI {
         Alert alert = getDefaultAlert(Alert.AlertType.CONFIRMATION);
         ((Button) alert.getDialogPane().lookupButton(ButtonType.OK)).setText("Quit");
         ((Label)((GridPane)alert.getDialogPane().getContent()).getChildren().get(0)).setText("Quit to desktop");
-        ((Label)((GridPane)alert.getDialogPane().getContent()).getChildren().get(1)).setText("Are you sure you want to quit to the desktop?");
+        ((Label)((GridPane)alert.getDialogPane().getContent()).getChildren().get(1)).setText("Are you sure you want to quit to the desktop? " +
+                "\nAny unsaved progress will be lost");
         alert.initOwner(stage);
         alert.showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {
@@ -68,7 +69,8 @@ public class MainGUI {
         Alert alert = getDefaultAlert(Alert.AlertType.CONFIRMATION);
         ((Button) alert.getDialogPane().lookupButton(ButtonType.OK)).setText("Back to main menu");
         ((Label)((GridPane)alert.getDialogPane().getContent()).getChildren().get(0)).setText("Back to main menu");
-        ((Label)((GridPane)alert.getDialogPane().getContent()).getChildren().get(1)).setText("Are you sure you want to go back to the main menu?");
+        ((Label)((GridPane)alert.getDialogPane().getContent()).getChildren().get(1)).setText("Are you sure you want to go back to the main menu? " +
+                "\nAny unsaved progress will be lost");
         alert.initOwner(stage);
         alert.showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {

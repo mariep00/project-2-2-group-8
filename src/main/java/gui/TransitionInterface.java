@@ -38,6 +38,10 @@ public interface TransitionInterface {
         });
     };
 
+    default void loadSceneTransition(List<Node> nodes) {
+        loadSceneTransition(0.3, nodes.toArray(new Node[0]));
+    }
+
     default void loadSceneTransition(Node @NotNull ... nodes) {
         loadSceneTransition(0.3, nodes);
     };

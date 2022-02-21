@@ -6,14 +6,14 @@ import javafx.scene.layout.StackPane;
 import org.jetbrains.annotations.NotNull;
 
 public class Tile extends StackPane {
-    public static final int tileSize = 45;
+    public static final int tileSize = 35;
     // Index 0 --> base image (floor, wall..)
     // Index 1 --> character (guard, intruder..)
     // Index 2 --> Something else (teleport, scent trail..)
     private final TileImage[] tileImages = new TileImage[3];
 
     public Tile(@NotNull TileImage baseImage, @NotNull TileImage characterImage, @NotNull TileImage otherImage) {
-        super(baseImage, characterImage, otherImage);
+        super(baseImage, otherImage, characterImage);
         tileImages[0] = baseImage;
         tileImages[1] = characterImage;
         tileImages[2] = otherImage;
@@ -27,9 +27,7 @@ public class Tile extends StackPane {
     public Tile(@NotNull TileImage baseImage) {
         this(baseImage, new TileImage(), new TileImage());
     }
-    public Tile(@NotNull TileImage baseImage, @NotNull TileImage otherImage) {
-        this(baseImage, new TileImage(), otherImage);
-    }
+    public Tile(@NotNull TileImage baseImage, @NotNull TileImage otherImage) { this(baseImage, new TileImage(), otherImage); }
 
     public void resetTile() {
         for (TileImage tileImage : tileImages) {

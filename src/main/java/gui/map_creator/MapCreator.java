@@ -10,9 +10,10 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
@@ -40,7 +41,7 @@ public class MapCreator extends Application implements TransitionInterface {
 
         gridImage = new Image(this.getClass().getResource("/tiles/base/grid_square.png").toString());
         ListView<ListItem> listView = getListViewPopulated();
-        listView.setPrefWidth(150);
+        listView.setPrefWidth(175);
 
         selectedListItem = listView.getItems().get(0);
         GridPane gridPane = new GridPane();
@@ -55,12 +56,18 @@ public class MapCreator extends Application implements TransitionInterface {
             }
         }
 
-        ScrollPane scrollPane = new ScrollPane(gridPane);
+        javafx.scene.control.ScrollPane scrollPane = new javafx.scene.control.ScrollPane(gridPane);
+        //scrollPane.setPannable(true); // Causes issues when "painting" while dragging
+        scrollPane.setHbarPolicy(javafx.scene.control.ScrollPane.ScrollBarPolicy.NEVER);
+        scrollPane.setVbarPolicy(javafx.scene.control.ScrollPane.ScrollBarPolicy.NEVER);
+        scrollPane.setFitToHeight(true);
+        scrollPane.setFitToWidth(true);
 
-        Button buttonReset = new Button("Reset map");
-        Button buttonAllFloor = new Button("Set all to floor");
-        Button buttonExport = new Button("Export map");
-        Button buttonPlayGame = new Button("Play game with map");
+
+        javafx.scene.control.Button buttonReset = new javafx.scene.control.Button("Reset map");
+        javafx.scene.control.Button buttonAllFloor = new javafx.scene.control.Button("Set all to floor");
+        javafx.scene.control.Button buttonExport = new javafx.scene.control.Button("Export map");
+        javafx.scene.control.Button buttonPlayGame = new Button("Play game with map");
         HBox hbox = new HBox(15, buttonReset, buttonAllFloor, buttonExport, buttonPlayGame);
         hbox.setAlignment(Pos.CENTER_RIGHT);
         BorderPane borderPane = new BorderPane(scrollPane);
@@ -72,13 +79,14 @@ public class MapCreator extends Application implements TransitionInterface {
         scrollPane.setStyle("-fx-focus-color: transparent;");
         listView.setStyle("-fx-focus-color: transparent;");
 
-        Scene scene = new Scene(borderPane);
-        MainGUI.setupScene(this, scene, stage);
         listView.setOpacity(0);
         scrollPane.setOpacity(0);
         hbox.setOpacity(0);
+
+        Scene scene = new Scene(borderPane);
+        MainGUI.setupScene(this, scene, stage);
         stage.setScene(scene);
-        loadSceneTransition( listView, scrollPane, hbox);
+        loadSceneTransition(listView, scrollPane, hbox);
 
         listView.getSelectionModel().selectedItemProperty().addListener(e -> {
             selectedListItem = listView.getSelectionModel().getSelectedItem();
@@ -120,19 +128,37 @@ public class MapCreator extends Application implements TransitionInterface {
     }
 
     private ListView<ListItem> getListViewPopulated() {
-        ListView<ListItem> listView = new ListView();
-        listView.getItems().add(new ListItem("Floor", ImageType.BASE,new Image(this.getClass().getResource("/tiles/base/floor.jpg").toString())));
-        listView.getItems().add(new ListItem("Wall center", ImageType.BASE,new Image(this.getClass().getResource("/tiles/base/wall_center.jpg").toString())));
-        listView.getItems().add(new ListItem("Wall front", ImageType.BASE,new Image(this.getClass().getResource("/tiles/base/wall_front.jpg").toString())));
-        listView.getItems().add(new ListItem("Wall left", ImageType.BASE,new Image(this.getClass().getResource("/tiles/base/wall_left.jpg").toString())));
-        listView.getItems().add(new ListItem("Wall right", ImageType.BASE,new Image(this.getClass().getResource("/tiles/base/wall_right.jpg").toString())));
-        listView.getItems().add(new ListItem("Wall sides", ImageType.BASE,new Image(this.getClass().getResource("/tiles/base/wall_sides.jpg").toString())));
-        listView.getItems().add(new ListItem("Wall top", ImageType.BASE,new Image(this.getClass().getResource("/tiles/base/wall_top.jpg").toString())));
-        listView.getItems().add(new ListItem("Wall top corner left", ImageType.BASE,new Image(this.getClass().getResource("/tiles/base/wall_top_corner_left.jpg").toString())));
-        listView.getItems().add(new ListItem("Wall top corner right", ImageType.BASE,new Image(this.getClass().getResource("/tiles/base/wall_top_corner_right.jpg").toString())));
-        listView.getItems().add(new ListItem("Wall top cornered", ImageType.BASE,new Image(this.getClass().getResource("/tiles/base/wall_top_cornered.jpg").toString())));
-        listView.getItems().add(new ListItem("Guard", ImageType.CHARACTER,new Image(this.getClass().getResource("/tiles/character/guard/guard.png").toString())));
-        return listView;
+        ListView<ListItem> listItemsView = new ListView();
+        listItemsView.getItems().add(new ListItem("Floor", ImageType.BASE,new Image(this.getClass().getResource("/tiles/base/floor.jpg").toString())));
+        listItemsView.getItems().add(new ListItem("Wall front", ImageType.BASE,new Image(this.getClass().getResource("/tiles/base/wall_front.jpg").toString())));
+        listItemsView.getItems().add(new ListItem("Wall center", ImageType.BASE,new Image(this.getClass().getResource("/tiles/base/wall_center.jpg").toString())));
+        listItemsView.getItems().add(new ListItem("Wall left", ImageType.BASE,new Image(this.getClass().getResource("/tiles/base/wall_left.jpg").toString())));
+        listItemsView.getItems().add(new ListItem("Wall right", ImageType.BASE,new Image(this.getClass().getResource("/tiles/base/wall_right.jpg").toString())));
+        listItemsView.getItems().add(new ListItem("Wall sides", ImageType.BASE,new Image(this.getClass().getResource("/tiles/base/wall_sides.jpg").toString())));
+        listItemsView.getItems().add(new ListItem("Wall top", ImageType.BASE,new Image(this.getClass().getResource("/tiles/base/wall_top.jpg").toString())));
+        listItemsView.getItems().add(new ListItem("Wall top corner left", ImageType.BASE,new Image(this.getClass().getResource("/tiles/base/wall_top_corner_left.jpg").toString())));
+        listItemsView.getItems().add(new ListItem("Wall top corner right", ImageType.BASE,new Image(this.getClass().getResource("/tiles/base/wall_top_corner_right.jpg").toString())));
+        listItemsView.getItems().add(new ListItem("Wall top cornered", ImageType.BASE,new Image(this.getClass().getResource("/tiles/base/wall_top_cornered.jpg").toString())));
+        listItemsView.getItems().add(new ListItem("Guard south", ImageType.CHARACTER,new Image(this.getClass().getResource("/tiles/character/guard/south/guard_south_1.png").toString())));
+
+        listItemsView.setCellFactory(listView -> new ListCell<>() {
+            @Override
+            public void updateItem(ListItem item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    setText(item.name);
+                    ImageView imageView = new ImageView(item.image);
+                    imageView.setFitWidth(60);
+                    imageView.setFitHeight(60);
+                    setGraphic(imageView);
+
+                }
+            }
+        });
+
+        return listItemsView;
     }
 
     private void zooming(GridPane gridPane, double zoomingFactor) {
