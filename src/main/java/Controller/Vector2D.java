@@ -2,8 +2,8 @@ package Controller;
 
 public class Vector2D {
     
-    private int x;
-    private int y;
+    public final int x;
+    public final int y;
 
     public Vector2D (int x, int y) {
         this.x = x;
@@ -33,5 +33,9 @@ public class Vector2D {
 
     public Vector2D subtract (Vector2D other) {
         return new Vector2D(x-other.getX(), y-other.getY());
+    }
+
+    public boolean equals(Vector2D other){
+        return (this.x == other.x && this.y == other.y);
     }
 }

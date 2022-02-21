@@ -1,14 +1,16 @@
 package Controller.Graph;
 
+import Controller.Vector2D;
+
 import java.util.LinkedList;
 
-public class GraphAdjacencyList<Node> implements Graph<Node> {
+public class GraphAdjacencyList  {
 
-    LinkedList<Vertices<Node>> list;
+    LinkedList<Node> list;
 
     public GraphAdjacencyList()
     {
-        list = new LinkedList<Vertices<Node>>();
+        list = new LinkedList<Node>();
     }
 
     // whether there’s an edge from x to y
@@ -17,7 +19,7 @@ public class GraphAdjacencyList<Node> implements Graph<Node> {
         boolean adj = false;
         for(int i = 0; i< list.size(); i++)
         {
-            if(list.get(i).getElement().equals(x))
+            if(list.get(i).equals(x))
             {
                 for (int j=0; j<list.get(i).getEdges().size(); j++)
                 {
@@ -36,7 +38,7 @@ public class GraphAdjacencyList<Node> implements Graph<Node> {
 
         for (int l=0; l< list.size(); l++)
         {
-            if(list.get(l).getElement().equals(x))
+            if(list.get(l).equals(x))
             {
                 nb = list.get(l).getEdges();
             }
@@ -47,7 +49,7 @@ public class GraphAdjacencyList<Node> implements Graph<Node> {
     //adds the vertex x
     public void addVertex(Node x)
     {
-        list.addFirst(new Vertices<Node>(x)); //add or addFirst
+        list.addFirst(x); //add or addFirst
     }
 
     //removes the vertex x
@@ -55,7 +57,7 @@ public class GraphAdjacencyList<Node> implements Graph<Node> {
     {
         for(int k=0;k< list.size(); k++)
         {
-            if (list.get(k).getElement().equals(x))
+            if (list.get(k).equals(x))
             {
                 while(!list.get(k).getEdges().isEmpty())
                 {
@@ -71,10 +73,10 @@ public class GraphAdjacencyList<Node> implements Graph<Node> {
     {
         for(int o = 0;o<list.size();o++)
         {
-            if(list.get(o).getElement().equals(x)) {
+            if(list.get(o).equals(x)) {
                 list.get(o).addEdge(y);
                 for (int p = 0; p < list.size(); p++) {
-                    if (list.get(p).getElement().equals(y)) {
+                    if (list.get(p).equals(y)) {
                         list.get(p).addEdge(x);
                     }
                 }
@@ -88,12 +90,12 @@ public class GraphAdjacencyList<Node> implements Graph<Node> {
     {
         for(int o = 0;o<list.size();o++)
         {
-            if (list.get(o).getElement().equals(x))
+            if (list.get(o).equals(x))
             {
                 list.get(o).removeEdge(y);
                 for (int p = 0; p < list.size(); p++)
                 {
-                    if (list.get(p).getElement().equals(y))
+                    if (list.get(p).equals(y))
                     {
                         list.get(p).removeEdge(x);
                     }
@@ -102,40 +104,12 @@ public class GraphAdjacencyList<Node> implements Graph<Node> {
         }
     }
 
-
-    class Vertices<Node>
-    {
-        LinkedList<Node> edge_list;
-        Node element;
-        public Vertices(Node e)
-        {
-            edge_list = new LinkedList<Node>();
-            element=e;
-        }
-
-        public LinkedList<Node> getEdges(){
-            return edge_list;
-        }
-        
-        public Node getElement()
-        {
-            return element;
-        }
-
-        public void addEdge(Node y)
-        {
-            edge_list.addFirst(y);
-        }
-
-        public void removeEdge(Node y)
-        {
-            for(int n=0;n<edge_list.size();n++)
-            {
-                if(edge_list.get(n).equals(y))
-                {
-                    edge_list.remove(n);
-                }
+    public boolean isVisited(Vector2D vector){
+        for (Node node: list){
+            if (node.COORDINATES.equals(vector)){
+                return true;
             }
         }
+        return false;
     }
 }

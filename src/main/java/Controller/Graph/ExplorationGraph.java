@@ -14,14 +14,19 @@ public class ExplorationGraph {
     }
 
     public void createNode (Vector2D vector){
-        Node node =  new Node(vector.getX(), vector.getY());
-        list.addVertex(node);
+        if (!checkNode(vector)){
+            Node node =  new Node(vector.getX(), vector.getY());
+            list.addVertex(node);
+        }
+
     }
 
     private void addEdge(Node one, Node two){
         list.addEdge(one, two);
     }
 
-
+    private boolean checkNode(Vector2D vector){
+        //check the neighbours (inside the visited bucket)
+    }
 
 }
