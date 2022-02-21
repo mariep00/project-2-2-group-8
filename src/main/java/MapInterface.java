@@ -1,5 +1,4 @@
-public interface Map<T> {
-
+public interface MapInterface<T> {
 
         public T[][] getMap ();
 

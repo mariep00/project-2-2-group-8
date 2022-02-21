@@ -1,4 +1,4 @@
-public class ExplorationMap extends Map {
+/*public class ExplorationMap extends Map {
 
     private int origin_X; // origin: top left
     private int origin_Y;
@@ -72,3 +72,4 @@ public class ExplorationMap extends Map {
         this.mapGrid[x1][y1] = elementId;
     }
 }
+*/

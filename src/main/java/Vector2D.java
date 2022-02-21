@@ -28,4 +28,8 @@ public class Vector2D {
     public String toString() {
         return "Vector2D [x=" + x + ", y=" + y + "]";
     }
+
+    public Vector2D subtract (Vector2D other) {
+        return new Vector2D(x-other.getX(), y-other.getY());
+    }
 }

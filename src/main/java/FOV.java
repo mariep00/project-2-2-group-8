@@ -6,57 +6,68 @@ public class FOV {
     private double normalVisionRange;
     private double currentVisionRange;
     private double direction;
-    private Vector2D position;
-
+    private Vector2D center;
+    
     private VisionMap visionGrid;
-    private int[][] areaMap;
+    private VisionMap areaMap;
+    private ArrayList<Vector2D> endpoints;
 
     public FOV (double normalVisionRange) {
         this.normalVisionRange = normalVisionRange;
         visionGrid = new VisionMap(normalVisionRange);
+        areaMap = new VisionMap(normalVisionRange);
+        endpoints = new ArrayList<>();
     }
 
     public int[][] getMap () {
         return visionGrid.getMap();
     }
 
-    public void calculate (double visionAngle, double newVisionRange, int[][] areaMap, double direction) {
+    public void calculate (double visionAngle, double newVisionRange, int[][] areaMap2, double direction2) {
         this.visionAngle = visionAngle;
-        this.direction = direction;
-        this.areaMap = areaMap;
+        this.direction = areaMap2;
+        this.areaMap = direction2;
+
         if(newVisionRange!=normalVisionRange) { currentVisionRange = newVisionRange;
         } else { currentVisionRange = normalVisionRange;}
 
         //Mark all Tiles that could be visible for the Agent
         //Marked as 1 in the VisionMap
         initiateViewingField();
+        rayTracing();
+    
     }
 
     private void initiateViewingField() {
         double[] angles = calculateAngles(direction, visionAngle);
         double[] angles2 = calculateAngles(direction, visionAngle/2);
-        Vector2D center = visionGrid.getCenter();
+        this.center = visionGrid.getCenter();
 
-        Vector2D p1 = calculatePoint(center, visionRange, angles[0]);
-        Vector2D p2 = calculatePoint(center, visionRange, angles2[0]);
-        Vector2D p3 = calculatePoint(center, visionRange, direction);
-        Vector2D p4 = calculatePoint(center, visionRange, angles2[1]);
-        Vector2D p5 = calculatePoint(center, visionRange, angles[1]);
-
+        Vector2D p1 = calculatePoint(center, currentVisionRange, angles[0]);
+        Vector2D p2 = calculatePoint(center, currentVisionRange, angles2[0]);
+        Vector2D p3 = calculatePoint(center, currentVisionRange, direction);
+        Vector2D p4 = calculatePoint(center, currentVisionRange, angles2[1]);
+        Vector2D p5 = calculatePoint(center, currentVisionRange, angles[1]);
+/*
         Vector2D[] line1 = calculateLine(center, p1);
         visionGrid.insertElement(line1, 1);
         Vector2D[] line2 = calculateLine(center, p5);
         visionGrid.insertElement(line2, 1);
+*/
         Vector2D[] line3 = calculateLine(p1, p2);
-        visionGrid.insertElement(line3, 1);
+        addToEndpoints(line3);
+        //visionGrid.insertElement(line3, 1);
         Vector2D[] line4 = calculateLine(p2, p3);
-        visionGrid.insertElement(line4, 1);
+        addToEndpoints(line4);
+        //visionGrid.insertElement(line4, 1);
         Vector2D[] line5 = calculateLine(p3, p4);
-        visionGrid.insertElement(line5, 1);
+        addToEndpoints(line5);
+        //visionGrid.insertElement(line5, 1);
         Vector2D[] line6 = calculateLine(p4, p5);
-        visionGrid.insertElement(line6, 1);
+        addToEndpoints(line6);
+        //visionGrid.insertElement(line6, 1);
 
-        floodFill(lerpPoint(center, p2, 0.5));
+        //floodFill(lerpPoint(center, p2, 0.5));
 
     }
 
@@ -149,22 +160,27 @@ public class FOV {
         return neighbours;
     }
 
-    private void rayTracing (Vector2D[] endpoints) {
+    private void rayTracing () {
         
-        boolean finished = false;
-        while (!finished) {
-            for (int i=0; i<endpoints.length; i++) {
-
-            }
+        for (int i=0; i<endpoints.size(); i++) {
+            Vector2D[] inVision = rayTracingLine(center, endpoints.get(i));
+            visionGrid.insertElement(inVision, 1);
         }
+        
     }
 
     private Vector2D[] rayTracingLine (Vector2D p0, Vector2D p1) {
         ArrayList<Vector2D> line = new ArrayList<Vector2D>();
         int n = calcualteDistance(p0, p1);
-        for (int i=0; hitWall()||i<=n; i++) {
+        boolean noWall = true;
+        for (int i=0; noWall&&i<=n; i++) {
             double t = ((double)i)/n;
-            line.add(lerpPoint(p0, p1, t));
+            Vector2D p = lerpPoint(p0, p1, t);
+            if (hitWall(p)) {
+                noWall = false;
+            }
+            line.add(p);
+
         }
         Vector2D[] pointsLine = new Vector2D[line.size()];
         pointsLine = line.toArray(pointsLine);
@@ -178,7 +194,15 @@ public class FOV {
     }
 */
 
-    private boolean hitWall() {
-        return false;
+    private boolean hitWall(Vector2D p) {
+        boolean wall = areaMap.getTile(p.getX(), p.getY())==1;
+        return wall;
     }  
+
+    private void addToEndpoints (Vector2D[] line) {
+        for (int i=0; i < line.length; i++) {
+            endpoints.add(line[i]);
+        }
+    }
+
 }

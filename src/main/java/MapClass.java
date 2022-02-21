@@ -1,3 +1,4 @@
+/*
 public class MapClass {
     
     protected Tile<T>[][] mapGrid;
@@ -49,3 +50,4 @@ public class MapClass {
 
 
 }
+*/

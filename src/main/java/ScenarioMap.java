@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-public class ScenarioMap extends Map{
+public class ScenarioMap implements MapInterface{
 
     private String name = "";
     private int gameMode = 0;
@@ -10,6 +10,11 @@ public class ScenarioMap extends Map{
     private double baseSpeedGuard;
     private double sprintSpeedIntruder;
     private ArrayList<Teleport> teleporters;
+
+    private Tile[][] mapGrid;
+    private int width;
+    private int height;
+    private double scaling;
 
     public ScenarioMap() {
         teleporters = new ArrayList<Teleport>();
@@ -92,8 +97,61 @@ public class ScenarioMap extends Map{
         }
     }
 
-    public Tile checkType(Vector2D pos) {
-        return mapGrid[pos.getY()][pos.getX()];
+    public boolean checkWall(Vector2D pos) {
+        return mapGrid[pos.getY()][pos.getX()].getType()==Tile.Type.WALL;
+    }
+
+    @Override
+    public Tile[][] getMap() {
+        return mapGrid;
+    }
+
+    @Override
+    public void setMap(Object[][] map) {
+        mapGrid = (Tile[][])map;
+    }
+
+    @Override
+    public Tile getTile(int x, int y) {
+        return mapGrid[y][x];
+    }
+
+    @Override
+    public void setTile(int x, int y, Object tile) {
+        mapGrid[y][x] = (Tile)tile;
+        
+    }
+
+    @Override
+    public void createMap(int width, int height, float scaling) {
+        //this.width = Math.round(width/scaling);
+        //this.height = Math.round(height/scaling);
+        this.width = width+1;
+        this.height = height+1;
+        mapGrid = new Tile[this.height][this.width];
+    }
+
+    @Override
+    public void insertElement(int x1, int y1, int x2, int y2, Object tile) {
+        for (int i = x1; i <= x2; i++) {
+            for (int j = y1; j <= y2; j++) {
+                mapGrid[j][i] = (Tile)tile;
+            }
+        }
+    }
+
+    @Override
+    public void insertElement(Vector2D[] points, Object tile) {
+        for (int i=0; i<points.length; i++) {
+            mapGrid[points[i].getY()][points[i].getX()] = (Tile)tile;
+        }
+        
+    }
+
+    public VisionMap createAreaMap (Vector2D position, double visionRange) {
+        VisionMap areaMap = new VisionMap(visionRange);
+        Vector2D topLeft = areaMap.translateCoordinateByCenter(new Vector2D(0, 0));
+        return areaMap;
     }
 
 }
