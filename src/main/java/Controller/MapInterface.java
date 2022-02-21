@@ -1,3 +1,5 @@
+package Controller;
+
 public interface MapInterface<T> {
 
         public T[][] getMap ();

@@ -1,6 +1,4 @@
-package Graph;
-
-import Graph.Graph;
+package Controller.Graph;
 
 import java.util.LinkedList;
 

@@ -1,4 +1,4 @@
-package Graph;
+package Controller.Graph;
 
 public class Graph_test {
 

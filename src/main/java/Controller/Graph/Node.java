@@ -1,6 +1,5 @@
-package Graph;
+package Controller.Graph;
 
-import java.awt.*;
 import java.util.LinkedList;
 
 public class Node {
@@ -19,7 +18,7 @@ public class Node {
         relativeX = x;
         relativeY = y;
 
-        //Type type = checkType(relativeX, relativeY);
+        String type = "shaded";
     }
 
 
