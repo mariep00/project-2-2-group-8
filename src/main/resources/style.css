@@ -1,0 +1,46 @@
+@font-face {
+    font-family: 'Lato-Regular';
+    src: url('fonts/Lato-Regular.ttf');
+}
+
+.root {
+    -fx-background-color: #E8DED2;
+    -fx-font-family: 'Lato';
+}
+.button {
+    -fx-background-color: #BFA888;
+    -fx-text-fill: #FFF8EC;
+    -fx-background-radius: 7px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 3,0,2,3);
+}
+.button:disabled {
+    -fx-background-color: #BFA888;
+    -fx-text-fill: #FFF8EC;
+    -fx-background-radius: 7px;
+    -fx-opacity: 1;
+}
+.button:hover {
+    -fx-background-color: #b8995e;
+    -fx-scale-x: 1.035;
+    -fx-scale-y: 1.035
+}
+.button:pressed {
+    -fx-text-fill: #D6C0A4;
+}
+#pause_menu {
+    -fx-background-color: rgba(0, 0, 0, 0.175);
+}
+#dialog_content_header {
+    -fx-font-size: 25;
+}
+#dialog_content {
+    -fx-font_size: 21;
+}
+#dialog_ok_button {
+    -fx-background-color: #7171be;
+    -fx-text-fill: white;
+}
+#dialog_ok_button:hover {
+    -fx-background-color: #6363d9;
+    -fx-text-fill: white;
+}
