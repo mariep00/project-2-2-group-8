@@ -23,10 +23,10 @@ public class FOV {
         return visionGrid.getMap();
     }
 
-    public void calculate (double visionAngle, double newVisionRange, int[][] areaMap2, double direction2) {
+    public void calculate (double visionAngle, double newVisionRange, VisionMap areaMap, double direction) {
         this.visionAngle = visionAngle;
-        this.direction = areaMap2;
-        this.areaMap = direction2;
+        this.direction = direction;
+        this.areaMap = areaMap;
 
         if(newVisionRange!=normalVisionRange) { currentVisionRange = newVisionRange;
         } else { currentVisionRange = normalVisionRange;}
