@@ -22,8 +22,8 @@ public class Controller {
     }
 
     private Vector2D translatePosition(Vector2D relPos, int agentId) {
-        int x = agentSpawnLocations.get(agentId).getX()+relPos.getX();
-        int y = agentSpawnLocations.get(agentId).getY()+relPos.getY();
+        int x = agentSpawnLocations.get(agentId).x+relPos.x;
+        int y = agentSpawnLocations.get(agentId).y+relPos.y;
         return new Vector2D(x, y);
     }
 

@@ -1,8 +1,6 @@
 package Controller.Graph;
 
 import Controller.Vector2D;
-
-import java.util.ArrayDeque;
 import java.util.LinkedList;
 
 public class Node {
@@ -13,10 +11,9 @@ public class Node {
     //private int type;
 
 
-    public Node(int x, int y) {
+    public Node(Vector2D coords) {
         edge_list = new LinkedList<Node>();
-        COORDINATES = new Vector2D(x,y);
-        String type = "shaded";
+        COORDINATES = coords;
     }
 
     public void addEdge(Node y)

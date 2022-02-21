@@ -10,32 +10,34 @@ public class Vector2D {
         this.y = y;
     }
 
-    public int getX() {
-        return x;
-    }
-
-    public void setX(int x) {
-        this.x = x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
-    public void setY(int y) {
-        this.y = y;
-    }
-
     @Override
     public String toString() {
         return "Vector2D [x=" + x + ", y=" + y + "]";
     }
 
     public Vector2D subtract (Vector2D other) {
-        return new Vector2D(x-other.getX(), y-other.getY());
+        return new Vector2D(x-other.x, y-other.y);
     }
 
     public boolean equals(Vector2D other){
-        return (this.x == other.x && this.y == other.y);
+        return this.x == other.x && this.y == other.y;
+    }
+
+    public Vector2D getSide (Direction dir) {
+        switch (dir) {
+            case EAST:
+                return new Vector2D(x+1, y);
+            case NORTH:
+                return new Vector2D(x, y+1);
+            case SOUTH:
+                return new Vector2D(x, y-1);
+            case WEST:
+                return new Vector2D(x-1, y);
+        }
+        return null;
+    }
+
+    public enum Direction {
+        NORTH,EAST,SOUTH,WEST;
     }
 }
