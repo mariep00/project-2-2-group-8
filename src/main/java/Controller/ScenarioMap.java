@@ -14,6 +14,7 @@ public class ScenarioMap implements MapInterface{
     private ArrayList<Teleport> teleporters;
     private double timestep;
 
+
     private Tile[][] mapGrid;
     private int width;
     private int height;

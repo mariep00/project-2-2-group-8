@@ -1,5 +1,6 @@
 package Controller.Graph;
 
+import Controller.Tile;
 import Controller.Vector2D;
 
 public class ExplorationGraph {
@@ -8,14 +9,14 @@ public class ExplorationGraph {
     private GraphAdjacencyList list;
 
     public ExplorationGraph(){
-        this.origin = new Node(new Vector2D(0,0));
+        this.origin = new Node(new Vector2D(0,0), new Tile(Tile.Type.SPAWNAREAGUARDS));
         list = new GraphAdjacencyList();
         list.addVertex(origin);
     }
 
-    public void createNode (Vector2D vector, boolean hasWall){
+    public void createNode (Vector2D vector, Tile type, boolean hasWall){
         if (!nodeExists(vector)){
-            Node node =  new Node(vector);
+            Node node =  new Node(vector, type);
             list.addVertex(node);
             list.checkEdges(node);
             if (hasWall) {

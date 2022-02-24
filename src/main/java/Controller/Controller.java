@@ -24,7 +24,7 @@ public class Controller {
 
     }
 
-    private Tile[] calculateFOV(Vector2D agentPosition) {
+    private ArrayList<Vector2D> calculateFOV(Vector2D agentPosition) {
         return null;
     }
 
