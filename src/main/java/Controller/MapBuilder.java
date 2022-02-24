@@ -93,16 +93,16 @@ public class MapBuilder {
                         map.setBaseSpeedGuard(Double.parseDouble(value));
                         break;
                     case "targetArea":
-                        map.insertElement(Integer.parseInt(items[0]), Integer.parseInt(items[1]), Integer.parseInt(items[2]), Integer.parseInt(items[3]), new Tile(Tile.Type.TARGET_AREA));
+                        map.insertElement(Integer.parseInt(items[0]), Integer.parseInt(items[1]), Integer.parseInt(items[2]), Integer.parseInt(items[3]), Tile.Type.TARGET_AREA);
                         break;
                     case "spawnAreaIntruders":
-                        map.insertElement(Integer.parseInt(items[0]), Integer.parseInt(items[1]), Integer.parseInt(items[2]), Integer.parseInt(items[3]), new Tile(Tile.Type.SPAWN_AREA_INTRUDERS));
+                        map.insertElement(Integer.parseInt(items[0]), Integer.parseInt(items[1]), Integer.parseInt(items[2]), Integer.parseInt(items[3]), Tile.Type.SPAWN_AREA_INTRUDERS);
                         break;
                     case "spawnAreaGuards":
-                        map.insertElement(Integer.parseInt(items[0]), Integer.parseInt(items[1]), Integer.parseInt(items[2]), Integer.parseInt(items[3]), new Tile(Tile.Type.SPAWN_AREA_GUARDS));
+                        map.insertElement(Integer.parseInt(items[0]), Integer.parseInt(items[1]), Integer.parseInt(items[2]), Integer.parseInt(items[3]), Tile.Type.SPAWN_AREA_GUARDS);
                         break;
                     case "wall":
-                        map.insertElement(Integer.parseInt(items[0]), Integer.parseInt(items[1]), Integer.parseInt(items[2]), Integer.parseInt(items[3]), new Tile(Tile.Type.WALL));
+                        map.insertElement(Integer.parseInt(items[0]), Integer.parseInt(items[1]), Integer.parseInt(items[2]), Integer.parseInt(items[3]), Tile.Type.WALL);
                         break;
                     case "teleport":
                         map.setTeleport(Integer.parseInt(items[0]), Integer.parseInt(items[1]), Integer.parseInt(items[2]), Integer.parseInt(items[3]), Integer.parseInt(items[4]), Integer.parseInt(items[5]), Double.parseDouble(items[6]));
@@ -113,6 +113,8 @@ public class MapBuilder {
                     case "texture":
                         break;
                         // still to do. First the coordinates, then an int with texture type and then a double with orientation
+                    case "timeStep":
+                        map.setTimeStep(Double.parseDouble(value));
                 }
             }
         }

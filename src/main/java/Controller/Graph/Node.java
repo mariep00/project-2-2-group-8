@@ -1,5 +1,6 @@
 package Controller.Graph;
 
+import Controller.Tile;
 import Controller.Vector2D;
 import java.util.LinkedList;
 
@@ -7,14 +8,14 @@ public class Node {
 
     private LinkedList<Node> edge_list;
     private Vector2D[] neighbours;
-    private Node teleportsTo;
+    private Tile type;
+
     public final Vector2D COORDINATES;
-    //private int type;
 
-
-    public Node(Vector2D coords) {
+    public Node(Vector2D coords, Tile type) {
         edge_list = new LinkedList<Node>();
         COORDINATES = coords;
+        this.type = type;
         initializeNeighbours();
     }
 
@@ -50,6 +51,12 @@ public class Node {
         neighbours[0] = new Vector2D(COORDINATES.x-1, COORDINATES.y);
     }
 
+    public Tile getType() {
+        return type;
+    }
 
+    public void setType(Tile type) {
+        this.type = type;
+    }
 
 }
