@@ -25,7 +25,7 @@ public class Agent {
     public int tick(ArrayList<Tile> inVision, ArrayList<Vector2D> coordinates, double timestep) {
 
         updateGraph(inVision, coordinates);
-        brain.makeDecision();
+        brain.makeDecision(map);
         return 1;
     }
 
