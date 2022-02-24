@@ -12,6 +12,8 @@ public class ScenarioMap implements MapInterface{
     private double baseSpeedGuard;
     private double sprintSpeedIntruder;
     private ArrayList<Teleport> teleporters;
+    private double timestep;
+
 
     private Tile[][] mapGrid;
     private int width;
@@ -80,6 +82,13 @@ public class ScenarioMap implements MapInterface{
 
     public Teleport getTeleport (int index) {
         return teleporters.get(index-8);
+    }
+
+    public void setTimeStep(double timestep){
+        this.timestep = timestep;
+    }
+    public double getTimestep(){
+        return timestep;
     }
 
     public void setTeleport (int x1, int y1, int x2, int y2, int x3, int y3, double rotation) {

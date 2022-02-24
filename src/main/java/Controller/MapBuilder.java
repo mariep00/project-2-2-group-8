@@ -114,6 +114,8 @@ public class MapBuilder {
                     case "texture":
                         break;
                         // still to do. First the coordinates, then an int with texture type and then a double with orientation
+                    case "timeStep":
+                        map.setTimeStep(Double.parseDouble(value));
                 }
             }
         }
