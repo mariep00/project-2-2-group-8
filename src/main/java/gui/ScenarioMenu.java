@@ -1,5 +1,7 @@
 package gui;
 
+import Controller.MapBuilder;
+import gui.game_screen.GameScreen;
 import gui.map_creator.MapCreator;
 import javafx.animation.Transition;
 import javafx.application.Application;
@@ -55,7 +57,7 @@ public class ScenarioMenu extends Application implements TransitionInterface {
             FileChooser fileChooser = new FileChooser();
             fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text Files", "*.txt"));
             File selectedFile = fileChooser.showOpenDialog(stage);
-            // Load game with the selected file
+            quitSceneTransition(() -> new GameScreen(new MapBuilder(selectedFile).getMap()).start(stage), vbox);
         });
         buttonCreateMap.setOnAction(e -> quitSceneTransition(() -> new MapCreator().start(stage), vbox));
     }

@@ -82,6 +82,18 @@ public class ScenarioMap implements MapInterface{
         return teleporters.get(index-8);
     }
 
+    public Tile[][] getMapGrid() {
+        return mapGrid;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
     public void setTeleport (int x1, int y1, int x2, int y2, int x3, int y3, double rotation) {
         Teleport tmp = new Teleport(x1, y1, x2, y2, x3, y3, rotation);
         teleporters.add(tmp);

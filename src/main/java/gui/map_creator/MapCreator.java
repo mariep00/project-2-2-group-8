@@ -2,6 +2,7 @@ package gui.map_creator;
 
 import gui.MainGUI;
 import gui.TransitionInterface;
+import gui.game_screen.Tile;
 import javafx.animation.Transition;
 import javafx.application.Application;
 import javafx.geometry.Bounds;
@@ -47,10 +48,10 @@ public class MapCreator extends Application implements TransitionInterface {
         GridPane gridPane = new GridPane();
         gridPane.setAlignment(Pos.CENTER);
 
-        Tile[][] tiles = new Tile[nrOfTilesWidth][nrOfTilesHeight];
+        TileMapCreator[][] tiles = new TileMapCreator[nrOfTilesWidth][nrOfTilesHeight];
         for (int i = 0; i < nrOfTilesWidth; i++) {
             for (int j = 0; j < nrOfTilesHeight; j++) {
-                Tile tile = new Tile(new TileImage(gridImage));
+                TileMapCreator tile = new TileMapCreator(new TileImageMapCreator(gridImage));
                 gridPane.add(tile, i, j);
                 tiles[i][j] = tile;
             }
@@ -97,14 +98,14 @@ public class MapCreator extends Application implements TransitionInterface {
         buttonReset.setOnAction(e -> {
             for (Node node : gridPane.getChildren()) {
                 if (node instanceof Tile) {
-                    ((Tile) node).resetTile();
+                    ((TileMapCreator) node).resetTile();
                 }
             }
         });
         buttonAllFloor.setOnAction(e -> {
             for (Node node : gridPane.getChildren()) {
                 if (node instanceof Tile) {
-                    ((Tile) node).setBaseImage(listView.getItems().get(0).image);
+                    ((TileMapCreator) node).setBaseImage(listView.getItems().get(0).image);
                 }
             }
         });

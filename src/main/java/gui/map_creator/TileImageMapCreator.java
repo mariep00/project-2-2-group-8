@@ -1,31 +1,26 @@
 package gui.map_creator;
 
+import gui.game_screen.TileImage;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 
-class TileImage extends ImageView {
-    public TileImage() {
+public class TileImageMapCreator extends TileImage {
+    public TileImageMapCreator() {
         super();
         setup();
     }
-    public TileImage(Image image) {
+    public TileImageMapCreator(Image image) {
         super(image);
         setup();
     }
 
     private void setup() {
-        super.setFitWidth(Tile.tileSize);
-        super.setFitHeight(Tile.tileSize);
-
         setOnMousePressed(e -> {
             if (e.getButton() == MouseButton.SECONDARY) {
                 resetTileImage();
             }
         });
     }
-
-    public void resetTileImage() { setImage(null); }
 
     public void changeImageToSelected() {
         setImage(MapCreator.selectedListItem.image);

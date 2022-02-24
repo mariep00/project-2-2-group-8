@@ -1,11 +1,10 @@
 package Controller;
 
 public class Tile {
-    
     public enum Type {
-        FLOOR(0, false), WALL(0, false), SPAWNAREAINTRUDERS(0, false),
-        SPAWNAREAGUARDS(0, false), TARGETAREA(0, false), DOOR(0, false), WINDOW(0, false), 
-        TELEPORT(0, false);
+        FLOOR(0), WALL(0), SPAWN_AREA_INTRUDERS(0),
+        SPAWN_AREA_GUARDS(0), TARGET_AREA(0), DOOR(0), WINDOW(0),
+        TELEPORT(0);
 
         int index;
         boolean shaded;
@@ -13,6 +12,10 @@ public class Tile {
         Type (int index, boolean shaded) {
             this.index = index;
             this.shaded = shaded;
+        }
+
+        Type(int index) {
+            this(index, false);
         }
 
         public int getIndex () {
