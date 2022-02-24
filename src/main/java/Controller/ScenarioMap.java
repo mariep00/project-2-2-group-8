@@ -2,7 +2,9 @@ package Controller;
 
 import java.util.ArrayList;
 
-public class ScenarioMap implements MapInterface{
+import Controller.Tile.Type;
+
+public class ScenarioMap {
 
     private String name = "";
     private int gameMode = 0;
@@ -11,9 +13,7 @@ public class ScenarioMap implements MapInterface{
     private double baseSpeedIntruder;
     private double baseSpeedGuard;
     private double sprintSpeedIntruder;
-    private ArrayList<Teleport> teleporters;
     private double timestep;
-
 
     private Tile[][] mapGrid;
     private int width;
@@ -21,7 +21,7 @@ public class ScenarioMap implements MapInterface{
     private double scaling;
 
     public ScenarioMap() {
-        teleporters = new ArrayList<Teleport>();
+
     }
 
     public String getName() {
@@ -80,10 +80,6 @@ public class ScenarioMap implements MapInterface{
         this.sprintSpeedIntruder = sprintSpeedIntruder;
     }
 
-    public Teleport getTeleport (int index) {
-        return teleporters.get(index-8);
-    }
-
     public void setTimeStep(double timestep){
         this.timestep = timestep;
     }
@@ -92,17 +88,19 @@ public class ScenarioMap implements MapInterface{
     }
 
     public void setTeleport (int x1, int y1, int x2, int y2, int x3, int y3, double rotation) {
-        Teleport tmp = new Teleport(x1, y1, x2, y2, x3, y3, rotation);
-        teleporters.add(tmp);
-        tmp.setIndex(teleporters.indexOf(tmp)+8);
-        Tile tile = new Tile(Tile.Type.TELEPORT);
-        tile.setIndex(tmp.getIndex());
-        insertElement(x1, y1, x2, y2, tile);
+        Teleport tmp = new Teleport(new Vector2D(x3, y3), rotation);
+        for (int i=y1; i<=y2; i++) {
+            for (int j=x1; j<=x2; j++) {
+                mapGrid[i][j].setSpecialFeature(tmp);
+                mapGrid[i][j].setType(Tile.Type.TELEPORT);;
+            }
+        } 
+        
     }
 
     public void setShaded (int x1, int y1, int x2, int y2) {
-        for (int i=y1; i<y2; i++) {
-            for (int j=x1; j<x2; j++) {
+        for (int i=y1; i<=y2; i++) {
+            for (int j=x1; j<=x2; j++) {
                 mapGrid[i][j].setShaded(true);
             }
         }
@@ -112,49 +110,45 @@ public class ScenarioMap implements MapInterface{
         return mapGrid[pos.y][pos.x].getType()==Tile.Type.WALL;
     }
 
-    @Override
     public Tile[][] getMap() {
         return mapGrid;
     }
 
-    @Override
-    public void setMap(Object[][] map) {
-        mapGrid = (Tile[][])map;
+    public void setMap(Tile[][] map) {
+        mapGrid = map;
     }
 
-    @Override
-    public Tile getTile(int x, int y) {
-        return mapGrid[y][x];
+    public Tile getTile(Vector2D pos) {
+        return mapGrid[pos.y][pos.x];
     }
 
-    @Override
     public void setTile(int x, int y, Object tile) {
         mapGrid[y][x] = (Tile)tile;
         
     }
 
-    @Override
     public void createMap(int width, int height, float scaling) {
-        //this.width = Math.round(width/scaling);
-        //this.height = Math.round(height/scaling);
         this.width = width+1;
         this.height = height+1;
         mapGrid = new Tile[this.height][this.width];
-    }
-
-    @Override
-    public void insertElement(int x1, int y1, int x2, int y2, Object tile) {
-        for (int i = x1; i <= x2; i++) {
-            for (int j = y1; j <= y2; j++) {
-                mapGrid[j][i] = (Tile)tile;
+        for (int i=0; i <= mapGrid.length; i++) {
+            for (int j =0; j <= mapGrid[i].length; j++) {
+                mapGrid[j][i] = new Tile();
             }
         }
     }
 
-    @Override
-    public void insertElement(Vector2D[] points, Object tile) {
+    public void insertElement(int x1, int y1, int x2, int y2, Type type) {
+        for (int i = x1; i <= x2; i++) {
+            for (int j = y1; j <= y2; j++) {
+                mapGrid[j][i].setType(type);;
+            }
+        }
+    }
+
+    public void insertElement(Vector2D[] points, Type type) {
         for (int i=0; i<points.length; i++) {
-            mapGrid[points[i].y][points[i].x] = (Tile)tile;
+            mapGrid[points[i].y][points[i].x].setType(type);;
         }
         
     }

@@ -9,7 +9,7 @@ public class ExplorationGraph {
     private GraphAdjacencyList list;
 
     public ExplorationGraph(){
-        this.origin = new Node(new Vector2D(0,0), new Tile(Tile.Type.SPAWNAREAGUARDS));
+        this.origin = new Node(new Vector2D(0,0), new Tile(Tile.Type.SPAWN_AREA_GUARDS));
         list = new GraphAdjacencyList();
         list.addVertex(origin);
     }
