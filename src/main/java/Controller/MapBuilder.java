@@ -3,56 +3,41 @@ package Controller;
 import java.io.File;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Scanner;
 
 public class MapBuilder {
     private final static Charset ENCODING = StandardCharsets.UTF_8;
 
     private ScenarioMap map = new ScenarioMap();
+    private final File file;
 
     private int width;
     private int height;
     private float scaling;
 
-    public MapBuilder (String pathString) {
-        readMap(pathToScanner(Paths.get(pathString)));
+    public MapBuilder(File file) {
+        this.file = file;
+        readMap();
     }
 
-    public MapBuilder(File file) {
-        readMap(fileToScanner(file));
+    public MapBuilder (String pathString) {
+        this(new File(pathString));
     }
 
     public ScenarioMap getMap () {
         return map;
     }
 
-    private Scanner pathToScanner(Path path) {
-        try (Scanner scanner = new Scanner(path, ENCODING.name())){
-            return scanner;
+    private void readMap() {
+        try (Scanner scanner =  new Scanner(file, ENCODING.name())){
+            while (scanner.hasNextLine()){
+                String line = scanner.nextLine();
+                System.out.println(line);
+                parseLine(line);
+            }
         }
         catch(Exception e) {
             e.printStackTrace();
-            return null;
-        }
-    }
-
-    private Scanner fileToScanner(File file) {
-        try (Scanner scanner = new Scanner(file)) {
-            return scanner;
-        }
-        catch(Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    private void readMap(Scanner scanner) {
-        System.out.println(scanner);
-        while (scanner.hasNextLine()){
-            String line = scanner.nextLine();
-            parseLine(line);
         }
     }
     

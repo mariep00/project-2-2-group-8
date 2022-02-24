@@ -192,4 +192,3 @@ enum ImageType {
     CHARACTER,
     OTHER
 }
-
