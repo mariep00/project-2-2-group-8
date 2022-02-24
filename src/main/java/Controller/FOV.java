@@ -90,19 +90,19 @@ public class FOV {
     }
 
     private Vector2D lerpPoint (Vector2D p0, Vector2D p1, double t) {
-        return new Vector2D((int)Math.round(lerp(p0.getX(), p1.getX(), t)), (int)Math.round(lerp(p0.getY(), p1.getY(), t)));
+        return new Vector2D((int)Math.round(lerp(p0.x, p1.x, t)), (int)Math.round(lerp(p0.y, p1.y, t)));
     }
 
     private int calcualteDistance(Vector2D center, Vector2D other) {
-        int dx = other.getX() - center.getX();
-        int dy = other.getY() - center.getY();
+        int dx = other.x - center.x;
+        int dy = other.y - center.y;
         return Math.max(Math.abs(dx), Math.abs(dy));
     }
 
     private Vector2D calculatePoint (Vector2D center, double distance, double angle) {
         double angleRad = Math.toRadians(angle);
-        int x = (int)Math.round(center.getX()+(distance*Math.cos(angleRad)));
-        int y = (int)Math.round(center.getY()+(distance*Math.sin(angleRad)));
+        int x = (int)Math.round(center.x+(distance*Math.cos(angleRad)));
+        int y = (int)Math.round(center.y+(distance*Math.sin(angleRad)));
 
         return new Vector2D(x, y);
     }
@@ -131,13 +131,13 @@ public class FOV {
 
         ArrayList<Vector2D> frontiers = new ArrayList<>();
         frontiers.add(start);
-        visionGrid.setTile(start.getX(), start.getY(), 1);
+        visionGrid.setTile(start.x, start.y, 1);
         while (frontiers.size()>0) {
             for (int i=0; i<frontiers.size(); i++) {
                 Vector2D[] adj = getNeighbours(frontiers.get(i));
                 for (int j=0;j<adj.length;j++) {
-                    if (visionGrid.getTile(adj[j].getX(), adj[j].getY()) == 0) {
-                        visionGrid.setTile(adj[j].getX(), adj[j].getY(), 1);
+                    if (visionGrid.getTile(adj[j].x, adj[j].y) == 0) {
+                        visionGrid.setTile(adj[j].x, adj[j].y, 1);
                         frontiers.add(adj[j]);
                     }
                 }
@@ -151,13 +151,13 @@ public class FOV {
         Vector2D[] neighbours = new Vector2D[4];
 
         //north
-        neighbours[0] = new Vector2D(center.getX(), center.getY()-1);
+        neighbours[0] = new Vector2D(center.x, center.y-1);
         //east
-        neighbours[1] = new Vector2D(center.getX()+1, center.getY());
+        neighbours[1] = new Vector2D(center.x+1, center.y);
         //south
-        neighbours[2] = new Vector2D(center.getX(), center.getY()+1);
+        neighbours[2] = new Vector2D(center.x, center.y+1);
         //west
-        neighbours[3] = new Vector2D(center.getX()-1, center.getY());
+        neighbours[3] = new Vector2D(center.x-1, center.y);
 
         return neighbours;
     }
@@ -197,7 +197,7 @@ public class FOV {
 */
 
     private boolean hitWall(Vector2D p) {
-        boolean wall = areaMap.getTile(p.getX(), p.getY())==1;
+        boolean wall = areaMap.getTile(p.x, p.y)==1;
         return wall;
     }  
 

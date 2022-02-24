@@ -7,7 +7,7 @@ public class BaseAgent extends Agent {
     }
 
     @Override
-    public int tick() {
-        
+    public int tick(Tile[] inVision) {
+        return 1;
     }
 }

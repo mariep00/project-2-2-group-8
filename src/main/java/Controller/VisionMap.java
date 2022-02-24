@@ -82,7 +82,7 @@ public class VisionMap{
     //@Override
     public void insertElement(Vector2D[] points, int tile) {
         for (int i=0; i<points.length; i++) {
-            mapGrid[points[i].getY()][points[i].getX()] = tile;
+            mapGrid[points[i].y][points[i].x] = tile;
         }
         
     }

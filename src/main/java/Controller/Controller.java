@@ -7,18 +7,21 @@ public class Controller {
     private FOV fov;
     private ScenarioMap scMap;
     ArrayList<Vector2D> agentSpawnLocations;
+    ArrayList<BaseAgent> agents;
+    ArrayList<Vector2D> agentPositions;
 
     public Controller () {
-        
+        agentSpawnLocations = new ArrayList<Vector2D>();
+        agents = new ArrayList<BaseAgent>();
+        agentPositions = new ArrayList<Vector2D>();
     }
 
-    public void calculateFOV(Vector2D agentPosition) {
+    public void init () {
 
     }
 
-    public Tile checkType (Vector2D relPos, int agentId) {
-        Vector2D pos = translatePosition(relPos, agentId);
-        return scMap.checkType(pos);
+    private Tile[] calculateFOV(Vector2D agentPosition) {
+        return null;
     }
 
     private Vector2D translatePosition(Vector2D relPos, int agentId) {
@@ -28,7 +31,9 @@ public class Controller {
     }
 
     public void tick() {
-
+        for (int i=0; i<agents.size(); i++) {
+            agents.get(i).tick(calculateFOV(agentPositions.get(i)));
+        }
     }
 
 }

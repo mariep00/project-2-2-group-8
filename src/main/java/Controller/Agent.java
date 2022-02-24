@@ -13,8 +13,8 @@ public class Agent {
         this.orientation = orientation;
     }
 
-    public int tick() {
-        return 0;
+    public int tick(Tile[] inVision) {
+        return -1;
 
     }
 }

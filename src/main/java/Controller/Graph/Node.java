@@ -6,6 +6,7 @@ import java.util.LinkedList;
 public class Node {
 
     private LinkedList<Node> edge_list;
+    private Vector2D[] neighbours;
     private Node teleportsTo;
     public final Vector2D COORDINATES;
     //private int type;
@@ -14,6 +15,7 @@ public class Node {
     public Node(Vector2D coords) {
         edge_list = new LinkedList<Node>();
         COORDINATES = coords;
+        initializeNeighbours();
     }
 
     public void addEdge(Node y)
@@ -36,7 +38,17 @@ public class Node {
         return edge_list;
     }
 
+    public Vector2D[] getNeigbours () {
+        return neighbours;
+    }
 
+    private void initializeNeighbours() {
+        neighbours = new Vector2D[4];
+        neighbours[0] = new Vector2D(COORDINATES.x, COORDINATES.y+1);
+        neighbours[1] = new Vector2D(COORDINATES.x+1, COORDINATES.y);
+        neighbours[0] = new Vector2D(COORDINATES.x, COORDINATES.y-1);
+        neighbours[0] = new Vector2D(COORDINATES.x-1, COORDINATES.y);
+    }
 
 
 

@@ -7,10 +7,12 @@ import java.util.LinkedList;
 public class GraphAdjacencyList  {
 
     LinkedList<Node> list;
+    LinkedList<Node> frontiers; //nodes with less than 4 edges;
 
     public GraphAdjacencyList()
     {
         list = new LinkedList<Node>();
+        frontiers = new LinkedList<Node>();
     }
 
     // whether there’s an edge from x to y
@@ -50,6 +52,8 @@ public class GraphAdjacencyList  {
     public void addVertex(Node x)
     {
         list.addFirst(x); //add or addFirst
+        frontiers.addFirst(x);
+
     }
 
     //removes the vertex x
@@ -83,6 +87,15 @@ public class GraphAdjacencyList  {
 
             }
         }
+        updateFrontiers(x, y);
+    }
+
+    public void addSelfEdge (Node x) {
+        for (int i=0; i<list.size(); i++) {
+            if (list.get(i).equals(x)) {
+                list.get(i).addEdge(x);
+            }
+        }
     }
 
     //removes edge from the vertices x to y
@@ -111,5 +124,36 @@ public class GraphAdjacencyList  {
             }
         }
         return false;
+    }
+
+    public void checkEdges (Node node) {
+        Vector2D[] nodeNeighbours = node.getNeigbours();
+        for (Node n: frontiers) {
+            for (int i=0; i<nodeNeighbours.length; i++) {
+                if (n.COORDINATES.equals(nodeNeighbours[i])) {
+                    addEdge(node, n);
+                }
+            }
+        }
+    }
+
+    private void updateFrontiers (Node x, Node y) {
+        if (x.getEdges().size() >= 4) {
+            removeVertexFromFrontiers(x);
+        }
+        if (y.getEdges().size() >= 4) {
+            removeVertexFromFrontiers(y);
+        }
+    }
+
+    public void removeVertexFromFrontiers(Node x)
+    {
+        for(int k=0;k< frontiers.size(); k++)
+        {
+            if (frontiers.get(k).equals(x))
+            {
+                frontiers.remove(k);
+            }
+        }
     }
 }

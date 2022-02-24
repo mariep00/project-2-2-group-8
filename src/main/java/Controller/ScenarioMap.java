@@ -100,7 +100,7 @@ public class ScenarioMap implements MapInterface{
     }
 
     public boolean checkWall(Vector2D pos) {
-        return mapGrid[pos.getY()][pos.getX()].getType()==Tile.Type.WALL;
+        return mapGrid[pos.y][pos.x].getType()==Tile.Type.WALL;
     }
 
     @Override
@@ -145,7 +145,7 @@ public class ScenarioMap implements MapInterface{
     @Override
     public void insertElement(Vector2D[] points, Object tile) {
         for (int i=0; i<points.length; i++) {
-            mapGrid[points[i].getY()][points[i].getX()] = (Tile)tile;
+            mapGrid[points[i].y][points[i].x] = (Tile)tile;
         }
         
     }

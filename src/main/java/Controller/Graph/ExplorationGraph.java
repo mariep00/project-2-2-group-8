@@ -13,15 +13,15 @@ public class ExplorationGraph {
         list.addVertex(origin);
     }
 
-    public void createNode (Vector2D vector){
+    public void createNode (Vector2D vector, boolean hasWall){
         if (!nodeExists(vector)){
             Node node =  new Node(vector);
             list.addVertex(node);
+            list.checkEdges(node);
+            if (hasWall) {
+                list.addSelfEdge(node);
+            }
         }
-    }
-
-    private void addEdge(Node one, Node two){
-        list.addEdge(one, two);
     }
 
     private boolean nodeExists(Vector2D vector){
