@@ -22,7 +22,7 @@ public class Agent {
         map = new ExplorationGraph();
     }
 
-    public int tick(ArrayList<Tile> inVision, ArrayList<Vector2D> coordinates) {
+    public int tick(ArrayList<Tile> inVision, ArrayList<Vector2D> coordinates, double timestep) {
 
         updateGraph(inVision, coordinates);
         brain.makeDecision();

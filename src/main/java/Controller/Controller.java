@@ -7,21 +7,23 @@ public class Controller {
     private FOV fov;
     private ScenarioMap scMap;
     ArrayList<Vector2D> agentSpawnLocations;
-    ArrayList<BaseAgent> agents;
+    ArrayList<Agent> agents;
     ArrayList<Vector2D> agentPositions;
     private boolean explored; //TODO ending condition
     private double timestep;
+    private double time;
 
 
     public Controller () {
         agentSpawnLocations = new ArrayList<Vector2D>();
-        agents = new ArrayList<BaseAgent>();
+        agents = new ArrayList<Agent>();
         agentPositions = new ArrayList<Vector2D>();
         timestep = scMap.getTimestep();
     }
 
-    public void init () {
 
+    public void start() {
+        engine();
     }
 
     private ArrayList<Vector2D> calculateFOV(Vector2D agentPosition) {
@@ -34,17 +36,17 @@ public class Controller {
         return new Vector2D(x, y);
     }
 
-    public void tick() {
+    public void tick(double timestep) {
         for (int i=0; i<agents.size(); i++) {
-            agents.get(i).tick(calculateFOV(agentPositions.get(i)));
+            agents.get(i).tick(null, calculateFOV(agentPositions.get(i)), timestep);
 
         }
     }
 
-    public void engine(double timestep){
+    public void engine(){
         while (!explored){
-            tick();
-
+            tick(timestep);
+            time += timestep;
         }
 
     }
