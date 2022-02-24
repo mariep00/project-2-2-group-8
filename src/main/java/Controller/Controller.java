@@ -10,17 +10,19 @@ public class Controller {
     ArrayList<BaseAgent> agents;
     ArrayList<Vector2D> agentPositions;
 
+
     public Controller () {
         agentSpawnLocations = new ArrayList<Vector2D>();
         agents = new ArrayList<BaseAgent>();
         agentPositions = new ArrayList<Vector2D>();
+        
     }
 
     public void init () {
 
     }
 
-    private Tile[] calculateFOV(Vector2D agentPosition) {
+    private ArrayList<Vector2D> calculateFOV(Vector2D agentPosition) {
         return null;
     }
 
@@ -32,7 +34,7 @@ public class Controller {
 
     public void tick() {
         for (int i=0; i<agents.size(); i++) {
-            agents.get(i).tick(calculateFOV(agentPositions.get(i)));
+            agents.get(i).tick(null, calculateFOV(agentPositions.get(i)));
         }
     }
 

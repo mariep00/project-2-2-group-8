@@ -13,6 +13,7 @@ public class ScenarioMap implements MapInterface{
     private double sprintSpeedIntruder;
     private ArrayList<Teleport> teleporters;
 
+
     private Tile[][] mapGrid;
     private int width;
     private int height;
