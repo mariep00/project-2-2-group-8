@@ -9,20 +9,14 @@ public class Tile {
     }
 
     private Type type;
-    private boolean shaded;
+    public boolean shaded;
+    public boolean seeThrough;
     private SpecialFeature feature;
 
     public Tile () {
             type = Type.FLOOR;
-    }
-
-    public Tile (Type type) {
-        this.type = type;
-    }
-
-    public Tile (Type type, SpecialFeature feature) {
-        this.type = type;
-        this.feature = feature;
+            seeThrough = true;
+            shaded = false;
     }
 
     public Type getType() {
@@ -39,10 +33,17 @@ public class Tile {
 
     public void setType (Type type) {
         this.type = type;
+        if (type == Type.WALL || type == Type.DOOR) {
+            seeThrough = false;
+        }
     }
 
     public void setSpecialFeature (SpecialFeature feature) {
         this.feature = feature;
+    }
+
+    public void setSeeThrough (boolean seeThrough) {
+        this.seeThrough = seeThrough;
     }
 
 }

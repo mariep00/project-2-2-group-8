@@ -1,7 +1,5 @@
 package Controller;
 
-import java.util.ArrayList;
-
 import Controller.Tile.Type;
 
 public class ScenarioMap {
@@ -131,8 +129,8 @@ public class ScenarioMap {
         this.width = width+1;
         this.height = height+1;
         mapGrid = new Tile[this.height][this.width];
-        for (int i=0; i <= mapGrid.length; i++) {
-            for (int j =0; j <= mapGrid[i].length; j++) {
+        for (int i=0; i < mapGrid.length; i++) {
+            for (int j =0; j < mapGrid[i].length; j++) {
                 mapGrid[j][i] = new Tile();
             }
         }

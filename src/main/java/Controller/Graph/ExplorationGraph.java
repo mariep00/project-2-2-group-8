@@ -2,6 +2,7 @@ package Controller.Graph;
 
 import Controller.Tile;
 import Controller.Vector2D;
+import Controller.Tile.Type;
 
 public class ExplorationGraph {
 
@@ -9,7 +10,9 @@ public class ExplorationGraph {
     private GraphAdjacencyList list;
 
     public ExplorationGraph(){
-        this.origin = new Node(new Vector2D(0,0), new Tile(Tile.Type.SPAWN_AREA_GUARDS));
+        Tile t = new Tile();
+        t.setType(Type.SPAWN_AREA_GUARDS);
+        this.origin = new Node(new Vector2D(0,0), t);
         list = new GraphAdjacencyList();
         list.addVertex(origin);
     }

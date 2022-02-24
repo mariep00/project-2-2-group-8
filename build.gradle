@@ -15,7 +15,7 @@ javafx {
     modules = [ 'javafx.controls', 'javafx.fxml', 'javafx.graphics' ]
 }
 application {
-    mainClass = 'Launcher'
+    mainClass = 'launchers.LauncherGUI'
 }
 run {
     standardInput = System.in
