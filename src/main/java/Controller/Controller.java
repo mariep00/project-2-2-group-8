@@ -9,11 +9,15 @@ public class Controller {
     ArrayList<Vector2D> agentSpawnLocations;
     ArrayList<BaseAgent> agents;
     ArrayList<Vector2D> agentPositions;
+    private boolean explored; //TODO ending condition
+    private double timestep;
+
 
     public Controller () {
         agentSpawnLocations = new ArrayList<Vector2D>();
         agents = new ArrayList<BaseAgent>();
         agentPositions = new ArrayList<Vector2D>();
+        timestep = scMap.getTimestep();
     }
 
     public void init () {
@@ -33,7 +37,16 @@ public class Controller {
     public void tick() {
         for (int i=0; i<agents.size(); i++) {
             agents.get(i).tick(calculateFOV(agentPositions.get(i)));
+
         }
+    }
+
+    public void engine(double timestep){
+        while (!explored){
+            tick();
+
+        }
+
     }
 
 }
