@@ -1,6 +1,10 @@
+package launchers;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+
+import Controller.FOV;
+import Controller.Vector2D;
 
 public class Launcher {
     public static void main(String[] args) {
@@ -9,7 +13,7 @@ public class Launcher {
         double direction = 90.0;
         Vector2D n = new Vector2D(0, 0);
         FOV f = new FOV(visionRange);
-        f.calculate(visionAngle, visionRange, areaMap, direction);
+        f.calculate(visionAngle, visionRange, null, direction);
         int[][] map = f.getMap();
         writeMatrix("vision.txt", map);
     }
