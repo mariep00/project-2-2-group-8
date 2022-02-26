@@ -1,6 +1,7 @@
 package Controller;
 
-public class Tile {
+public class
+Tile {
     
     public enum Type {
         FLOOR(0, false), WALL(0, false), SPAWNAREAINTRUDERS(0, false),
