@@ -6,18 +6,20 @@ public class Controller {
     
     private FOV fov;
     private ScenarioMap scMap;
+    private EndingExplorationMap explorationMap;
     ArrayList<Vector2D> agentSpawnLocations;
     ArrayList<Agent> agents;
     ArrayList<Vector2D> agentPositions;
-    private boolean explored; //TODO ending condition
     private double timestep;
     private double time;
 
 
-    public Controller () {
+    public Controller() {
         agentSpawnLocations = new ArrayList<Vector2D>();
         agents = new ArrayList<Agent>();
         agentPositions = new ArrayList<Vector2D>();
+        this.scMap = new ScenarioMap();
+        this.explorationMap = new EndingExplorationMap(this.scMap);
         timestep = scMap.getTimestep();
     }
 
@@ -44,11 +46,9 @@ public class Controller {
     }
 
     public void engine(){
-        while (!explored){
+        while(!explorationMap.isExplored()){
             tick(timestep);
             time += timestep;
         }
-
     }
-
 }
