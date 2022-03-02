@@ -153,7 +153,19 @@ public class ScenarioMap {
 
     public VisionMap createAreaMap (Vector2D position, double visionRange) {
         VisionMap areaMap = new VisionMap(visionRange);
-        Vector2D topLeft = areaMap.translateCoordinateByCenter(new Vector2D(0, 0));
+
+        Vector2D start = new Vector2D(position.x-(int)visionRange, position.y-(int)visionRange);
+        int endX = start.x+(2*(int)visionRange+1);
+        int endY = start.y+(2*(int)visionRange+1);
+        for (int x=start.x; x<endX; x++) {
+            for (int y=start.y; y<endY; y++) {
+                if (y<0||x<0) {
+                    areaMap.insertElement(new Vector2D(Math.abs(x)-Math.abs(start.x), Math.abs(y)-Math.abs(start.y)), 1);
+                } else if (mapGrid[y][x].getType()==Type.WALL) {
+                    areaMap.insertElement(new Vector2D(x-start.x, y-start.y), 1);
+                }
+            }
+        }
         return areaMap;
     }
 

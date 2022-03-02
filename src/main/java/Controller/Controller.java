@@ -17,6 +17,7 @@ public class Controller {
         agents = new ArrayList<Agent>();
         agentPositions = new ArrayList<Vector2D>();
         timestep = scMap.getTimestep();
+        fov = new FOV(10.0);
     }
 
     public void init () {

@@ -63,19 +63,16 @@ public class VisionMap{
 
     //@Override
     public void createMap(int width, int height, float scaling) {
-        this.width = width+1;
-        this.height = height+1;
+        this.width = width;
+        this.height = height;
         mapGrid = new int[this.height][this.width];
         
     }
 
     //@Override
-    public void insertElement(int x1, int y1, int x2, int y2, int tile) {
-        for (int i = x1; i <= x2; i++) {
-            for (int j = y1; j <= y2; j++) {
-                mapGrid[j][i] = tile;
-            }
-        }
+    public void insertElement(Vector2D point, int tile) {
+    
+        mapGrid[point.y][point.x] = tile;
         
     }
 

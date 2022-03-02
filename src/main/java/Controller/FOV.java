@@ -188,13 +188,6 @@ public class FOV {
         pointsLine = line.toArray(pointsLine);
         return pointsLine;
     }
-/*
-    private double[] getAnglesRT (double[] sides) {
-        if (sides[0]<sides[1]) {
-
-        }
-    }
-*/
 
     private boolean hitWall(Vector2D p) {
         boolean wall = areaMap.getTile(p.x, p.y)==1;
