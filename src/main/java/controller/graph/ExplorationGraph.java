@@ -1,7 +1,7 @@
-package Controller.Graph;
+package controller.graph;
 
-import Controller.Tile;
-import Controller.Vector2D;
+import controller.Tile;
+import controller.Vector2D;
 
 public class ExplorationGraph {
 
@@ -9,7 +9,7 @@ public class ExplorationGraph {
     private GraphAdjacencyList list;
 
     public ExplorationGraph(){
-        this.origin = new Node(new Vector2D(0,0), new Tile(Tile.Type.SPAWN_AREA_GUARDS));
+        this.origin = new Node(new Vector2D(0,0), new Tile());
         list = new GraphAdjacencyList();
         list.addVertex(origin);
     }

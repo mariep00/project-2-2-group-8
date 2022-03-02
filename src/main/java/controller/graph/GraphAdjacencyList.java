@@ -1,6 +1,6 @@
-package Controller.Graph;
+package controller.graph;
 
-import Controller.Vector2D;
+import controller.Vector2D;
 
 import java.util.LinkedList;
 

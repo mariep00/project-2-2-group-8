@@ -1,7 +1,7 @@
-package Controller.Graph;
+package controller.graph;
 
-import Controller.Tile;
-import Controller.Vector2D;
+import controller.Tile;
+import controller.Vector2D;
 import java.util.LinkedList;
 
 public class Node {

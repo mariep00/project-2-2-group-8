@@ -1,4 +1,4 @@
-package gui.game_screen;
+package gui.gamescreen;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;

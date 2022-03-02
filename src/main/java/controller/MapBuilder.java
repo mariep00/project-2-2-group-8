@@ -1,4 +1,4 @@
-package Controller;
+package controller;
 
 import java.io.File;
 import java.nio.charset.Charset;
@@ -96,10 +96,10 @@ public class MapBuilder {
                         map.insertElement(Integer.parseInt(items[0]), Integer.parseInt(items[1]), Integer.parseInt(items[2]), Integer.parseInt(items[3]), Tile.Type.TARGET_AREA);
                         break;
                     case "spawnAreaIntruders":
-                        map.insertElement(Integer.parseInt(items[0]), Integer.parseInt(items[1]), Integer.parseInt(items[2]), Integer.parseInt(items[3]), Tile.Type.SPAWN_AREA_INTRUDERS);
+                        map.insertSpawnAreaIntruder(Integer.parseInt(items[0]), Integer.parseInt(items[1]), Integer.parseInt(items[2]), Integer.parseInt(items[3]));
                         break;
                     case "spawnAreaGuards":
-                        map.insertElement(Integer.parseInt(items[0]), Integer.parseInt(items[1]), Integer.parseInt(items[2]), Integer.parseInt(items[3]), Tile.Type.SPAWN_AREA_GUARDS);
+                        map.insertSpawnAreaGuard(Integer.parseInt(items[0]), Integer.parseInt(items[1]), Integer.parseInt(items[2]), Integer.parseInt(items[3]));
                         break;
                     case "wall":
                         map.insertElement(Integer.parseInt(items[0]), Integer.parseInt(items[1]), Integer.parseInt(items[2]), Integer.parseInt(items[3]), Tile.Type.WALL);
