@@ -1,6 +1,6 @@
 package controller;
 
-import Controller.Graph.ExplorationGraph;
+import controller.graph.ExplorationGraph;
 
 public class BaseBrain implements BrainInterface{
 
