@@ -1,4 +1,4 @@
-package controller;
+package gui.gamescreen;
 
 import java.util.ArrayList;
 

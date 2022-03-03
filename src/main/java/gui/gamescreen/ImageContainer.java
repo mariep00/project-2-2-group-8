@@ -1,6 +1,5 @@
 package gui.gamescreen;
 
-import controller.HashMap;
 import javafx.scene.image.Image;
 
 import java.util.BitSet;
