@@ -1,6 +1,8 @@
-package Controller;
+package controller;
 
-import Controller.Tile.Type;
+import controller.Tile.Type;
+
+import java.util.ArrayList;
 
 public class ScenarioMap {
 
@@ -12,11 +14,19 @@ public class ScenarioMap {
     private double baseSpeedGuard;
     private double sprintSpeedIntruder;
     private double timestep;
+    private ArrayList<Vector2D> spawnAreaGuards = new ArrayList<>();
+    private ArrayList<Vector2D> spawnAreaIntruders = new ArrayList<>();
 
     private Tile[][] mapGrid;
     private int width;
     private int height;
     private double scaling;
+
+    
+
+    public ScenarioMap() {
+
+    }
 
     public int getHeight() {
         return height;
@@ -25,11 +35,7 @@ public class ScenarioMap {
     public int getWidth() {
         return width;
     }
-
-    public ScenarioMap() {
-
-    }
-
+    
     public String getName() {
         return name;
     }
@@ -93,6 +99,18 @@ public class ScenarioMap {
         return timestep;
     }
 
+    public Tile[][] getMapGrid() {
+        return mapGrid;
+    }
+
+    public ArrayList<Vector2D> getSpawnAreaGuards() {
+        return spawnAreaGuards;
+    }
+
+    public ArrayList<Vector2D> getSpawnAreaIntruders() {
+        return spawnAreaIntruders;
+    }
+
     public void setTeleport (int x1, int y1, int x2, int y2, int x3, int y3, double rotation) {
         Teleport tmp = new Teleport(new Vector2D(x3, y3), rotation);
         for (int i=y1; i<=y2; i++) {
@@ -110,6 +128,9 @@ public class ScenarioMap {
                 mapGrid[i][j].setShaded(true);
             }
         }
+    }
+    public void setShaded(int x, int y) {
+        mapGrid[y][x].setShaded(true);
     }
 
     public boolean checkWall(Vector2D pos) {
@@ -150,6 +171,32 @@ public class ScenarioMap {
                 mapGrid[j][i].setType(type);;
             }
         }
+    }
+
+    public void insertElement(int x, int y, Type type) {
+        mapGrid[y][x].setType(type);
+    }
+
+    public void insertSpawnAreaGuard(int x1, int y1, int x2, int y2) {
+        for (int i = x1; i <= x2; i++) {
+            for (int j = y1; j <= y2; j++) {
+                spawnAreaGuards.add(new Vector2D(i, j));
+            }
+        }
+    }
+    public void insertSpawnAreaGuard(int x, int y) {
+        spawnAreaGuards.add(new Vector2D(x, y));
+    }
+
+    public void insertSpawnAreaIntruder(int x1, int y1, int x2, int y2) {
+        for (int i = x1; i <= x2; i++) {
+            for (int j = y1; j <= y2; j++) {
+                spawnAreaIntruders.add(new Vector2D(i, j));
+            }
+        }
+    }
+    public void insertSpawnAreaIntruder(int x, int y) {
+        spawnAreaIntruders.add(new Vector2D(x, y));
     }
 
     public void insertElement(Vector2D[] points, Type type) {

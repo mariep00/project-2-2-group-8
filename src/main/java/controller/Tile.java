@@ -1,11 +1,14 @@
-package Controller;
+package controller;
 
-public class
-Tile {
+public class Tile {
     
     public enum Type {
-        FLOOR, WALL, SPAWN_AREA_INTRUDERS,
-        SPAWN_AREA_GUARDS, TARGET_AREA, DOOR, WINDOW, 
+        FLOOR,
+        WALL,
+        TARGET_AREA,
+        SPAWN_AREA_GUARDS,
+        DOOR,
+        WINDOW,
         TELEPORT;
     }
 
@@ -32,6 +35,8 @@ Tile {
         this.shaded = shaded;
     }
 
+    public boolean isShaded() { return shaded; }
+
     public void setType (Type type) {
         this.type = type;
         if (type == Type.WALL || type == Type.DOOR) {
@@ -47,4 +52,7 @@ Tile {
         this.seeThrough = seeThrough;
     }
 
+    public String toString() {
+        return "type = " + type + ", shaded = " + shaded;
+    }
 }

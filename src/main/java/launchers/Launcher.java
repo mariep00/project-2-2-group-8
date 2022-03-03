@@ -1,10 +1,11 @@
 package launchers;
+
+import controller.FOV;
+import controller.Vector2D;
+
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-
-import Controller.FOV;
-import Controller.Vector2D;
 
 public class Launcher {
     public static void main(String[] args) {

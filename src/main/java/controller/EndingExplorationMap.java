@@ -1,4 +1,4 @@
-package Controller;
+package controller;
 
 import java.util.ArrayList;
 
@@ -17,10 +17,10 @@ public class EndingExplorationMap {
     public void initialization(ScenarioMap map){
         for(int i=0; i < this.explorationMap.length; i++){
             for(int j=0; j < this.explorationMap[i].length; j++){
-                if(map.getTile(i, j).getType() == Tile.Type.WALL){
+                if(map.getTile(new Vector2D(i, j)).getType() == Tile.Type.WALL){
                     explorationMap[i][j] = 2;
                 }
-                else if(map.getTile(i, j).getType() == Tile.Type.TELEPORT){
+                else if(map.getTile(new Vector2D(i, j)).getType() == Tile.Type.TELEPORT){
                     explorationMap[i][j] = 2;
                 }
             }

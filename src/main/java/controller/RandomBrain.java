@@ -1,15 +1,17 @@
-package Controller;
+package controller;
 
-import Controller.Graph.ExplorationGraph;
+import controller.graph.ExplorationGraph;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class RandomBrain implements BrainInterface{
+public class RandomBrain implements BrainInterface {
+
     private int decision;
     int min = 0;
     int max = 100;
     int w0 = 25;
     int w1 = 50;
     int w2 = 75;
+
     @Override
     public int makeDecision(ExplorationGraph graph) {
 

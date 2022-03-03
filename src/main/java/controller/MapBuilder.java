@@ -1,49 +1,48 @@
-package Controller;
+package controller;
 
+import java.io.File;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Scanner;
 
 public class MapBuilder {
-    
-    private final Path filePath;
     private final static Charset ENCODING = StandardCharsets.UTF_8;
 
     private ScenarioMap map = new ScenarioMap();
+    private final File file;
 
     private int width;
     private int height;
     private float scaling;
 
-    public MapBuilder (String mapFile) {
-        filePath = Paths.get(mapFile);
-    
-        System.out.println(filePath.toString());
-        readMapFile();
+    public MapBuilder(File file) {
+        this.file = file;
+        readMap();
+    }
+
+    public MapBuilder (String pathString) {
+        this(new File(pathString));
     }
 
     public ScenarioMap getMap () {
         return map;
     }
 
-    private void readMapFile() {
-        try (Scanner scanner =  new Scanner(filePath, ENCODING.name())){
+    private void readMap() {
+        try (Scanner scanner =  new Scanner(file, ENCODING.name())){
             while (scanner.hasNextLine()){
                 String line = scanner.nextLine();
                 System.out.println(line);
                 parseLine(line);
             }
         }
-        catch(Exception e)
-        {
-            System.out.println("uff");
+        catch(Exception e) {
+            e.printStackTrace();
         }
     }
     
     private void parseLine (String line) {
-         //use a second Scanner to parse the content of each line 
+         //use a second Scanner to parse the content of each line
          try(Scanner scanner = new Scanner(line)){
             scanner.useDelimiter("=");
             if (scanner.hasNext()){
@@ -57,7 +56,7 @@ public class MapBuilder {
                 String[] items=value.split(" ");
                 System.out.println(id);
                 System.out.println(value);;
-    
+
                 switch(id)
                 {
                     case "name":
@@ -97,10 +96,10 @@ public class MapBuilder {
                         map.insertElement(Integer.parseInt(items[0]), Integer.parseInt(items[1]), Integer.parseInt(items[2]), Integer.parseInt(items[3]), Tile.Type.TARGET_AREA);
                         break;
                     case "spawnAreaIntruders":
-                        map.insertElement(Integer.parseInt(items[0]), Integer.parseInt(items[1]), Integer.parseInt(items[2]), Integer.parseInt(items[3]), Tile.Type.SPAWN_AREA_INTRUDERS);
+                        map.insertSpawnAreaIntruder(Integer.parseInt(items[0]), Integer.parseInt(items[1]), Integer.parseInt(items[2]), Integer.parseInt(items[3]));
                         break;
                     case "spawnAreaGuards":
-                        map.insertElement(Integer.parseInt(items[0]), Integer.parseInt(items[1]), Integer.parseInt(items[2]), Integer.parseInt(items[3]), Tile.Type.SPAWN_AREA_GUARDS);
+                        map.insertSpawnAreaGuard(Integer.parseInt(items[0]), Integer.parseInt(items[1]), Integer.parseInt(items[2]), Integer.parseInt(items[3]));
                         break;
                     case "wall":
                         map.insertElement(Integer.parseInt(items[0]), Integer.parseInt(items[1]), Integer.parseInt(items[2]), Integer.parseInt(items[3]), Tile.Type.WALL);
