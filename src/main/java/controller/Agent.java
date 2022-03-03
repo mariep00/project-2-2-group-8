@@ -1,8 +1,8 @@
-package Controller;
+package controller;
 
 import java.util.ArrayList;
 
-import Controller.Graph.ExplorationGraph;
+import controller.graph.ExplorationGraph;
 
 public class Agent {
 
