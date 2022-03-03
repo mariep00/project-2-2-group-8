@@ -162,7 +162,7 @@ public class MapCreator extends Application implements TransitionInterface {
             FileChooser fileChooser = new FileChooser();
             fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text Files", "*.txt"));
             File selectedFile = fileChooser.showSaveDialog(stage);
-            exportMap(selectedFile);
+            if (selectedFile != null) exportMap(selectedFile);
         });
         buttonPlayGame.setOnAction(e -> {
             ScenarioMap scenarioMap = new ScenarioMap();

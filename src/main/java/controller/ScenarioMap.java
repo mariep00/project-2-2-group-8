@@ -158,8 +158,8 @@ public class ScenarioMap {
         this.width = width+1;
         this.height = height+1;
         mapGrid = new Tile[this.height][this.width];
-        for (int i=0; i < mapGrid.length; i++) {
-            for (int j =0; j < mapGrid[i].length; j++) {
+        for (int i=0; i < mapGrid[0].length; i++) {
+            for (int j=0; j < mapGrid.length; j++) {
                 mapGrid[j][i] = new Tile();
             }
         }

@@ -7,7 +7,7 @@ import java.util.BitSet;
 public final class ImageContainer {
     private static ImageContainer imageContainer = null;
 
-    private final HashMap<BitSet, Image> hashMap = new HashMap<>(100);
+    private final HashMap<BitSet, Image> hashMap = new HashMap<>(110);
     private final Image[] wallImages;
     private final Image floor;
     private final Image shaded;
@@ -148,6 +148,14 @@ public final class ImageContainer {
         hashMap.add(stringToByteSet("01000111"), getWallSides());
         hashMap.add(stringToByteSet("00000111"), getWallFront());
         hashMap.add(stringToByteSet("11101111"), getWallRight());
+        hashMap.add(stringToByteSet("11110100"), getWallTopCornerLeft());
+        hashMap.add(stringToByteSet("11100000"), getWallTopCornered());
+        hashMap.add(stringToByteSet("01001011"), getWallSides());
+        hashMap.add(stringToByteSet("00000011"), getWallFront());
+        hashMap.add(stringToByteSet("00010100"), getWallFront());
+        hashMap.add(stringToByteSet("00011110"), getWallFront());
+        hashMap.add(stringToByteSet("10011110"), getWallFront());
+        hashMap.add(stringToByteSet("00011100"), getWallFront());
     }
 
     private BitSet stringToByteSet(String string) {
