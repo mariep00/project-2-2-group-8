@@ -1,6 +1,5 @@
 package gui.gamescreen;
 
-import controller.ScenarioMap;
 import gui.MainGUI;
 import gui.TransitionInterface;
 import javafx.animation.Transition;
@@ -11,6 +10,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import org.jetbrains.annotations.NotNull;
+
+import controller.maps.ScenarioMap;
 
 import java.util.ArrayList;
 import java.util.BitSet;
@@ -37,15 +38,15 @@ public class GameScreen extends Application implements TransitionInterface {
         gridPane.setAlignment(Pos.CENTER);
 
         Tile[][] tiles = new Tile[scenarioMap.getWidth()][scenarioMap.getHeight()];
-        controller.Tile[][] tilesController = scenarioMap.getMapGrid();
+        controller.maps.Tile[][] tilesController = scenarioMap.getMapGrid();
         for (int x = 0; x < scenarioMap.getWidth(); x++) {
             for (int y = 0; y < scenarioMap.getHeight(); y++) {
                 Tile tile;
-                if (tilesController[y][x].getType() == controller.Tile.Type.WALL) {
+                if (tilesController[y][x].getType() == controller.maps.Tile.Type.WALL) {
                     // It's a wall. Create a tile with the right wall image
                     tile = new Tile(new TileImage(imageContainer.getWall(getBitSetSurroundingWalls(tilesController, x, y))));
                 }
-                else if (tilesController[y][x].getType() == controller.Tile.Type.TELEPORT) {
+                else if (tilesController[y][x].getType() == controller.maps.Tile.Type.TELEPORT) {
                     // For now a floor, change to teleport image later
                     tile = new Tile(new TileImage(imageContainer.getFloor()));
                 }
@@ -57,7 +58,7 @@ public class GameScreen extends Application implements TransitionInterface {
                 if (tilesController[y][x].isShaded()) {
                     tile.setShaded(imageContainer.getShaded());
                 }
-                if (tilesController[y][x].getType() == controller.Tile.Type.TARGET_AREA) {
+                if (tilesController[y][x].getType() == controller.maps.Tile.Type.TARGET_AREA) {
                     tile.setTargetArea(imageContainer.getTargetArea());
                 }
 
@@ -83,14 +84,14 @@ public class GameScreen extends Application implements TransitionInterface {
         loadSceneTransition(borderPane.getChildren());
     }
 
-    private BitSet getBitSetSurroundingWalls(controller.Tile[][] tiles, int x, int y) {
+    private BitSet getBitSetSurroundingWalls(controller.maps.Tile[][] tiles, int x, int y) {
         BitSet bitSet = new BitSet(8);
         byte count = 0;
         for (int i = -1; i <= 1; i++) {
             for (int j = -1; j <= 1; j++) {
                 if (i != 0 || j != 0) {
                     if (y + i >= 0 && x + j >= 0 && y + i < tiles.length && x + j < tiles[y].length) {
-                        if (tiles[y + i][x + j].getType() == controller.Tile.Type.WALL) {
+                        if (tiles[y + i][x + j].getType() == controller.maps.Tile.Type.WALL) {
                             bitSet.set(count);
                         }
                     }

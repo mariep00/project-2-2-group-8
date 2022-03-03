@@ -5,6 +5,9 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
+import controller.maps.ScenarioMap;
+import controller.maps.Tile;
+
 public class MapBuilder {
     private final static Charset ENCODING = StandardCharsets.UTF_8;
 

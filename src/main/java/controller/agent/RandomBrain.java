@@ -1,7 +1,8 @@
-package controller;
+package controller.agent;
 
-import controller.graph.ExplorationGraph;
 import java.util.concurrent.ThreadLocalRandom;
+
+import controller.maps.graph.ExplorationGraph;
 
 public class RandomBrain implements BrainInterface {
 

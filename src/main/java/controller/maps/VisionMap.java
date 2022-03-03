@@ -1,6 +1,8 @@
-package controller;
+package controller.maps;
 
 import java.util.ArrayList;
+
+import controller.Vector2D;
 
 public class VisionMap{
     

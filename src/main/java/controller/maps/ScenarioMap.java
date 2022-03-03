@@ -1,6 +1,7 @@
-package controller;
+package controller.maps;
 
-import controller.Tile.Type;
+import controller.Vector2D;
+import controller.maps.Tile.Type;
 
 import java.util.ArrayList;
 

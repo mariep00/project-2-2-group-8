@@ -1,8 +1,8 @@
-package controller.graph;
+package controller.maps.graph;
 
-import controller.Tile;
-import controller.Tile.Type;
 import controller.Vector2D;
+import controller.maps.Tile;
+import controller.maps.Tile.Type;
 
 public class ExplorationGraph {
 

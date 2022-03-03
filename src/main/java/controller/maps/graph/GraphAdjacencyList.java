@@ -1,4 +1,4 @@
-package controller.graph;
+package controller.maps.graph;
 
 import controller.Vector2D;
 

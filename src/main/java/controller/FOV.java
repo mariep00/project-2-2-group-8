@@ -2,6 +2,8 @@ package controller;
 
 import java.util.ArrayList;
 
+import controller.maps.VisionMap;
+
 public class FOV {
     
     private double visionAngle;

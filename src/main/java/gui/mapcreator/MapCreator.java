@@ -1,6 +1,5 @@
 package gui.mapcreator;
 
-import controller.ScenarioMap;
 import gui.MainGUI;
 import gui.TransitionInterface;
 import gui.gamescreen.GameScreen;
@@ -27,6 +26,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
+
+import controller.maps.ScenarioMap;
 
 public class MapCreator extends Application implements TransitionInterface {
     private Stage stage;
@@ -169,10 +170,10 @@ public class MapCreator extends Application implements TransitionInterface {
             scenarioMap.createMap(nrOfTilesWidth, nrOfTilesHeight, 1);
             for (int x = 0; x < tiles[0].length; x++) {
                 for (int y = 0; y < tiles.length; y++) {
-                    if (tiles[x][y].isWall()) scenarioMap.insertElement(x, y, controller.Tile.Type.WALL);
+                    if (tiles[x][y].isWall()) scenarioMap.insertElement(x, y, controller.maps.Tile.Type.WALL);
                     else if (tiles[x][y].isSpawnAreaGuards()) scenarioMap.insertSpawnAreaGuard(x, y);
                     else if (tiles[x][y].isSpawnAreaIntruders()) scenarioMap.insertSpawnAreaIntruder(x, y);
-                    else if (tiles[x][y].isTargetArea()) scenarioMap.insertElement(x, y, controller.Tile.Type.TARGET_AREA);
+                    else if (tiles[x][y].isTargetArea()) scenarioMap.insertElement(x, y, controller.maps.Tile.Type.TARGET_AREA);
 
                     if (tiles[x][y].isShaded()) scenarioMap.setShaded(x, y);
                 }

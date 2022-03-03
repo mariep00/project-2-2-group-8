@@ -1,6 +1,9 @@
-package controller;
+package controller.maps;
 
 import java.util.ArrayList;
+
+import controller.Vector2D;
+import controller.maps.Tile.Type;
 
 public class EndingExplorationMap {
     private int width;

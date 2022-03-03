@@ -1,13 +1,16 @@
-package controller;
+package controller.agent;
 
 import java.util.ArrayList;
 
-import controller.graph.ExplorationGraph;
+import controller.Vector2D;
+import controller.maps.EndingExplorationMap;
+import controller.maps.Tile;
+import controller.maps.graph.ExplorationGraph;
 
 public class Agent {
 
-    private int base_speed;
-    private int sprint_speed;
+    private double base_speed;
+    private double sprint_speed;
     private double orientation;
 
     private BaseBrain brain;
@@ -15,7 +18,7 @@ public class Agent {
     private ExplorationGraph map;
     private EndingExplorationMap explorationMap;
 
-    public Agent (int base_speed, int sprint_speed, double orientation, int brainID, EndingExplorationMap explorationMap) {
+    public Agent (double base_speed, double sprint_speed, double orientation, int brainID, EndingExplorationMap explorationMap) {
         this.base_speed = base_speed;
         this.sprint_speed = sprint_speed;
         this.orientation = orientation;
