@@ -1,6 +1,8 @@
 package Controller;
 
+import Controller.Graph.ExplorationGraph;
+
 public interface BrainInterface {
     
-    public void makeDecision ();
+    public int makeDecision (ExplorationGraph graph);
 }

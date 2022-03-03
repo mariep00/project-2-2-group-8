@@ -1,7 +1,8 @@
 package Controller.Graph;
 
-import Controller.Tile;
 import Controller.Vector2D;
+import Controller.Tile;
+
 import java.util.LinkedList;
 
 public class Node {
@@ -12,47 +13,52 @@ public class Node {
 
     public final Vector2D COORDINATES;
 
-    public Node(Vector2D coords, Tile type) {
-        edge_list = new LinkedList<Node>();
-        COORDINATES = coords;
+    public Node(Vector2D coordinates, Tile type){
+        this.edge_list = new LinkedList<>();
+        this.COORDINATES = coordinates;
         this.type = type;
         initializeNeighbours();
     }
 
-    public void addEdge(Node y)
-    {
-        edge_list.addFirst(y);
-    }
-
-    public void removeEdge(Node y)
-    {
-        for(int n=0;n<edge_list.size();n++)
-        {
-            if(edge_list.get(n).equals(y))
-            {
-                edge_list.remove(n);
-            }
-        }
-    }
-
-    public LinkedList<Node> getEdges(){
-        return edge_list;
+    private void initializeNeighbours(){
+        this.neighbours = new Vector2D[4];
+        this.neighbours[0] = new Vector2D(this.COORDINATES.x, (this.COORDINATES.y+1));
+        this.neighbours[1] = new Vector2D((this.COORDINATES.x+1), this.COORDINATES.y);
+        this.neighbours[2] = new Vector2D(this.COORDINATES.x, (this.COORDINATES.y-1));
+        this.neighbours[3] = new Vector2D((this.COORDINATES.x-1), (this.COORDINATES.y));
     }
 
     public Vector2D[] getNeigbours () {
         return neighbours;
     }
 
-    private void initializeNeighbours() {
-        neighbours = new Vector2D[4];
-        neighbours[0] = new Vector2D(COORDINATES.x, COORDINATES.y+1);
-        neighbours[1] = new Vector2D(COORDINATES.x+1, COORDINATES.y);
-        neighbours[0] = new Vector2D(COORDINATES.x, COORDINATES.y-1);
-        neighbours[0] = new Vector2D(COORDINATES.x-1, COORDINATES.y);
+    /**
+     * Adds an edge to the vertex y into the edge list
+     * @param y node
+     */
+    public void addEdge(Node y)
+    {
+        this.edge_list.addFirst(y);
+    }
+
+    /**
+     * Removes all edges to the vertex y from the edge list
+     * @param y node
+     */
+    public void removeEdge(Node y){
+        for(int i=0; i < this.edge_list.size(); i++){
+            if(this.edge_list.get(i).equals(y)){
+                this.edge_list.remove(i);
+            }
+        }
+    }
+
+    public LinkedList<Node> getEdges(){
+        return this.edge_list;
     }
 
     public Tile getType() {
-        return type;
+        return this.type;
     }
 
     public void setType(Tile type) {

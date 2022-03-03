@@ -1,6 +1,7 @@
 package Controller;
 
-public class Tile {
+public class
+Tile {
     
     public enum Type {
         FLOOR, WALL, SPAWN_AREA_INTRUDERS,
