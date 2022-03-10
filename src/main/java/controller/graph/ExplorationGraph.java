@@ -42,4 +42,8 @@ public class ExplorationGraph {
     private boolean nodeExists(Vector2D vector){
         return this.list.isVisited(vector); //check the neighbours (inside the visited bucket)
     }
+
+    public GraphAdjacencyList getList() {
+        return this.list;
+    }
 }

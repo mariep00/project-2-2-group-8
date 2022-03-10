@@ -176,4 +176,12 @@ public class GraphAdjacencyList {
             }
         }
     }
+
+    public LinkedList<Node> getList() {
+        return list;
+    }
+
+    public Node getNextFrontier() {
+        return frontiers.getFirst();
+    }
 }
