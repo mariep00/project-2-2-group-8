@@ -7,6 +7,7 @@ import controller.maps.Tile.Type;
 public class ExplorationGraph {
 
     private Node origin;
+    private Node currentPosition;
     private GraphAdjacencyList list;
 
     public ExplorationGraph(){
@@ -15,6 +16,7 @@ public class ExplorationGraph {
         this.origin = new Node(new Vector2D(0,0), t);
         list = new GraphAdjacencyList();
         list.addVertex(origin);
+        this.currentPosition = origin;
     }
 
     /**
@@ -41,5 +43,10 @@ public class ExplorationGraph {
      */
     private boolean nodeExists(Vector2D vector){
         return this.list.isVisited(vector); //check the neighbours (inside the visited bucket)
+    }
+
+    public Node getCurrentPosition() { return currentPosition; }
+    public void setCurrentPosition(Vector2D vector2D) {
+        this.currentPosition = list.getNode(vector2D);
     }
 }

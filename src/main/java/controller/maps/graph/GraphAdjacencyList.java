@@ -142,7 +142,8 @@ public class GraphAdjacencyList {
      */
     public void checkEdges(Node node){
         Vector2D[] nodeNeighbours = node.getNeigbours();
-        for(Node n: this.frontiers){
+        for(int j = 0; j < frontiers.size(); j++) {
+            Node n = frontiers.get(j);
             for(int i=0; i < nodeNeighbours.length; i++){
                 if(n.COORDINATES.equals(nodeNeighbours[i])){
                     addEdge(node, n);
@@ -175,5 +176,14 @@ public class GraphAdjacencyList {
                 this.frontiers.remove(i);
             }
         }
+    }
+
+    public Node getNode(Vector2D vector2D) {
+        for (Node node : this.list){
+            if (node.COORDINATES.equals(vector2D)){
+                return node;
+            }
+        }
+        return null;
     }
 }

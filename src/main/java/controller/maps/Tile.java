@@ -44,6 +44,10 @@ public class Tile {
         }
     }
 
+    public boolean isWall() {
+        return getType() == Type.WALL;
+    }
+
     public void setSpecialFeature (SpecialFeature feature) {
         this.feature = feature;
     }

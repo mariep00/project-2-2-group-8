@@ -1,8 +1,8 @@
 package controller.maps;
 
-import java.util.ArrayList;
-
 import controller.Vector2D;
+
+import java.util.ArrayList;
 
 public class VisionMap{
     
@@ -25,20 +25,17 @@ public class VisionMap{
             return center;
     }
 
-    public Vector2D[] getInVision() {
+    public ArrayList<Vector2D> getInVision() {
         ArrayList<Vector2D> vectors = new ArrayList<>();
         for (int i=0; i<mapGrid.length; i++) {
             for (int j=0; j<mapGrid[i].length; j++) {
                 if (mapGrid[i][j] == 1) {
-                    Vector2D tmp = new Vector2D(j, i);
+                    Vector2D tmp = new Vector2D(j-getCenter().x, i-getCenter().y); // Relative to center
                     vectors.add(tmp);
                 }
             }
         }
-        Vector2D[] inVision = new Vector2D[vectors.size()];
-        inVision = vectors.toArray(inVision);
-        return inVision;
-
+        return vectors;
     }
 
     //@Override

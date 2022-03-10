@@ -14,6 +14,10 @@ public class ScenarioMap {
     private double baseSpeedIntruder;
     private double baseSpeedGuard;
     private double sprintSpeedIntruder;
+    private double guardViewAngle = 90;
+    private double guardViewRange = 12;
+    private double intruderViewAngle = 90;
+    private double intruderViewRange = 12;
     private double timestep;
     private ArrayList<Vector2D> spawnAreaGuards = new ArrayList<>();
     private ArrayList<Vector2D> spawnAreaIntruders = new ArrayList<>();
@@ -110,6 +114,38 @@ public class ScenarioMap {
 
     public ArrayList<Vector2D> getSpawnAreaIntruders() {
         return spawnAreaIntruders;
+    }
+
+    public double getGuardViewAngle() {
+        return guardViewAngle;
+    }
+
+    public double getGuardViewRange() {
+        return guardViewRange;
+    }
+
+    public double getIntruderViewAngle() {
+        return intruderViewAngle;
+    }
+
+    public double getIntruderViewRange() {
+        return intruderViewRange;
+    }
+
+    public void setGuardViewAngle(double guardViewAngle) {
+        this.guardViewAngle = guardViewAngle;
+    }
+
+    public void setGuardViewRange(double guardViewRange) {
+        this.guardViewRange = guardViewRange;
+    }
+
+    public void setIntruderViewAngle(double intruderViewAngle) {
+        this.intruderViewAngle = intruderViewAngle;
+    }
+
+    public void setIntruderViewRange(double intruderViewRange) {
+        this.intruderViewRange = intruderViewRange;
     }
 
     public void setTeleport (int x1, int y1, int x2, int y2, int x3, int y3, double rotation) {
@@ -215,8 +251,9 @@ public class ScenarioMap {
         int endY = start.y+(2*(int)visionRange+1);
         for (int x=start.x; x<endX; x++) {
             for (int y=start.y; y<endY; y++) {
-                if (y<0||x<0) {
-                    areaMap.insertElement(new Vector2D(Math.abs(x)-Math.abs(start.x), Math.abs(y)-Math.abs(start.y)), 1);
+                if (y<0 || x<0 || y>=height || x>=width) {
+                    //areaMap.insertElement(new Vector2D(Math.abs(x)-Math.abs(start.x), Math.abs(y)-Math.abs(start.y)), 1);
+                    areaMap.insertElement(new Vector2D(Math.abs(Math.abs(x)-Math.abs(start.x)), Math.abs(Math.abs(y)-Math.abs(start.y))), 1);
                 } else if (mapGrid[y][x].getType()==Type.WALL) {
                     areaMap.insertElement(new Vector2D(x-start.x, y-start.y), 1);
                 }

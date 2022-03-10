@@ -1,12 +1,12 @@
 package controller;
 
+import controller.maps.ScenarioMap;
+import controller.maps.Tile;
+
 import java.io.File;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
-
-import controller.maps.ScenarioMap;
-import controller.maps.Tile;
 
 public class MapBuilder {
     private final static Charset ENCODING = StandardCharsets.UTF_8;
@@ -118,6 +118,18 @@ public class MapBuilder {
                         // still to do. First the coordinates, then an int with texture type and then a double with orientation
                     case "timeStep":
                         map.setTimeStep(Double.parseDouble(value));
+                        break;
+                    case "guardViewAngle":
+                        map.setGuardViewAngle(Double.parseDouble(value));
+                        break;
+                    case "intruderViewAngle":
+                        map.setIntruderViewAngle(Double.parseDouble(value));
+                        break;
+                    case "guardViewRange":
+                        map.setGuardViewRange(Double.parseDouble(value));
+                        break;
+                    case "intruderViewRange":
+                        map.setIntruderViewRange(Double.parseDouble(value));
                 }
             }
         }

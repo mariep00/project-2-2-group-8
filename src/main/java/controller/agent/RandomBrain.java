@@ -1,7 +1,5 @@
 package controller.agent;
 
-import java.util.concurrent.ThreadLocalRandom;
-
 import controller.maps.graph.ExplorationGraph;
 
 public class RandomBrain implements BrainInterface {
@@ -17,33 +15,32 @@ public class RandomBrain implements BrainInterface {
     public int makeDecision(ExplorationGraph graph) {
 
         int r = (int)(Math.random()*(max-min+1)+min);
-
         if(r<=w0){
-            w0 = 50; //TODO adjust the weights
-            w1 = 20;
-            w2 = 10;
+            w0 = 60; //TODO adjust the weights
+            w1 = 73;
+            w2 = 86;
 
             return 0;
         }
 
         else if(r>w0 && w1<=r){
             w0 = 70;
-            w1 = 10;
-            w2 = 10;
+            w1 = 80;
+            w2 = 90;
             return 1;
         }
 
         else if(r>w1 && w2<=r){
             w0 = 70;
-            w1 = 10;
-            w2 = 10;
+            w1 = 80;
+            w2 = 90;
             return 2;
         }
 
         else {
             w0 = 70;
-            w1 = 10;
-            w2 = 10;
+            w1 = 80;
+            w2 = 90;
             return 3;
         }
 
