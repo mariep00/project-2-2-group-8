@@ -16,6 +16,7 @@ public final class ImageContainer {
     private final Image targetArea;
     private final Image spawnAreaGuards;
     private final Image spawnAreaIntruders;
+    private final Image undiscovered;
     private final Image teleport;
 
     private final Image[] guardNorth;
@@ -40,6 +41,7 @@ public final class ImageContainer {
         targetArea = new Image(this.getClass().getResource("/tiles/overlay/target_area.png").toString());
         spawnAreaGuards = new Image(this.getClass().getResource("/tiles/overlay/spawn_area_guards.png").toString());
         spawnAreaIntruders = new Image(this.getClass().getResource("/tiles/overlay/spawn_area_intruders.png").toString());
+        undiscovered = new Image(this.getClass().getResource("/tiles/overlay/undiscovered.png").toString());
         teleport =  new Image(this.getClass().getResource("/tiles/base/teleport.png").toString());
 
         guardNorth = new Image[4];
@@ -132,10 +134,10 @@ public final class ImageContainer {
      */
     public Image getAgent(AgentType agentType, double direction) {
         if (agentType == AgentType.GUARD) {
-            if (direction == 0) return guardNorth[0];
-            else if (direction == 90) return guardEast[0];
-            else if (direction == 180) return guardSouth[0];
-            else if (direction == 270) return guardWest[0];
+            if (direction == 0) return guardEast[0];
+            else if (direction == 90) return guardSouth[0];
+            else if (direction == 180) return guardWest[0];
+            else if (direction == 270) return guardNorth[0];
         }
         return null;
     }
@@ -145,6 +147,7 @@ public final class ImageContainer {
     public Image getTargetArea() { return targetArea; }
     public Image getSpawnAreaGuards() { return spawnAreaGuards; }
     public Image getSpawnAreaIntruders() { return spawnAreaIntruders; }
+    public Image getUndiscovered() { return undiscovered; }
     public Image getTeleport() { return teleport; }
 
     public Image getGuard() { return guardSouth[0]; }

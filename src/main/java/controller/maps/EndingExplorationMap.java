@@ -57,7 +57,6 @@ public class EndingExplorationMap {
         /*if (this.explorationMap[coordinate.y][coordinate.x] !=2){
             this.explorationMap[coordinate.y][coordinate.x] = 1;
         }*/
-        //writeMatrix("nicematrix2.txt", explorationMap);
         if (explorationMap[coordinate.y][coordinate.x] != 2) {
             if (explorationMap[coordinate.y][coordinate.x] == 0) {
                 explorationMap[coordinate.y][coordinate.x] = 1;
@@ -85,5 +84,11 @@ public class EndingExplorationMap {
         } catch (IOException e) {}
     }
 
+    public int getTotalTilesToExplore() {
+        return totalTilesToExplore;
+    }
 
+    public int getCurrentTilesExplored() {
+        return currentTilesExplored;
+    }
 }

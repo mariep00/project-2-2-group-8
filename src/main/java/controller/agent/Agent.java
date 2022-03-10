@@ -48,7 +48,6 @@ public class Agent {
                 break;
         }
     }
-
     public void updatePosition(Vector2D pos) {
         explorationGraph.setCurrentPosition(pos);
     }

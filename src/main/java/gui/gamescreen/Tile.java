@@ -11,24 +11,26 @@ public class Tile extends StackPane {
     // Index 2 --> Something else (scent trail..)
     // Index 3 --> Shaded
     // Index 4 --> Target area
-    protected final TileImage[] tileImages = new TileImage[5];
+    // Index 5 --> Undiscovered
+    protected final TileImage[] tileImages = new TileImage[6];
 
-    public Tile(@NotNull TileImage baseImage, @NotNull TileImage characterImage, @NotNull TileImage otherImage, @NotNull TileImage shadedImage, @NotNull TileImage targetArea) {
-        super(baseImage, otherImage, characterImage, targetArea, shadedImage);
+    public Tile(@NotNull TileImage baseImage, @NotNull TileImage characterImage, @NotNull TileImage otherImage, @NotNull TileImage shadedImage, @NotNull TileImage targetArea, @NotNull TileImage undiscoveredImage) {
+        super(baseImage, otherImage, characterImage, targetArea, shadedImage, undiscoveredImage);
         tileImages[0] = baseImage;
         tileImages[1] = characterImage;
         tileImages[2] = otherImage;
         tileImages[3] = shadedImage;
         tileImages[4] = targetArea;
+        tileImages[5] = undiscoveredImage;
 
         tileImages[3].setOpacity(0.45);
         tileImages[4].setOpacity(0.3);
+        tileImages[5].setOpacity(0.5);
     }
     public Tile(@NotNull TileImage baseImage) {
-        this(baseImage, new TileImage(), new TileImage(), new TileImage(), new TileImage());
+        this(baseImage, new TileImage(), new TileImage(), new TileImage(), new TileImage(), new TileImage());
     }
-    public Tile(@NotNull TileImage baseImage, @NotNull TileImage otherImage) { this(baseImage, new TileImage(), otherImage, new TileImage(), new TileImage()); }
-
+    public Tile(@NotNull TileImage baseImage, @NotNull TileImage undiscoveredImage) { this (baseImage, new TileImage(), new TileImage(), new TileImage(), new TileImage(), undiscoveredImage); }
     public void setCharacter(Image characterImage) { tileImages[1].setImage(characterImage); }
     public void resetCharacterImage() {
         tileImages[1].resetTileImage();
@@ -39,4 +41,5 @@ public class Tile extends StackPane {
     public void setTargetArea(Image targetArea) {
         tileImages[4].setImage(targetArea);
     }
+    public void setToExplored() { tileImages[5].resetTileImage(); }
 }

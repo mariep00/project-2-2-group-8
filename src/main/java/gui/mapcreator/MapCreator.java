@@ -1,5 +1,6 @@
 package gui.mapcreator;
 
+import controller.maps.ScenarioMap;
 import gui.MainGUI;
 import gui.TransitionInterface;
 import gui.gamescreen.GameScreen;
@@ -26,8 +27,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
-
-import controller.maps.ScenarioMap;
 
 public class MapCreator extends Application implements TransitionInterface {
     private Stage stage;
@@ -178,6 +177,8 @@ public class MapCreator extends Application implements TransitionInterface {
                     if (tiles[x][y].isShaded()) scenarioMap.setShaded(x, y);
                 }
             }
+            scenarioMap.setNumGuards(isStringNumeric(numGuards.getText()) ? Integer.parseInt(numGuards.getText()) : 0);
+            scenarioMap.setNumIntruders(isStringNumeric(numIntruders.getText()) ? Integer.parseInt(numIntruders.getText()) : 0);
             quitSceneTransition(() -> new GameScreen(scenarioMap).start(stage), vbox, scrollPane, hbox);
         });
     }

@@ -9,29 +9,34 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class Controller {
-    
+    private final Random rand = new Random();
     private FOV fov;
     private ScenarioMap scMap;
-    private EndingExplorationMap endingExplorationMap;
+    protected EndingExplorationMap endingExplorationMap;
     private Vector2D[] agentSpawnLocations;
-    private Vector2D[] agentPositions;
-    private ArrayList<Agent> agentsGuards;
-    private ArrayList<Agent> agentsIntruders;
+    protected Vector2D[] agentPositions;
+    protected Agent[] agentsGuards;
+    private Agent[] agentsIntruders;
     private double timestep;
     private double time;
-
 
     public Controller(ScenarioMap scMap) {
         this.scMap = scMap;
         agentSpawnLocations = new Vector2D[scMap.getNumGuards()];
-        agentsGuards = new ArrayList<Agent>();
-        agentsIntruders = new ArrayList<Agent>();
+        agentsGuards = new Agent[scMap.getNumGuards()];
+        agentsIntruders = new Agent[scMap.getNumIntruders()];
         agentPositions = new Vector2D[scMap.getNumGuards()+scMap.getNumIntruders()];
         fov = new FOV(scMap.getGuardViewRange());
         this.endingExplorationMap = new EndingExplorationMap(this.scMap);
         timestep = scMap.getTimestep();
         createAgents(1, 1);
+    }
+
+    public void init() {
         spawnAgents();
+        for (int i = 0; i < agentsGuards.length; i++) {
+            updateProgress(calculateFOV(agentsGuards[i], agentPositions[i]), i); // Set the beginning "progress"
+        }
     }
 
     public void start() {
@@ -42,20 +47,25 @@ public class Controller {
         return fov.calculate(agent.getView_angle(), agent.getView_range(), scMap.createAreaMap(agentPosition, agent.getView_range()), agent.getOrientation()).getInVision();
     }
 
+    public void tick() {
+        tick(timestep);
+    }
     public void tick(double timestep) {
-        for (int i=0; i<agentsGuards.size(); i++) {
-            ArrayList<Vector2D> positions = calculateFOV(agentsGuards.get(i), agentPositions[i]);
-            ArrayList<Tile> tiles = new ArrayList<>();
-            for (Vector2D vector2D : positions) {
-                //System.out.println(vector2D + ", " + agentPositions[i] + ", " + agentSpawnLocations[i] + ", " + agentsGuards.get(i).getOrientation());
-                tiles.add(scMap.getTile(convertRelativeCurrentPosToAbsolute(vector2D, i)));
-            }
-            int task = agentsGuards.get(i).tick(tiles, positions, timestep);
-            for (Vector2D vector2D : positions) {
-                endingExplorationMap.updateExplorationMap(convertRelativeCurrentPosToAbsolute(vector2D, i));
-            }
+        for (int i=0; i<agentsGuards.length; i++) {
+            ArrayList<Vector2D> positions = calculateFOV(agentsGuards[i], agentPositions[i]);
+            ArrayList<Tile> tiles = getTilesInVision(positions, i);
+            updateProgress(positions, i);
+            int task = agentsGuards[i].tick(tiles, positions, timestep);
             updateAgent(i, task);
         }
+    }
+
+    private ArrayList<Tile> getTilesInVision(ArrayList<Vector2D> positions, int agentIndex) {
+        ArrayList<Tile> tiles = new ArrayList<>();
+        for (Vector2D vector2D : positions) {
+            tiles.add(scMap.getTile(convertRelativeCurrentPosToAbsolute(vector2D, agentIndex)));
+        }
+        return tiles;
     }
 
     private void updateAgent(int agentIndex, int task) {
@@ -66,19 +76,34 @@ public class Controller {
 
         switch (task) {
             case 0:
-                Vector2D newPos = agentMoveForward(agentIndex);
-                agentPositions[agentIndex] = newPos;
-                agentsGuards.get(agentIndex).updatePosition(convertAbsoluteToRelativeSpawn(newPos, agentIndex));
+                updateAgentPosition(agentIndex, agentMoveForward(agentIndex));
                 break;
             case 1:
-                agentsGuards.get(agentIndex).updateOrientation(90);
+                updateAgentOrientation(agentIndex, 90);
                 break;
             case 2:
-                agentsGuards.get(agentIndex).updateOrientation(180);
+                updateAgentOrientation(agentIndex, 180);
                 break;
             case 3:
-                agentsGuards.get(agentIndex).updateOrientation(270);
+                updateAgentOrientation(agentIndex,270);
                 break;
+        }
+    }
+
+    protected void updateAgentPosition(int agentIndex, Vector2D pos) {
+        agentPositions[agentIndex] = pos;
+        agentsGuards[agentIndex].updatePosition(convertAbsoluteToRelativeSpawn(pos, agentIndex));
+    }
+    protected void updateAgentOrientation(int agentIndex, double orientationToAdd) {
+        agentsGuards[agentIndex].updateOrientation(orientationToAdd);
+    }
+
+    protected void updateProgress(Vector2D vector, int agentIndex) {
+        endingExplorationMap.updateExplorationMap(convertRelativeCurrentPosToAbsolute(vector, agentIndex));
+    }
+    private void updateProgress(ArrayList<Vector2D> positions, int agentIndex) {
+        for (Vector2D vector2D : positions) {
+            updateProgress(vector2D, agentIndex);
         }
     }
 
@@ -86,35 +111,42 @@ public class Controller {
         int numberOfSteps = getNumberOfSteps(agentIndex);
         Vector2D lastPos = agentPositions[agentIndex];
         for (int i = 1; i <= numberOfSteps; i++) {
-            Vector2D pos = agentPositions[agentIndex].getSide(agentsGuards.get(agentIndex).getOrientation(), i);
-            //Vector2D absolutePos = convertRelativeSpawnToAbsolute(pos, agentIndex);
+            Vector2D pos = agentPositions[agentIndex].getSide(agentsGuards[agentIndex].getOrientation(), i);
             Tile tileAtPos = scMap.getTile(pos);
             if (pos.x >= scMap.getWidth() || pos.x < 0 || pos.y >= scMap.getHeight() || pos.y < 0) return lastPos;
             if (tileAtPos.isWall()) return lastPos;
+            if (isAgentAtPos(pos)) return lastPos;
             else lastPos = pos;
         }
         return lastPos;
     }
 
     private int getNumberOfSteps(int agentIndex) {
-        double numberOfSteps = agentsGuards.get(agentIndex).getBase_speed()*timestep;
+        double numberOfSteps = agentsGuards[agentIndex].getBase_speed()*timestep;
         if (numberOfSteps < 1) return 1;
         else return (int) Math.round(numberOfSteps);
     }
 
-    private void engine(){
+    private boolean isAgentAtPos(Vector2D pos) {
+        for (int i = 0; i < agentPositions.length; i++) {
+            if (agentPositions[i].equals(pos)) return true;
+        }
+        return false;
+    }
+
+    public void engine(){
         while(!endingExplorationMap.isExplored()){
             tick(timestep);
             time += timestep;
         }
     }
 
-    private void spawnAgents() {
+    protected void spawnAgents() {
         Random random = new Random();
         ArrayList<Integer> indicesUsed = new ArrayList<>();
         ArrayList<Vector2D> spawnAreaGuards = scMap.getSpawnAreaGuards();
 
-        for (int i = 0; i < agentsGuards.size(); i++) {
+        for (int i = 0; i < agentsGuards.length; i++) {
             while (true) {
                 int rand = random.nextInt(spawnAreaGuards.size());
                 if (!indicesUsed.contains(rand)) {
@@ -128,14 +160,15 @@ public class Controller {
     }
 
     private void createAgents(int brainIntruders, int brainGuards) {
+        int[] orientations = {0, 90, 180, 270};
         if (scMap.getGameMode() != 0) {
             for (int i=0; i<scMap.getNumIntruders(); i++) {
-                agentsIntruders.add(new Agent(scMap.getBaseSpeedIntruder(), scMap.getSprintSpeedIntruder(), scMap.getIntruderViewAngle(), scMap.getIntruderViewRange(), 0.0, brainIntruders));
+                agentsIntruders[i] = new Agent(scMap.getBaseSpeedIntruder(), scMap.getSprintSpeedIntruder(), scMap.getIntruderViewAngle(), scMap.getIntruderViewRange(), orientations[rand.nextInt(orientations.length)], brainIntruders);
             }
         }
         
         for (int i=0; i<scMap.getNumGuards(); i++) {
-            agentsGuards.add(new Agent(scMap.getBaseSpeedGuard(), 0.0, scMap.getGuardViewAngle(),scMap.getGuardViewRange(),0.0, brainGuards));
+            agentsGuards[i] = new Agent(scMap.getBaseSpeedGuard(), 0.0, scMap.getGuardViewAngle(),scMap.getGuardViewRange(),orientations[rand.nextInt(orientations.length)], brainGuards);
         }
     }
 
