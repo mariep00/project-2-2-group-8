@@ -57,6 +57,7 @@ public class ScenarioMenu extends Application implements TransitionInterface {
             FileChooser fileChooser = new FileChooser();
             fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text Files", "*.txt"));
             File selectedFile = fileChooser.showOpenDialog(stage);
+            System.out.println(selectedFile);
             if (selectedFile != null) quitSceneTransition(() -> new GameScreen(new MapBuilder(selectedFile).getMap()).start(stage), vbox);
         });
         buttonCreateMap.setOnAction(e -> quitSceneTransition(() -> new MapCreator().start(stage), vbox));

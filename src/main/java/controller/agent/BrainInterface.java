@@ -1,6 +1,6 @@
-package controller;
+package controller.agent;
 
-import controller.graph.ExplorationGraph;
+import controller.maps.graph.ExplorationGraph;
 
 public interface BrainInterface {
     

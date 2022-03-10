@@ -18,39 +18,30 @@ public class Vector2D {
     public Vector2D subtract (Vector2D other) {
         return new Vector2D(x-other.x, y-other.y);
     }
+    public Vector2D add (Vector2D other) { return new Vector2D(x+other.x, y+other.y); }
 
     public boolean equals(Vector2D other){
         return this.x == other.x && this.y == other.y;
     }
 
-    public Vector2D getSide (Direction dir) {
-        switch (dir) {
-            case EAST:
-                return new Vector2D(x+1, y);
-            case NORTH:
-                return new Vector2D(x, y-1);
-            case SOUTH:
-                return new Vector2D(x, y+1);
-            case WEST:
-                return new Vector2D(x-1, y);
+    public Vector2D getSide(double dir) {
+        return getSide(dir, 1);
+    }
+    public Vector2D getSide (double dir, int steps) {
+        //0 - move forward
+        //1 - turn 90deg
+        //2 - turn 180deg
+        //3 - turn 270deg
+        switch ((int)dir) {
+            case 0:
+                return new Vector2D(x+steps, y);
+            case 270:
+                return new Vector2D(x, y-steps);
+            case 90:
+                return new Vector2D(x, y+steps);
+            case 180:
+                return new Vector2D(x-steps, y);
         }
         return null;
-    }
-
-    /**
-     * Method that gets the direction between two vectors
-     * @param to        the vector to get the direction towards
-     * @return          the direction of the current vector to the other vector
-     */
-    public Vector2D.Direction getDirection(Vector2D to) {
-        if (to.x-this.x > 0) return Vector2D.Direction.EAST;
-        else if (to.x-this.x < 0) return Vector2D.Direction.WEST;
-        else if (to.y-this.y > 0) return Vector2D.Direction.SOUTH;
-        else if (to.y-this.y < 0) return Vector2D.Direction.NORTH;
-        else return null;
-    }
-
-    public enum Direction {
-        NORTH,EAST,SOUTH,WEST;
     }
 }

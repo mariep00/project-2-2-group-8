@@ -1,5 +1,7 @@
 package controller;
 
+import controller.maps.VisionMap;
+
 import java.util.ArrayList;
 
 public class FOV {
@@ -21,14 +23,11 @@ public class FOV {
         endpoints = new ArrayList<>();
     }
 
-    public int[][] getMap () {
-        return visionGrid.getMap();
-    }
-
-    public void calculate (double visionAngle, double newVisionRange, VisionMap areaMap, double direction) {
+    public VisionMap calculate (double visionAngle, double newVisionRange, VisionMap areaMap, double direction) {
         this.visionAngle = visionAngle;
         this.direction = direction;
         this.areaMap = areaMap;
+        this.visionGrid = new VisionMap(newVisionRange);
 
         if(newVisionRange!=normalVisionRange) { currentVisionRange = newVisionRange;
         } else { currentVisionRange = normalVisionRange;}
@@ -37,7 +36,7 @@ public class FOV {
         //Marked as 1 in the VisionMap
         initiateViewingField();
         rayTracing();
-    
+        return visionGrid;
     }
 
     private void initiateViewingField() {
@@ -75,7 +74,7 @@ public class FOV {
 
     private Vector2D[] calculateLine (Vector2D p0, Vector2D p1) {
         ArrayList<Vector2D> line = new ArrayList<Vector2D>();
-        final int N = calcualteDistance(p0, p1);
+        final int N = calculateDistance(p0, p1);
         for (int i=0; i<=N; i++) {
             double t = ((double)i)/N;
             line.add(lerpPoint(p0, p1, t));
@@ -93,7 +92,7 @@ public class FOV {
         return new Vector2D((int)Math.round(lerp(p0.x, p1.x, t)), (int)Math.round(lerp(p0.y, p1.y, t)));
     }
 
-    private int calcualteDistance(Vector2D center, Vector2D other) {
+    private int calculateDistance(Vector2D center, Vector2D other) {
         int dx = other.x - center.x;
         int dy = other.y - center.y;
         return Math.max(Math.abs(dx), Math.abs(dy));
@@ -173,7 +172,7 @@ public class FOV {
 
     private Vector2D[] rayTracingLine (Vector2D p0, Vector2D p1) {
         ArrayList<Vector2D> line = new ArrayList<Vector2D>();
-        int n = calcualteDistance(p0, p1);
+        int n = calculateDistance(p0, p1);
         boolean noWall = true;
         for (int i=0; noWall&&i<=n; i++) {
             double t = ((double)i)/n;

@@ -1,4 +1,6 @@
-package controller;
+package controller.maps;
+
+import controller.Vector2D;
 
 public class Teleport extends SpecialFeature {
 

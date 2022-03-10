@@ -1,4 +1,4 @@
-package controller;
+package controller.maps;
 
 public class Tile {
     
@@ -42,6 +42,10 @@ public class Tile {
         if (type == Type.WALL || type == Type.DOOR) {
             seeThrough = false;
         }
+    }
+
+    public boolean isWall() {
+        return getType() == Type.WALL;
     }
 
     public void setSpecialFeature (SpecialFeature feature) {
