@@ -3,7 +3,7 @@ package gui.mapcreator;
 public enum TileType {
     FLOOR(ImageType.BASE),
     WALL(ImageType.BASE),
-    TELEPORT(ImageType.OTHER),
+    TELEPORT(ImageType.BASE),
     GUARD(ImageType.CHARACTER),
     SHADED(ImageType.SHADED),
     TARGET_AREA(ImageType.AREA),

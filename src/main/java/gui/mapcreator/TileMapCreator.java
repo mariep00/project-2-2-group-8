@@ -15,6 +15,7 @@ public class TileMapCreator extends Tile {
             }
         });
     }
+
     public TileMapCreator(@NotNull TileImage baseImage) {
         this(baseImage, new TileImageMapCreator(), new TileImageMapCreator(), new TileImageMapCreator(), new TileImageMapCreator());
     }
@@ -46,7 +47,7 @@ public class TileMapCreator extends Tile {
         tileImages[0].setImage(baseImage);
     }
     public void setOtherImage(Image otherImage) {
-        tileImages[2].setImage(otherImage);
+        tileImages[1].setImage(otherImage);
     }
     public void resetCharacterImage() { tileImages[1].setImage(null); }
 

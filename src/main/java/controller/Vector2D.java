@@ -28,13 +28,26 @@ public class Vector2D {
             case EAST:
                 return new Vector2D(x+1, y);
             case NORTH:
-                return new Vector2D(x, y+1);
-            case SOUTH:
                 return new Vector2D(x, y-1);
+            case SOUTH:
+                return new Vector2D(x, y+1);
             case WEST:
                 return new Vector2D(x-1, y);
         }
         return null;
+    }
+
+    /**
+     * Method that gets the direction between two vectors
+     * @param to        the vector to get the direction towards
+     * @return          the direction of the current vector to the other vector
+     */
+    public Vector2D.Direction getDirection(Vector2D to) {
+        if (to.x-this.x > 0) return Vector2D.Direction.EAST;
+        else if (to.x-this.x < 0) return Vector2D.Direction.WEST;
+        else if (to.y-this.y > 0) return Vector2D.Direction.SOUTH;
+        else if (to.y-this.y < 0) return Vector2D.Direction.NORTH;
+        else return null;
     }
 
     public enum Direction {

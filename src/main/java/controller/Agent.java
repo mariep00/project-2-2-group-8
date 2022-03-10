@@ -1,8 +1,8 @@
 package controller;
 
-import java.util.ArrayList;
-
 import controller.graph.ExplorationGraph;
+
+import java.util.ArrayList;
 
 public class Agent {
 
@@ -19,13 +19,12 @@ public class Agent {
         this.base_speed = base_speed;
         this.sprint_speed = sprint_speed;
         this.orientation = orientation;
-        initBrain(brainID);
-        map = new ExplorationGraph();
+        //initBrain(brainID);
+        //map = new ExplorationGraph();
         this.explorationMap = explorationMap;
     }
 
     public int tick(ArrayList<Tile> inVision, ArrayList<Vector2D> coordinates, double timestep) {
-
         updateGraph(inVision, coordinates);
         brain.makeDecision(map);
         return 1;
@@ -48,4 +47,6 @@ public class Agent {
                 break;
         }
     }
+
+    public double getOrientation() { return orientation; }
 }

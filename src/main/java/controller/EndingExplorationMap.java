@@ -1,7 +1,5 @@
 package controller;
 
-import java.util.ArrayList;
-
 public class EndingExplorationMap {
     private int width;
     private int height;
@@ -11,16 +9,16 @@ public class EndingExplorationMap {
         this.height = map.getHeight();
         this.width = map.getWidth();
         this.explorationMap = new int[this.height][this.width];
-        initialization(map);
+        //initialization(map);
     }
 
     public void initialization(ScenarioMap map){
-        for(int i=0; i < this.explorationMap.length; i++){
-            for(int j=0; j < this.explorationMap[i].length; j++){
-                if(map.getTile(new Vector2D(i, j)).getType() == Tile.Type.WALL){
+        for (int i = 0; i < this.explorationMap.length; i++){
+            for(int j = 0; j < this.explorationMap[i].length; j++){
+                if (map.getTile(new Vector2D(i, j)).getType() == Tile.Type.WALL){
                     explorationMap[i][j] = 2;
                 }
-                else if(map.getTile(new Vector2D(i, j)).getType() == Tile.Type.TELEPORT){
+                else if (map.getTile(new Vector2D(i, j)).getType() == Tile.Type.TELEPORT){
                     explorationMap[i][j] = 2;
                 }
             }

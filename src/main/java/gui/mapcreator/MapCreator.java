@@ -210,6 +210,7 @@ public class MapCreator extends Application implements TransitionInterface {
         listItemsView.getItems().add(new ListItem("Wall top corner left", TileType.WALL,imageContainer.getWallTopCornerLeft()));
         listItemsView.getItems().add(new ListItem("Wall top corner right", TileType.WALL,imageContainer.getWallTopCornerRight()));
         listItemsView.getItems().add(new ListItem("Wall top cornered", TileType.WALL,imageContainer.getWallTopCornered()));
+        listItemsView.getItems().add(new ListItem("Teleport", TileType.TELEPORT,imageContainer.getTeleport()));
         listItemsView.getItems().add(new ListItem("Guard south", TileType.GUARD, imageContainer.getGuard()));
         listItemsView.getItems().add(new ListItem("Shaded", TileType.SHADED,imageContainer.getShaded()));
         listItemsView.getItems().add(new ListItem("Spawn area guards", TileType.SPAWN_AREA_GUARDS, imageContainer.getSpawnAreaGuards()));

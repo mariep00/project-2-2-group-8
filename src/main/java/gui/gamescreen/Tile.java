@@ -8,7 +8,7 @@ public class Tile extends StackPane {
     public static final int tileSize = 25;
     // Index 0 --> base image (floor, wall..)
     // Index 1 --> character (guard, intruder..)
-    // Index 2 --> Something else (teleport, scent trail..)
+    // Index 2 --> Something else (scent trail..)
     // Index 3 --> Shaded
     // Index 4 --> Target area
     protected final TileImage[] tileImages = new TileImage[5];
@@ -29,9 +29,7 @@ public class Tile extends StackPane {
     }
     public Tile(@NotNull TileImage baseImage, @NotNull TileImage otherImage) { this(baseImage, new TileImage(), otherImage, new TileImage(), new TileImage()); }
 
-    public void setCharacterImage(Image characterImage) {
-        tileImages[1].setImage(characterImage);
-    }
+    public void setCharacter(Image characterImage) { tileImages[1].setImage(characterImage); }
     public void resetCharacterImage() {
         tileImages[1].resetTileImage();
     }
