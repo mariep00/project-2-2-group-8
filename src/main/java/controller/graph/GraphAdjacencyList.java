@@ -165,6 +165,10 @@ public class GraphAdjacencyList {
         }
     }
 
+    public void checkFrontierEdges(){
+
+    }
+
     /**
      * Removes a specific vertex x from the frontiers
      * @param x node
