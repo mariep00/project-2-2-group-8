@@ -53,7 +53,7 @@ public class EndingExplorationMap {
         return totalTilesToExplore == currentTilesExplored;
     }
 
-    public void updateExplorationMap(Vector2D coordinate){
+    public boolean updateExplorationMap(Vector2D coordinate){
         /*if (this.explorationMap[coordinate.y][coordinate.x] !=2){
             this.explorationMap[coordinate.y][coordinate.x] = 1;
         }*/
@@ -63,6 +63,7 @@ public class EndingExplorationMap {
                 currentTilesExplored++;
             }
         }
+        return totalTilesToExplore==currentTilesExplored;
     }
     public void updateExplorationMap(ArrayList<Vector2D> coordinates) {
         for (Vector2D coordinate : coordinates) {

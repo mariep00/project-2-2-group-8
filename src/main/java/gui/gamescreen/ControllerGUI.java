@@ -4,6 +4,8 @@ import controller.Controller;
 import controller.Vector2D;
 import controller.maps.ScenarioMap;
 
+import java.util.ArrayList;
+
 public class ControllerGUI extends Controller {
     private final GameScreen GAME_SCREEN;
     public ControllerGUI(ScenarioMap scMap, GameScreen gameScreen) {
@@ -33,9 +35,32 @@ public class ControllerGUI extends Controller {
     }
 
     @Override
-    protected void updateProgress(Vector2D vector, int agentIndex) {
-        super.updateProgress(vector, agentIndex);
+    protected boolean updateProgress(Vector2D vector, int agentIndex) {
+        boolean toReturn = super.updateProgress(vector, agentIndex);
         GAME_SCREEN.setProgress(endingExplorationMap.getCurrentTilesExplored(), endingExplorationMap.getTotalTilesToExplore());
         GAME_SCREEN.setToExplored(convertRelativeCurrentPosToAbsolute(vector, agentIndex));
+        return toReturn;
+    }
+
+    @Override
+    public void init() {
+        super.init();
+        for (int i = 0; i < agentsGuards.length; i++) {
+            updateAgentVision(i, calculateFOV(i, agentPositions[i]));
+        }
+    }
+
+    @Override
+    protected void updateAgent(int agentIndex, int task) {
+        super.updateAgent(agentIndex, task);
+        ArrayList<Vector2D> positionsInVision = calculateFOV(agentIndex, agentPositions[agentIndex]);
+        updateAgentVision(agentIndex, positionsInVision);
+        for (Vector2D vector : positionsInVision) {
+            updateProgress(vector, agentIndex);
+        }
+    }
+
+    private void updateAgentVision(int agentIndex, ArrayList<Vector2D> positionsInVision) {
+        GAME_SCREEN.updateVision(agentIndex, convertRelativeCurrentPosToAbsolute(positionsInVision, agentIndex));
     }
 }

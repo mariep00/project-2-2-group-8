@@ -7,8 +7,8 @@ import javafx.scene.input.MouseButton;
 import org.jetbrains.annotations.NotNull;
 
 public class TileMapCreator extends Tile {
-    public TileMapCreator(@NotNull TileImage baseImage, @NotNull TileImage characterImage, @NotNull TileImage otherImage, @NotNull TileImage shadedImage, @NotNull TileImage targetArea, @NotNull TileImage undiscovered) {
-        super(baseImage, characterImage, otherImage, shadedImage, targetArea, undiscovered);
+    public TileMapCreator(@NotNull TileImage baseImage, @NotNull TileImage characterImage, @NotNull TileImage otherImage, @NotNull TileImage shadedImage, @NotNull TileImage targetArea, @NotNull TileImage undiscoveredImage, @NotNull TileImage inVisionImage) {
+        super(baseImage, characterImage, otherImage, shadedImage, targetArea, undiscoveredImage, inVisionImage);
         setOnMousePressed(e -> {
             if (e.getButton() == MouseButton.PRIMARY) {
                 setImageToSelected();
@@ -17,7 +17,7 @@ public class TileMapCreator extends Tile {
     }
 
     public TileMapCreator(@NotNull TileImage baseImage) {
-        this(baseImage, new TileImageMapCreator(), new TileImageMapCreator(), new TileImageMapCreator(), new TileImageMapCreator(), new TileImageMapCreator());
+        this(baseImage, new TileImageMapCreator(), new TileImageMapCreator(), new TileImageMapCreator(), new TileImageMapCreator(), new TileImageMapCreator(), new TileImageMapCreator());
     }
 
     public void setImageToSelected() {

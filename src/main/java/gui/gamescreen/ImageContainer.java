@@ -17,6 +17,7 @@ public final class ImageContainer {
     private final Image spawnAreaGuards;
     private final Image spawnAreaIntruders;
     private final Image undiscovered;
+    private final Image vision;
     private final Image teleport;
 
     private final Image[] guardNorth;
@@ -42,6 +43,7 @@ public final class ImageContainer {
         spawnAreaGuards = new Image(this.getClass().getResource("/tiles/overlay/spawn_area_guards.png").toString());
         spawnAreaIntruders = new Image(this.getClass().getResource("/tiles/overlay/spawn_area_intruders.png").toString());
         undiscovered = new Image(this.getClass().getResource("/tiles/overlay/undiscovered.png").toString());
+        vision = new Image(this.getClass().getResource("/tiles/overlay/vision.png").toString());
         teleport =  new Image(this.getClass().getResource("/tiles/base/teleport.png").toString());
 
         guardNorth = new Image[4];
@@ -148,6 +150,7 @@ public final class ImageContainer {
     public Image getSpawnAreaGuards() { return spawnAreaGuards; }
     public Image getSpawnAreaIntruders() { return spawnAreaIntruders; }
     public Image getUndiscovered() { return undiscovered; }
+    public Image getVision() { return vision; }
     public Image getTeleport() { return teleport; }
 
     public Image getGuard() { return guardSouth[0]; }

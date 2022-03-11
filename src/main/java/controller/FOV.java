@@ -28,6 +28,7 @@ public class FOV {
         this.direction = direction;
         this.areaMap = areaMap;
         this.visionGrid = new VisionMap(newVisionRange);
+        this.endpoints = new ArrayList<>();
 
         if(newVisionRange!=normalVisionRange) { currentVisionRange = newVisionRange;
         } else { currentVisionRange = normalVisionRange;}
@@ -49,6 +50,7 @@ public class FOV {
         Vector2D p3 = calculatePoint(center, currentVisionRange, direction);
         Vector2D p4 = calculatePoint(center, currentVisionRange, angles2[1]);
         Vector2D p5 = calculatePoint(center, currentVisionRange, angles[1]);
+        visionGrid.addPoint(p1, p2, p3, p4, p5);
 /*
         Vector2D[] line1 = calculateLine(center, p1);
         visionGrid.insertElement(line1, 1);

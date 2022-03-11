@@ -35,7 +35,7 @@ public class Controller {
     public void init() {
         spawnAgents();
         for (int i = 0; i < agentsGuards.length; i++) {
-            updateProgress(calculateFOV(agentsGuards[i], agentPositions[i]), i); // Set the beginning "progress"
+            updateProgress(calculateFOV(i, agentPositions[i]), i); // Set the beginning "progress"
         }
     }
 
@@ -43,8 +43,8 @@ public class Controller {
         engine();
     }
 
-    private ArrayList<Vector2D> calculateFOV(Agent agent, Vector2D agentPosition) {
-        return fov.calculate(agent.getView_angle(), agent.getView_range(), scMap.createAreaMap(agentPosition, agent.getView_range()), agent.getOrientation()).getInVision();
+    protected ArrayList<Vector2D> calculateFOV(int agentIndex, Vector2D agentPosition) {
+        return fov.calculate(agentsGuards[agentIndex].getView_angle(), agentsGuards[agentIndex].getView_range(), scMap.createAreaMap(agentPosition, agentsGuards[agentIndex].getView_range()), agentsGuards[agentIndex].getOrientation()).getInVision();
     }
 
     public void tick() {
@@ -52,10 +52,10 @@ public class Controller {
     }
     public void tick(double timestep) {
         for (int i=0; i<agentsGuards.length; i++) {
-            ArrayList<Vector2D> positions = calculateFOV(agentsGuards[i], agentPositions[i]);
-            ArrayList<Tile> tiles = getTilesInVision(positions, i);
-            updateProgress(positions, i);
-            int task = agentsGuards[i].tick(tiles, positions, timestep);
+            ArrayList<Vector2D> positionsInVision = calculateFOV(i, agentPositions[i]);
+            ArrayList<Tile> tiles = getTilesInVision(positionsInVision, i);
+            if (updateProgress(positionsInVision, i)) { break; }
+            int task = agentsGuards[i].tick(tiles, positionsInVision, timestep);
             updateAgent(i, task);
         }
     }
@@ -68,7 +68,7 @@ public class Controller {
         return tiles;
     }
 
-    private void updateAgent(int agentIndex, int task) {
+    protected void updateAgent(int agentIndex, int task) {
         //0 - move forward
         //1 - turn 90deg
         //2 - turn 180deg
@@ -98,13 +98,16 @@ public class Controller {
         agentsGuards[agentIndex].updateOrientation(orientationToAdd);
     }
 
-    protected void updateProgress(Vector2D vector, int agentIndex) {
-        endingExplorationMap.updateExplorationMap(convertRelativeCurrentPosToAbsolute(vector, agentIndex));
+    protected boolean updateProgress(Vector2D vector, int agentIndex) {
+        return endingExplorationMap.updateExplorationMap(convertRelativeCurrentPosToAbsolute(vector, agentIndex));
     }
-    private void updateProgress(ArrayList<Vector2D> positions, int agentIndex) {
+    private boolean updateProgress(ArrayList<Vector2D> positions, int agentIndex) {
         for (Vector2D vector2D : positions) {
-            updateProgress(vector2D, agentIndex);
+            if (updateProgress(vector2D, agentIndex)) {
+                return true;
+            }
         }
+        return false;
     }
 
     private Vector2D agentMoveForward(int agentIndex) {
@@ -139,6 +142,11 @@ public class Controller {
             tick(timestep);
             time += timestep;
         }
+        end();
+    }
+
+    protected void end() {
+        System.out.println("Everything is explored. It took " + time + " seconds.");
     }
 
     protected void spawnAgents() {
@@ -172,7 +180,7 @@ public class Controller {
         }
     }
 
-    private Vector2D convertRelativeSpawnToAbsolute(Vector2D relPos, int agentId) {
+    public Vector2D convertRelativeSpawnToAbsolute(Vector2D relPos, int agentId) {
         return relPos.add(agentSpawnLocations[agentId]);
     }
     public ArrayList<Vector2D> convertRelativeSpawnToAbsolute(ArrayList<Vector2D> relPos, int agentId) {

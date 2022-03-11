@@ -12,6 +12,8 @@ public class VisionMap{
     private int width;
     private int height;
 
+    private Vector2D[] points;
+
     public VisionMap (double visionRange) {
         int radius = (int)Math.round(visionRange);
         
@@ -19,6 +21,7 @@ public class VisionMap{
         createMap(diameter, diameter, 1.0f);
 
         center = new Vector2D(radius, radius);
+        points = new Vector2D[5];
     }
 
     public Vector2D getCenter() {
@@ -82,6 +85,12 @@ public class VisionMap{
         }
         
     }
+
+    public void addPoint(Vector2D... points) {
+        this.points = points;
+    }
+
+    public Vector2D[] getPoints() { return points; }
 
     public Vector2D translateCoordinateByCenter (Vector2D p) {
         return p.subtract(center);

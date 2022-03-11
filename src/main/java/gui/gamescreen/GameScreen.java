@@ -11,6 +11,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import org.jetbrains.annotations.NotNull;
@@ -27,6 +28,7 @@ public class GameScreen extends Application implements TransitionInterface {
 
     private Tile[][] tiles;
     private ProgressBarCustom progressBar;
+    private ArrayList<Vector2D>[] visions;
 
     public GameScreen(ScenarioMap scenarioMap) {
         this.scenarioMap = scenarioMap;
@@ -42,6 +44,7 @@ public class GameScreen extends Application implements TransitionInterface {
         GridPane gridPane = new GridPane();
         gridPane.setAlignment(Pos.CENTER);
 
+        visions = (ArrayList<Vector2D>[]) new ArrayList[scenarioMap.getNumGuards()];
         tiles = new Tile[scenarioMap.getWidth()][scenarioMap.getHeight()];
         controller.maps.Tile[][] tilesController = scenarioMap.getMapGrid();
         for (int x = 0; x < scenarioMap.getWidth(); x++) {
@@ -72,9 +75,9 @@ public class GameScreen extends Application implements TransitionInterface {
             }
         }
 
-        javafx.scene.control.ScrollPane scrollPane = new javafx.scene.control.ScrollPane(gridPane);
-        scrollPane.setHbarPolicy(javafx.scene.control.ScrollPane.ScrollBarPolicy.NEVER);
-        scrollPane.setVbarPolicy(javafx.scene.control.ScrollPane.ScrollBarPolicy.NEVER);
+        ScrollPane scrollPane = new ScrollPane(gridPane);
+        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         scrollPane.setFitToHeight(true);
         scrollPane.setFitToWidth(true);
         scrollPane.setStyle("-fx-focus-color: transparent;");
@@ -98,7 +101,6 @@ public class GameScreen extends Application implements TransitionInterface {
 
         hbox.getChildren().addAll(progressBar, spacingRegion, hboxButtons);
         hbox.setAlignment(Pos.CENTER);
-        HBox.setHgrow(progressBar, Priority.ALWAYS);
         HBox.setHgrow(spacingRegion, Priority.ALWAYS);
 
         BorderPane.setMargin(hbox, new Insets(5, 5, 5, 5));
@@ -153,6 +155,31 @@ public class GameScreen extends Application implements TransitionInterface {
 
     public void setToExplored(Vector2D pos) {
         tiles[pos.x][pos.y].setToExplored();
+    }
+
+    public void updateVision(int agentIndex, ArrayList<Vector2D> positions) {
+        if (visions[agentIndex] != null) {
+            removeVision(visions[agentIndex]);
+        }
+        visions[agentIndex] = new ArrayList<>(positions);
+        for (Vector2D pos : positions) {
+            tiles[pos.x][pos.y].setToInVision(imageContainer.getVision());
+        }
+    }
+
+    private void removeVision(ArrayList<Vector2D> positions) {
+        for (Vector2D pos : positions) {
+            boolean remove = true;
+            for (ArrayList<Vector2D> others : visions) {
+                if (!others.equals(positions)) {
+                    if (others.contains(pos)) {
+                        remove = false;
+                        break;
+                    }
+                }
+            }
+            if (remove) tiles[pos.x][pos.y].setToOutOfVision();
+        }
     }
 
     @Override

@@ -12,25 +12,28 @@ public class Tile extends StackPane {
     // Index 3 --> Shaded
     // Index 4 --> Target area
     // Index 5 --> Undiscovered
-    protected final TileImage[] tileImages = new TileImage[6];
+    // Index 6 --> Vision
+    protected final TileImage[] tileImages = new TileImage[7];
 
-    public Tile(@NotNull TileImage baseImage, @NotNull TileImage characterImage, @NotNull TileImage otherImage, @NotNull TileImage shadedImage, @NotNull TileImage targetArea, @NotNull TileImage undiscoveredImage) {
-        super(baseImage, otherImage, characterImage, targetArea, shadedImage, undiscoveredImage);
+    public Tile(@NotNull TileImage baseImage, @NotNull TileImage characterImage, @NotNull TileImage otherImage, @NotNull TileImage shadedImage, @NotNull TileImage targetArea, @NotNull TileImage undiscoveredImage, @NotNull TileImage inVisionImage) {
+        super(baseImage, otherImage, characterImage, targetArea, shadedImage, undiscoveredImage, inVisionImage);
         tileImages[0] = baseImage;
         tileImages[1] = characterImage;
         tileImages[2] = otherImage;
         tileImages[3] = shadedImage;
         tileImages[4] = targetArea;
         tileImages[5] = undiscoveredImage;
+        tileImages[6] = inVisionImage;
 
         tileImages[3].setOpacity(0.45);
         tileImages[4].setOpacity(0.3);
         tileImages[5].setOpacity(0.5);
+        tileImages[6].setOpacity(0.1);
     }
     public Tile(@NotNull TileImage baseImage) {
-        this(baseImage, new TileImage(), new TileImage(), new TileImage(), new TileImage(), new TileImage());
+        this(baseImage, new TileImage(), new TileImage(), new TileImage(), new TileImage(), new TileImage(), new TileImage());
     }
-    public Tile(@NotNull TileImage baseImage, @NotNull TileImage undiscoveredImage) { this (baseImage, new TileImage(), new TileImage(), new TileImage(), new TileImage(), undiscoveredImage); }
+    public Tile(@NotNull TileImage baseImage, @NotNull TileImage undiscoveredImage) { this (baseImage, new TileImage(), new TileImage(), new TileImage(), new TileImage(), undiscoveredImage, new TileImage()); }
     public void setCharacter(Image characterImage) { tileImages[1].setImage(characterImage); }
     public void resetCharacterImage() {
         tileImages[1].resetTileImage();
@@ -42,4 +45,6 @@ public class Tile extends StackPane {
         tileImages[4].setImage(targetArea);
     }
     public void setToExplored() { tileImages[5].resetTileImage(); }
+    public void setToInVision(Image inVisionImage) { tileImages[6].setImage(inVisionImage); }
+    public void setToOutOfVision() { tileImages[6].resetTileImage(); }
 }
