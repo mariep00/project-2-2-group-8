@@ -17,6 +17,7 @@ import javafx.stage.Stage;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.BitSet;
 import java.util.List;
 
@@ -29,6 +30,7 @@ public class GameScreen extends Application implements TransitionInterface {
     private Tile[][] tiles;
     private ProgressBarCustom progressBar;
     private ArrayList<Vector2D>[] visions;
+    private boolean[] showVision;
 
     public GameScreen(ScenarioMap scenarioMap) {
         this.scenarioMap = scenarioMap;
@@ -44,6 +46,7 @@ public class GameScreen extends Application implements TransitionInterface {
         GridPane gridPane = new GridPane();
         gridPane.setAlignment(Pos.CENTER);
 
+        showVision = new boolean[scenarioMap.getNumGuards()];
         visions = (ArrayList<Vector2D>[]) new ArrayList[scenarioMap.getNumGuards()];
         tiles = new Tile[scenarioMap.getWidth()][scenarioMap.getHeight()];
         controller.maps.Tile[][] tilesController = scenarioMap.getMapGrid();
@@ -89,13 +92,22 @@ public class GameScreen extends Application implements TransitionInterface {
 
         progressBar = new ProgressBarCustom();
         progressBar.getProgressBar().setPrefWidth(400);
+        progressBar.getProgressBar().setPrefHeight(30);
 
         HBox hboxButtons = new HBox(10);
+        Button buttonShowAllVisions = new Button("Show vision");
+        buttonShowAllVisions.setPrefWidth(130);
+        buttonShowAllVisions.setPrefHeight(30);
+        Button buttonHideAllVisions = new Button("Hide vision");
+        buttonHideAllVisions.setPrefWidth(130);
+        buttonHideAllVisions.setPrefHeight(30);
         Button buttonStep = new Button("Step");
         buttonStep.setPrefWidth(130);
+        buttonStep.setPrefHeight(30);
         Button buttonPlayTillEnd = new Button("Continue until end");
         buttonPlayTillEnd.setPrefWidth(130);
-        hboxButtons.getChildren().addAll(  buttonStep, buttonPlayTillEnd);
+        buttonPlayTillEnd.setPrefHeight(30);
+        hboxButtons.getChildren().addAll(  buttonShowAllVisions, buttonHideAllVisions, buttonStep, buttonPlayTillEnd);
         hboxButtons.setAlignment(Pos.CENTER_RIGHT);
         Region spacingRegion = new Region();
 
@@ -119,6 +131,18 @@ public class GameScreen extends Application implements TransitionInterface {
         });
         buttonPlayTillEnd.setOnAction(e -> {
             controllerGUI.engine();
+        });
+        buttonShowAllVisions.setOnAction(e -> {
+            Arrays.fill(showVision, true);
+            for (int i = 0; i < scenarioMap.getNumGuards(); i++) {
+                controllerGUI.showVision(i);
+            }
+        });
+        buttonHideAllVisions.setOnAction(e -> {
+            Arrays.fill(showVision, false);
+            for (int i = 0; i < scenarioMap.getNumGuards(); i++) {
+                controllerGUI.hideVision(i);
+            }
         });
     }
 
@@ -158,23 +182,36 @@ public class GameScreen extends Application implements TransitionInterface {
     }
 
     public void updateVision(int agentIndex, ArrayList<Vector2D> positions) {
-        if (visions[agentIndex] != null) {
-            removeVision(visions[agentIndex]);
+        if (showVision[agentIndex]) {
+            if (visions[agentIndex] != null) {
+                removeVision(agentIndex, visions[agentIndex]);
+            }
+            visions[agentIndex] = new ArrayList<>(positions);
+            showVision(positions);
         }
-        visions[agentIndex] = new ArrayList<>(positions);
+        else visions[agentIndex] = new ArrayList<>(positions);
+    }
+
+    public void showVision(ArrayList<Vector2D> positions) {
         for (Vector2D pos : positions) {
             tiles[pos.x][pos.y].setToInVision(imageContainer.getVision());
         }
     }
 
-    private void removeVision(ArrayList<Vector2D> positions) {
+    public void removeVision(int agentIndex, ArrayList<Vector2D> positions) {
         for (Vector2D pos : positions) {
             boolean remove = true;
-            for (ArrayList<Vector2D> others : visions) {
-                if (!others.equals(positions)) {
-                    if (others.contains(pos)) {
-                        remove = false;
-                        break;
+            outer:
+            for (int i = 0; i < visions.length; i++) {
+                if (i != agentIndex && showVision[i]) {
+                    ArrayList<Vector2D> others = visions[i];
+                    if (!others.equals(positions)) {
+                        for (Vector2D posOther : others) {
+                            if (posOther.equals(pos)) {
+                                remove = false;
+                                break outer;
+                            }
+                        }
                     }
                 }
             }

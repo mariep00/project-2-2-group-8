@@ -28,7 +28,7 @@ public class Tile extends StackPane {
         tileImages[3].setOpacity(0.45);
         tileImages[4].setOpacity(0.3);
         tileImages[5].setOpacity(0.5);
-        tileImages[6].setOpacity(0.1);
+        tileImages[6].setOpacity(0.125);
     }
     public Tile(@NotNull TileImage baseImage) {
         this(baseImage, new TileImage(), new TileImage(), new TileImage(), new TileImage(), new TileImage(), new TileImage());

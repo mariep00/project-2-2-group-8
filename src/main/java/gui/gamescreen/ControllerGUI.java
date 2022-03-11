@@ -63,4 +63,11 @@ public class ControllerGUI extends Controller {
     private void updateAgentVision(int agentIndex, ArrayList<Vector2D> positionsInVision) {
         GAME_SCREEN.updateVision(agentIndex, convertRelativeCurrentPosToAbsolute(positionsInVision, agentIndex));
     }
+
+    public void hideVision(int agentIndex) {
+        GAME_SCREEN.removeVision(agentIndex, convertRelativeCurrentPosToAbsolute(calculateFOV(agentIndex, agentPositions[agentIndex]), agentIndex));
+    }
+    public void showVision(int agentIndex) {
+        GAME_SCREEN.showVision(convertRelativeCurrentPosToAbsolute(calculateFOV(agentIndex, agentPositions[agentIndex]), agentIndex));
+    }
 }
