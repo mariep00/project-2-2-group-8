@@ -2,6 +2,7 @@
 *.class
 
 .gradle/*
+.vscode/*
 .DS_Store
 .idea/*
 build/*
