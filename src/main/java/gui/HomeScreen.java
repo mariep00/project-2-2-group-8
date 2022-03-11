@@ -155,7 +155,7 @@ public class HomeScreen extends Application implements TransitionInterface {
 
             // When the transitions are done we want to enable window resizing again
             parallelTransitionButtons.setOnFinished(e2 -> {
-                //stage.setResizable(true);
+                stage.setResizable(true);
                 transitions.remove(parallelTransitionButtons);
                 vbox.setDisable(false);
             });
