@@ -31,12 +31,19 @@ public class Tile extends StackPane {
         tileImages[6].setOpacity(0.125);
     }
     public Tile(@NotNull TileImage baseImage) {
-        this(baseImage, new TileImage(), new TileImage(), new TileImage(), new TileImage(), new TileImage(), new TileImage());
+        this(baseImage, new TileImageAgent(), new TileImage(), new TileImage(), new TileImage(), new TileImage(), new TileImage());
     }
-    public Tile(@NotNull TileImage baseImage, @NotNull TileImage undiscoveredImage) { this (baseImage, new TileImage(), new TileImage(), new TileImage(), new TileImage(), undiscoveredImage, new TileImage()); }
-    public void setCharacter(Image characterImage) { tileImages[1].setImage(characterImage); }
+    public Tile(@NotNull TileImage baseImage, @NotNull TileImage undiscoveredImage) { this (baseImage, new TileImageAgent(), new TileImage(), new TileImage(), new TileImage(), undiscoveredImage, new TileImage()); }
+    public void setCharacter(GameScreen gameScreen, Image characterImage, int agentIndex) {
+        tileImages[1].setImage(characterImage);
+        ((TileImageAgent) tileImages[1]).setAgentIndex(agentIndex);
+        ((TileImageAgent) tileImages[1]).setGameScreen(gameScreen);
+    }
+    public TileImageAgent getTileImageAgent() { return (TileImageAgent) tileImages[1]; }
+
     public void resetCharacterImage() {
         tileImages[1].resetTileImage();
+        ((TileImageAgent) tileImages[1]).setAgentIndex(-1);
     }
     public void setShaded(Image shadedImage) {
         tileImages[3].setImage(shadedImage);

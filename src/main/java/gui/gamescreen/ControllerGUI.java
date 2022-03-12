@@ -2,6 +2,7 @@ package gui.gamescreen;
 
 import controller.Controller;
 import controller.Vector2D;
+import controller.agent.Agent;
 import controller.maps.ScenarioMap;
 
 import java.util.ArrayList;
@@ -17,7 +18,7 @@ public class ControllerGUI extends Controller {
     protected void spawnAgents() {
         super.spawnAgents();
         for (int i = 0; i < agentsGuards.length; i++) {
-            GAME_SCREEN.spawnAgent(agentsGuards[i], agentPositions[i]);
+            GAME_SCREEN.spawnAgent(i, agentPositions[i]);
         }
     }
 
@@ -25,13 +26,13 @@ public class ControllerGUI extends Controller {
     protected void updateAgentPosition(int agentIndex, Vector2D pos) {
         Vector2D oldPos = agentPositions[agentIndex];
         super.updateAgentPosition(agentIndex, pos);
-        GAME_SCREEN.moveAgent(agentsGuards[agentIndex], oldPos, agentPositions[agentIndex]);
+        GAME_SCREEN.moveAgent(agentIndex, oldPos, agentPositions[agentIndex]);
     }
 
     @Override
     protected void updateAgentOrientation(int agentIndex, double orientationToAdd) {
         super.updateAgentOrientation(agentIndex, orientationToAdd);
-        GAME_SCREEN.moveAgent(agentsGuards[agentIndex], agentPositions[agentIndex], agentPositions[agentIndex]);
+        GAME_SCREEN.moveAgent(agentIndex, agentPositions[agentIndex], agentPositions[agentIndex]);
     }
 
     @Override
@@ -59,6 +60,8 @@ public class ControllerGUI extends Controller {
             updateProgress(vector, agentIndex);
         }
     }
+
+    public Agent getAgent(int index) { return agentsGuards[index]; }
 
     private void updateAgentVision(int agentIndex, ArrayList<Vector2D> positionsInVision) {
         GAME_SCREEN.updateVision(agentIndex, convertRelativeCurrentPosToAbsolute(positionsInVision, agentIndex));

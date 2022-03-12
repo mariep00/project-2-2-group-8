@@ -1,7 +1,6 @@
 package gui.gamescreen;
 
 import controller.Vector2D;
-import controller.agent.Agent;
 import controller.maps.ScenarioMap;
 import gui.MainGUI;
 import gui.TransitionInterface;
@@ -12,6 +11,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import org.jetbrains.annotations.NotNull;
@@ -22,6 +22,7 @@ import java.util.BitSet;
 import java.util.List;
 
 public class GameScreen extends Application implements TransitionInterface {
+    private final ControllerGUI controllerGUI;
     private final ImageContainer imageContainer = ImageContainer.getInstance();
     private Stage stage;
     private ArrayList<Transition> transitions = new ArrayList<>();
@@ -34,6 +35,7 @@ public class GameScreen extends Application implements TransitionInterface {
 
     public GameScreen(ScenarioMap scenarioMap) {
         this.scenarioMap = scenarioMap;
+        this.controllerGUI = new ControllerGUI(scenarioMap, this);
     }
 
     @Override
@@ -75,6 +77,11 @@ public class GameScreen extends Application implements TransitionInterface {
 
                 gridPane.add(tile, x, y);
                 tiles[x][y] = tile;
+
+                tile.addEventFilter(MouseEvent.MOUSE_CLICKED,e -> {
+                    tile.getTileImageAgent().onClick();
+                    e.consume();
+                });
             }
         }
 
@@ -123,7 +130,6 @@ public class GameScreen extends Application implements TransitionInterface {
         stage.setScene(scene);
         loadSceneTransition(borderPane.getChildren());
 
-        ControllerGUI controllerGUI = new ControllerGUI(scenarioMap, this);
         controllerGUI.init();
 
         buttonStep.setOnAction(e -> {
@@ -164,17 +170,28 @@ public class GameScreen extends Application implements TransitionInterface {
         return bitSet;
     }
 
+    public void toggleVision(int agentIndex) {
+        if (showVision[agentIndex]) {
+            showVision[agentIndex] = false;
+            controllerGUI.hideVision(agentIndex);
+        }
+        else {
+            showVision[agentIndex] = true;
+            controllerGUI.showVision(agentIndex);
+        }
+    }
+
     public void setProgress(int numberOfTilesExplored, int  numberOfTilesToExplore) {
         progressBar.setProgress((float)numberOfTilesExplored/numberOfTilesToExplore);
     }
 
-    public void spawnAgent(Agent agent, Vector2D position) {
-        tiles[position.x][position.y].setCharacter(imageContainer.getAgent(AgentType.GUARD, agent.getOrientation()));
+    public void spawnAgent(int agentIndex, Vector2D position) {
+        tiles[position.x][position.y].setCharacter(this, imageContainer.getAgent(AgentType.GUARD, controllerGUI.getAgent(agentIndex).getOrientation()), agentIndex);
     }
 
-    public void moveAgent(Agent agent, Vector2D from, Vector2D to) {
+    public void moveAgent(int agentIndex, Vector2D from, Vector2D to) {
         tiles[from.x][from.y].resetCharacterImage();
-        tiles[to.x][to.y].setCharacter(imageContainer.getAgent(AgentType.GUARD, agent.getOrientation()));
+        tiles[to.x][to.y].setCharacter(this, imageContainer.getAgent(AgentType.GUARD, controllerGUI.getAgent(agentIndex).getOrientation()), agentIndex);
     }
 
     public void setToExplored(Vector2D pos) {
