@@ -166,6 +166,10 @@ public class GraphAdjacencyList {
         }
     }
 
+    public void checkFrontierEdges(){
+
+    }
+
     /**
      * Removes a specific vertex x from the frontiers
      * @param x node
@@ -176,6 +180,10 @@ public class GraphAdjacencyList {
                 this.frontiers.remove(i);
             }
         }
+    }
+
+    public Node getNextFrontier() {
+        return frontiers.getFirst();
     }
 
     public Node getNode(Vector2D vector2D) {

@@ -49,4 +49,8 @@ public class ExplorationGraph {
     public void setCurrentPosition(Vector2D vector2D) {
         this.currentPosition = list.getNode(vector2D);
     }
+
+    public GraphAdjacencyList getList() {
+        return this.list;
+    }
 }
