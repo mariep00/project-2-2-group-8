@@ -59,4 +59,8 @@ public class Tile {
     public String toString() {
         return "type = " + type + ", shaded = " + shaded;
     }
+
+    public boolean isTeleport() {
+        return getType() == Type.TELEPORT;
+    }
 }
