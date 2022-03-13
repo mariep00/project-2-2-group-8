@@ -130,6 +130,7 @@ public class MapBuilder {
                         break;
                     case "intruderViewRange":
                         map.setIntruderViewRange(Double.parseDouble(value));
+                        break;
                 }
             }
         }

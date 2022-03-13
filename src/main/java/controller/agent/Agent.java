@@ -57,6 +57,10 @@ public class Agent {
         else orientation = newOrientation;
     }
 
+    public void changeOrientation(double newOrientation) {
+        this.orientation = newOrientation;
+    }
+
     public double getView_angle() {
         return view_angle;
     }

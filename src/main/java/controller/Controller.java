@@ -3,6 +3,7 @@ package controller;
 import controller.agent.Agent;
 import controller.maps.EndingExplorationMap;
 import controller.maps.ScenarioMap;
+import controller.maps.Teleport;
 import controller.maps.Tile;
 
 import java.util.ArrayList;
@@ -118,10 +119,17 @@ public class Controller {
             Tile tileAtPos = scMap.getTile(pos);
             if (pos.x >= scMap.getWidth() || pos.x < 0 || pos.y >= scMap.getHeight() || pos.y < 0) return lastPos;
             if (tileAtPos.isWall()) return lastPos;
+            if (tileAtPos.isTeleport()) return posAfterTeleport(agentIndex, tileAtPos);
             if (isAgentAtPos(pos)) return lastPos;
             else lastPos = pos;
         }
         return lastPos;
+    }
+
+    private Vector2D posAfterTeleport(int agentIndex, Tile tileAtPos) {
+        Teleport tp = (Teleport)tileAtPos.getFeature();
+        agentsGuards[agentIndex].changeOrientation(tp.getOrientation());
+        return tp.getExit();
     }
 
     private int getNumberOfSteps(int agentIndex) {
