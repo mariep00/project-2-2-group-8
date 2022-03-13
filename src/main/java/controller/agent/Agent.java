@@ -66,4 +66,12 @@ public class Agent {
     }
     public double getOrientation() { return orientation; }
     public double getBase_speed() { return base_speed; }
+
+    public Vector2D getCurrentPosition() {
+        return explorationGraph.getCurrentPosition().COORDINATES;
+    }
+
+    public ExplorationGraph getExplorationGraph(){
+        return this.explorationGraph;
+    }
 }

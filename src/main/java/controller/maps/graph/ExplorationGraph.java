@@ -53,4 +53,8 @@ public class ExplorationGraph {
     public GraphAdjacencyList getList() {
         return this.list;
     }
+
+    public Type getListElementType(Vector2D position){
+        return list.getNode(position).getType().getType();
+    }
 }
