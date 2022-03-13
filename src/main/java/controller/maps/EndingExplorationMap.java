@@ -37,11 +37,12 @@ public class EndingExplorationMap {
     }
 
     public boolean updateExplorationMap(Vector2D coordinate){
-        
-        if (explorationMap[coordinate.y][coordinate.x] != 2) {
-            if (explorationMap[coordinate.y][coordinate.x] == 0) {
-                explorationMap[coordinate.y][coordinate.x] = 1;
-                currentTilesExplored++;
+        if (coordinate.y<explorationMap.length&&coordinate.x<explorationMap[0].length) {
+            if (explorationMap[coordinate.y][coordinate.x] != 2) {
+                if (explorationMap[coordinate.y][coordinate.x] == 0) {
+                    explorationMap[coordinate.y][coordinate.x] = 1;
+                    currentTilesExplored++;
+                }
             }
         }
         return totalTilesToExplore==currentTilesExplored;
