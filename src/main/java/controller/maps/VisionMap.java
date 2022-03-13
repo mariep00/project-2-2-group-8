@@ -4,7 +4,7 @@ import controller.Vector2D;
 
 import java.util.ArrayList;
 
-public class VisionMap{
+public class VisionMap {
     
     private Vector2D center;
     private int[][] mapGrid;
@@ -51,29 +51,24 @@ public class VisionMap{
         return vectors;
     }
 
-    //@Override
     public int[][] getMap() {
         return mapGrid;
     }
 
-    //@Override
     public void setMap(int[][] map) {    
         mapGrid = map;
         
     }
 
-    //@Override
     public int getTile(int x, int y) {
         return mapGrid[y][x];
     }
 
-    //@Override
     public void setTile(int x, int y, int tile) {
         mapGrid[y][x] = tile;
         
     }
 
-    //@Override
     public void createMap(int width, int height, float scaling) {
         this.width = width;
         this.height = height;
@@ -81,14 +76,12 @@ public class VisionMap{
         
     }
 
-    //@Override
     public void insertElement(Vector2D point, int tile) {
     
         mapGrid[point.y][point.x] = tile;
         
     }
 
-    //@Override
     public void insertElement(Vector2D[] points, int tile) {
         for (int i=0; i<points.length; i++) {
             mapGrid[points[i].y][points[i].x] = tile;

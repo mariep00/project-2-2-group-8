@@ -27,8 +27,6 @@ public class ScenarioMap {
     private int height;
     private double scaling;
 
-    
-
     public ScenarioMap() {
 
     }

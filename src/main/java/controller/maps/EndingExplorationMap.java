@@ -2,9 +2,6 @@ package controller.maps;
 
 import controller.Vector2D;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class EndingExplorationMap {
@@ -29,34 +26,18 @@ public class EndingExplorationMap {
                     explorationMap[i][j] = 2;
                     totalTilesToExplore--;
                 }
-                /*else if(map.getTile(new Vector2D(j, i)).getType() == Tile.Type.TELEPORT){
-                    explorationMap[i][j] = 2;
-                    totalTilesToExplore--;
-                }*/
             }
         }
     }
 
     public boolean isExplored(){
-        /*
-        for(int i=0; i < this.explorationMap.length; i++){
-            for(int j=0; j < this.explorationMap[i].length; j++){
-                if(explorationMap[i][j] == 0){
-                    return false;
-                }
-            }
-        }
-        return true;
-
-         */
+        
         System.out.println(currentTilesExplored + " / " + totalTilesToExplore);
         return totalTilesToExplore == currentTilesExplored;
     }
 
     public boolean updateExplorationMap(Vector2D coordinate){
-        /*if (this.explorationMap[coordinate.y][coordinate.x] !=2){
-            this.explorationMap[coordinate.y][coordinate.x] = 1;
-        }*/
+        
         if (explorationMap[coordinate.y][coordinate.x] != 2) {
             if (explorationMap[coordinate.y][coordinate.x] == 0) {
                 explorationMap[coordinate.y][coordinate.x] = 1;
@@ -69,20 +50,6 @@ public class EndingExplorationMap {
         for (Vector2D coordinate : coordinates) {
             updateExplorationMap(coordinate);
         }
-    }
-
-    public static void writeMatrix(String filename, int[][] matrix) {
-        try {
-            BufferedWriter bw = new BufferedWriter(new FileWriter(filename));
-
-            for (int i = 0; i < matrix.length; i++) {
-                for (int j = 0; j < matrix[i].length; j++) {
-                    bw.write(matrix[i][j] + " ");
-                }
-                bw.newLine();
-            }
-            bw.flush();
-        } catch (IOException e) {}
     }
 
     public int getTotalTilesToExplore() {

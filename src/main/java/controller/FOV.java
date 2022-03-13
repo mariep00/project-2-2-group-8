@@ -11,12 +11,12 @@ public class FOV {
     private double currentVisionRange;
     private double direction;
     private Vector2D center;
+
+    private double range = 4.0; // How many rows of endpoints should be added. Higher number means slower code because of more rays but also better accuracy. Maybe make dependent on viewRange?
     
     private VisionMap visionMap;
     private VisionMap areaMap;
     private ArrayList<Vector2D> endpoints;
-
-    private final double STEPSIZE = 5.0;
 
     public FOV (double normalVisionRange) {
         this.normalVisionRange = normalVisionRange;
@@ -62,8 +62,6 @@ public class FOV {
         
         Vector2D[] line4 = calculateLine(p4, p5);
         addToEndpoints(line4);
-
-        double range = 4.0;
         
         if (currentVisionRange>range+1.0) {
             Vector2D p6 = calculatePoint(center, currentVisionRange-range, angles[0]);
