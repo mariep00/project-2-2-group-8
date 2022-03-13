@@ -92,25 +92,7 @@ public class FOV {
 
             this.endpoints = floodFillEndpoints(calculatePoint(center, currentVisionRange-2.0, direction));
             
-        }
-/*
-        double currentVisionStep = 0.0;
-        while (true) {
-            if (currentVisionStep+STEPSIZE>currentVisionRange) {
-                break;
-            }
-            currentVisionStep += STEPSIZE;
-            Vector2D p9 = calculatePoint(center, currentVisionStep, angles[0]);
-            Vector2D p10 = calculatePoint(center, currentVisionStep, direction);
-            Vector2D p11 = calculatePoint(center, currentVisionStep, angles[1]);
-               
-            Vector2D[] line7 = calculateLine(p9, p10);
-            addToEndpoints(line7);
-
-            Vector2D[] line8 = calculateLine(p10, p11);
-            addToEndpoints(line8);
-        }
-*/        
+        }     
         
     }
 
