@@ -38,6 +38,19 @@ public class VisionMap{
         return vectors;
     }
 
+    public ArrayList<Vector2D> getInVisionAbsolute() {
+        ArrayList<Vector2D> vectors = new ArrayList<>();
+        for (int i=0; i<mapGrid.length; i++) {
+            for (int j=0; j<mapGrid[i].length; j++) {
+                if (mapGrid[i][j] == 1) {
+                    Vector2D tmp = new Vector2D(j, i); // Relative to center
+                    vectors.add(tmp);
+                }
+            }
+        }
+        return vectors;
+    }
+
     //@Override
     public int[][] getMap() {
         return mapGrid;
@@ -79,6 +92,13 @@ public class VisionMap{
     public void insertElement(Vector2D[] points, int tile) {
         for (int i=0; i<points.length; i++) {
             mapGrid[points[i].y][points[i].x] = tile;
+        }
+        
+    }
+
+    public void insertElement(ArrayList<Vector2D> points, int tile) {
+        for (Vector2D point : points) {
+            mapGrid[point.y][point.x] = tile;
         }
         
     }

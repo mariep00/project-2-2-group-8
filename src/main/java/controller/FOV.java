@@ -16,6 +16,8 @@ public class FOV {
     private VisionMap areaMap;
     private ArrayList<Vector2D> endpoints;
 
+    private final double STEPSIZE = 5.0;
+
     public FOV (double normalVisionRange) {
         this.normalVisionRange = normalVisionRange;
         visionMap = new VisionMap(normalVisionRange);
@@ -48,24 +50,74 @@ public class FOV {
         Vector2D p3 = calculatePoint(center, currentVisionRange, direction);
         Vector2D p4 = calculatePoint(center, currentVisionRange, angles2[1]);
         Vector2D p5 = calculatePoint(center, currentVisionRange, angles[1]);
-
-        Vector2D[] line3 = calculateLine(p1, p2);
+     
+        Vector2D[] line1 = calculateLine(p1, p2);
+        addToEndpoints(line1);
+        
+        Vector2D[] line2 = calculateLine(p2, p3);
+        addToEndpoints(line2);
+        
+        Vector2D[] line3 = calculateLine(p3, p4);
         addToEndpoints(line3);
         
-        Vector2D[] line4 = calculateLine(p2, p3);
+        Vector2D[] line4 = calculateLine(p4, p5);
         addToEndpoints(line4);
+
+        double range = 4.0;
         
-        Vector2D[] line5 = calculateLine(p3, p4);
-        addToEndpoints(line5);
+        if (currentVisionRange>range+1.0) {
+            Vector2D p6 = calculatePoint(center, currentVisionRange-range, angles[0]);
+            p2 = calculatePoint(center, currentVisionRange-range, angles2[0]);
+            p3 = calculatePoint(center, currentVisionRange-range, direction);
+            p4 = calculatePoint(center, currentVisionRange-range, angles2[1]);
+            Vector2D p7 = calculatePoint(center, currentVisionRange-range, angles[1]);
+
+            line1 = calculateLine(p6, p2);
+            addToEndpoints(line1);
+            
+            line2 = calculateLine(p2, p3);
+            addToEndpoints(line2);
+            
+            line3 = calculateLine(p3, p4);
+            addToEndpoints(line3);
+            
+            line4 = calculateLine(p4, p7);
+            addToEndpoints(line4);
+
+            Vector2D[] line5 = calculateLine(p6, p1);
+            addToEndpoints(line5);
+
+            Vector2D[] line6 = calculateLine(p7, p5);
+            addToEndpoints(line6);
+
+            this.endpoints = floodFillEndpoints(calculatePoint(center, currentVisionRange-2.0, direction));
+            
+        }
+/*
+        double currentVisionStep = 0.0;
+        while (true) {
+            if (currentVisionStep+STEPSIZE>currentVisionRange) {
+                break;
+            }
+            currentVisionStep += STEPSIZE;
+            Vector2D p9 = calculatePoint(center, currentVisionStep, angles[0]);
+            Vector2D p10 = calculatePoint(center, currentVisionStep, direction);
+            Vector2D p11 = calculatePoint(center, currentVisionStep, angles[1]);
+               
+            Vector2D[] line7 = calculateLine(p9, p10);
+            addToEndpoints(line7);
+
+            Vector2D[] line8 = calculateLine(p10, p11);
+            addToEndpoints(line8);
+        }
+*/        
         
-        Vector2D[] line6 = calculateLine(p4, p5);
-        addToEndpoints(line6);
     }
 
     private void rayTracing () { 
         for (int i=0; i<endpoints.size(); i++) {
             Vector2D[] inVision = rayTracingLine(center, endpoints.get(i));
-         visionMap.insertElement(inVision, 1);
+            visionMap.insertElement(inVision, 1);
         }     
     }
 
@@ -138,22 +190,25 @@ public class FOV {
         return corrAngle;
     }
 
-    private void floodFill (Vector2D start) {
+    private ArrayList<Vector2D> floodFillEndpoints (Vector2D start) {
+        VisionMap tmp = new VisionMap(currentVisionRange);
+        tmp.insertElement(endpoints, 1);
         ArrayList<Vector2D> frontiers = new ArrayList<>();
         frontiers.add(start);
-     visionMap.setTile(start.x, start.y, 1);
+        tmp.setTile(start.x, start.y, 1);
         while (frontiers.size()>0) {
             for (int i=0; i<frontiers.size(); i++) {
                 Vector2D[] adj = getNeighbours(frontiers.get(i));
                 for (int j=0;j<adj.length;j++) {
-                    if (visionMap.getTile(adj[j].x, adj[j].y) == 0) {
-                     visionMap.setTile(adj[j].x, adj[j].y, 1);
+                    if (tmp.getTile(adj[j].x, adj[j].y) == 0) {
+                        tmp.setTile(adj[j].x, adj[j].y, 1);
                         frontiers.add(adj[j]);
                     }
                 }
                 frontiers.remove(i);
             }
         }
+        return tmp.getInVisionAbsolute();
     }
 
     private Vector2D[] getNeighbours (Vector2D center) {

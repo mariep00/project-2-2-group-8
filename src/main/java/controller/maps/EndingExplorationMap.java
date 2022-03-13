@@ -29,10 +29,10 @@ public class EndingExplorationMap {
                     explorationMap[i][j] = 2;
                     totalTilesToExplore--;
                 }
-                else if(map.getTile(new Vector2D(j, i)).getType() == Tile.Type.TELEPORT){
+                /*else if(map.getTile(new Vector2D(j, i)).getType() == Tile.Type.TELEPORT){
                     explorationMap[i][j] = 2;
                     totalTilesToExplore--;
-                }
+                }*/
             }
         }
     }
