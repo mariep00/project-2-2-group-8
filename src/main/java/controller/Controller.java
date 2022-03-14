@@ -45,7 +45,9 @@ public class Controller {
     }
 
     protected ArrayList<Vector2D> calculateFOV(int agentIndex, Vector2D agentPosition) {
-        return fov.calculate(agentsGuards[agentIndex].getView_angle(), agentsGuards[agentIndex].getView_range(), scMap.createAreaMap(agentPosition, agentsGuards[agentIndex].getView_range()), agentsGuards[agentIndex].getOrientation()).getInVision();
+        ArrayList<Vector2D> l = fov.calculate(agentsGuards[agentIndex].getView_angle(), agentsGuards[agentIndex].getView_range(), scMap.createAreaMap(agentPosition, agentsGuards[agentIndex].getView_range()), agentsGuards[agentIndex].getOrientation()).getInVision();
+        //System.out.println(l.toString());
+        return l;
     }
 
     public void tick() {
@@ -64,7 +66,10 @@ public class Controller {
     private ArrayList<Tile> getTilesInVision(ArrayList<Vector2D> positions, int agentIndex) {
         ArrayList<Tile> tiles = new ArrayList<>();
         for (Vector2D vector2D : positions) {
-            tiles.add(scMap.getTile(convertRelativeCurrentPosToAbsolute(vector2D, agentIndex)));
+            Vector2D abs = convertRelativeCurrentPosToAbsolute(vector2D, agentIndex);
+            if (abs.x<scMap.getWidth() && abs.y<scMap.getHeight() && abs.x>=0 && abs.y>=0) {
+                tiles.add(scMap.getTile(abs));
+            }    
         }
         return tiles;
     }
@@ -116,8 +121,8 @@ public class Controller {
         Vector2D lastPos = agentPositions[agentIndex];
         for (int i = 1; i <= numberOfSteps; i++) {
             Vector2D pos = agentPositions[agentIndex].getSide(agentsGuards[agentIndex].getOrientation(), i);
-            Tile tileAtPos = scMap.getTile(pos);
             if (pos.x >= scMap.getWidth() || pos.x < 0 || pos.y >= scMap.getHeight() || pos.y < 0) return lastPos;
+            Tile tileAtPos = scMap.getTile(pos);           
             if (tileAtPos.isWall()) return lastPos;
             if (tileAtPos.isTeleport()) return posAfterTeleport(agentIndex, tileAtPos);
             if (isAgentAtPos(pos)) return lastPos;
@@ -149,12 +154,16 @@ public class Controller {
         while(!endingExplorationMap.isExplored()){
             tick(timestep);
             time += timestep;
+            System.out.println("Current time: " + time + ", the timestep is: " + timestep);
         }
         end();
     }
 
     protected void end() {
-        System.out.println("Everything is explored. It took " + time + " seconds.");
+        int hours = (int) time / 3600;
+        int minutes = ((int)time % 3600) / 60;
+        double seconds = time % 60;
+        System.out.println("Everything is explored. It took " + hours + " hour(s) " + minutes + " minutes " + seconds + " seconds.");
     }
 
     protected void spawnAgents() {

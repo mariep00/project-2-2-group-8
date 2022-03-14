@@ -37,7 +37,7 @@ public class EndingExplorationMap {
     }
 
     public boolean updateExplorationMap(Vector2D coordinate){
-        if (coordinate.y<explorationMap.length&&coordinate.x<explorationMap[0].length) {
+        if (coordinate.y<explorationMap.length && coordinate.x<explorationMap[0].length && coordinate.y>=0 && coordinate.x>=0) {
             if (explorationMap[coordinate.y][coordinate.x] != 2) {
                 if (explorationMap[coordinate.y][coordinate.x] == 0) {
                     explorationMap[coordinate.y][coordinate.x] = 1;
@@ -49,7 +49,9 @@ public class EndingExplorationMap {
     }
     public void updateExplorationMap(ArrayList<Vector2D> coordinates) {
         for (Vector2D coordinate : coordinates) {
-            updateExplorationMap(coordinate);
+            if (coordinate.y<explorationMap.length && coordinate.x<explorationMap[0].length && coordinate.y>=0 && coordinate.x>=0) {
+                updateExplorationMap(coordinate);
+            }
         }
     }
 

@@ -3,6 +3,7 @@ package controller;
 import controller.maps.VisionMap;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class FOV {
     
@@ -97,6 +98,7 @@ public class FOV {
     private void rayTracing () { 
         for (int i=0; i<endpoints.size(); i++) {
             Vector2D[] inVision = rayTracingLine(center, endpoints.get(i));
+    
             visionMap.insertElement(inVision, 1);
         }     
     }
@@ -108,10 +110,12 @@ public class FOV {
         for (int i=0; noWall&&i<=n; i++) {
             double t = ((double)i)/n;
             Vector2D p = lerpPoint(p0, p1, t);
-            if (areaMap.getTile(p.x, p.y)==1) {
+            if (areaMap.getTile(p.x, p.y)==1 || areaMap.getTile(p.x, p.y)==2) {
                 noWall = false;
             }
-            line.add(p);
+            if (areaMap.getTile(p.x, p.y)!=2) {
+                line.add(p);
+            }
         }
         Vector2D[] pointsLine = new Vector2D[line.size()];
         pointsLine = line.toArray(pointsLine);

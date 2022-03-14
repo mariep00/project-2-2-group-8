@@ -195,7 +195,9 @@ public class GameScreen extends Application implements TransitionInterface {
     }
 
     public void setToExplored(Vector2D pos) {
-        tiles[pos.x][pos.y].setToExplored();
+        if (pos.x<tiles.length && pos.y<tiles[0].length && pos.y>=0 && pos.x>=0) {
+            tiles[pos.x][pos.y].setToExplored();
+        }
     }
 
     public void updateVision(int agentIndex, ArrayList<Vector2D> positions) {

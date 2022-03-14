@@ -84,6 +84,10 @@ public class ScenarioMap {
     }
 
     public void setBaseSpeedGuard(double baseSpeedGuard) {
+        if (timestep == 0.0) {
+            timestep = 1.0/baseSpeedGuard;
+        }
+
         this.baseSpeedGuard = baseSpeedGuard;
     }
 
@@ -251,7 +255,7 @@ public class ScenarioMap {
             for (int y=start.y; y<endY; y++) {
                 if (y<0 || x<0 || y>=height || x>=width) {
                     //areaMap.insertElement(new Vector2D(Math.abs(x)-Math.abs(start.x), Math.abs(y)-Math.abs(start.y)), 1);
-                    areaMap.insertElement(new Vector2D(Math.abs(Math.abs(x)-Math.abs(start.x)), Math.abs(Math.abs(y)-Math.abs(start.y))), 1);
+                    areaMap.insertElement(new Vector2D(Math.abs(Math.abs(x)-Math.abs(start.x)), Math.abs(Math.abs(y)-Math.abs(start.y))), 2);
                 } else if (mapGrid[y][x].getType()==Type.WALL) {
                     areaMap.insertElement(new Vector2D(x-start.x, y-start.y), 1);
                 }
