@@ -3,7 +3,6 @@ package controller;
 import controller.maps.VisionMap;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class FOV {
     
