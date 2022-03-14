@@ -60,6 +60,7 @@ public class PauseMenu {
         pauseScene.getStylesheets().add(MainGUI.getStylesheet());
 
         scene.getRoot().setEffect(new GaussianBlur());
+
         pauseStage.show();
 
         pauseScene.setOnKeyPressed(e -> {

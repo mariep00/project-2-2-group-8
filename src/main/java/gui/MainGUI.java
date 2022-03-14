@@ -1,5 +1,6 @@
 package gui;
 
+import gui.gamescreen.GameScreen;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -40,6 +41,8 @@ public class MainGUI {
         stage.setMinWidth(WINDOW_STARTING_WIDTH);
         stage.setWidth(windowWidth);
         stage.setHeight(windowHeight);
+
+        stage.setOnCloseRequest(e -> System.exit(0));
     }
 
     /**
@@ -125,6 +128,9 @@ public class MainGUI {
                     if (classObject instanceof TransitionInterface) {
                         ((TransitionInterface) classObject).pauseTransitions(((TransitionInterface) classObject).getTransitions());
                     }
+                    if (classObject instanceof GameScreen) {
+                        ((GameScreen) classObject).pauseGame();
+                    }
                     pauseMenu = new PauseMenu(classObject, scene, stage);
                 }
             }
@@ -137,6 +143,9 @@ public class MainGUI {
     public static void closePauseMenu(Object classObject) {
         if (classObject instanceof TransitionInterface) {
             ((TransitionInterface) classObject).continueTransitions(((TransitionInterface) classObject).getTransitions());
+        }
+        if (classObject instanceof GameScreen) {
+            ((GameScreen) classObject).continueGame();
         }
         pauseMenu = null;
     }

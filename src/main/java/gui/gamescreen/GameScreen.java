@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class GameScreen extends Application implements TransitionInterface {
     private final ControllerGUI controllerGUI;
@@ -133,10 +134,13 @@ public class GameScreen extends Application implements TransitionInterface {
         controllerGUI.init();
 
         buttonStep.setOnAction(e -> {
-            controllerGUI.tick();
+            new Thread(controllerGUI::tick).start();
         });
         buttonPlayTillEnd.setOnAction(e -> {
-            controllerGUI.engine();
+            //ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+            //executor.scheduleAtFixedRate(controllerGUI::tick, 0, 1000, TimeUnit.MILLISECONDS);
+            //new Thread(controllerGUI::engine).start();
+            controllerGUI.runSimulation();
         });
         buttonShowAllVisions.setOnAction(e -> {
             Arrays.fill(showVision, true);
@@ -170,6 +174,13 @@ public class GameScreen extends Application implements TransitionInterface {
         return bitSet;
     }
 
+    public void pauseGame() {
+        controllerGUI.pauseThreads();
+    }
+    public void continueGame() {
+        controllerGUI.continueThreads();
+    }
+
     public void toggleVision(int agentIndex) {
         if (showVision[agentIndex]) {
             showVision[agentIndex] = false;
@@ -181,21 +192,24 @@ public class GameScreen extends Application implements TransitionInterface {
         }
     }
 
-    public void setProgress(int numberOfTilesExplored, int  numberOfTilesToExplore) {
+    public void setProgress(AtomicBoolean executeNextGuiTask, int numberOfTilesExplored, int  numberOfTilesToExplore) {
         progressBar.setProgress((float)numberOfTilesExplored/numberOfTilesToExplore);
+        executeNextGuiTask.set(true);
     }
 
     public void spawnAgent(int agentIndex, Vector2D position) {
         tiles[position.x][position.y].setCharacter(this, imageContainer.getAgent(AgentType.GUARD, controllerGUI.getAgent(agentIndex).getOrientation()), agentIndex);
     }
 
-    public void moveAgent(int agentIndex, Vector2D from, Vector2D to) {
+    public void moveAgent(AtomicBoolean executeNextGuiTask, int agentIndex, Vector2D from, Vector2D to) {
         tiles[from.x][from.y].resetCharacterImage();
         tiles[to.x][to.y].setCharacter(this, imageContainer.getAgent(AgentType.GUARD, controllerGUI.getAgent(agentIndex).getOrientation()), agentIndex);
+        executeNextGuiTask.set(true);
     }
 
-    public void setToExplored(Vector2D pos) {
+    public void setToExplored(AtomicBoolean executeNextGuiTask, Vector2D pos) {
         tiles[pos.x][pos.y].setToExplored();
+        executeNextGuiTask.set(true);
     }
 
     public void updateVision(int agentIndex, ArrayList<Vector2D> positions) {
