@@ -45,9 +45,7 @@ public class Controller {
     }
 
     protected ArrayList<Vector2D> calculateFOV(int agentIndex, Vector2D agentPosition) {
-        ArrayList<Vector2D> l = fov.calculate(agentsGuards[agentIndex].getView_angle(), agentsGuards[agentIndex].getView_range(), scMap.createAreaMap(agentPosition, agentsGuards[agentIndex].getView_range()), agentsGuards[agentIndex].getOrientation()).getInVision();
-        //System.out.println(l.toString());
-        return l;
+        return fov.calculate(agentsGuards[agentIndex].getView_angle(), agentsGuards[agentIndex].getView_range(), scMap.createAreaMap(agentPosition, agentsGuards[agentIndex].getView_range()), agentsGuards[agentIndex].getOrientation()).getInVision();
     }
 
     public void tick() {
@@ -154,7 +152,6 @@ public class Controller {
         while(!endingExplorationMap.isExplored()){
             tick(timestep);
             time += timestep;
-            System.out.println("Current time: " + time + ", the timestep is: " + timestep);
         }
         end();
     }
