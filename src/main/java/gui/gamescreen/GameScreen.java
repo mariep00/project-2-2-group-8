@@ -51,6 +51,9 @@ public class GameScreen extends Application implements TransitionInterface {
 
         showVision = new boolean[scenarioMap.getNumGuards()];
         visions = (ArrayList<Vector2D>[]) new ArrayList[scenarioMap.getNumGuards()];
+        for (int i = 0; i < visions.length; i++) {
+            visions[i] = new ArrayList<>();
+        }
         tiles = new Tile[scenarioMap.getWidth()][scenarioMap.getHeight()];
         controller.maps.Tile[][] tilesController = scenarioMap.getMapGrid();
         for (int x = 0; x < scenarioMap.getWidth(); x++) {
@@ -112,10 +115,13 @@ public class GameScreen extends Application implements TransitionInterface {
         Button buttonStep = new Button("Step");
         buttonStep.setPrefWidth(130);
         buttonStep.setPrefHeight(30);
-        Button buttonPlayTillEnd = new Button("Continue until end");
-        buttonPlayTillEnd.setPrefWidth(130);
-        buttonPlayTillEnd.setPrefHeight(30);
-        hboxButtons.getChildren().addAll(  buttonShowAllVisions, buttonHideAllVisions, buttonStep, buttonPlayTillEnd);
+        Button buttonRunSimulation = new Button("Run simulation");
+        buttonRunSimulation.setPrefWidth(130);
+        buttonRunSimulation.setPrefHeight(30);
+        Button buttonStopSimulation = new Button("Stop simulation");
+        buttonStopSimulation.setPrefWidth(130);
+        buttonStopSimulation.setPrefHeight(30);
+        hboxButtons.getChildren().addAll(  buttonShowAllVisions, buttonHideAllVisions, buttonStep, buttonRunSimulation, buttonStopSimulation);
         hboxButtons.setAlignment(Pos.CENTER_RIGHT);
         Region spacingRegion = new Region();
 
@@ -136,12 +142,8 @@ public class GameScreen extends Application implements TransitionInterface {
         buttonStep.setOnAction(e -> {
             new Thread(controllerGUI::tick).start();
         });
-        buttonPlayTillEnd.setOnAction(e -> {
-            //ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
-            //executor.scheduleAtFixedRate(controllerGUI::tick, 0, 1000, TimeUnit.MILLISECONDS);
-            //new Thread(controllerGUI::engine).start();
-            controllerGUI.runSimulation();
-        });
+        buttonRunSimulation.setOnAction(e -> controllerGUI.runSimulation());
+        buttonStopSimulation.setOnAction(e -> controllerGUI.stopSimulation());
         buttonShowAllVisions.setOnAction(e -> {
             Arrays.fill(showVision, true);
             for (int i = 0; i < scenarioMap.getNumGuards(); i++) {
@@ -193,8 +195,10 @@ public class GameScreen extends Application implements TransitionInterface {
     }
 
     public void setProgress(AtomicBoolean executeNextGuiTask, int numberOfTilesExplored, int  numberOfTilesToExplore) {
+        System.out.println("HERE 1");
         progressBar.setProgress((float)numberOfTilesExplored/numberOfTilesToExplore);
         executeNextGuiTask.set(true);
+        System.out.println("HERE 2");
     }
 
     public void spawnAgent(int agentIndex, Vector2D position) {
@@ -202,52 +206,66 @@ public class GameScreen extends Application implements TransitionInterface {
     }
 
     public void moveAgent(AtomicBoolean executeNextGuiTask, int agentIndex, Vector2D from, Vector2D to) {
+        System.out.println("HERE 3");
         tiles[from.x][from.y].resetCharacterImage();
         tiles[to.x][to.y].setCharacter(this, imageContainer.getAgent(AgentType.GUARD, controllerGUI.getAgent(agentIndex).getOrientation()), agentIndex);
         executeNextGuiTask.set(true);
+        System.out.println("HERE 4");
     }
 
-    public void setToExplored(AtomicBoolean executeNextGuiTask, Vector2D pos) {
-        tiles[pos.x][pos.y].setToExplored();
+    public void setToExplored(AtomicBoolean executeNextGuiTask, List<Vector2D> positions) {
+        System.out.println("HERE 5");
+        for (Vector2D pos : positions) {
+            tiles[pos.x][pos.y].setToExplored();
+        }
+        executeNextGuiTask.set(true);
+        System.out.println("HERE 6");
+    }
+
+    public void updateVision(AtomicBoolean executeNextGuiTask, int agentIndex, ArrayList<Vector2D> positions) {
+        System.out.println("HERE 7");
+        if (showVision[agentIndex]) {
+            if (visions[agentIndex] != null) {
+                removeVision(null, agentIndex, visions[agentIndex]);
+            }
+            visions[agentIndex] = new ArrayList<>(positions);
+            showVision(null, positions);
+        }
+        else visions[agentIndex] = new ArrayList<>(positions);
+
+        System.out.println("HERE 8");
         executeNextGuiTask.set(true);
     }
 
-    public void updateVision(int agentIndex, ArrayList<Vector2D> positions) {
-        if (showVision[agentIndex]) {
-            if (visions[agentIndex] != null) {
-                removeVision(agentIndex, visions[agentIndex]);
-            }
-            visions[agentIndex] = new ArrayList<>(positions);
-            showVision(positions);
-        }
-        else visions[agentIndex] = new ArrayList<>(positions);
-    }
-
-    public void showVision(ArrayList<Vector2D> positions) {
+    public void showVision(AtomicBoolean executeNextGuiTask, ArrayList<Vector2D> positions) {
+        System.out.println("HERE 9");
         for (Vector2D pos : positions) {
             tiles[pos.x][pos.y].setToInVision(imageContainer.getVision());
         }
+        if (executeNextGuiTask != null) executeNextGuiTask.set(true);
+        System.out.println("HERE 10");
     }
 
-    public void removeVision(int agentIndex, ArrayList<Vector2D> positions) {
+    public void removeVision(AtomicBoolean executeNextGuiTask, int agentIndex, ArrayList<Vector2D> positions) {
+        System.out.println("HERE 11");
         for (Vector2D pos : positions) {
             boolean remove = true;
             outer:
             for (int i = 0; i < visions.length; i++) {
                 if (i != agentIndex && showVision[i]) {
                     ArrayList<Vector2D> others = visions[i];
-                    if (!others.equals(positions)) {
-                        for (Vector2D posOther : others) {
-                            if (posOther.equals(pos)) {
-                                remove = false;
-                                break outer;
-                            }
+                    for (Vector2D posOther : others) {
+                        if (posOther.equals(pos)) {
+                            remove = false;
+                            break outer;
                         }
                     }
                 }
             }
             if (remove) tiles[pos.x][pos.y].setToOutOfVision();
         }
+        if (executeNextGuiTask != null) executeNextGuiTask.set(true);
+        System.out.println("HERE 12");
     }
 
     @Override
