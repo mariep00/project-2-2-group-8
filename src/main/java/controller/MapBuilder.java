@@ -35,8 +35,16 @@ public class MapBuilder {
         try (Scanner scanner =  new Scanner(file, ENCODING.name())){
             while (scanner.hasNextLine()){
                 String line = scanner.nextLine();
-                System.out.println(line);
-                parseLine(line);
+                if(line.contains("//")) {
+                    int index = line.indexOf("//");
+                    line = line.substring(0, index);
+                    System.out.println(line);
+                    parseLine(line);
+                }
+                else {
+                    System.out.println(line);
+                    parseLine(line);
+                }
             }
         }
         catch(Exception e) {
