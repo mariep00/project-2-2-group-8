@@ -2,9 +2,12 @@ package controller.agent;
 
 import controller.Vector2D;
 import controller.maps.Tile;
+import controller.maps.Tile.Type;
 import controller.maps.graph.ExplorationGraph;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class Agent {
 
@@ -15,6 +18,8 @@ public class Agent {
     private double view_range;
 
     private BrainInterface brain;
+
+    private int testCounter = 0;
 
     private ExplorationGraph explorationGraph;
 
@@ -34,9 +39,28 @@ public class Agent {
     }
 
     private void updateGraph(ArrayList<Tile> inVision, ArrayList<Vector2D> coordinates) {
+        
         if (inVision.size() == coordinates.size()) {
+            ArrayList<Integer> walls = new ArrayList<>();
+            ArrayList<Integer> notWalls = new ArrayList<>();
+            testCounter++;
             for (int i=0; i<inVision.size(); i++) {
-                explorationGraph.createNode(coordinates.get(i), inVision.get(i), false);
+                if (inVision.get(i).getType() == Type.WALL) {
+                    walls.add(i);
+                } else {
+                    notWalls.add(i);
+                }
+                
+            }
+            for (Integer i: notWalls) {   
+                explorationGraph.createNode(coordinates.get(i), inVision.get(i));
+            }
+            for (Integer i: walls) { 
+                Vector2D[] neighbours = coordinates.get(i).getNeighbours();
+                for (int j=0; j<neighbours.length; j++) {
+                    explorationGraph.addWall(neighbours[j], j);
+                }
+                
             }
         }
     }
@@ -70,4 +94,9 @@ public class Agent {
     }
     public double getOrientation() { return orientation; }
     public double getBase_speed() { return base_speed; }
+
+    @Override
+    public String toString() {
+        return explorationGraph.toString() + " Counter " + testCounter;
+    }
 }

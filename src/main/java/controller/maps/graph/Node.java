@@ -11,12 +11,15 @@ public class Node {
     private Vector2D[] neighbours;
     private Tile type;
 
+    private boolean[] walls;
+
     public final Vector2D COORDINATES;
 
     public Node(Vector2D coordinates, Tile type){
         this.edge_list = new LinkedList<>();
         this.COORDINATES = coordinates;
         this.type = type;
+        this.walls = new boolean[4];
         initializeNeighbours();
     }
 
@@ -38,7 +41,15 @@ public class Node {
      */
     public void addEdge(Node y)
     {
-        this.edge_list.addFirst(y);
+        if (!this.edge_list.contains(y)) {this.edge_list.addFirst(y);}
+        
+    }
+
+    public void addSelfEdge (int direction) {
+        if (!walls[direction]) {
+            walls[direction] = true;
+            addEdge(this);
+        }
     }
 
     /**
@@ -65,4 +76,8 @@ public class Node {
         this.type = type;
     }
 
+    @Override
+    public String toString() {
+        return "(" + COORDINATES + " Type: " + type.getType().toString() + " Edges" + edge_list.size() + ")";
+    }
 }

@@ -44,4 +44,13 @@ public class Vector2D {
         }
         return null;
     }
+
+    public Vector2D[] getNeighbours () {
+        Vector2D[] neighbours = new Vector2D[4];
+        neighbours[0] = new Vector2D(this.x, (this.y+1));
+        neighbours[1] = new Vector2D((this.x+1), this.y);
+        neighbours[2] = new Vector2D(this.x, (this.y-1));
+        neighbours[3] = new Vector2D((this.x-1), (this.y));
+        return neighbours;
+    }
 }

@@ -56,7 +56,7 @@ public class Controller {
             ArrayList<Vector2D> positionsInVision = calculateFOV(i, agentPositions[i]);
             ArrayList<Tile> tiles = getTilesInVision(positionsInVision, i);
             if (updateProgress(positionsInVision, i)) { break; }
-            int task = agentsGuards[i].tick(tiles, positionsInVision, timestep);
+            int task = agentsGuards[i].tick(tiles, convertRelativeCurrentPosToRelativeToSpawn(positionsInVision, i), timestep);
             updateAgent(i, task);
         }
     }
@@ -161,6 +161,7 @@ public class Controller {
         int minutes = ((int)time % 3600) / 60;
         double seconds = time % 60;
         System.out.println("Everything is explored. It took " + hours + " hour(s) " + minutes + " minutes " + seconds + " seconds.");
+        System.out.println(agentsGuards[0].toString());
     }
 
     protected void spawnAgents() {
@@ -216,6 +217,17 @@ public class Controller {
         ArrayList<Vector2D> absPos = new ArrayList<>();
         for (Vector2D vector2D : relPos) {
             absPos.add(convertRelativeCurrentPosToAbsolute(vector2D, agentId));
+        }
+        return absPos;
+    }
+
+    public Vector2D convertRelativeCurrentPosToRelativeToSpawn(Vector2D relPos, int agentId) {
+        return convertAbsoluteToRelativeSpawn(relPos.add(agentPositions[agentId]), agentId);
+    }
+    public ArrayList<Vector2D> convertRelativeCurrentPosToRelativeToSpawn (ArrayList<Vector2D> relPos, int agentId) {
+        ArrayList<Vector2D> absPos = new ArrayList<>();
+        for (Vector2D vector2D : relPos) {
+            absPos.add(convertRelativeCurrentPosToRelativeToSpawn(vector2D, agentId));
         }
         return absPos;
     }

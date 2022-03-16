@@ -55,7 +55,7 @@ public class GraphAdjacencyList {
     public void addVertex(Node x){
         this.list.addFirst(x); //add or addFirst
         this.frontiers.addFirst(x);
-
+        //System.out.println("Frontier Size: " + frontiers.size());
     }
 
     /**
@@ -80,28 +80,30 @@ public class GraphAdjacencyList {
      */
     public void addEdge(Node x, Node y){
         for(int i=0; i < this.list.size(); i++){
-            if(this.list.get(i).equals(x)){
+            if(this.list.get(i).COORDINATES.equals(x.COORDINATES)){
                 this.list.get(i).addEdge(y);
                 for(int j = 0; j < this.list.size(); j++){
-                    if(this.list.get(j).equals(y)){
+                    if(this.list.get(j).COORDINATES.equals(y.COORDINATES)){
                         this.list.get(j).addEdge(x);
                     }
                 }
             }
         }
-        updateFrontiers(x, y);
+        updateFrontiers(x);
+        updateFrontiers(y);
     }
 
     /**
      * Adds an edge to the vertex x itself
      * @param x node
      */
-    public void addSelfEdge(Node x){
+    public void addSelfEdge(Node x, int direction){
         for(int i=0; i < this.list.size(); i++){
             if(this.list.get(i).equals(x)){
-                this.list.get(i).addEdge(x);
+                this.list.get(i).addSelfEdge(direction);;
             }
         }
+        updateFrontiers(x);
     }
 
     /**
@@ -130,7 +132,9 @@ public class GraphAdjacencyList {
     public boolean isVisited(Vector2D vector){
         for(Node node: this.list){
             if(node.COORDINATES.equals(vector)){
+                checkEdges(node);
                 return true;
+
             }
         }
         return false;
@@ -157,13 +161,11 @@ public class GraphAdjacencyList {
      * @param x node
      * @param y node
      */
-    private void updateFrontiers(Node x, Node y){
+    private void updateFrontiers(Node x){
         if(x.getEdges().size() >= 4){
             removeVertexFromFrontiers(x);
         }
-        if(y.getEdges().size() >= 4) {
-            removeVertexFromFrontiers(y);
-        }
+        
     }
 
     /**
@@ -185,5 +187,10 @@ public class GraphAdjacencyList {
             }
         }
         return null;
+    }
+
+    @Override
+    public String toString() {
+        return frontiers.toString() + " Number of Nodes: " + list.size() + " size frontier: " + frontiers.size();
     }
 }

@@ -10,6 +10,8 @@ public class ExplorationGraph {
     private Node currentPosition;
     private GraphAdjacencyList list;
 
+    private int testCounter = 0;
+
     public ExplorationGraph(){
         Tile t = new Tile();
         t.setType(Type.SPAWN_AREA_GUARDS);
@@ -25,15 +27,24 @@ public class ExplorationGraph {
      * @param type of the Tile
      * @param hasWall setting if the newly created node has a wall
      */
-    public void createNode(Vector2D vector, Tile type, boolean hasWall){
+    public void createNode(Vector2D vector, Tile type){
         if(!nodeExists(vector)){
+            testCounter++;
             Node node =  new Node(vector, type);
             this.list.addVertex(node);
+        
             this.list.checkEdges(node);
-            if(hasWall){
-                this.list.addSelfEdge(node);
-            }
+            
         }
+    }
+
+    public void addWall(Vector2D pos, int direction) {
+        Node node = this.list.getNode(pos);
+        if (node != null)  {
+            this.list.addSelfEdge(node, direction);
+            this.list.checkEdges(node);
+        }
+        
     }
 
     /**
@@ -42,11 +53,16 @@ public class ExplorationGraph {
      * @return true if it there is already a node
      */
     private boolean nodeExists(Vector2D vector){
-        return this.list.isVisited(vector); //check the neighbours (inside the visited bucket)
+        return this.list.isVisited(vector);
     }
 
     public Node getCurrentPosition() { return currentPosition; }
     public void setCurrentPosition(Vector2D vector2D) {
         this.currentPosition = list.getNode(vector2D);
+    }
+
+    @Override
+    public String toString() {
+        return list.toString() + " nodeExists counter: " + testCounter;
     }
 }
