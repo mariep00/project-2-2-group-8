@@ -59,14 +59,14 @@ public class HomeScreen extends Application implements TransitionInterface {
     public void loadHomeScreen() {
         ImageView logo;
         try {
-            logo = new ImageView(new Image(Objects.requireNonNull(this.getClass().getResource("/logo.png")).toString()));
+            logo = new ImageView(new Image(Objects.requireNonNull(this.getClass().getResource("/img.png")).toString()));
         } catch (NullPointerException exception) {
             System.out.println("WARNING: Logo not found in the given directory.");
             logo = new ImageView();
         }
         logo.setPreserveRatio(true);
-        logo.setFitWidth(200);
-        logo.setFitHeight(80);
+        logo.setFitWidth(400);
+        logo.setFitHeight(400);
 
         Button playButton = new Button("Play game");
         Button quitButton = new Button("Quit game");
@@ -121,11 +121,11 @@ public class HomeScreen extends Application implements TransitionInterface {
         Path logoPath = new Path();
         MoveTo moveFrom = new MoveTo(logo.getX() + logo.getFitWidth() / 2, -logo.getFitHeight());
         logoPath.getElements().add(moveFrom);
-        logoPath.getElements().add(new LineTo(logo.getX() + logo.getFitWidth() / 2, logo.getY() + logo.getFitHeight() / 2));
+        logoPath.getElements().add(new LineTo(logo.getX() + logo.getFitWidth() / 2, logo.getY() + 150 +logo.getFitHeight() / 2));
         PathTransition pathTransitionLogo = new PathTransition(Duration.seconds(1.3), logoPath);
 
         // Create the fade in transition for the logo
-        FadeTransition fadeTransitionLogo = new FadeTransition(Duration.seconds(1.8));
+        FadeTransition fadeTransitionLogo = new FadeTransition(Duration.seconds(2));
         fadeTransitionLogo.setFromValue(0);
         fadeTransitionLogo.setToValue(1);
 

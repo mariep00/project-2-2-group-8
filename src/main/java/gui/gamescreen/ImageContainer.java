@@ -9,7 +9,6 @@ import java.util.BitSet;
  */
 public final class ImageContainer {
     private static ImageContainer imageContainer = null;
-
     private final Image[] wallImages;
     private final Image floor;
     private final Image shaded;
@@ -19,7 +18,6 @@ public final class ImageContainer {
     private final Image undiscovered;
     private final Image vision;
     private final Image teleport;
-
     private final Image[] guardNorth;
     private final Image[] guardEast;
     private final Image[] guardSouth;
