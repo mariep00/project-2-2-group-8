@@ -152,9 +152,7 @@ public final class ImageContainer {
     public Image getUndiscovered() { return undiscovered; }
     public Image getVision() { return vision; }
     public Image getTeleport() { return teleport; }
-
     public Image getGuard() { return guardSouth[0]; }
-
     public Image getWallCenter() { return wallImages[0]; }
     public Image getWallFront() { return wallImages[1]; }
     public Image getWallLeft() { return wallImages[2]; }

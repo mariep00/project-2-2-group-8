@@ -13,11 +13,12 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import org.jetbrains.annotations.Nullable;
 
+import java.awt.*;
 import java.util.Objects;
 
 public class MainGUI {
-    public static final int WINDOW_STARTING_WIDTH = 800;
-    public static final int WINDOW_STARTING_HEIGHT = 600;
+    public static final int WINDOW_STARTING_WIDTH = Toolkit.getDefaultToolkit().getScreenSize().width;
+    public static final int WINDOW_STARTING_HEIGHT = Toolkit.getDefaultToolkit().getScreenSize().height;
 
     private static PauseMenu pauseMenu;
 
@@ -35,7 +36,7 @@ public class MainGUI {
      * @param stage         stage that needs to be setup
      */
     public static void setupStage(Stage stage, double windowWidth, double windowHeight) {
-        stage.setTitle("Some game name");
+        stage.setTitle("Surveillance");
         stage.setMinHeight(WINDOW_STARTING_HEIGHT);
         stage.setMinWidth(WINDOW_STARTING_WIDTH);
         stage.setWidth(windowWidth);
