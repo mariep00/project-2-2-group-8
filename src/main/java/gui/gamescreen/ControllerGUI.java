@@ -47,13 +47,13 @@ public class ControllerGUI extends Controller {
     public void init() {
         super.init();
         for (int i = 0; i < agentsGuards.length; i++) {
-            updateAgentVision(i, calculateFOV(i, agentPositions[i]));
+            updateAgentVision(i, visions[i]);
         }
     }
 
     @Override
-    protected void updateAgent(int agentIndex, int task) {
-        super.updateAgent(agentIndex, task);
+    protected void updateVision(int agentIndex) {
+        super.updateVision(agentIndex);
         ArrayList<Vector2D> positionsInVision = calculateFOV(agentIndex, agentPositions[agentIndex]);
         updateAgentVision(agentIndex, positionsInVision);
         for (Vector2D vector : positionsInVision) {
@@ -68,9 +68,9 @@ public class ControllerGUI extends Controller {
     }
 
     public void hideVision(int agentIndex) {
-        GAME_SCREEN.removeVision(agentIndex, convertRelativeCurrentPosToAbsolute(calculateFOV(agentIndex, agentPositions[agentIndex]), agentIndex));
+        GAME_SCREEN.removeVision(agentIndex, convertRelativeCurrentPosToAbsolute(visions[agentIndex], agentIndex));
     }
     public void showVision(int agentIndex) {
-        GAME_SCREEN.showVision(convertRelativeCurrentPosToAbsolute(calculateFOV(agentIndex, agentPositions[agentIndex]), agentIndex));
+        GAME_SCREEN.showVision(convertRelativeCurrentPosToAbsolute(visions[agentIndex], agentIndex));
     }
 }

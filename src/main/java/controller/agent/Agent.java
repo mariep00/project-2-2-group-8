@@ -4,10 +4,9 @@ import controller.Vector2D;
 import controller.maps.Tile;
 import controller.maps.Tile.Type;
 import controller.maps.graph.ExplorationGraph;
+import controller.maps.graph.Node;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class Agent {
 
@@ -39,7 +38,6 @@ public class Agent {
     }
 
     private void updateGraph(ArrayList<Tile> inVision, ArrayList<Vector2D> coordinates) {
-        
         if (inVision.size() == coordinates.size()) {
             ArrayList<Integer> walls = new ArrayList<>();
             ArrayList<Integer> notWalls = new ArrayList<>();
@@ -94,6 +92,11 @@ public class Agent {
     }
     public double getOrientation() { return orientation; }
     public double getBase_speed() { return base_speed; }
+    public void creatTeleportDestination(Vector2D destination, Tile destinationTile) {
+        Node node = explorationGraph.getNode(destination);
+        if (node == null) node = explorationGraph.createNode(destination, destinationTile);
+        explorationGraph.addEdge(node);
+    }
 
     @Override
     public String toString() {

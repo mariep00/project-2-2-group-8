@@ -3,6 +3,8 @@ package controller.maps.graph;
 import controller.Vector2D;
 import controller.maps.HashMap;
 
+import java.util.Arrays;
+
 public class GraphAdjacencyList {
 
     HashMap list;
@@ -59,12 +61,12 @@ public class GraphAdjacencyList {
      */
     public void checkEdges(Node node){
         Vector2D[] nodeNeighbours = node.getNeigbours();
-            for(int i=0; i < nodeNeighbours.length; i++){
-                Node nodeNeighbour = frontiers.getValue(nodeNeighbours[i]);
-                if (nodeNeighbour != null) {
-                    addEdge(node, nodeNeighbour);
-                }
+        for (int i=0; i < nodeNeighbours.length; i++) {
+            Node nodeNeighbour = frontiers.getValue(nodeNeighbours[i]);
+            if (nodeNeighbour != null) {
+                addEdge(node, nodeNeighbour);
             }
+        }
     }
 
     /**
@@ -72,10 +74,9 @@ public class GraphAdjacencyList {
      * @param x node
      */
     private void updateFrontiers(Node x){
-        if(x.getEdges().size() >= 4){
+        if (x.getNumberOfEdges() >= 4) {
             frontiers.removeEntry(x.COORDINATES);
         }
-        
     }
 
     public Node getNode(Vector2D vector2D) {
@@ -84,6 +85,6 @@ public class GraphAdjacencyList {
 
     @Override
     public String toString() {
-        return frontiers.toString() + " Number of Nodes: " + list.getNumberOfNodes() + " size frontier: " + frontiers.getNumberOfNodes();
+        return frontiers.toString() + " Number of Nodes: " + list.getNumberOfNodes() + " size frontier: " + frontiers.getNumberOfNodes() + ", " + Arrays.toString(list.getValue(new Vector2D(88, 48)).getEdges());
     }
 }

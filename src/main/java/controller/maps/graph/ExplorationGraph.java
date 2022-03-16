@@ -25,17 +25,16 @@ public class ExplorationGraph {
      * Creates a vertex by setting its position on the map, its tile type
      * @param vector Vector2D containing the coordinates x and y
      * @param type of the Tile
-     * @param hasWall setting if the newly created node has a wall
      */
-    public void createNode(Vector2D vector, Tile type){
-        if(!nodeExists(vector)){
+    public Node createNode(Vector2D vector, Tile type){
+        if (!nodeExists(vector)) {
             testCounter++;
             Node node =  new Node(vector, type);
             this.list.addVertex(node);
-        
             this.list.checkEdges(node);
-            
+            return node;
         }
+        return null;
     }
 
     public void addWall(Vector2D pos, int direction) {
@@ -59,6 +58,13 @@ public class ExplorationGraph {
     public Node getCurrentPosition() { return currentPosition; }
     public void setCurrentPosition(Vector2D vector2D) {
         this.currentPosition = list.getNode(vector2D);
+    }
+    public void addEdge(Node node) {
+        list.addEdge(currentPosition, node);
+    }
+
+    public Node getNode(Vector2D vector) {
+        return list.getNode(vector);
     }
 
     @Override

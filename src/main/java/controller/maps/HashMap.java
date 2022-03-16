@@ -34,11 +34,12 @@ public class HashMap {
     public void removeEntry(Vector2D key) {
         int hash = getHash(key);
         if (buckets[hash] != null) {
-            numberOfNodes--;
-            buckets[hash].removeEntry(key);
-            if (buckets[hash].getEntries().isEmpty()) {
-                buckets[hash] = null;
-                size--;
+            if (buckets[hash].removeEntry(key)) {
+                numberOfNodes--;
+                if (buckets[hash].getEntries().isEmpty()) {
+                    buckets[hash] = null;
+                    size--;
+                }
             }
         }
     }
@@ -104,10 +105,14 @@ class Bucket {
         }
         return null;
     }
-    public void removeEntry(Vector2D key) {
+    public boolean removeEntry(Vector2D key) {
         for (int i = 0; i < entries.size(); i++) {
-            if (entries.get(i).key.equals(key)) entries.remove(i);
+            if (entries.get(i).key.equals(key)) {
+                entries.remove(i);
+                return true;
+            }
         }
+        return false;
     }
 
     public List<Entry> getEntries() { return entries; }

@@ -3,11 +3,9 @@ package controller.maps.graph;
 import controller.Vector2D;
 import controller.maps.Tile;
 
-import java.util.LinkedList;
-
 public class Node {
 
-    private LinkedList<Node> edge_list;
+    private Node[] edges;
     private Vector2D[] neighbours;
     private Tile type;
 
@@ -16,7 +14,7 @@ public class Node {
     public final Vector2D COORDINATES;
 
     public Node(Vector2D coordinates, Tile type){
-        this.edge_list = new LinkedList<>();
+        this.edges = new Node[5];
         this.COORDINATES = coordinates;
         this.type = type;
         this.walls = new boolean[4];
@@ -39,10 +37,15 @@ public class Node {
      * Adds an edge to the vertex y into the edge list
      * @param y node
      */
-    public void addEdge(Node y)
-    {
-        if (!this.edge_list.contains(y)) {this.edge_list.addFirst(y);}
-        
+    public void addEdge(Node y) {
+        if (y.getType().isTeleport()) {
+            edges[edges.length-1] = y;
+        }
+        else {
+            for (int i = 0; i < edges.length-1; i++) {
+                if (edges[i] == null) edges[i] = y;
+            }
+        }
     }
 
     public void addSelfEdge (int direction) {
@@ -52,20 +55,8 @@ public class Node {
         }
     }
 
-    /**
-     * Removes all edges to the vertex y from the edge list
-     * @param y node
-     */
-    public void removeEdge(Node y){
-        for(int i=0; i < this.edge_list.size(); i++){
-            if(this.edge_list.get(i).equals(y)){
-                this.edge_list.remove(i);
-            }
-        }
-    }
-
-    public LinkedList<Node> getEdges(){
-        return this.edge_list;
+    public Node[] getEdges(){
+        return this.edges;
     }
 
     public Tile getType() {
@@ -76,8 +67,17 @@ public class Node {
         this.type = type;
     }
 
+    public int getNumberOfEdges() {
+        int count = 0;
+        for (int i = 0; i < edges.length-1; i++) {
+            Node edge = edges[i];
+            if (edge != null) count++;
+        }
+        return count;
+    }
+
     @Override
     public String toString() {
-        return "(" + COORDINATES + " Type: " + type.getType().toString() + " Edges" + edge_list.size() + ")";
+        return "(" + COORDINATES + " Type: " + type.getType().toString() + " Edges: " + getNumberOfEdges() + ")";
     }
 }

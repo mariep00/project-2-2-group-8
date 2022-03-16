@@ -20,23 +20,27 @@ public class Controller {
     private Agent[] agentsIntruders;
     private double timestep;
     private double time;
+    protected ArrayList<Vector2D>[] visions;
 
     public Controller(ScenarioMap scMap) {
         this.scMap = scMap;
-        agentSpawnLocations = new Vector2D[scMap.getNumGuards()];
-        agentsGuards = new Agent[scMap.getNumGuards()];
-        agentsIntruders = new Agent[scMap.getNumIntruders()];
-        agentPositions = new Vector2D[scMap.getNumGuards()+scMap.getNumIntruders()];
-        fov = new FOV(scMap.getGuardViewRange());
+        this.agentSpawnLocations = new Vector2D[scMap.getNumGuards()];
+        this.agentsGuards = new Agent[scMap.getNumGuards()];
+        this.agentsIntruders = new Agent[scMap.getNumIntruders()];
+        this.agentPositions = new Vector2D[scMap.getNumGuards()+scMap.getNumIntruders()];
+        this.fov = new FOV(scMap.getGuardViewRange());
         this.endingExplorationMap = new EndingExplorationMap(this.scMap);
-        timestep = scMap.getTimestep();
+        this.timestep = scMap.getTimestep();
+        this.visions = new ArrayList[scMap.getNumGuards()];
+
         createAgents(1, 1);
     }
 
     public void init() {
         spawnAgents();
         for (int i = 0; i < agentsGuards.length; i++) {
-            updateProgress(calculateFOV(i, agentPositions[i]), i); // Set the beginning "progress"
+            visions[i] = calculateFOV(i, agentPositions[i]);
+            updateProgress(visions[i], i); // Set the beginning "progress"
         }
     }
 
@@ -53,11 +57,11 @@ public class Controller {
     }
     public void tick(double timestep) {
         for (int i=0; i<agentsGuards.length; i++) {
-            ArrayList<Vector2D> positionsInVision = calculateFOV(i, agentPositions[i]);
-            ArrayList<Tile> tiles = getTilesInVision(positionsInVision, i);
-            if (updateProgress(positionsInVision, i)) { break; }
-            int task = agentsGuards[i].tick(tiles, convertRelativeCurrentPosToRelativeToSpawn(positionsInVision, i), timestep);
+            ArrayList<Tile> tiles = getTilesInVision(visions[i], i);
+            if (updateProgress(visions[i], i)) { break; }
+            int task = agentsGuards[i].tick(tiles, convertRelativeCurrentPosToRelativeToSpawn(visions[i], i), timestep);
             updateAgent(i, task);
+            updateVision(i);
         }
     }
 
@@ -70,6 +74,10 @@ public class Controller {
             }    
         }
         return tiles;
+    }
+
+    protected void updateVision(int agentIndex) {
+        visions[agentIndex] = calculateFOV(agentIndex, agentPositions[agentIndex]);
     }
 
     protected void updateAgent(int agentIndex, int task) {
@@ -122,7 +130,10 @@ public class Controller {
             if (pos.x >= scMap.getWidth() || pos.x < 0 || pos.y >= scMap.getHeight() || pos.y < 0) return lastPos;
             Tile tileAtPos = scMap.getTile(pos);           
             if (tileAtPos.isWall()) return lastPos;
-            if (tileAtPos.isTeleport()) return posAfterTeleport(agentIndex, tileAtPos);
+            if (tileAtPos.isTeleport()) {
+                agentsGuards[agentIndex].creatTeleportDestination(((Teleport) tileAtPos.getFeature()).getExit(), scMap.getTile(((Teleport) tileAtPos.getFeature()).getExit()));
+                return posAfterTeleport(agentIndex, tileAtPos);
+            }
             if (isAgentAtPos(pos)) return lastPos;
             else lastPos = pos;
         }
