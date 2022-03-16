@@ -18,8 +18,6 @@ public class Agent {
 
     private BrainInterface brain;
 
-    private int testCounter = 0;
-
     private ExplorationGraph explorationGraph;
 
     public Agent (double base_speed, double sprint_speed, double view_angle, double view_range, double orientation, int brainID) {
@@ -39,26 +37,16 @@ public class Agent {
 
     private void updateGraph(ArrayList<Tile> inVision, ArrayList<Vector2D> coordinates) {
         if (inVision.size() == coordinates.size()) {
-            ArrayList<Integer> walls = new ArrayList<>();
-            ArrayList<Integer> notWalls = new ArrayList<>();
-            testCounter++;
-            for (int i=0; i<inVision.size(); i++) {
+            for (int i = 0; i < inVision.size(); i++) {
                 if (inVision.get(i).getType() == Type.WALL) {
-                    walls.add(i);
-                } else {
-                    notWalls.add(i);
+                    Vector2D[] neighbours = coordinates.get(i).getNeighbours();
+                    for (int j = 0; j < neighbours.length; j++) {
+                        explorationGraph.addWall(neighbours[j], j);
+                    }
                 }
-                
-            }
-            for (Integer i: notWalls) {   
-                explorationGraph.createNode(coordinates.get(i), inVision.get(i));
-            }
-            for (Integer i: walls) { 
-                Vector2D[] neighbours = coordinates.get(i).getNeighbours();
-                for (int j=0; j<neighbours.length; j++) {
-                    explorationGraph.addWall(neighbours[j], j);
+                else {
+                    explorationGraph.createNode(coordinates.get(i), inVision.get(i));
                 }
-                
             }
         }
     }
@@ -92,14 +80,21 @@ public class Agent {
     }
     public double getOrientation() { return orientation; }
     public double getBase_speed() { return base_speed; }
-    public void creatTeleportDestination(Vector2D destination, Tile destinationTile) {
-        Node node = explorationGraph.getNode(destination);
-        if (node == null) node = explorationGraph.createNode(destination, destinationTile);
-        explorationGraph.addEdge(node);
+    public void creatTeleportDestinationNode(Vector2D entrance, Vector2D destination, Tile entranceTile, Tile destinationTile) {
+        Node destinationNode = explorationGraph.getNode(destination);
+        if (destinationNode == null) destinationNode = explorationGraph.createNode(destination, destinationTile);
+
+        Node entranceNode = explorationGraph.getNode(entrance);
+        if (entranceNode == null) entranceNode = explorationGraph.createNode(entrance,entranceTile);
+
+        if (!explorationGraph.teleportEdgeExistsBetween(entranceNode, destinationNode)) {
+            explorationGraph.addDirectedEdge(entranceNode, destinationNode);
+        }
+        System.out.println(explorationGraph.getNode(entrance));
     }
 
     @Override
     public String toString() {
-        return explorationGraph.toString() + " Counter " + testCounter;
+        return explorationGraph.toString();
     }
 }

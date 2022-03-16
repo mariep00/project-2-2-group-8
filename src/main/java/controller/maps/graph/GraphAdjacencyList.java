@@ -7,11 +7,11 @@ import java.util.Arrays;
 
 public class GraphAdjacencyList {
 
-    HashMap list;
+    HashMap nodes;
     HashMap frontiers; //nodes with less than 4 edges;
 
     public GraphAdjacencyList(){
-        this.list = new HashMap(4000);
+        this.nodes = new HashMap(4000);
         this.frontiers = new HashMap(1000);
     }
 
@@ -20,21 +20,28 @@ public class GraphAdjacencyList {
      * @param x node
      */
     public void addVertex(Node x){
-        this.list.addEntry(x.COORDINATES, x); //add or addFirst
+        this.nodes.addEntry(x.COORDINATES, x); //add or addFirst
         this.frontiers.addEntry(x.COORDINATES, x);
-        //System.out.println("Frontier Size: " + frontiers.size());
     }
 
     /**
-     * Adds an edge from vertex x to vertex y
-     * @param x node
-     * @param y node
+     * Adds an edge from node1 to node2, and the other way around
+     * @param node1 node
+     * @param node2 node
      */
-    public void addEdge(Node x, Node y){
-        this.list.getValue(x.COORDINATES).addEdge(y);
-        this.list.getValue(y.COORDINATES).addEdge(x);
-        updateFrontiers(x);
-        updateFrontiers(y);
+    public void addUndirectedEdge(Node node1, Node node2){
+        addDirectedEdge(node1, node2);
+        addDirectedEdge(node2, node1);
+    }
+
+    /**
+     * Adds an edge from node1 to node 2
+     * @param node1 node
+     * @param node2 node
+     */
+    public void addDirectedEdge(Node node1, Node node2) {
+        node1.addEdge(node2);
+        updateFrontiers(node1);
     }
 
     /**
@@ -42,7 +49,7 @@ public class GraphAdjacencyList {
      * @param x node
      */
     public void addSelfEdge(Node x, int direction){
-        this.list.getValue(x.COORDINATES).addSelfEdge(direction);
+        x.addSelfEdge(direction);
         updateFrontiers(x);
     }
 
@@ -52,7 +59,7 @@ public class GraphAdjacencyList {
      * @return true if one of the nodes of the list has been visited
      */
     public boolean isVisited(Vector2D vector){
-        return list.getValue(vector) != null;
+        return nodes.getValue(vector) != null;
     }
 
     /**
@@ -64,7 +71,7 @@ public class GraphAdjacencyList {
         for (int i=0; i < nodeNeighbours.length; i++) {
             Node nodeNeighbour = frontiers.getValue(nodeNeighbours[i]);
             if (nodeNeighbour != null) {
-                addEdge(node, nodeNeighbour);
+                addUndirectedEdge(node, nodeNeighbour);
             }
         }
     }
@@ -80,11 +87,11 @@ public class GraphAdjacencyList {
     }
 
     public Node getNode(Vector2D vector2D) {
-        return list.getValue(vector2D);
+        return nodes.getValue(vector2D);
     }
 
     @Override
     public String toString() {
-        return frontiers.toString() + " Number of Nodes: " + list.getNumberOfNodes() + " size frontier: " + frontiers.getNumberOfNodes() + ", " + Arrays.toString(list.getValue(new Vector2D(88, 48)).getEdges());
+        return frontiers.toString() + " Number of Nodes: " + nodes.getNumberOfNodes() + " size frontier: " + frontiers.getNumberOfNodes() + ", " + Arrays.toString(nodes.getValue(new Vector2D(88, 48)).getEdges());
     }
 }

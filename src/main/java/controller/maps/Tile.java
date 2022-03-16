@@ -9,7 +9,8 @@ public class Tile {
         SPAWN_AREA_GUARDS,
         DOOR,
         WINDOW,
-        TELEPORT;
+        TELEPORT_ENTRANCE,
+        TELEPORT_EXIT;
     }
 
     private Type type;
@@ -60,7 +61,10 @@ public class Tile {
         return "type = " + type + ", shaded = " + shaded;
     }
 
-    public boolean isTeleport() {
-        return getType() == Type.TELEPORT;
+    public boolean isTeleportEntrance() {
+        return getType() == Type.TELEPORT_ENTRANCE;
     }
+    public boolean isTeleportExit() { return getType() == Type.TELEPORT_EXIT; }
+
+    public boolean equals(Tile other) { return type == other.type && shaded == other.shaded; }
 }

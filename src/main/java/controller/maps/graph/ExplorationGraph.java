@@ -8,16 +8,14 @@ public class ExplorationGraph {
 
     private Node origin;
     private Node currentPosition;
-    private GraphAdjacencyList list;
-
-    private int testCounter = 0;
+    private GraphAdjacencyList graphAdjacencyList;
 
     public ExplorationGraph(){
         Tile t = new Tile();
         t.setType(Type.SPAWN_AREA_GUARDS);
         this.origin = new Node(new Vector2D(0,0), t);
-        list = new GraphAdjacencyList();
-        list.addVertex(origin);
+        graphAdjacencyList = new GraphAdjacencyList();
+        graphAdjacencyList.addVertex(origin);
         this.currentPosition = origin;
     }
 
@@ -28,20 +26,19 @@ public class ExplorationGraph {
      */
     public Node createNode(Vector2D vector, Tile type){
         if (!nodeExists(vector)) {
-            testCounter++;
-            Node node =  new Node(vector, type);
-            this.list.addVertex(node);
-            this.list.checkEdges(node);
+            Node node = new Node(vector, type);
+            this.graphAdjacencyList.addVertex(node);
+            this.graphAdjacencyList.checkEdges(node);
             return node;
         }
         return null;
     }
 
     public void addWall(Vector2D pos, int direction) {
-        Node node = this.list.getNode(pos);
+        Node node = this.graphAdjacencyList.getNode(pos);
         if (node != null)  {
-            this.list.addSelfEdge(node, direction);
-            this.list.checkEdges(node);
+            this.graphAdjacencyList.addSelfEdge(node, direction);
+            this.graphAdjacencyList.checkEdges(node);
         }
         
     }
@@ -52,23 +49,29 @@ public class ExplorationGraph {
      * @return true if it there is already a node
      */
     private boolean nodeExists(Vector2D vector){
-        return this.list.isVisited(vector);
+        return this.graphAdjacencyList.isVisited(vector);
     }
 
     public Node getCurrentPosition() { return currentPosition; }
     public void setCurrentPosition(Vector2D vector2D) {
-        this.currentPosition = list.getNode(vector2D);
+        this.currentPosition = graphAdjacencyList.getNode(vector2D);
     }
-    public void addEdge(Node node) {
-        list.addEdge(currentPosition, node);
+    public void addDirectedEdge(Node node1, Node node2) {
+        System.out.println(node1.getEdges()[4]);
+        graphAdjacencyList.addDirectedEdge(node1, node2);
+        System.out.println(node1.getEdges()[4]);
     }
 
     public Node getNode(Vector2D vector) {
-        return list.getNode(vector);
+        return graphAdjacencyList.getNode(vector);
+    }
+
+    public boolean teleportEdgeExistsBetween(Node node1, Node node2) {
+        return node1.getEdges()[4] != null && node1.getEdges()[4].equals(node2);
     }
 
     @Override
     public String toString() {
-        return list.toString() + " nodeExists counter: " + testCounter;
+        return graphAdjacencyList.toString();
     }
 }

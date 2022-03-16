@@ -3,7 +3,7 @@ package controller;
 import controller.agent.Agent;
 import controller.maps.EndingExplorationMap;
 import controller.maps.ScenarioMap;
-import controller.maps.Teleport;
+import controller.maps.TeleportEntrance;
 import controller.maps.Tile;
 
 import java.util.ArrayList;
@@ -12,9 +12,9 @@ import java.util.Random;
 public class Controller {
     private final Random rand = new Random();
     private FOV fov;
-    private ScenarioMap scMap;
+    public static ScenarioMap scMap;
     protected EndingExplorationMap endingExplorationMap;
-    private Vector2D[] agentSpawnLocations;
+    public static Vector2D[] agentSpawnLocations;
     protected Vector2D[] agentPositions;
     protected Agent[] agentsGuards;
     private Agent[] agentsIntruders;
@@ -39,7 +39,7 @@ public class Controller {
     public void init() {
         spawnAgents();
         for (int i = 0; i < agentsGuards.length; i++) {
-            visions[i] = calculateFOV(i, agentPositions[i]);
+            updateVision(i);
             updateProgress(visions[i], i); // Set the beginning "progress"
         }
     }
@@ -69,9 +69,7 @@ public class Controller {
         ArrayList<Tile> tiles = new ArrayList<>();
         for (Vector2D vector2D : positions) {
             Vector2D abs = convertRelativeCurrentPosToAbsolute(vector2D, agentIndex);
-            if (abs.x<scMap.getWidth() && abs.y<scMap.getHeight() && abs.x>=0 && abs.y>=0) {
-                tiles.add(scMap.getTile(abs));
-            }    
+            tiles.add(scMap.getTile(abs));
         }
         return tiles;
     }
@@ -130,8 +128,8 @@ public class Controller {
             if (pos.x >= scMap.getWidth() || pos.x < 0 || pos.y >= scMap.getHeight() || pos.y < 0) return lastPos;
             Tile tileAtPos = scMap.getTile(pos);           
             if (tileAtPos.isWall()) return lastPos;
-            if (tileAtPos.isTeleport()) {
-                agentsGuards[agentIndex].creatTeleportDestination(((Teleport) tileAtPos.getFeature()).getExit(), scMap.getTile(((Teleport) tileAtPos.getFeature()).getExit()));
+            if (tileAtPos.isTeleportEntrance()) {
+                agentsGuards[agentIndex].creatTeleportDestinationNode(convertAbsoluteToRelativeSpawn(pos, agentIndex), convertAbsoluteToRelativeSpawn(((TeleportEntrance) tileAtPos.getFeature()).getExit(), agentIndex), tileAtPos, scMap.getTile(((TeleportEntrance) tileAtPos.getFeature()).getExit()));
                 return posAfterTeleport(agentIndex, tileAtPos);
             }
             if (isAgentAtPos(pos)) return lastPos;
@@ -141,7 +139,7 @@ public class Controller {
     }
 
     private Vector2D posAfterTeleport(int agentIndex, Tile tileAtPos) {
-        Teleport tp = (Teleport)tileAtPos.getFeature();
+        TeleportEntrance tp = (TeleportEntrance)tileAtPos.getFeature();
         agentsGuards[agentIndex].changeOrientation(tp.getOrientation());
         return tp.getExit();
     }
