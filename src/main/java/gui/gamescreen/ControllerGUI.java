@@ -32,6 +32,7 @@ public class ControllerGUI extends Controller {
                 }
             }
         });
+        updateGuiThread.setDaemon(true);
         updateGuiThread.start();
 
         updateGameLogicThread = new Thread(() -> {
@@ -47,6 +48,7 @@ public class ControllerGUI extends Controller {
                 }
             }
         });
+        updateGameLogicThread.setDaemon(true);
     }
 
     public void runSimulation() {
@@ -96,7 +98,8 @@ public class ControllerGUI extends Controller {
         super.init();
         for (int i = 0; i < agentsGuards.length; i++) {
             int finalI = i;
-            //guiTasksQueue.add(() -> Platform.runLater(() -> updateAgentVision(finalI, calculateFOV(finalI, agentPositions[finalI]))));
+            Vector2D pos = agentPositions[i];
+            guiTasksQueue.add(() -> updateAgentVision(finalI, calculateFOV(finalI, pos)));
         }
     }
 
@@ -111,7 +114,9 @@ public class ControllerGUI extends Controller {
     public Agent getAgent(int index) { return agentsGuards[index]; }
 
     private void updateAgentVision(int agentIndex, List<Vector2D> positionsInVision) {
-        guiTasksQueue.add(() -> Platform.runLater(() -> GAME_SCREEN.updateVision(executeNextGuiTask, agentIndex, convertRelativeCurrentPosToAbsolute(positionsInVision, agentIndex))));
+        List<Vector2D> absPos = convertRelativeCurrentPosToAbsolute(positionsInVision, agentIndex);
+        //guiTasksQueue.add(() -> Platform.runLater(() -> GAME_SCREEN.updateVision(executeNextGuiTask, agentIndex, absPos)));
+        GAME_SCREEN.updateVision(executeNextGuiTask, agentIndex, absPos);
     }
 
     public void hideVision(int agentIndex) {

@@ -222,7 +222,7 @@ public class GameScreen extends Application implements TransitionInterface {
         System.out.println("HERE 6");
     }
 
-    public void updateVision(AtomicBoolean executeNextGuiTask, int agentIndex, ArrayList<Vector2D> positions) {
+    public void updateVision(AtomicBoolean executeNextGuiTask, int agentIndex, List<Vector2D> positions) {
         System.out.println("HERE 7");
         if (showVision[agentIndex]) {
             if (visions[agentIndex] != null) {
@@ -237,7 +237,7 @@ public class GameScreen extends Application implements TransitionInterface {
         executeNextGuiTask.set(true);
     }
 
-    public void showVision(AtomicBoolean executeNextGuiTask, ArrayList<Vector2D> positions) {
+    public void showVision(AtomicBoolean executeNextGuiTask, List<Vector2D> positions) {
         System.out.println("HERE 9");
         for (Vector2D pos : positions) {
             tiles[pos.x][pos.y].setToInVision(imageContainer.getVision());
@@ -246,7 +246,7 @@ public class GameScreen extends Application implements TransitionInterface {
         System.out.println("HERE 10");
     }
 
-    public void removeVision(AtomicBoolean executeNextGuiTask, int agentIndex, ArrayList<Vector2D> positions) {
+    public void removeVision(AtomicBoolean executeNextGuiTask, int agentIndex, List<Vector2D> positions) {
         System.out.println("HERE 11");
         for (Vector2D pos : positions) {
             boolean remove = true;
