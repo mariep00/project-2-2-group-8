@@ -34,12 +34,14 @@ public class FrontierBrain implements BrainInterface{
         goalNode = newGoalNode;
     }
 
+    //Pass the current position
     public void updateStart(){
-
+        //startingNode = current Node
     }
 
 
     public void moveTo(GraphAdjacencyList list){
+        A_Star a_star = new A_Star(goalNode, startingNode);
         //Moving from old goal to new goal
 
         //Once we now what we need to do to reach the new goal

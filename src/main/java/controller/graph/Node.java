@@ -10,6 +10,10 @@ public class Node {
     private Vector2D[] neighbours;
     private Tile type;
 
+    // We need this for the A*
+    private int g; //distance to starting node
+    private int h; //distance to goal node (Manhattan distance)
+
     public final Vector2D COORDINATES;
 
     public Node(Vector2D coordinates, Tile type){
@@ -17,6 +21,7 @@ public class Node {
         this.COORDINATES = coordinates;
         this.type = type;
         initializeNeighbours();
+
     }
 
     private void initializeNeighbours(){
@@ -27,7 +32,7 @@ public class Node {
         this.neighbours[3] = new Vector2D((this.COORDINATES.x-1), (this.COORDINATES.y));
     }
 
-    public Vector2D[] getNeigbours () {
+    public Vector2D[] getNeighbours() {
         return neighbours;
     }
 
@@ -64,4 +69,15 @@ public class Node {
         this.type = type;
     }
 
+    public void updateG(){
+        g ++;
+    }
+
+    public void updateH(Node goalNode){
+        h = Math.abs(goalNode.COORDINATES.x - this.COORDINATES.x) + Math.abs(goalNode.COORDINATES.y - this.COORDINATES.y);
+    }
+
+    public int getH(){ return h;}
+
+    public int getG(){ return g;}
 }

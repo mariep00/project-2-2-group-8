@@ -141,7 +141,7 @@ public class GraphAdjacencyList {
      * @param node node
      */
     public void checkEdges(Node node){
-        Vector2D[] nodeNeighbours = node.getNeigbours();
+        Vector2D[] nodeNeighbours = node.getNeighbours();
         for(Node n: this.frontiers){
             for(int i=0; i < nodeNeighbours.length; i++){
                 if(n.COORDINATES.equals(nodeNeighbours[i])){
