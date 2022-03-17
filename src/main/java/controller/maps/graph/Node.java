@@ -14,6 +14,11 @@ public class Node {
 
     public final Vector2D COORDINATES;
 
+    private int g; //distance to starting node
+    private int h; //distance to goal node (Manhattan distance)
+    private Node parent;
+
+
     public Node(Vector2D coordinates, Tile tile){
         this.edges = new Node[5];
         this.COORDINATES = coordinates;
@@ -79,6 +84,25 @@ public class Node {
         }
         return count;
     }
+
+    public void updateG(){
+        g ++;
+    }
+
+    public void updateH(Node goalNode){
+        h = Math.abs(goalNode.COORDINATES.x - this.COORDINATES.x) + Math.abs(goalNode.COORDINATES.y - this.COORDINATES.y);
+    }
+
+    public int getH(){ return h;}
+
+    public int getG(){ return g;}
+
+    public Node getParent(){ return parent;}
+
+    public void setParent(Node parent){
+        this.parent = parent;
+    }
+
 
     public boolean equals(Node other) {
         return COORDINATES.equals(other.COORDINATES) && tile.equals(other.tile);

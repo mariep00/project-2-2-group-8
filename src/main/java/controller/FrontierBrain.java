@@ -1,14 +1,14 @@
 package controller;
 
-import controller.graph.ExplorationGraph;
-import controller.graph.GraphAdjacencyList;
-import controller.graph.Node;
-
+import controller.agent.BrainInterface;
+import controller.maps.*;
+import controller.maps.graph.Node;
+import controller.maps.graph.ExplorationGraph;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Stack;
 
-public class FrontierBrain implements BrainInterface{
+public class FrontierBrain implements BrainInterface {
     private Node goalNode;
     private Node startingNode;
     private Stack<Integer> futureMoves;

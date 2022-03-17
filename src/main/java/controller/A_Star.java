@@ -2,6 +2,8 @@ package controller;
 
 import controller.graph.GraphAdjacencyList;
 import controller.graph.Node;
+import controller.maps.graph.ExplorationGraph;
+import controller.maps.graph.Node;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -35,7 +37,7 @@ public class A_Star {
         startingNode.setParent(null);
     }
 
-    public LinkedList<Node> calculateAstar(GraphAdjacencyList graph){
+    public LinkedList<Node> calculateAstar(ExplorationGraph graph){
         while (!path.contains(goalNode)){
             // add the adjacent vertices of current node to OPEN
             if (open.size() == 1 && open.contains(startingNode)) {
