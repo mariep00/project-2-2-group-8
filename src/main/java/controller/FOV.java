@@ -25,6 +25,14 @@ public class FOV {
         endpoints = new ArrayList<>();
     }
 
+    /**
+     * Calculates the visible tiles for an Agent
+     * @param visionAngle angle of the visible field
+     * @param newVisionRange how far the agent can see
+     * @param areaMap small map of the immediate surroundings of the agent
+     * @param direction direction of sight of the agent
+     * @return Returns a VisionMap where all tiles that are visible to the agent are marked
+     */
     public VisionMap calculate (double visionAngle, double newVisionRange, VisionMap areaMap, double direction) {
         this.visionAngle = visionAngle;
         this.direction = direction;
@@ -40,6 +48,10 @@ public class FOV {
         return visionMap;
     }
 
+    /**
+     * Initiates the viewing field of the agent. 
+     * Calculates the correct angles and endpoints given the range, direction and vision angle.
+     */
     private void initiateViewingField() {
         double[] angles = calculateAngles(direction, visionAngle);
         double[] angles2 = calculateAngles(direction, visionAngle/2);
@@ -94,6 +106,9 @@ public class FOV {
         
     }
 
+    /**
+     * Casts rays (lines) to the endpoints and fills in the VisionMap with all visible tiles
+     */
     private void rayTracing () { 
         for (int i=0; i<endpoints.size(); i++) {
             Vector2D[] inVision = rayTracingLine(center, endpoints.get(i));
@@ -102,6 +117,12 @@ public class FOV {
         }     
     }
 
+    /**
+     * Single instance of casting a ray
+     * @param p0 starting point of the ray
+     * @param p1 ending point of the ray
+     * @return Returns all visible positions 
+     */
     private Vector2D[] rayTracingLine (Vector2D p0, Vector2D p1) {
         ArrayList<Vector2D> line = new ArrayList<Vector2D>();
         int n = calculateDistance(p0, p1);
@@ -121,6 +142,12 @@ public class FOV {
         return pointsLine;
     }
 
+    /**
+     * Calculates a line in a grid between two points
+     * @param p0 starting point of the line
+     * @param p1 ending point of the line
+     * @return Returns an array of points that together represent a line
+     */
     private Vector2D[] calculateLine (Vector2D p0, Vector2D p1) {
         ArrayList<Vector2D> line = new ArrayList<Vector2D>();
         final int N = calculateDistance(p0, p1);
@@ -133,10 +160,24 @@ public class FOV {
         return pointsLine;
     }
 
+    /**
+     * Linear interpolation
+     * @param start
+     * @param end
+     * @param t
+     * @return
+     */
     private double lerp (int start, int end, double t) {
         return (start+t*(end-start));
     }
 
+    /**
+     * Linear interpolates two points
+     * @param p0
+     * @param p1
+     * @param t
+     * @return
+     */
     private Vector2D lerpPoint (Vector2D p0, Vector2D p1, double t) {
         return new Vector2D((int)Math.round(lerp(p0.x, p1.x, t)), (int)Math.round(lerp(p0.y, p1.y, t)));
     }
