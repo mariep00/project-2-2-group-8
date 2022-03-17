@@ -87,4 +87,6 @@ public class Node {
     public void setParent(Node parent){
         this.parent = parent;
     }
+
+    public Vector2D getCOORDINATES(){return COORDINATES;}
 }

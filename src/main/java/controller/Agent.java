@@ -11,6 +11,7 @@ public class Agent {
     private double orientation;
 
     private BaseBrain brain;
+    private FrontierBrain frontierBrain;
 
     private ExplorationGraph map;
     private EndingExplorationMap explorationMap;
@@ -43,8 +44,8 @@ public class Agent {
     private void initBrain(int brainID) {
 
         switch (brainID) {
-            case 1:
-                brain = new BaseBrain();
+            case 1: brain = new BaseBrain();
+            case 2: frontierBrain = new FrontierBrain();
                 break;
         }
     }
