@@ -1,5 +1,6 @@
-package controller;
+package controller.agent;
 
+import controller.A_Star;
 import controller.agent.BrainInterface;
 import controller.maps.*;
 import controller.maps.graph.Node;
