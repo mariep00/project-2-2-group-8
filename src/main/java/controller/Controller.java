@@ -38,7 +38,7 @@ public class Controller {
         this.visions = new ArrayList[scMap.getNumGuards()];
         this.tilesWithMarker = new ArrayList<>();
 
-        createAgents(1, 1);
+        createAgents(1, 2);
     }
 
     public void init() {

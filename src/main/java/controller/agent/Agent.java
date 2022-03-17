@@ -34,7 +34,7 @@ public class Agent {
 
     public int tick(ArrayList<Tile> inVision, ArrayList<Vector2D> coordinates, List<PheromoneMarker> pheromoneMarkers, double[] pheromoneMarkerDirections, double timestep) {
         updateGraph(inVision, coordinates);
-        return brain.makeDecision(explorationGraph);
+        return brain.makeDecision(explorationGraph, orientation);
     }
 
     private void updateGraph(ArrayList<Tile> inVision, ArrayList<Vector2D> coordinates) {

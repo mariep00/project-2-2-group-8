@@ -12,7 +12,7 @@ public class RandomBrain implements BrainInterface {
     int w2 = 75;
 
     @Override
-    public int makeDecision(ExplorationGraph graph) {
+    public int makeDecision(ExplorationGraph graph, double orientation) {
 
         int r = (int)(Math.random()*(max-min+1)+min);
         if(r<=w0){

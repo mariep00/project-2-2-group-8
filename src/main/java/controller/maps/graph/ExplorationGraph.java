@@ -199,7 +199,4 @@ public class ExplorationGraph {
         return tempnode;
 
     }
-
-    public void checkFrontierEdges() { //TODO: what does this do?
-    }
 }

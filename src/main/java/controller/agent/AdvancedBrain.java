@@ -15,7 +15,7 @@ public class AdvancedBrain implements BrainInterface {
     }
 
     @Override
-    public int makeDecision(ExplorationGraph graph) {
+    public int makeDecision(ExplorationGraph graph, double orientation) {
         this.graph = graph;
         if (currentIndex==decisions.length || currentIndex==-1) {
             Node frontier = getClosestFrontier();
