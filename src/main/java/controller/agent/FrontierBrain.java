@@ -1,6 +1,5 @@
-package controller;
+package controller.agent;
 
-import controller.agent.BrainInterface;
 import controller.maps.*;
 import controller.maps.graph.Node;
 import controller.maps.graph.ExplorationGraph;
