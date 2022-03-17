@@ -19,8 +19,11 @@ public class Agent {
     private double view_range;
 
     private BrainInterface brain;
+    private BrainInterface frontierBrain;
+
 
     private ExplorationGraph explorationGraph;
+
 
     public Agent (double base_speed, double sprint_speed, double view_angle, double view_range, double orientation, int brainID) {
         this.base_speed = base_speed;
@@ -62,8 +65,9 @@ public class Agent {
 
     private void initBrain(int brainID) {
         switch (brainID) {
-            case 1:
-                brain = new RandomBrain();
+            case 1: brain = new RandomBrain();
+                break;
+            case 2: brain = new FrontierBrain();
                 break;
         }
     }

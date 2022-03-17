@@ -17,7 +17,7 @@ public class FrontierBrain implements BrainInterface {
 
     //Pass origin node, goalNode = originNode
     public FrontierBrain(){
-        futureMoves = new Stack<>();
+        future_moves = new Stack<>();
     }
 
 
@@ -45,7 +45,8 @@ public class FrontierBrain implements BrainInterface {
     }
 
 
-    public void moveTo(ExplorationGraph list){
+    public void moveTo(ExplorationGraph explorationGraph){
+        Stack<Integer> temporaryStack= new Stack<>();
         A_Star a_star = new A_Star(goalNode, startingNode);
         LinkedList<Node> nodesToGoal = a_star.calculateAstar(explorationGraph);
         Node current_node= explorationGraph.getCurrentPosition();
@@ -139,6 +140,14 @@ public class FrontierBrain implements BrainInterface {
             current_node=node;
         }
 
+        temporaryStack.push(1);
+        temporaryStack.push(1);
+        temporaryStack.push(1);
+
+        do{future_moves.push(temporaryStack.pop());}
+        while(!temporaryStack.isEmpty());
+
+
         //For every node in nodes to Goal
                 //Check agent's positon
                 //Compare agents Vector2D with nextNode Vector2D
@@ -148,9 +157,11 @@ public class FrontierBrain implements BrainInterface {
         //Once we now what we need to do to reach the new goal
         //Update stack of future moves
 
-        //Once we reach goal node
-        list.checkFrontierEdges();
+        //Once we reach goal node, rotate 360
+
     }
+
+
 
 
     /* nextNode Vector2D - Coordinates Vector 2D
