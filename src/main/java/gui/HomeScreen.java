@@ -2,6 +2,7 @@ package gui;
 
 import javafx.animation.*;
 import javafx.application.Application;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -15,6 +16,8 @@ import javafx.scene.shape.Path;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -51,6 +54,14 @@ public class HomeScreen extends Application implements TransitionInterface {
     @Override
     public void start(Stage stage) {
         this.stage = stage;
+        Image icon = new Image(MainGUI.class.getResource("/cam.png").toString());
+        stage.getIcons().add(icon);
+        try {
+            // Adding the icon to the dock on MacOS
+            BufferedImage iconMac = SwingFXUtils.fromFXImage(icon, null);
+            Taskbar taskbar = Taskbar.getTaskbar();
+            taskbar.setIconImage(iconMac);
+        } catch (Exception exception) {}
         loadHomeScreen();
     }
     /**
@@ -59,7 +70,7 @@ public class HomeScreen extends Application implements TransitionInterface {
     public void loadHomeScreen() {
         ImageView logo;
         try {
-            logo = new ImageView(new Image(Objects.requireNonNull(this.getClass().getResource("/img.png")).toString()));
+            logo = new ImageView(new Image(Objects.requireNonNull(this.getClass().getResource("/logo.png")).toString()));
         } catch (NullPointerException exception) {
             System.out.println("WARNING: Logo not found in the given directory.");
             logo = new ImageView();
@@ -142,12 +153,12 @@ public class HomeScreen extends Application implements TransitionInterface {
         parallelTransitionLogo.setOnFinished(e -> {
             transitions.remove(parallelTransitionLogo);
             // First we create the fade in transition for the buttons
-            FadeTransition fadeTransitionButtons = new FadeTransition(Duration.seconds(1.2));
+            FadeTransition fadeTransitionButtons = new FadeTransition(Duration.seconds(1));
             fadeTransitionButtons.setFromValue(0);
             fadeTransitionButtons.setToValue(1);
 
             // Second we create the scale transition for the buttons
-            ScaleTransition scaleTransitionButtons = new ScaleTransition(Duration.seconds(1.1));
+            ScaleTransition scaleTransitionButtons = new ScaleTransition(Duration.seconds(0.9));
             scaleTransitionButtons.setFromX(0.4);
             scaleTransitionButtons.setFromY(0.4);
             scaleTransitionButtons.setToX(1);

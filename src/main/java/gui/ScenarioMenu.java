@@ -38,7 +38,7 @@ public class ScenarioMenu extends Application implements TransitionInterface {
         this.stage = stage;
         ImageView logo;
         try {
-            logo = new ImageView(new Image(Objects.requireNonNull(this.getClass().getResource("/img.png")).toString()));
+            logo = new ImageView(new Image(Objects.requireNonNull(this.getClass().getResource("/logo.png")).toString()));
         } catch (NullPointerException exception) {
             System.out.println("WARNING: Logo not found in the given directory.");
             logo = new ImageView();

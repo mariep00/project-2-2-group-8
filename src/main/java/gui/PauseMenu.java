@@ -30,20 +30,24 @@ public class PauseMenu {
         Button resumeButton = new Button("Resume game");
         Button mainMenuButton = new Button("Back to main menu");
         Button desktopButton = new Button("Quit to desktop");
-        VBox vbox = new VBox(30, resumeButton, mainMenuButton, desktopButton);
-        for (Node node : vbox.getChildren()) {
+        VBox vboxButtons = new VBox(30, resumeButton, mainMenuButton, desktopButton);
+        for (Node node : vboxButtons.getChildren()) {
             if (node instanceof Button) {
                 ((Button) node).setPrefWidth(270);
                 ((Button) node).setPrefHeight(80);
                 node.setStyle("-fx-font-size: " + 19 + "px;");
             }
         }
-        vbox.setAlignment(Pos.CENTER);
+        vboxButtons.setAlignment(Pos.CENTER);
 
-        BorderPane borderPane = new BorderPane(vbox);
-        borderPane.setTop(pauseTitle);
-        BorderPane.setAlignment(pauseTitle, Pos.CENTER);
-        BorderPane.setMargin(pauseTitle, new Insets(60, 0, 0, 0));
+        VBox vboxPauseTitle = new VBox(pauseTitle);
+        vboxPauseTitle.setAlignment(Pos.TOP_CENTER);
+        VBox vboxCombined = new VBox(vboxPauseTitle, vboxButtons);
+        vboxCombined.setAlignment(Pos.CENTER);
+
+        BorderPane borderPane = new BorderPane(vboxCombined);
+        BorderPane.setAlignment(vboxCombined, Pos.CENTER);
+        VBox.setMargin(vboxPauseTitle, new Insets(0, 0, 120, 0));
 
         borderPane.setId("pause_menu");
         Scene pauseScene = new Scene(borderPane, Color.TRANSPARENT);
@@ -59,8 +63,19 @@ public class PauseMenu {
 
         pauseScene.getStylesheets().add(MainGUI.getStylesheet());
 
+        pauseStage.widthProperty().add(stage.widthProperty());
+        pauseStage.heightProperty().add(stage.heightProperty());
         scene.getRoot().setEffect(new GaussianBlur());
         pauseStage.show();
+
+        stage.widthProperty().addListener(e -> {
+            pauseStage.setX(stage.getX());
+            pauseStage.setWidth(stage.getWidth());
+        });
+        stage.heightProperty().addListener(e -> {
+            pauseStage.setY(stage.getY()+windowTitleBarHeight);
+            pauseStage.setHeight(stage.getHeight()-windowTitleBarHeight);
+        });
 
         pauseScene.setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.ESCAPE) {

@@ -55,8 +55,8 @@ public class Vector2D {
     }
 
     public double getAngleBetweenVector(Vector2D other) {
-        Vector2D directionalVector = new Vector2D(other.x-this.x, other.y-this.y);
-        double theta = Math.atan2(0, 0);
+        Vector2D directionalVector = new Vector2D(other.x-this.x, this.y-other.y); // this.y-other.y because in our coordinate system y "upwards" on the axis is minus, while y "downwards" the axis is plus.
+        double theta = Math.atan2(directionalVector.x, directionalVector.y);
         double thetaWithEastToRight = theta-(Math.PI/2);
         double result = thetaWithEastToRight < 0 ? Math.toDegrees(thetaWithEastToRight)+360 : Math.toDegrees(thetaWithEastToRight);
         return result;

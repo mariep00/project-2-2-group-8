@@ -1,7 +1,5 @@
 package controller.maps;
 
-import java.util.LinkedList;
-
 public class Tile {
     
     public enum Type {

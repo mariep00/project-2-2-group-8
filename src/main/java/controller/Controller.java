@@ -1,16 +1,9 @@
 package controller;
 
 import controller.agent.Agent;
-import controller.maps.EndingExplorationMap;
-import controller.maps.MarkerInterface;
-import controller.maps.PheromoneMarker;
-import controller.maps.ScenarioMap;
-import controller.maps.TeleportEntrance;
-import controller.maps.Tile;
+import controller.maps.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class Controller {
     private final Random rand = new Random();
@@ -24,7 +17,7 @@ public class Controller {
     private double timestep;
     private double time;
     protected ArrayList<Vector2D>[] visions;
-    protected ArrayList<Tile> tilesWithMarker;
+    protected LinkedList<Tile> tilesWithMarker;
 
     public Controller(ScenarioMap scMap) {
         this.scMap = scMap;
@@ -36,7 +29,7 @@ public class Controller {
         this.endingExplorationMap = new EndingExplorationMap(this.scMap);
         this.timestep = scMap.getTimestep();
         this.visions = new ArrayList[scMap.getNumGuards()];
-        this.tilesWithMarker = new ArrayList<>();
+        this.tilesWithMarker = new LinkedList<>();
 
         createAgents(1, 1);
     }
@@ -46,6 +39,7 @@ public class Controller {
         for (int i = 0; i < agentsGuards.length; i++) {
             updateVision(i);
             updateProgress(visions[i], i); // Set the beginning "progress"
+            updateMarkers();
         }
     }
 
@@ -115,11 +109,18 @@ public class Controller {
     }
 
     protected void updateMarkers() {
-        for (Tile tile : tilesWithMarker) {
+        Iterator<Tile> iterator = tilesWithMarker.iterator();
+        while (iterator.hasNext()) {
+            Tile tile = iterator.next();
             MarkerInterface[] markers = tile.getMarkers();
-            for (int i = 0; i < markers.length; i++) {
-                MarkerInterface marker = markers[i];
-                if (marker.updateMarker(this.timestep)) tile.removeMarker(marker);
+            for (MarkerInterface marker : markers) {
+                if (marker != null) {
+                    marker.updateMarker(this.timestep);
+                    if (marker.shouldRemove()) {
+                        tile.removeMarker(marker);
+                        iterator.remove();
+                    }
+                }
             }
         }
     }
@@ -150,7 +151,17 @@ public class Controller {
 
     protected void addMarker(Vector2D position, MarkerInterface marker) {
         scMap.getTile(position).addMarker(marker);
+        Iterator<Tile> iterator = tilesWithMarker.iterator();
+        while (iterator.hasNext()) {
+            Tile tile = iterator.next();
+            if (tile.getPheromoneMarker().getPosition().equals(position)) {
+                iterator.remove();
+                break;
+            }
+        }
+        tilesWithMarker.add(scMap.getTile(position));
     }
+
 
     protected void updateAgentPosition(int agentIndex, Vector2D pos) {
         agentPositions[agentIndex] = pos;

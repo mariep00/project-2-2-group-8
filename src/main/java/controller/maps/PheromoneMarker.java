@@ -4,7 +4,7 @@ import controller.Vector2D;
 import controller.agent.Agent;
 
 public class PheromoneMarker implements MarkerInterface {
-    public static final double strengthReducePerSecond = 0.2;
+    public static final double strengthReducePerSecond = 1;
     private final Agent agent;
     private final int initialSmellingDistance;
     private final Vector2D position; 
@@ -20,14 +20,16 @@ public class PheromoneMarker implements MarkerInterface {
     public double getDistance() { return strength*initialSmellingDistance; }
 
     @Override
+    public boolean shouldRemove() { return strength <= 0; }
+
+    @Override
     public Vector2D getPosition() { return position; }
 
     @Override
     public Agent getAgent() { return agent; }
 
     @Override
-    public boolean updateMarker(double timeStep) { 
-        strength -= (strengthReducePerSecond*timeStep); 
-        return strength <= 0;
+    public void updateMarker(double timeStep) {
+        strength -= (strengthReducePerSecond*timeStep);
     }
 }

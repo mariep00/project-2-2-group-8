@@ -12,7 +12,7 @@ repositories {
 }
 javafx {
     version = "11.0.2"
-    modules = [ 'javafx.controls', 'javafx.fxml', 'javafx.graphics' ]
+    modules = [ 'javafx.controls', 'javafx.fxml', 'javafx.graphics', 'javafx.swing', 'javafx.media' ]
 }
 application {
     mainClass = 'launchers.LauncherGUI'
@@ -24,4 +24,3 @@ run {
 dependencies {
     implementation 'org.jetbrains:annotations:20.1.0'
 }
-
