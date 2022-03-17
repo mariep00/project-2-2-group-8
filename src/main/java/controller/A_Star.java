@@ -1,7 +1,7 @@
 package controller;
 
-import controller.graph.GraphAdjacencyList;
-import controller.graph.Node;
+
+import controller.maps.Tile;
 import controller.maps.graph.ExplorationGraph;
 import controller.maps.graph.Node;
 
@@ -41,7 +41,7 @@ public class A_Star {
         while (!path.contains(goalNode)){
             // add the adjacent vertices of current node to OPEN
             if (open.size() == 1 && open.contains(startingNode)) {
-                ArrayList<Node> neighboursList = new ArrayList<>(graph.neighbors(startingNode));
+                ArrayList<Node> neighboursList = new ArrayList<Node>(graph.getNeighbours(startingNode));
                 checkNeighbours(neighboursList, startingNode);
             }
             else {
@@ -53,7 +53,7 @@ public class A_Star {
                 open.remove(currentNode);
 
                 closed.add(currentNode);
-                ArrayList<Node> neighboursList = new ArrayList<>(graph.neighbors(currentNode));
+                ArrayList<Node> neighboursList = new ArrayList<Node>(graph.getNeighbours(currentNode));
                 checkNeighbours(neighboursList, currentNode);
             }
 
@@ -63,7 +63,7 @@ public class A_Star {
 
     public void checkNeighbours(ArrayList<Node> neighboursList, Node parent){
         for (Node neighbour:neighboursList) {
-            if (!(neighbour.getType().equals(Tile.Type.WALL)) || closed.contains(neighbour)){
+            if (!(neighbour.getTile().getType().equals(Tile.Type.WALL)) || closed.contains(neighbour)){
                 continue;
             }
             else if (/* new path is shorter*/ false || !open.contains(neighbour)){

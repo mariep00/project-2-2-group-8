@@ -21,15 +21,15 @@ public class FrontierBrain implements BrainInterface {
 
     public int makeDecision(ExplorationGraph graph){
         if (futureMoves.isEmpty() /* && location == goalNode*/){
-            graph.getList().checkFrontierEdges();
+            graph.checkFrontierEdges();
             updateStart();
-            updateGoal(graph.getList());
-            moveTo(graph.getList());
+            updateGoal(graph);
+            moveTo(graph);
         }
         return futureMoves.pop();
     }
 
-    public void updateGoal(GraphAdjacencyList list){
+    public void updateGoal(ExplorationGraph list){
      //Update the goal node with the  next frontier node on graph
         Node newGoalNode = list.getNextFrontier();
         goalNode = newGoalNode;
@@ -41,12 +41,12 @@ public class FrontierBrain implements BrainInterface {
     }
 
 
-    public void moveTo(GraphAdjacencyList list){
+    public void moveTo(ExplorationGraph list){
         A_Star a_star = new A_Star(goalNode, startingNode);
         LinkedList<Node> nodesToGoal = a_star.calculateAstar(list);
         for(Node node: nodesToGoal){
-            int xDif = node.COORDINATES.x - ;
-            int yDif
+            //int xDif = node.COORDINATES.x - ;
+            //int yDif
         }
 
         //For every node in nodes to Goal
