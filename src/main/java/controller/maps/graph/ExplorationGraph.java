@@ -171,7 +171,7 @@ public class ExplorationGraph {
      * @return a linked list containing the neighboring nodes of x
      */
     public LinkedList<Node> getNeighbours(Node x){
-        LinkedList<Node> neighbors = null;
+        LinkedList<Node> neighbors = new LinkedList<>();
         Vector2D[] vector1 = x.getNeigbours();
         for(int i=0; i < vector1.length; i++){
             Node n = nodes.getValue(vector1[i]);
