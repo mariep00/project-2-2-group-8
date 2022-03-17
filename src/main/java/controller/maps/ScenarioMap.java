@@ -21,6 +21,8 @@ public class ScenarioMap {
     private double timestep;
     private ArrayList<Vector2D> spawnAreaGuards = new ArrayList<>();
     private ArrayList<Vector2D> spawnAreaIntruders = new ArrayList<>();
+    private int smellingDistance = 10;
+    private int numberMarkers = 5;
 
     private Tile[][] mapGrid;
     private int width;
@@ -241,7 +243,7 @@ public class ScenarioMap {
 
     public void insertElement(Vector2D[] points, Type type) {
         for (int i=0; i<points.length; i++) {
-            mapGrid[points[i].y][points[i].x].setType(type);;
+            mapGrid[points[i].y][points[i].x].setType(type);
         }
         
     }
@@ -265,4 +267,13 @@ public class ScenarioMap {
         return areaMap;
     }
 
+    public int getSmellingDistance() { return smellingDistance; }
+
+    public void setNumberMarkers(int numMarkers) {
+        numberMarkers = numMarkers;
+    }
+
+    public void setSmellingDistance(int smellDistance) {
+        smellingDistance = smellDistance;
+    }
 }

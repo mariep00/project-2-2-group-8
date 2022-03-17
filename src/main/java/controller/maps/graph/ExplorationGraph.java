@@ -5,6 +5,8 @@ import controller.maps.HashMap;
 import controller.maps.Tile;
 import controller.maps.Tile.Type;
 
+import java.util.LinkedList;
+
 public class ExplorationGraph {
 
     private Node origin;
@@ -159,5 +161,45 @@ public class ExplorationGraph {
     @Override
     public String toString() {
         return "Number of nodes: " + nodes.getNumberOfNodes() + " Size Frontier: " + frontiers.getNumberOfNodes();
+    }
+
+
+
+    /**
+     * Returns all the vertices y s.t. there is an edge from x to y
+     * @param x node
+     * @return a linked list containing the neighboring nodes of x
+     */
+    public LinkedList<Node> getNeighbours(Node x){
+        LinkedList<Node> neighbors = new LinkedList<>();
+        Vector2D[] vector1 = x.getNeigbours();
+        for(int i=0; i < vector1.length; i++){
+            Node n = nodes.getValue(vector1[i]);
+            if(n!=null){
+                neighbors.add(n);
+            }
+        }
+        return neighbors;
+    }
+
+
+    public Node getNextFrontier() {
+        LinkedList<Node> nodes = frontiers.getAllNodes();
+        Node tempnode = null;
+        double closest_dist=Double.MAX_VALUE;
+        for (int i=0; i<nodes.size(); i++){
+            Vector2D vector = nodes.get(i).COORDINATES;
+            double dist = vector.dist(currentPosition.COORDINATES);
+            if(dist<closest_dist){
+                closest_dist= dist;
+                tempnode=nodes.get(i);
+            }
+
+        }
+        return tempnode;
+
+    }
+
+    public void checkFrontierEdges() { //TODO: what does this do?
     }
 }

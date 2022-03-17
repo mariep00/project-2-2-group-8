@@ -44,7 +44,23 @@ public class Vector2D {
         }
         return null;
     }
+    
+    /**
+     * Euclidean distance
+     * @param other
+     * @return Returns the euclidean distance as a double
+     */
+    public double dist(Vector2D other) {
+        return Math.sqrt(Math.pow(this.x-other.x, 2)+Math.pow(this.y-other.y, 2));
+    }
 
+    public double getAngleBetweenVector(Vector2D other) {
+        Vector2D directionalVector = new Vector2D(other.x-this.x, other.y-this.y);
+        double theta = Math.atan2(0, 0);
+        double thetaWithEastToRight = theta-(Math.PI/2);
+        double result = thetaWithEastToRight < 0 ? Math.toDegrees(thetaWithEastToRight)+360 : Math.toDegrees(thetaWithEastToRight);
+        return result;
+    }
     public Vector2D[] getNeighbours () {
         Vector2D[] neighbours = new Vector2D[4];
         neighbours[0] = new Vector2D(this.x, (this.y+1));

@@ -139,6 +139,12 @@ public class MapBuilder {
                     case "intruderViewRange":
                         map.setIntruderViewRange(Double.parseDouble(value));
                         break;
+                    case "numberMarkers":
+                        map.setNumberMarkers(Integer.parseInt(value));
+                        break;
+                    case "smellingDistance":
+                        map.setSmellingDistance(Integer.parseInt(value));
+                        break;
                 }
             }
         }

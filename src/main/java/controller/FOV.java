@@ -148,7 +148,7 @@ public class FOV {
      * @param p1 ending point of the line
      * @return Returns an array of points that together represent a line
      */
-    private Vector2D[] calculateLine (Vector2D p0, Vector2D p1) {
+    public Vector2D[] calculateLine (Vector2D p0, Vector2D p1) {
         ArrayList<Vector2D> line = new ArrayList<Vector2D>();
         final int N = calculateDistance(p0, p1);
         for (int i=0; i<=N; i++) {
