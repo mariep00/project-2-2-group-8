@@ -2,30 +2,36 @@
     font-family: 'Lato-Regular';
     src: url('fonts/Lato-Regular.ttf');
 }
+@font-face {
+    font-family: 'Lato-Bold';
+    src: url('fonts/Lato-Bold.ttf');
+}
 
 .root {
-    -fx-background-color: #56a9fd;
+    -fx-background-color: #c3e0ff;
     -fx-font-family: 'Lato';
 }
 .button {
-    -fx-background-color: #7dacd5;
+    -fx-background-color: #99d0ff;
     -fx-text-fill: #000000;
     -fx-background-radius: 7px;
+    -fx-font-weight: bold;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 3,0,2,3);
 }
 .button:disabled {
-    -fx-background-color: #7dacd5;
+    -fx-background-color: #99d0ff;
     -fx-text-fill: #000000;
     -fx-background-radius: 7px;
     -fx-opacity: 1;
 }
 .button:hover {
-    -fx-background-color: #3590dc;
+    -fx-background-color: #6cbdff;
+    -fx-text-fill: #ffffff;
     -fx-scale-x: 1.035;
     -fx-scale-y: 1.035
 }
 .button:pressed {
-    -fx-text-fill: #3e6485;
+    -fx-text-fill: #5db5ff;
 }
 #pause_menu {
     -fx-background-color: rgba(0, 0, 0, 0.175);
