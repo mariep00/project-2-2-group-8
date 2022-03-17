@@ -115,7 +115,6 @@ public class GameScreen extends Application implements TransitionInterface {
         buttonPlayTillEnd.setPrefWidth(130);
         buttonPlayTillEnd.setPrefHeight(30);
         hboxButtons.getChildren().addAll(  buttonShowAllVisions, buttonHideAllVisions, buttonStep, buttonPlayTillEnd);
-        hboxButtons.setAlignment(Pos.CENTER);
         Region spacingRegion = new Region();
 
         hbox.getChildren().addAll(progressBar, spacingRegion, hboxButtons);
