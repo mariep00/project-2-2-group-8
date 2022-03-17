@@ -13,6 +13,7 @@ public class Node {
     // We need this for the A*
     private int g; //distance to starting node
     private int h; //distance to goal node (Manhattan distance)
+    private Node parent;
 
     public final Vector2D COORDINATES;
 
@@ -80,4 +81,10 @@ public class Node {
     public int getH(){ return h;}
 
     public int getG(){ return g;}
+
+    public Node getParent(){ return parent;}
+
+    public void setParent(Node parent){
+        this.parent = parent;
+    }
 }
