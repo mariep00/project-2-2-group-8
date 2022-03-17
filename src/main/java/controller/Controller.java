@@ -64,7 +64,7 @@ public class Controller {
         for (int i=0; i<agentsGuards.length; i++) {
             ArrayList<Tile> tiles = getTilesInVision(visions[i], i);
             if (updateProgress(visions[i], i)) { break; }
-            List<PheromoneMarker> pheromoneMarkersCloseEnough = getPheromoneMarkersCloseEnough(agentPositions[i]);
+            List<PheromoneMarker> pheromoneMarkersCloseEnough = getPheromoneMarkersCloseEnough(i);
             double[] pheromoneMarkerDirections = getPheromoneMarkersDirections(agentPositions[i], pheromoneMarkersCloseEnough);
             int task = agentsGuards[i].tick(tiles, convertRelativeCurrentPosToRelativeToSpawn(visions[i], i), pheromoneMarkersCloseEnough, pheromoneMarkerDirections, timestep);
             updateAgent(i, task);
@@ -73,10 +73,12 @@ public class Controller {
         updateMarkers();
     }
 
-    private List<PheromoneMarker> getPheromoneMarkersCloseEnough(Vector2D position) {
+    private List<PheromoneMarker> getPheromoneMarkersCloseEnough(int agentIndex) {
         ArrayList<PheromoneMarker> markersCloseEnough = new ArrayList<>();
         for (Tile tile : tilesWithMarker) {
-            if (position.dist(tile.getPheromoneMarker().getPosition()) <= tile.getPheromoneMarker().getDistance() && !isWallInBetween(position, tile.getPheromoneMarker().getPosition())) {
+            if (tile.getPheromoneMarker().getAgent() != agentsGuards[agentIndex]
+                    && agentPositions[agentIndex].dist(tile.getPheromoneMarker().getPosition()) <= tile.getPheromoneMarker().getDistance()
+                    && !isWallInBetween(agentPositions[agentIndex], tile.getPheromoneMarker().getPosition())) {
                 markersCloseEnough.add(tile.getPheromoneMarker());
             }
         }
@@ -143,7 +145,7 @@ public class Controller {
                 break;
         }
 
-        addMarker(agentPositions[agentIndex], new PheromoneMarker(agentPositions[agentIndex], scMap.getSmellingDistance()));
+        addMarker(agentPositions[agentIndex], new PheromoneMarker(agentsGuards[agentIndex], agentPositions[agentIndex], scMap.getSmellingDistance()));
     }
 
     protected void addMarker(Vector2D position, MarkerInterface marker) {

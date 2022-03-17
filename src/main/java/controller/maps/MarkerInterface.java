@@ -1,8 +1,10 @@
 package controller.maps;
 
 import controller.Vector2D;
+import controller.agent.Agent;
 
 public interface MarkerInterface {
-    public boolean updateMarker(double timeStep);
-    public Vector2D getPosition();
+    boolean updateMarker(double timeStep);
+    Vector2D getPosition();
+    Agent getAgent();
 }

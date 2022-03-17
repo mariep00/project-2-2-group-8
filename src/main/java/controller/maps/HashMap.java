@@ -109,12 +109,14 @@ class Bucket {
         if (entries == null) entries = new LinkedList<>();
         entries.add(entry);
     }
+
     public Entry getEntry(Vector2D key) {
         for (Entry entry : entries) {
             if (entry.key.equals(key)) return entry;
         }
         return null;
     }
+
     public boolean removeEntry(Vector2D key) {
         for (int i = 0; i < entries.size(); i++) {
             if (entries.get(i).key.equals(key)) {
