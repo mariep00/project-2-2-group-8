@@ -37,16 +37,24 @@ public class Agent {
 
     private void updateGraph(ArrayList<Tile> inVision, ArrayList<Vector2D> coordinates) {
         if (inVision.size() == coordinates.size()) {
-            for (int i = 0; i < inVision.size(); i++) {
+            ArrayList<Integer> walls = new ArrayList<>();
+            ArrayList<Integer> notWalls = new ArrayList<>();
+            for (int i=0; i<inVision.size(); i++) {
                 if (inVision.get(i).getType() == Type.WALL) {
-                    Vector2D[] neighbours = coordinates.get(i).getNeighbours();
-                    for (int j = 0; j < neighbours.length; j++) {
-                        explorationGraph.addWall(neighbours[j], j);
-                    }
+                    walls.add(i);
+                } else {
+                    notWalls.add(i);
                 }
-                else {
-                    explorationGraph.createNode(coordinates.get(i), inVision.get(i));
+            }
+            for (Integer i: notWalls) {
+                explorationGraph.createNode(coordinates.get(i), inVision.get(i));
+            }
+            for (Integer i: walls) {
+                Vector2D[] neighbours = coordinates.get(i).getNeighbours();
+                for (int j=0; j<neighbours.length; j++) {
+                    explorationGraph.addWall(neighbours[j], j);
                 }
+
             }
         }
     }
