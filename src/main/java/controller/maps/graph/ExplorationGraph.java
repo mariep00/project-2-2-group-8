@@ -57,9 +57,7 @@ public class ExplorationGraph {
         this.currentPosition = graphAdjacencyList.getNode(vector2D);
     }
     public void addDirectedEdge(Node node1, Node node2) {
-        System.out.println(node1.getEdges()[4]);
         graphAdjacencyList.addDirectedEdge(node1, node2);
-        System.out.println(node1.getEdges()[4]);
     }
 
     public Node getNode(Vector2D vector) {

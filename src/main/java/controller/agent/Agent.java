@@ -90,7 +90,6 @@ public class Agent {
         if (!explorationGraph.teleportEdgeExistsBetween(entranceNode, destinationNode)) {
             explorationGraph.addDirectedEdge(entranceNode, destinationNode);
         }
-        System.out.println(explorationGraph.getNode(entrance));
     }
 
     @Override

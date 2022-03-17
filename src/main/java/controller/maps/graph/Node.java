@@ -39,20 +39,17 @@ public class Node {
      * @param other node
      */
     public void addEdge(Node other) {
-        boolean added = false;
         if (tile.isTeleportEntrance() && other.tile.isTeleportExit() && ((TeleportExit) other.tile.getFeature()).entrance == tile.getFeature()) {
             edges[edges.length - 1] = other;
-            added = true;
         }
         else {
             for (int i = 0; i < edges.length-1; i++) {
                 if (edges[i] == null) {
                     edges[i] = other;
-                    added = true;
+                    break;
                 }
             }
         }
-        if (!added) System.out.println("DIDN'T ADD");
     }
 
     public void addSelfEdge (int direction) {

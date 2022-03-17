@@ -12,9 +12,9 @@ import java.util.Random;
 public class Controller {
     private final Random rand = new Random();
     private FOV fov;
-    public static ScenarioMap scMap;
+    private ScenarioMap scMap;
     protected EndingExplorationMap endingExplorationMap;
-    public static Vector2D[] agentSpawnLocations;
+    private Vector2D[] agentSpawnLocations;
     protected Vector2D[] agentPositions;
     protected Agent[] agentsGuards;
     private Agent[] agentsIntruders;
