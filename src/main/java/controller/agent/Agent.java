@@ -54,7 +54,6 @@ public class Agent {
                 for (int j=0; j<neighbours.length; j++) {
                     explorationGraph.addWall(neighbours[j], j);
                 }
-
             }
         }
     }

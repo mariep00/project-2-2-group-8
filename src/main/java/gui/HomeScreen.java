@@ -70,18 +70,24 @@ public class HomeScreen extends Application implements TransitionInterface {
 
         Button playButton = new Button("Play game");
         Button quitButton = new Button("Quit game");
-        VBox vbox = new VBox( 30,playButton, quitButton);
-        vbox.setDisable(true); // To make sure you cannot click on buttons while transitions are playing
-        vbox.setMaxWidth(270);
-        vbox.setMaxHeight(175);
+        VBox vboxButtons = new VBox( 30,playButton, quitButton);
+        vboxButtons.setDisable(true); // To make sure you cannot click on buttons while transitions are playing
+        vboxButtons.setMaxWidth(270);
+        vboxButtons.setMaxHeight(175);
 
+        VBox vboxLogo = new VBox(logo);
+        vboxLogo.setAlignment(Pos.TOP_CENTER);
+        VBox vboxCombined = new VBox(30, vboxLogo, vboxButtons);
+        vboxCombined.setAlignment(Pos.CENTER);
         // Create a borderpane, with the logo centered in the top
         // and the buttons centered in the middle of the screen
         BorderPane borderPane = new BorderPane();
-        borderPane.setTop(logo);
-        BorderPane.setAlignment(logo, Pos.TOP_CENTER);
-        borderPane.setCenter(vbox);
-        vbox.setAlignment(Pos.TOP_CENTER);
+        //borderPane.setTop(vboxLogo);
+        //BorderPane.setAlignment(vboxLogo, Pos.TOP_CENTER);
+        //borderPane.setCenter(vboxButtons);
+        vboxButtons.setAlignment(Pos.TOP_CENTER);
+        borderPane.setCenter(vboxCombined);
+        BorderPane.setAlignment(vboxCombined, Pos.CENTER);
 
         playButton.setPrefWidth(270);
         playButton.setPrefHeight(80);
@@ -93,7 +99,7 @@ public class HomeScreen extends Application implements TransitionInterface {
 
         // Set the opacities to 0, so they can fade in using the animation
         logo.setOpacity(0);
-        vbox.setOpacity(0);
+        vboxButtons.setOpacity(0);
         Scene scene = new Scene(borderPane, windowWidth, windowHeight);
         MainGUI.setupStage(stage, windowWidth, windowHeight);
         MainGUI.setupScene(this, scene, stage);
@@ -103,10 +109,9 @@ public class HomeScreen extends Application implements TransitionInterface {
         stage.setResizable(false);
 
         stage.show();
-        loadHomeScreenTransition(vbox, logo);
+        loadHomeScreenTransition(vboxButtons, logo);
 
-        ImageView finalLogo = logo;
-        playButton.setOnAction(e -> quitSceneTransition(() -> new ScenarioMenu().start(stage), vbox, finalLogo));
+        playButton.setOnAction(e -> quitSceneTransition(() -> new ScenarioMenu(scene).start(stage), vboxButtons));
         quitButton.setOnAction(e -> MainGUI.quitToDesktopAlert(stage));
     }
 
@@ -121,7 +126,7 @@ public class HomeScreen extends Application implements TransitionInterface {
         Path logoPath = new Path();
         MoveTo moveFrom = new MoveTo(logo.getX() + logo.getFitWidth() / 2, -logo.getFitHeight());
         logoPath.getElements().add(moveFrom);
-        logoPath.getElements().add(new LineTo(logo.getX() + logo.getFitWidth() / 2, logo.getY() + 150 +logo.getFitHeight() / 2));
+        logoPath.getElements().add(new LineTo(logo.getFitWidth() / 2, 241.26983642578125/2));
         PathTransition pathTransitionLogo = new PathTransition(Duration.seconds(1.3), logoPath);
 
         // Create the fade in transition for the logo
@@ -158,6 +163,7 @@ public class HomeScreen extends Application implements TransitionInterface {
                 stage.setResizable(true);
                 transitions.remove(parallelTransitionButtons);
                 vbox.setDisable(false);
+                System.out.println(logo.getTranslateX() + ", " + logo.getTranslateY());
             });
         });
     }

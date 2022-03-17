@@ -10,15 +10,15 @@ import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import org.jetbrains.annotations.Nullable;
 
-import java.awt.*;
 import java.util.Objects;
 
 public class MainGUI {
-    public static final int WINDOW_STARTING_WIDTH = Toolkit.getDefaultToolkit().getScreenSize().width;
-    public static final int WINDOW_STARTING_HEIGHT = Toolkit.getDefaultToolkit().getScreenSize().height;
+    public static final int WINDOW_STARTING_WIDTH = (int) Screen.getPrimary().getVisualBounds().getWidth();
+    public static final int WINDOW_STARTING_HEIGHT = (int) Screen.getPrimary().getVisualBounds().getHeight();
 
     private static PauseMenu pauseMenu;
 
@@ -37,8 +37,8 @@ public class MainGUI {
      */
     public static void setupStage(Stage stage, double windowWidth, double windowHeight) {
         stage.setTitle("Surveillance");
-        stage.setMinHeight(WINDOW_STARTING_HEIGHT);
-        stage.setMinWidth(WINDOW_STARTING_WIDTH);
+        stage.setMinHeight(600);
+        stage.setMinWidth(800);
         stage.setWidth(windowWidth);
         stage.setHeight(windowHeight);
     }
