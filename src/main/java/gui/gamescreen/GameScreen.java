@@ -12,7 +12,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.*;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import org.jetbrains.annotations.NotNull;
 
@@ -94,7 +97,7 @@ public class GameScreen extends Application implements TransitionInterface {
         BorderPane borderPane = new BorderPane(scrollPane);
         BorderPane.setAlignment(gridPane, Pos.CENTER);
 
-        HBox hbox = new HBox();
+        //HBox hbox = new HBox();
 
         progressBar = new ProgressBarCustom();
         progressBar.getProgressBar().setPrefWidth(400);
@@ -114,14 +117,15 @@ public class GameScreen extends Application implements TransitionInterface {
         buttonPlayTillEnd.setPrefWidth(130);
         buttonPlayTillEnd.setPrefHeight(30);
         hboxButtons.getChildren().addAll(  buttonShowAllVisions, buttonHideAllVisions, buttonStep, buttonPlayTillEnd);
-        Region spacingRegion = new Region();
 
-        hbox.getChildren().addAll(progressBar, spacingRegion, hboxButtons);
-        hbox.setAlignment(Pos.CENTER);
-        HBox.setHgrow(spacingRegion, Priority.ALWAYS);
+        AnchorPane anchorPane = new AnchorPane();
+        anchorPane.getChildren().add(progressBar);
+        AnchorPane.setLeftAnchor(progressBar, 0.0);
+        anchorPane.getChildren().add(hboxButtons);
+        AnchorPane.setRightAnchor(hboxButtons, 0.0);
 
-        BorderPane.setMargin(hbox, new Insets(5, 5, 5, 5));
-        borderPane.setTop(hbox);
+        BorderPane.setMargin(anchorPane, new Insets(5, 5, 5, 5));
+        borderPane.setTop(anchorPane);
 
         Scene scene = new Scene(borderPane);
         MainGUI.setupScene(this, scene, stage);
