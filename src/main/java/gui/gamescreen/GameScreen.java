@@ -77,7 +77,6 @@ public class GameScreen extends Application implements TransitionInterface {
 
                 gridPane.add(tile, x, y);
                 tiles[x][y] = tile;
-
                 tile.addEventFilter(MouseEvent.MOUSE_CLICKED,e -> {
                     tile.getTileImageAgent().onClick();
                     e.consume();
@@ -130,13 +129,11 @@ public class GameScreen extends Application implements TransitionInterface {
         loadSceneTransition(borderPane.getChildren());
 
         controllerGUI.init();
+        gridPane.setHgap(-1);
+        gridPane.setVgap(-1);
 
-        buttonStep.setOnAction(e -> {
-            controllerGUI.tick();
-        });
-        buttonPlayTillEnd.setOnAction(e -> {
-            controllerGUI.engine();
-        });
+        buttonStep.setOnAction(e -> controllerGUI.tick());
+        buttonPlayTillEnd.setOnAction(e -> controllerGUI.engine());
         buttonShowAllVisions.setOnAction(e -> {
             Arrays.fill(showVision, true);
             for (int i = 0; i < scenarioMap.getNumGuards(); i++) {
