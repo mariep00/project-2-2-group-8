@@ -1,5 +1,7 @@
 package controller.maps;
 
+import java.util.LinkedList;
+
 public class Tile {
     
     public enum Type {
@@ -17,11 +19,13 @@ public class Tile {
     public boolean shaded;
     public boolean seeThrough;
     private SpecialFeature feature;
+    private MarkerInterface[] markers;
 
     public Tile () {
             type = Type.FLOOR;
             seeThrough = true;
             shaded = false;
+            markers = new MarkerInterface[1];
     }
 
     public Type getType() {
@@ -55,6 +59,23 @@ public class Tile {
 
     public void setSeeThrough (boolean seeThrough) {
         this.seeThrough = seeThrough;
+    }
+
+    public MarkerInterface[] getMarkers() {
+        return markers;
+    }
+    public PheromoneMarker getPheromoneMarker() { return markers[0] != null ? (PheromoneMarker) markers[0] : null; }
+
+    public void removeMarker(MarkerInterface marker) {
+        if (marker instanceof PheromoneMarker) {
+            markers[0] = null;
+        }
+    }
+
+    public void addMarker (MarkerInterface marker) {
+        if (marker instanceof PheromoneMarker) {
+            markers[0] = marker;
+        }
     }
 
     public String toString() {

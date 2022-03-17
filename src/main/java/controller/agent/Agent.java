@@ -1,12 +1,14 @@
 package controller.agent;
 
 import controller.Vector2D;
+import controller.maps.PheromoneMarker;
 import controller.maps.Tile;
 import controller.maps.Tile.Type;
 import controller.maps.graph.ExplorationGraph;
 import controller.maps.graph.Node;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Agent {
 
@@ -30,7 +32,7 @@ public class Agent {
         explorationGraph = new ExplorationGraph();
     }
 
-    public int tick(ArrayList<Tile> inVision, ArrayList<Vector2D> coordinates, double timestep) {
+    public int tick(ArrayList<Tile> inVision, ArrayList<Vector2D> coordinates, List<PheromoneMarker> pheromoneMarkers, double[] pheromoneMarkerDirections, double timestep) {
         updateGraph(inVision, coordinates);
         return brain.makeDecision(explorationGraph);
     }
