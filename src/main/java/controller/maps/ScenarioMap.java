@@ -151,14 +151,15 @@ public class ScenarioMap {
     }
 
     public void setTeleport (int x1, int y1, int x2, int y2, int x3, int y3, double rotation) {
-        Teleport tmp = new Teleport(new Vector2D(x3, y3), rotation);
+        TeleportEntrance tmp = new TeleportEntrance(new Vector2D(x3, y3), rotation);
         for (int i=y1; i<=y2; i++) {
             for (int j=x1; j<=x2; j++) {
                 mapGrid[i][j].setSpecialFeature(tmp);
-                mapGrid[i][j].setType(Tile.Type.TELEPORT);;
+                mapGrid[i][j].setType(Tile.Type.TELEPORT_ENTRANCE);;
             }
         } 
-        
+        mapGrid[y3][x3].setSpecialFeature(new TeleportExit(tmp));
+        mapGrid[y3][x3].setType(Type.TELEPORT_EXIT);
     }
 
     public void setShaded (int x1, int y1, int x2, int y2) {

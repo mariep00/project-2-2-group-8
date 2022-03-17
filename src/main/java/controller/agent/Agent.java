@@ -2,7 +2,9 @@ package controller.agent;
 
 import controller.Vector2D;
 import controller.maps.Tile;
+import controller.maps.Tile.Type;
 import controller.maps.graph.ExplorationGraph;
+import controller.maps.graph.Node;
 
 import java.util.ArrayList;
 
@@ -35,8 +37,16 @@ public class Agent {
 
     private void updateGraph(ArrayList<Tile> inVision, ArrayList<Vector2D> coordinates) {
         if (inVision.size() == coordinates.size()) {
-            for (int i=0; i<inVision.size(); i++) {
-                explorationGraph.createNode(coordinates.get(i), inVision.get(i), false);
+            for (int i = 0; i < inVision.size(); i++) {
+                if (inVision.get(i).getType() == Type.WALL) {
+                    Vector2D[] neighbours = coordinates.get(i).getNeighbours();
+                    for (int j = 0; j < neighbours.length; j++) {
+                        explorationGraph.addWall(neighbours[j], j);
+                    }
+                }
+                else {
+                    explorationGraph.createNode(coordinates.get(i), inVision.get(i));
+                }
             }
         }
     }
@@ -70,4 +80,20 @@ public class Agent {
     }
     public double getOrientation() { return orientation; }
     public double getBase_speed() { return base_speed; }
+    public void creatTeleportDestinationNode(Vector2D entrance, Vector2D destination, Tile entranceTile, Tile destinationTile) {
+        Node destinationNode = explorationGraph.getNode(destination);
+        if (destinationNode == null) destinationNode = explorationGraph.createNode(destination, destinationTile);
+
+        Node entranceNode = explorationGraph.getNode(entrance);
+        if (entranceNode == null) entranceNode = explorationGraph.createNode(entrance,entranceTile);
+
+        if (!explorationGraph.teleportEdgeExistsBetween(entranceNode, destinationNode)) {
+            explorationGraph.addDirectedEdge(entranceNode, destinationNode);
+        }
+    }
+
+    @Override
+    public String toString() {
+        return explorationGraph.toString();
+    }
 }

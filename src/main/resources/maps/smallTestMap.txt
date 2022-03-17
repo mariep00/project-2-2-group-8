@@ -1,0 +1,16 @@
+name = test scenario
+gameFile = /Users/joel/Documents/gamefile.txt
+gameMode = 0
+height = 20
+width = 40
+scaling = 0.1
+numGuards = 1
+guardViewRange = 6
+guardViewAngle = 90
+baseSpeedGuard = 10.0
+timeStep = 0.1
+spawnAreaGuards = 2 2 2 2
+wall = 0 0 1 20
+wall = 0 19 40 20
+wall = 39 0 40 20
+wall = 0 0 40 1

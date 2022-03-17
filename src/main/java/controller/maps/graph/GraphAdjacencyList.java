@@ -1,51 +1,18 @@
 package controller.maps.graph;
 
 import controller.Vector2D;
+import controller.maps.HashMap;
 
-import java.util.LinkedList;
+import java.util.Arrays;
 
 public class GraphAdjacencyList {
 
-    LinkedList<Node> list;
-    LinkedList<Node> frontiers; //nodes with less than 4 edges;
+    HashMap nodes;
+    HashMap frontiers; //nodes with less than 4 edges;
 
     public GraphAdjacencyList(){
-        this.list = new LinkedList<>();
-        this.frontiers = new LinkedList<>();
-    }
-
-    /**
-     * Checks if there is an edge from x to y
-     * @param x node
-     * @param y node
-     * @return true if there is an edge from x to y
-     */
-    public boolean adjacent(Node x, Node y){
-        boolean adjacent = false;
-        for(int i=0; i < this.list.size(); i++){
-            if(this.list.get(i).equals(x)){
-                for(int j=0; j < this.list.get(i).getEdges().size(); j++){
-                    if(this.list.get(i).getEdges().get(j).equals(y))
-                        adjacent = true;
-                }
-            }
-        }
-        return adjacent;
-    }
-
-    /**
-     * Returns all the vertices y s.t. there is an edge from x to y
-     * @param x node
-     * @return a linked list containing the neighboring nodes of x
-     */
-    public LinkedList<Node> neighbors(Node x){
-        LinkedList<Node> neighbors = null;
-        for(int i=0; i < this.list.size(); i++){
-            if(this.list.get(i).equals(x)){
-                neighbors = this.list.get(i).getEdges();
-            }
-        }
-        return neighbors;
+        this.nodes = new HashMap(4000);
+        this.frontiers = new HashMap(1000);
     }
 
     /**
@@ -53,73 +20,37 @@ public class GraphAdjacencyList {
      * @param x node
      */
     public void addVertex(Node x){
-        this.list.addFirst(x); //add or addFirst
-        this.frontiers.addFirst(x);
-
+        this.nodes.addEntry(x.COORDINATES, x); //add or addFirst
+        this.frontiers.addEntry(x.COORDINATES, x);
     }
 
     /**
-     * Removes the vertex x from the list (from frontiers?)
-     * @param x node
+     * Adds an edge from node1 to node2, and the other way around
+     * @param node1 node
+     * @param node2 node
      */
-    public void removeVertex(Node x){
-        for(int i=0; i < this.list.size(); i++){
-            if(this.list.get(i).equals(x)){
-                while(!this.list.get(i).getEdges().isEmpty()){
-                    removeEdge(this.list.get(i).getEdges().get(0), x);
-                }
-                this.list.remove(i);
-            }
-        }
+    public void addUndirectedEdge(Node node1, Node node2){
+        addDirectedEdge(node1, node2);
+        addDirectedEdge(node2, node1);
     }
 
     /**
-     * Adds an edge from vertex x to vertex y
-     * @param x node
-     * @param y node
+     * Adds an edge from node1 to node 2
+     * @param node1 node
+     * @param node2 node
      */
-    public void addEdge(Node x, Node y){
-        for(int i=0; i < this.list.size(); i++){
-            if(this.list.get(i).equals(x)){
-                this.list.get(i).addEdge(y);
-                for(int j = 0; j < this.list.size(); j++){
-                    if(this.list.get(j).equals(y)){
-                        this.list.get(j).addEdge(x);
-                    }
-                }
-            }
-        }
-        updateFrontiers(x, y);
+    public void addDirectedEdge(Node node1, Node node2) {
+        node1.addEdge(node2);
+        updateFrontiers(node1);
     }
 
     /**
      * Adds an edge to the vertex x itself
      * @param x node
      */
-    public void addSelfEdge(Node x){
-        for(int i=0; i < this.list.size(); i++){
-            if(this.list.get(i).equals(x)){
-                this.list.get(i).addEdge(x);
-            }
-        }
-    }
-
-    /**
-     * Removes an edge from vertex x to vertex y
-     * @param x node
-     * @param y node
-     */
-    public void removeEdge(Node x, Node y){
-        for(int i=0; i < this.list.size(); i++){
-            if(this.list.get(i).equals(x)){
-                this.list.get(i).removeEdge(y);
-                for(int j=0; j < this.list.size(); j++){
-                    if(this.list.get(j).equals(y)){
-                        this.list.get(j).removeEdge(x);
-                    }
-                }
-            }
-        }
+    public void addSelfEdge(Node x, int direction){
+        x.addSelfEdge(direction);
+        updateFrontiers(x);
     }
 
     /**
@@ -128,12 +59,7 @@ public class GraphAdjacencyList {
      * @return true if one of the nodes of the list has been visited
      */
     public boolean isVisited(Vector2D vector){
-        for(Node node: this.list){
-            if(node.COORDINATES.equals(vector)){
-                return true;
-            }
-        }
-        return false;
+        return nodes.getValue(vector) != null;
     }
 
     /**
@@ -142,12 +68,10 @@ public class GraphAdjacencyList {
      */
     public void checkEdges(Node node){
         Vector2D[] nodeNeighbours = node.getNeigbours();
-        for(int j = 0; j < frontiers.size(); j++) {
-            Node n = frontiers.get(j);
-            for(int i=0; i < nodeNeighbours.length; i++){
-                if(n.COORDINATES.equals(nodeNeighbours[i])){
-                    addEdge(node, n);
-                }
+        for (int i=0; i < nodeNeighbours.length; i++) {
+            Node nodeNeighbour = frontiers.getValue(nodeNeighbours[i]);
+            if (nodeNeighbour != null) {
+                addUndirectedEdge(node, nodeNeighbour);
             }
         }
     }
@@ -155,35 +79,19 @@ public class GraphAdjacencyList {
     /**
      * Updates the frontiers by removing vertices x and y only if their numbers of edges became bigger or equal to 4 respectively
      * @param x node
-     * @param y node
      */
-    private void updateFrontiers(Node x, Node y){
-        if(x.getEdges().size() >= 4){
-            removeVertexFromFrontiers(x);
-        }
-        if(y.getEdges().size() >= 4) {
-            removeVertexFromFrontiers(y);
-        }
-    }
-
-    /**
-     * Removes a specific vertex x from the frontiers
-     * @param x node
-     */
-    public void removeVertexFromFrontiers(Node x){
-        for(int i=0; i < this.frontiers.size(); i++){
-            if(this.frontiers.get(i).equals(x)){
-                this.frontiers.remove(i);
-            }
+    private void updateFrontiers(Node x){
+        if (x.getNumberOfEdges() >= 4) {
+            frontiers.removeEntry(x.COORDINATES);
         }
     }
 
     public Node getNode(Vector2D vector2D) {
-        for (Node node : this.list){
-            if (node.COORDINATES.equals(vector2D)){
-                return node;
-            }
-        }
-        return null;
+        return nodes.getValue(vector2D);
+    }
+
+    @Override
+    public String toString() {
+        return frontiers.toString() + " Number of Nodes: " + nodes.getNumberOfNodes() + " size frontier: " + frontiers.getNumberOfNodes() + ", " + Arrays.toString(nodes.getValue(new Vector2D(88, 48)).getEdges());
     }
 }

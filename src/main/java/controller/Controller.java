@@ -3,7 +3,7 @@ package controller;
 import controller.agent.Agent;
 import controller.maps.EndingExplorationMap;
 import controller.maps.ScenarioMap;
-import controller.maps.Teleport;
+import controller.maps.TeleportEntrance;
 import controller.maps.Tile;
 
 import java.util.ArrayList;
@@ -20,23 +20,27 @@ public class Controller {
     private Agent[] agentsIntruders;
     private double timestep;
     private double time;
+    protected ArrayList<Vector2D>[] visions;
 
     public Controller(ScenarioMap scMap) {
         this.scMap = scMap;
-        agentSpawnLocations = new Vector2D[scMap.getNumGuards()];
-        agentsGuards = new Agent[scMap.getNumGuards()];
-        agentsIntruders = new Agent[scMap.getNumIntruders()];
-        agentPositions = new Vector2D[scMap.getNumGuards()+scMap.getNumIntruders()];
-        fov = new FOV(scMap.getGuardViewRange());
+        this.agentSpawnLocations = new Vector2D[scMap.getNumGuards()];
+        this.agentsGuards = new Agent[scMap.getNumGuards()];
+        this.agentsIntruders = new Agent[scMap.getNumIntruders()];
+        this.agentPositions = new Vector2D[scMap.getNumGuards()+scMap.getNumIntruders()];
+        this.fov = new FOV(scMap.getGuardViewRange());
         this.endingExplorationMap = new EndingExplorationMap(this.scMap);
-        timestep = scMap.getTimestep();
+        this.timestep = scMap.getTimestep();
+        this.visions = new ArrayList[scMap.getNumGuards()];
+
         createAgents(1, 1);
     }
 
     public void init() {
         spawnAgents();
         for (int i = 0; i < agentsGuards.length; i++) {
-            updateProgress(calculateFOV(i, agentPositions[i]), i); // Set the beginning "progress"
+            updateVision(i);
+            updateProgress(visions[i], i); // Set the beginning "progress"
         }
     }
 
@@ -53,11 +57,11 @@ public class Controller {
     }
     public void tick(double timestep) {
         for (int i=0; i<agentsGuards.length; i++) {
-            ArrayList<Vector2D> positionsInVision = calculateFOV(i, agentPositions[i]);
-            ArrayList<Tile> tiles = getTilesInVision(positionsInVision, i);
-            if (updateProgress(positionsInVision, i)) { break; }
-            int task = agentsGuards[i].tick(tiles, positionsInVision, timestep);
+            ArrayList<Tile> tiles = getTilesInVision(visions[i], i);
+            if (updateProgress(visions[i], i)) { break; }
+            int task = agentsGuards[i].tick(tiles, convertRelativeCurrentPosToRelativeToSpawn(visions[i], i), timestep);
             updateAgent(i, task);
+            updateVision(i);
         }
     }
 
@@ -65,11 +69,13 @@ public class Controller {
         ArrayList<Tile> tiles = new ArrayList<>();
         for (Vector2D vector2D : positions) {
             Vector2D abs = convertRelativeCurrentPosToAbsolute(vector2D, agentIndex);
-            if (abs.x<scMap.getWidth() && abs.y<scMap.getHeight() && abs.x>=0 && abs.y>=0) {
-                tiles.add(scMap.getTile(abs));
-            }    
+            tiles.add(scMap.getTile(abs));
         }
         return tiles;
+    }
+
+    protected void updateVision(int agentIndex) {
+        visions[agentIndex] = calculateFOV(agentIndex, agentPositions[agentIndex]);
     }
 
     protected void updateAgent(int agentIndex, int task) {
@@ -122,7 +128,10 @@ public class Controller {
             if (pos.x >= scMap.getWidth() || pos.x < 0 || pos.y >= scMap.getHeight() || pos.y < 0) return lastPos;
             Tile tileAtPos = scMap.getTile(pos);           
             if (tileAtPos.isWall()) return lastPos;
-            if (tileAtPos.isTeleport()) return posAfterTeleport(agentIndex, tileAtPos);
+            if (tileAtPos.isTeleportEntrance()) {
+                agentsGuards[agentIndex].creatTeleportDestinationNode(convertAbsoluteToRelativeSpawn(pos, agentIndex), convertAbsoluteToRelativeSpawn(((TeleportEntrance) tileAtPos.getFeature()).getExit(), agentIndex), tileAtPos, scMap.getTile(((TeleportEntrance) tileAtPos.getFeature()).getExit()));
+                return posAfterTeleport(agentIndex, tileAtPos);
+            }
             if (isAgentAtPos(pos)) return lastPos;
             else lastPos = pos;
         }
@@ -130,7 +139,7 @@ public class Controller {
     }
 
     private Vector2D posAfterTeleport(int agentIndex, Tile tileAtPos) {
-        Teleport tp = (Teleport)tileAtPos.getFeature();
+        TeleportEntrance tp = (TeleportEntrance)tileAtPos.getFeature();
         agentsGuards[agentIndex].changeOrientation(tp.getOrientation());
         return tp.getExit();
     }
@@ -161,6 +170,7 @@ public class Controller {
         int minutes = ((int)time % 3600) / 60;
         double seconds = time % 60;
         System.out.println("Everything is explored. It took " + hours + " hour(s) " + minutes + " minutes " + seconds + " seconds.");
+        System.out.println(agentsGuards[0].toString());
     }
 
     protected void spawnAgents() {
@@ -216,6 +226,17 @@ public class Controller {
         ArrayList<Vector2D> absPos = new ArrayList<>();
         for (Vector2D vector2D : relPos) {
             absPos.add(convertRelativeCurrentPosToAbsolute(vector2D, agentId));
+        }
+        return absPos;
+    }
+
+    public Vector2D convertRelativeCurrentPosToRelativeToSpawn(Vector2D relPos, int agentId) {
+        return convertAbsoluteToRelativeSpawn(relPos.add(agentPositions[agentId]), agentId);
+    }
+    public ArrayList<Vector2D> convertRelativeCurrentPosToRelativeToSpawn (ArrayList<Vector2D> relPos, int agentId) {
+        ArrayList<Vector2D> absPos = new ArrayList<>();
+        for (Vector2D vector2D : relPos) {
+            absPos.add(convertRelativeCurrentPosToRelativeToSpawn(vector2D, agentId));
         }
         return absPos;
     }

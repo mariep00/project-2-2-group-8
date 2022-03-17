@@ -1,22 +1,24 @@
 package controller.maps.graph;
 
 import controller.Vector2D;
+import controller.maps.TeleportExit;
 import controller.maps.Tile;
-
-import java.util.LinkedList;
 
 public class Node {
 
-    private LinkedList<Node> edge_list;
+    private Node[] edges;
     private Vector2D[] neighbours;
-    private Tile type;
+    private Tile tile;
+
+    private boolean[] walls;
 
     public final Vector2D COORDINATES;
 
-    public Node(Vector2D coordinates, Tile type){
-        this.edge_list = new LinkedList<>();
+    public Node(Vector2D coordinates, Tile tile){
+        this.edges = new Node[5];
         this.COORDINATES = coordinates;
-        this.type = type;
+        this.tile = tile;
+        this.walls = new boolean[4];
         initializeNeighbours();
     }
 
@@ -34,35 +36,62 @@ public class Node {
 
     /**
      * Adds an edge to the vertex y into the edge list
-     * @param y node
+     * @param other node
      */
-    public void addEdge(Node y)
-    {
-        this.edge_list.addFirst(y);
-    }
-
-    /**
-     * Removes all edges to the vertex y from the edge list
-     * @param y node
-     */
-    public void removeEdge(Node y){
-        for(int i=0; i < this.edge_list.size(); i++){
-            if(this.edge_list.get(i).equals(y)){
-                this.edge_list.remove(i);
+    public void addEdge(Node other) {
+        if (tile.isTeleportEntrance() && other.tile.isTeleportExit() && ((TeleportExit) other.tile.getFeature()).entrance == tile.getFeature()) {
+            edges[edges.length - 1] = other;
+        }
+        else {
+            for (int i = 0; i < edges.length-1; i++) {
+                if (edges[i] == null) {
+                    edges[i] = other;
+                    break;
+                }
             }
         }
     }
 
-    public LinkedList<Node> getEdges(){
-        return this.edge_list;
+    public void addSelfEdge (int direction) {
+        if (!walls[direction]) {
+            walls[direction] = true;
+            addEdge(this);
+        }
     }
 
-    public Tile getType() {
-        return this.type;
+    public Node[] getEdges(){
+        return this.edges;
     }
 
-    public void setType(Tile type) {
-        this.type = type;
+    public Tile getTile() {
+        return this.tile;
     }
 
+    public void setTile(Tile tile) {
+        this.tile = tile;
+    }
+
+    public int getNumberOfEdges() {
+        int count = 0;
+        for (int i = 0; i < edges.length-1; i++) {
+            Node edge = edges[i];
+            if (edge != null) count++;
+        }
+        return count;
+    }
+
+    public boolean equals(Node other) {
+        return COORDINATES.equals(other.COORDINATES) && tile.equals(other.tile);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder toReturn = new StringBuilder(COORDINATES + " Tile: " + tile + ", Number of edges: " + getNumberOfEdges() + ", Edges: [");
+        for (int i = 0; i < edges.length; i++) {
+            toReturn.append(edges[i] == null ? "null" : edges[i].COORDINATES.toString());
+            if (i < edges.length-1) toReturn.append(", ");
+            else toReturn.append("]");
+        }
+        return toReturn.toString();
+    }
 }

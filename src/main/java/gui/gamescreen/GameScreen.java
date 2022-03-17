@@ -59,7 +59,7 @@ public class GameScreen extends Application implements TransitionInterface {
                     // It's a wall. Create a tile with the right wall image
                     tile = new Tile(new TileImage(imageContainer.getWall(getBitSetSurroundingWalls(tilesController, x, y))));
                 }
-                else if (tilesController[y][x].getType() == controller.maps.Tile.Type.TELEPORT) {
+                else if (tilesController[y][x].getType() == controller.maps.Tile.Type.TELEPORT_ENTRANCE) {
                     // For now a floor, change to teleport image later
                     tile = new Tile(new TileImage(imageContainer.getTeleport()));
                 }
