@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ControllerGUI extends Controller {
     private final GameScreen GAME_SCREEN;
@@ -18,10 +19,13 @@ public class ControllerGUI extends Controller {
     private final AtomicBoolean performControllerTick = new AtomicBoolean(true);
     private final AtomicBoolean gamePaused = new AtomicBoolean(false);
     private final AtomicBoolean runSimulation = new AtomicBoolean(false);
+    private final AtomicInteger simulationDelay = new AtomicInteger();
     private final Thread updateGameLogicThread;
     public ControllerGUI(ScenarioMap scMap, GameScreen gameScreen) {
         super(scMap);
         this.GAME_SCREEN = gameScreen;
+
+        Thread.UncaughtExceptionHandler h = (th, ex) -> System.out.println("Uncaught exception: " + ex);
 
         final Thread updateGuiThread = new Thread(() -> {
             while (true) {
@@ -33,6 +37,7 @@ public class ControllerGUI extends Controller {
             }
         });
         updateGuiThread.setDaemon(true);
+        updateGuiThread.setUncaughtExceptionHandler(h);
         updateGuiThread.start();
 
         updateGameLogicThread = new Thread(() -> {
@@ -40,7 +45,7 @@ public class ControllerGUI extends Controller {
                 if (runSimulation.get() && performControllerTick.get() && !gamePaused.get()) {
                     performControllerTick.set(false);
                     try {
-                        TimeUnit.MILLISECONDS.sleep(350); // Slow down the simulation
+                        TimeUnit.MILLISECONDS.sleep(simulationDelay.get()); // Slow down the simulation
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -49,6 +54,7 @@ public class ControllerGUI extends Controller {
             }
         });
         updateGameLogicThread.setDaemon(true);
+        updateGameLogicThread.setUncaughtExceptionHandler(h);
     }
 
     public void runSimulation() {
@@ -99,7 +105,7 @@ public class ControllerGUI extends Controller {
         for (int i = 0; i < agentsGuards.length; i++) {
             int finalI = i;
             Vector2D pos = agentPositions[i];
-            guiTasksQueue.add(() -> updateAgentVision(finalI, calculateFOV(finalI, pos)));
+            updateAgentVision(finalI, calculateFOV(finalI, pos));
         }
     }
 
@@ -107,7 +113,7 @@ public class ControllerGUI extends Controller {
     protected void updateAgent(int agentIndex, int task) {
         super.updateAgent(agentIndex, task);
         List<Vector2D> positionsInVision = calculateFOV(agentIndex, agentPositions[agentIndex]);
-        //guiTasksQueue.add(() -> Platform.runLater(() -> updateAgentVision(agentIndex, positionsInVision)));
+        updateAgentVision(agentIndex, positionsInVision);
         updateProgress(positionsInVision, agentIndex);
     }
 
@@ -115,8 +121,7 @@ public class ControllerGUI extends Controller {
 
     private void updateAgentVision(int agentIndex, List<Vector2D> positionsInVision) {
         List<Vector2D> absPos = convertRelativeCurrentPosToAbsolute(positionsInVision, agentIndex);
-        //guiTasksQueue.add(() -> Platform.runLater(() -> GAME_SCREEN.updateVision(executeNextGuiTask, agentIndex, absPos)));
-        GAME_SCREEN.updateVision(executeNextGuiTask, agentIndex, absPos);
+        guiTasksQueue.add(() -> Platform.runLater(() -> GAME_SCREEN.updateVision(executeNextGuiTask, agentIndex, absPos)));
     }
 
     public void hideVision(int agentIndex) {
@@ -125,4 +130,7 @@ public class ControllerGUI extends Controller {
     public void showVision(int agentIndex) {
         guiTasksQueue.add(() -> Platform.runLater(() -> GAME_SCREEN.showVision(executeNextGuiTask, convertRelativeCurrentPosToAbsolute(calculateFOV(agentIndex, agentPositions[agentIndex]), agentIndex))));
     }
+
+    public AtomicBoolean getRunSimulation() { return runSimulation; }
+    public void setSimulationDelay(int val) { this.simulationDelay.set(val); }
 }
