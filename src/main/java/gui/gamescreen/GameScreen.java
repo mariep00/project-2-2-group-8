@@ -97,8 +97,6 @@ public class GameScreen extends Application implements TransitionInterface {
         BorderPane borderPane = new BorderPane(scrollPane);
         BorderPane.setAlignment(gridPane, Pos.CENTER);
 
-        HBox hbox = new HBox();
-
         progressBar = new ProgressBarCustom();
         progressBar.getProgressBar().setPrefWidth(400);
         progressBar.getProgressBar().setPrefHeight(30);
@@ -110,8 +108,13 @@ public class GameScreen extends Application implements TransitionInterface {
         Button buttonHideAllVisions = new Button("Hide vision");
         buttonHideAllVisions.setPrefWidth(130);
         buttonHideAllVisions.setPrefHeight(30);
-        Button buttonStep = new Button("Step");
-        buttonStep.setPrefWidth(130);
+
+        Button buttonStep = new Button();
+        ImageView stepImageView = new ImageView(imageContainer.getStep());
+        stepImageView.setFitWidth(20);
+        stepImageView.setFitHeight(20);
+        buttonStep.setGraphic(stepImageView);
+        buttonStep.setPrefWidth(30);
         buttonStep.setPrefHeight(30);
 
         Button buttonPlaySimulation = new Button();
@@ -136,10 +139,11 @@ public class GameScreen extends Application implements TransitionInterface {
         simulationSlider.setMajorTickUnit(266.67);
         simulationSlider.setShowTickMarks(true);
         simulationSlider.setValue(400);
+        simulationSlider.setPrefWidth(260);
+        simulationSlider.setPrefHeight(30);
 
         hboxButtons.getChildren().addAll(  buttonShowAllVisions, buttonHideAllVisions, simulationSlider, buttonStep, buttonPlaySimulation, buttonStopSimulation);
         hboxButtons.setAlignment(Pos.CENTER_RIGHT);
-        Region spacingRegion = new Region();
 
         AnchorPane anchorPane = new AnchorPane();
         anchorPane.getChildren().add(progressBar);
