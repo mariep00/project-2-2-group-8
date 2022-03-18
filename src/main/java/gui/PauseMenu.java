@@ -66,6 +66,7 @@ public class PauseMenu {
         pauseStage.widthProperty().add(stage.widthProperty());
         pauseStage.heightProperty().add(stage.heightProperty());
         scene.getRoot().setEffect(new GaussianBlur());
+
         pauseStage.show();
 
         stage.widthProperty().addListener(e -> {

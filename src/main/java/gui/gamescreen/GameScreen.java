@@ -11,11 +11,10 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Slider;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import org.jetbrains.annotations.NotNull;
 
@@ -23,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class GameScreen extends Application implements TransitionInterface {
     private final ControllerGUI controllerGUI;
@@ -97,7 +97,7 @@ public class GameScreen extends Application implements TransitionInterface {
         BorderPane borderPane = new BorderPane(scrollPane);
         BorderPane.setAlignment(gridPane, Pos.CENTER);
 
-        //HBox hbox = new HBox();
+        HBox hbox = new HBox();
 
         progressBar = new ProgressBarCustom();
         progressBar.getProgressBar().setPrefWidth(400);
@@ -113,10 +113,33 @@ public class GameScreen extends Application implements TransitionInterface {
         Button buttonStep = new Button("Step");
         buttonStep.setPrefWidth(130);
         buttonStep.setPrefHeight(30);
-        Button buttonPlayTillEnd = new Button("Continue until end");
-        buttonPlayTillEnd.setPrefWidth(130);
-        buttonPlayTillEnd.setPrefHeight(30);
-        hboxButtons.getChildren().addAll(  buttonShowAllVisions, buttonHideAllVisions, buttonStep, buttonPlayTillEnd);
+
+        Button buttonPlaySimulation = new Button();
+        ImageView playImageView = new ImageView(imageContainer.getPlay());
+        playImageView.setFitWidth(20);
+        playImageView.setFitHeight(20);
+        buttonPlaySimulation.setGraphic(playImageView);
+        buttonPlaySimulation.setPrefWidth(30);
+        buttonPlaySimulation.setPrefHeight(30);
+
+        Button buttonStopSimulation = new Button();
+        ImageView stopImageView = new ImageView(imageContainer.getStop());
+        stopImageView.setFitWidth(20);
+        stopImageView.setFitHeight(20);
+        buttonStopSimulation.setGraphic(stopImageView);
+        buttonStopSimulation.setPrefWidth(30);
+        buttonStopSimulation.setPrefHeight(30);
+
+        Slider simulationSlider = new Slider();
+        simulationSlider.setMax(800);
+        simulationSlider.setMin(5);
+        simulationSlider.setMajorTickUnit(266.67);
+        simulationSlider.setShowTickMarks(true);
+        simulationSlider.setValue(400);
+
+        hboxButtons.getChildren().addAll(  buttonShowAllVisions, buttonHideAllVisions, simulationSlider, buttonStep, buttonPlaySimulation, buttonStopSimulation);
+        hboxButtons.setAlignment(Pos.CENTER_RIGHT);
+        Region spacingRegion = new Region();
 
         AnchorPane anchorPane = new AnchorPane();
         anchorPane.getChildren().add(progressBar);
@@ -136,18 +159,42 @@ public class GameScreen extends Application implements TransitionInterface {
         gridPane.setHgap(-1);
         gridPane.setVgap(-1);
 
-        buttonStep.setOnAction(e -> controllerGUI.tick());
-        buttonPlayTillEnd.setOnAction(e -> controllerGUI.engine());
+        simulationSlider.setOnMouseDragged(e -> {
+            controllerGUI.setSimulationDelay((int)simulationSlider.getValue());
+        });
+        simulationSlider.setOnMouseReleased(e -> {
+            controllerGUI.setSimulationDelay((int)simulationSlider.getValue());
+        });
+
+        buttonStep.setOnAction(e -> {
+            if (controllerGUI.getRunSimulation().get()) {
+                buttonPlaySimulation.setId("");
+                controllerGUI.stopSimulation();
+            }
+            new Thread(controllerGUI::tick).start();
+        });
+        buttonPlaySimulation.setOnAction(e -> {
+            buttonPlaySimulation.setId("play_button_clicked");
+            controllerGUI.runSimulation();
+        });
+        buttonStopSimulation.setOnAction(e -> {
+            buttonPlaySimulation.setId("");
+            controllerGUI.stopSimulation();
+        });
         buttonShowAllVisions.setOnAction(e -> {
-            Arrays.fill(showVision, true);
-            for (int i = 0; i < scenarioMap.getNumGuards(); i++) {
-                controllerGUI.showVision(i);
+            if (!controllerGUI.getRunSimulation().get()) {
+                Arrays.fill(showVision, true);
+                for (int i = 0; i < scenarioMap.getNumGuards(); i++) {
+                    controllerGUI.showVision(i);
+                }
             }
         });
         buttonHideAllVisions.setOnAction(e -> {
-            Arrays.fill(showVision, false);
-            for (int i = 0; i < scenarioMap.getNumGuards(); i++) {
-                controllerGUI.hideVision(i);
+            if (!controllerGUI.getRunSimulation().get()) {
+                Arrays.fill(showVision, false);
+                for (int i = 0; i < scenarioMap.getNumGuards(); i++) {
+                    controllerGUI.hideVision(i);
+                }
             }
         });
     }
@@ -170,72 +217,85 @@ public class GameScreen extends Application implements TransitionInterface {
         return bitSet;
     }
 
+    public void pauseGame() {
+        controllerGUI.pauseThreads();
+    }
+    public void continueGame() {
+        controllerGUI.continueThreads();
+    }
+
     public void toggleVision(int agentIndex) {
-        if (showVision[agentIndex]) {
-            showVision[agentIndex] = false;
-            controllerGUI.hideVision(agentIndex);
-        }
-        else {
-            showVision[agentIndex] = true;
-            controllerGUI.showVision(agentIndex);
+        if (!controllerGUI.getRunSimulation().get()) {
+            if (showVision[agentIndex]) {
+                showVision[agentIndex] = false;
+                controllerGUI.hideVision(agentIndex);
+            } else {
+                showVision[agentIndex] = true;
+                controllerGUI.showVision(agentIndex);
+            }
         }
     }
 
-    public void setProgress(int numberOfTilesExplored, int  numberOfTilesToExplore) {
+    public void setProgress(AtomicBoolean executeNextGuiTask, int numberOfTilesExplored, int  numberOfTilesToExplore) {
         progressBar.setProgress((float)numberOfTilesExplored/numberOfTilesToExplore);
+        executeNextGuiTask.set(true);
     }
 
     public void spawnAgent(int agentIndex, Vector2D position) {
         tiles[position.x][position.y].setCharacter(this, imageContainer.getAgent(AgentType.GUARD, controllerGUI.getAgent(agentIndex).getOrientation()), agentIndex);
     }
 
-    public void moveAgent(int agentIndex, Vector2D from, Vector2D to) {
+    public void moveAgent(AtomicBoolean executeNextGuiTask, int agentIndex, Vector2D from, Vector2D to) {
         tiles[from.x][from.y].resetCharacterImage();
         tiles[to.x][to.y].setCharacter(this, imageContainer.getAgent(AgentType.GUARD, controllerGUI.getAgent(agentIndex).getOrientation()), agentIndex);
+        executeNextGuiTask.set(true);
     }
 
-    public void setToExplored(Vector2D pos) {
-        if (pos.x<tiles.length && pos.y<tiles[0].length && pos.y>=0 && pos.x>=0) {
+    public void setToExplored(AtomicBoolean executeNextGuiTask, List<Vector2D> positions) {
+        for (Vector2D pos : positions) {
             tiles[pos.x][pos.y].setToExplored();
         }
+        executeNextGuiTask.set(true);
     }
 
-    public void updateVision(int agentIndex, ArrayList<Vector2D> positions) {
+    public void updateVision(AtomicBoolean executeNextGuiTask, int agentIndex, List<Vector2D> positions) {
         if (showVision[agentIndex]) {
             if (visions[agentIndex] != null) {
-                removeVision(agentIndex, visions[agentIndex]);
+                removeVision(null, agentIndex, visions[agentIndex]);
             }
             visions[agentIndex] = new ArrayList<>(positions);
-            showVision(positions);
+            showVision(null, positions);
         }
         else visions[agentIndex] = new ArrayList<>(positions);
+
+        executeNextGuiTask.set(true);
     }
 
-    public void showVision(ArrayList<Vector2D> positions) {
+    public void showVision(AtomicBoolean executeNextGuiTask, List<Vector2D> positions) {
         for (Vector2D pos : positions) {
             tiles[pos.x][pos.y].setToInVision(imageContainer.getVision());
         }
+        if (executeNextGuiTask != null) executeNextGuiTask.set(true);
     }
 
-    public void removeVision(int agentIndex, ArrayList<Vector2D> positions) {
+    public void removeVision(AtomicBoolean executeNextGuiTask, int agentIndex, List<Vector2D> positions) {
         for (Vector2D pos : positions) {
             boolean remove = true;
             outer:
             for (int i = 0; i < visions.length; i++) {
                 if (i != agentIndex && showVision[i]) {
                     ArrayList<Vector2D> others = visions[i];
-                    if (!others.equals(positions)) {
-                        for (Vector2D posOther : others) {
-                            if (posOther.equals(pos)) {
-                                remove = false;
-                                break outer;
-                            }
+                    for (Vector2D posOther : others) {
+                        if (posOther.equals(pos)) {
+                            remove = false;
+                            break outer;
                         }
                     }
                 }
             }
             if (remove) tiles[pos.x][pos.y].setToOutOfVision();
         }
+        if (executeNextGuiTask != null) executeNextGuiTask.set(true);
     }
 
     @Override

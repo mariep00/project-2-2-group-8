@@ -32,6 +32,12 @@
 .button:pressed {
     -fx-text-fill: #5db5ff;
 }
+#play_button_clicked {
+    -fx-background-color: #79a3bd;
+    -fx-text-fill: #FFF8EC;
+    -fx-background-radius: 7px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 3,0,2,3);
+}
 #pause_menu {
     -fx-background-color: rgba(0, 0, 0, 0.175);
 }
