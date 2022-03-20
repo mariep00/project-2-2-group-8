@@ -110,13 +110,15 @@ public class Node {
 
     @Override
     public String toString() {
-        StringBuilder toReturn = new StringBuilder(COORDINATES + " Tile: " + tile + ", Number of edges: " + getNumberOfEdges() + ", Edges: [");
+        /*StringBuilder toReturn = new StringBuilder(COORDINATES + " Tile: " + tile + ", Number of edges: " + getNumberOfEdges() + ", Edges: [");
         for (int i = 0; i < edges.length; i++) {
             toReturn.append(edges[i] == null ? "null" : edges[i].COORDINATES.toString());
             if (i < edges.length-1) toReturn.append(", ");
             else toReturn.append("]");
         }
         return toReturn.toString();
+        */
+        return COORDINATES.toString();
     }
 
 }

@@ -25,8 +25,9 @@ public class FrontierBrain implements BrainInterface {
         this.orientation = orientation;
         this.graph=graph;
         if (future_moves.isEmpty() /* && location == goalNode*/){
-            updateStart();
+            System.out.println("1. future moves is empty");
             updateGoal();
+            System.out.println("Goal is set " + goalNode.toString());
             moveTo(graph);
         }
 
@@ -35,15 +36,8 @@ public class FrontierBrain implements BrainInterface {
 
     public void updateGoal(){
      //Update the goal node with the  next frontier node on graph
-        Node newGoalNode = graph.getNextFrontier();
-        goalNode = newGoalNode;
+        goalNode= graph.getNextFrontier();
     }
-
-    //Pass the current position
-    public void updateStart(){
-        //startingNode = current Node
-    }
-
 
     public void moveTo(ExplorationGraph explorationGraph){
         Stack<Integer> temporaryStack= new Stack<>();

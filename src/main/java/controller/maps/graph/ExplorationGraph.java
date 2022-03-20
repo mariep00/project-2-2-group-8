@@ -199,7 +199,9 @@ public class ExplorationGraph {
 
 
     public Node getNextFrontier() {
+        System.out.println("2. getnextfrontier is called, frontiers length: " + frontiers.getNumberOfNodes());
         LinkedList<Node> nodes = frontiers.getAllNodes();
+        if(nodes.isEmpty()) System.out.println("3. Nodes is empty -> mistake in get allNodes");
         Node tempnode = null;
         double closest_dist = Double.MAX_VALUE;
         for (int i = 0; i < nodes.size(); i++) {
