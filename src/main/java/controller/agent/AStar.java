@@ -17,6 +17,7 @@ public class AStar {
     private Vector2D goal;
     private ANode start;
     private ANode goalANode;
+    private final boolean DEBUG = true;
 
     public AStar (ExplorationGraph graph, Node startNode, Node goalNode) {
         open = new ArrayList<>();
