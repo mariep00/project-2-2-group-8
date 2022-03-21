@@ -37,6 +37,9 @@ public class FrontierBrain implements BrainInterface {
     public void updateGoal(){
      //Update the goal node with the  next frontier node on graph
         goalNode= graph.getNextFrontier();
+        if (goalNode == null) {
+            goalNode = graph.getTeleport();
+        }
     }
 
     public void moveTo(){

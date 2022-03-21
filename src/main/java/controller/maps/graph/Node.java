@@ -3,6 +3,7 @@ package controller.maps.graph;
 import controller.Vector2D;
 import controller.maps.TeleportExit;
 import controller.maps.Tile;
+import controller.maps.Tile.Type;
 
 public class Node {
 

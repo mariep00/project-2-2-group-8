@@ -6,11 +6,14 @@ import controller.maps.Tile;
 import controller.maps.Tile.Type;
 
 import java.util.LinkedList;
+import java.util.Random;
 
 public class ExplorationGraph {
 
     private Node origin;
     private Node currentPosition;
+    private LinkedList<Node> seenTeleports;
+    private Random random;
 
     private HashMap nodes; //all nodes
     public final HashMap frontiers; //nodes with less than 4 edges;
@@ -18,6 +21,8 @@ public class ExplorationGraph {
     public ExplorationGraph() {
         this.nodes = new HashMap(4000);
         this.frontiers = new HashMap(1000);
+        this.seenTeleports = new LinkedList<>();
+        random = new Random();
         Tile t = new Tile();
         t.setType(Type.SPAWN_AREA_GUARDS);
         this.origin = new Node(new Vector2D(0, 0), t);
@@ -46,6 +51,9 @@ public class ExplorationGraph {
             Node node = new Node(vector, type);
             addVertex(node);
             checkEdges(node);
+            if(type.getType()==Type.TELEPORT_ENTRANCE) {
+                seenTeleports.add(node);
+            }
             return node;
         }
         return null;
@@ -207,7 +215,7 @@ public class ExplorationGraph {
         System.out.println("2. getnextfrontier is called, frontiers length: " + frontiers.getNumberOfNodes());
         LinkedList<Node> nodes = frontiers.getAllNodes();
         if(nodes.isEmpty()) System.out.println("3. Nodes is empty -> mistake in get allNodes");
-        System.out.println(nodes.size() + " " + nodes.toString());
+        //System.out.println(nodes.size() + " " + nodes.toString());
         Node tempnode = null;
         double closest_dist = Double.MAX_VALUE;
         for (int i = 0; i < nodes.size(); i++) {
@@ -219,5 +227,10 @@ public class ExplorationGraph {
             }
         }
         return tempnode;
+    }
+
+    public Node getTeleport() {
+        int i = random.nextInt(seenTeleports.size());
+        return seenTeleports.get(i);
     }
 }
