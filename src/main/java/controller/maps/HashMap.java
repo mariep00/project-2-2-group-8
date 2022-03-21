@@ -56,8 +56,10 @@ public class HashMap {
     public LinkedList<Node> getAllNodes() {
         LinkedList<Node> allNodes = new LinkedList<>();
         for (Bucket bucket: buckets) {
-            for (Entry entry: bucket.getEntries()) {
-                allNodes.add(entry.getValue());
+            if (bucket != null) {
+                for (Entry entry: bucket.getEntries()) {
+                    allNodes.add(entry.getValue());
+                }
             }
         }
         return allNodes;

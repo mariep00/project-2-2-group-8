@@ -1,51 +1,151 @@
 package controller.agent;
 
+import controller.Vector2D;
 import controller.maps.graph.ExplorationGraph;
 import controller.maps.graph.Node;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Stack;
 
 public class FrontierBrain implements BrainInterface {
     private Node goalNode;
-    private Node startingNode;
-    private Stack<Integer> futureMoves;
+    private Stack<Integer> future_moves;
+    private double orientation;
+    private ExplorationGraph graph;
+
 
     //Pass origin node, goalNode = originNode
     public FrontierBrain(){
-        futureMoves = new Stack<>();
+        future_moves = new Stack<>();
     }
 
 
-    public int makeDecision(ExplorationGraph graph){
-        if (futureMoves.isEmpty() /* && location == goalNode*/){
-            graph.checkFrontierEdges();
-            updateStart();
-            updateGoal(graph);
-            moveTo(graph);
+    public int makeDecision(ExplorationGraph graph, double orientation){
+        this.orientation = orientation;
+        this.graph=graph;
+        if (future_moves.isEmpty() /* && location == goalNode*/){
+            System.out.println("1. future moves is empty");
+            updateGoal();
+            System.out.println("Goal is set " + goalNode.toString());
+            moveTo();
         }
-        return futureMoves.pop();
+
+        return future_moves.pop();
     }
 
-    public void updateGoal(ExplorationGraph list){
+    public void updateGoal(){
      //Update the goal node with the  next frontier node on graph
-        Node newGoalNode = list.getNextFrontier();
-        goalNode = newGoalNode;
-    }
-
-    //Pass the current position
-    public void updateStart(){
-        //startingNode = current Node
-    }
-
-
-    public void moveTo(ExplorationGraph list){
-        A_Star a_star = new A_Star(goalNode, startingNode);
-        LinkedList<Node> nodesToGoal = a_star.calculateAstar(list);
-        for(Node node: nodesToGoal){
-            //int xDif = node.COORDINATES.x - ;
-            //int yDif
+        goalNode= graph.getNextFrontier();
+        if (goalNode == null) {
+            goalNode = graph.getTeleport();
         }
+    }
+
+    public void moveTo(){
+        Stack<Integer> temporaryStack= new Stack<>();
+        AStar aStar = new AStar(graph, graph.getCurrentPosition(), goalNode);
+        
+        LinkedList<Vector2D> nodesToGoal = aStar.calculate();
+        System.out.println("Astar finishes");
+        Vector2D currentPos= graph.getCurrentPosition().COORDINATES;
+        Iterator<Vector2D> iterator = nodesToGoal.descendingIterator();
+        double current_orientation = orientation;
+        while (iterator.hasNext()){
+            Vector2D pos = iterator.next();
+            int xDif = pos.x - currentPos.x;
+            int yDif = pos.y - currentPos.y;
+            if(xDif==1){
+                if(current_orientation==0){
+                    temporaryStack.push(0);
+
+                }
+                else if(current_orientation==90){
+                    temporaryStack.push(3);
+                    temporaryStack.push(0);
+                }
+                else if(current_orientation==180){
+                    temporaryStack.push(1);
+                    temporaryStack.push(1);
+                    temporaryStack.push(0);
+
+                }
+                else if(current_orientation==270){
+                    temporaryStack.push(1);
+                    temporaryStack.push(0);
+                }
+                current_orientation=0;
+            }
+            else if(xDif==-1){
+                if(current_orientation==180){
+                    temporaryStack.push(0);
+                }
+                else if(current_orientation==270){
+                    temporaryStack.push(3);
+                    temporaryStack.push(0);
+                }
+                else if(current_orientation==0){
+                    temporaryStack.push(1);
+                    temporaryStack.push(1);
+                    temporaryStack.push(0);
+
+                }
+                else if(current_orientation==90){ 
+                    temporaryStack.push(1);
+                    temporaryStack.push(0);
+                }
+                current_orientation=180;
+            }
+            else if(yDif==1){
+                if(current_orientation==90){
+                    temporaryStack.push(0);
+                }
+                else if(current_orientation==180){
+                    temporaryStack.push(3);
+                    temporaryStack.push(0);
+                }
+                else if(current_orientation==270){
+                    temporaryStack.push(1);
+                    temporaryStack.push(1);
+                    temporaryStack.push(0);
+
+                }
+                else if(current_orientation==0){
+                    temporaryStack.push(1);
+                    temporaryStack.push(0);
+                }
+                current_orientation=90;
+            }
+            else if(yDif==-1){
+                if(current_orientation==270){
+                    temporaryStack.push(0);
+                }
+                else if(current_orientation==0){
+                    temporaryStack.push(3);
+                    temporaryStack.push(0);
+                }
+                else if(current_orientation==90){
+                    temporaryStack.push(1);
+                    temporaryStack.push(1);
+                    temporaryStack.push(0);
+
+                }
+                else if(current_orientation==180){
+                    temporaryStack.push(1);
+                    temporaryStack.push(0);
+                }
+                current_orientation=270;
+            }
+            currentPos=pos;
+        }
+
+        temporaryStack.push(1);
+        temporaryStack.push(1);
+        temporaryStack.push(1);
+
+        do{future_moves.push(temporaryStack.pop());}
+        while(!temporaryStack.isEmpty());
+
 
         //For every node in nodes to Goal
                 //Check agent's positon
@@ -56,9 +156,11 @@ public class FrontierBrain implements BrainInterface {
         //Once we now what we need to do to reach the new goal
         //Update stack of future moves
 
-        //Once we reach goal node
-        list.checkFrontierEdges();
+        //Once we reach goal node, rotate 360
+
     }
+
+
 
 
     /* nextNode Vector2D - Coordinates Vector 2D
@@ -66,7 +168,16 @@ public class FrontierBrain implements BrainInterface {
     x=-1, y=0        Z       x=+1, y=0
                 x=0, y=1
 
+//0 - move forward
+//1 - turn 90deg
+//2 - turn 180deg
+//3 - turn 270deg
 
+//         270
+//          |
+// 180 ----------- 0
+//          |
+//          90
     * */
 
 

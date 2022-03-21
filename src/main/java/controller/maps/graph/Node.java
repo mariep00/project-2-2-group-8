@@ -3,6 +3,7 @@ package controller.maps.graph;
 import controller.Vector2D;
 import controller.maps.TeleportExit;
 import controller.maps.Tile;
+import controller.maps.Tile.Type;
 
 public class Node {
 
@@ -13,11 +14,6 @@ public class Node {
     private boolean[] walls;
 
     public final Vector2D COORDINATES;
-
-    private int g; //distance to starting node
-    private int h; //distance to goal node (Manhattan distance)
-    private Node parent;
-
 
     public Node(Vector2D coordinates, Tile tile){
         this.edges = new Node[5];
@@ -49,7 +45,9 @@ public class Node {
         }
         else {
             for (int i = 0; i < edges.length-1; i++) {
-                if (edges[i] == null) {
+                if (edges[i]!=null) {
+                    if(edges[i].equals(other) && !edges[i].equals(this)) break;
+                } else {
                     edges[i] = other;
                     break;
                 }
@@ -85,38 +83,21 @@ public class Node {
         return count;
     }
 
-    public void updateG(){
-        g ++;
-    }
-
-    public void updateH(Node goalNode){
-        h = Math.abs(goalNode.COORDINATES.x - this.COORDINATES.x) + Math.abs(goalNode.COORDINATES.y - this.COORDINATES.y);
-    }
-
-    public int getH(){ return h;}
-
-    public int getG(){ return g;}
-
-    public Node getParent(){ return parent;}
-
-    public void setParent(Node parent){
-        this.parent = parent;
-    }
-
-
     public boolean equals(Node other) {
         return COORDINATES.equals(other.COORDINATES) && tile.equals(other.tile);
     }
 
     @Override
     public String toString() {
-        StringBuilder toReturn = new StringBuilder(COORDINATES + " Tile: " + tile + ", Number of edges: " + getNumberOfEdges() + ", Edges: [");
+        /*StringBuilder toReturn = new StringBuilder(COORDINATES + " Tile: " + tile + ", Number of edges: " + getNumberOfEdges() + ", Edges: [");
         for (int i = 0; i < edges.length; i++) {
             toReturn.append(edges[i] == null ? "null" : edges[i].COORDINATES.toString());
             if (i < edges.length-1) toReturn.append(", ");
             else toReturn.append("]");
         }
         return toReturn.toString();
+        */
+        return COORDINATES.toString() + " " + getNumberOfEdges();
     }
 
 }
