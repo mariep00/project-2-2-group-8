@@ -201,18 +201,6 @@ public class GameScreen extends Application implements TransitionInterface {
         }
     }
 
-    public void updateFrontiers(List<Vector2D> positions) {
-        if (frontiersFirstAgent != null) {
-            for (Vector2D pos : frontiersFirstAgent) {
-                tiles[pos.x][pos.y].resetFrontier();
-            }
-        }
-        for (Vector2D pos : positions) {
-            tiles[pos.x][pos.y].setFrontier(imageContainer.getSpawnAreaGuards());
-        }
-        frontiersFirstAgent = positions;
-    }
-
     public void updateVision(int agentIndex, ArrayList<Vector2D> positions) {
         if (showVision[agentIndex]) {
             if (visions[agentIndex] != null) {
