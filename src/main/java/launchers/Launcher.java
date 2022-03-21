@@ -10,7 +10,7 @@ public class Launcher {
         String base = Launcher.class.getResource("/maps/").toString();
         String mapName = "testmap.txt";
         //String path = base+mapName;
-        String path = "/Users/Yannick/Documents/DKE_UM/Year_2/Project_2-2/code/src/main/resources/maps/testmap.txt";
+        String path = "/Users/giaco/project-2-2-group-8/tetsmap.txt";
         Controller controller = new Controller(new MapBuilder(new File(path)).getMap());
         controller.init();
         controller.start();
