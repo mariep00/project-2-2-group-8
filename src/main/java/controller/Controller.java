@@ -171,10 +171,10 @@ public class Controller {
         agentsGuards[agentIndex].updateOrientation(orientationToAdd);
     }
 
-    protected boolean updateProgress(Vector2D vector, int agentIndex) {
+    private boolean updateProgress(Vector2D vector, int agentIndex) {
         return endingExplorationMap.updateExplorationMap(convertRelativeCurrentPosToAbsolute(vector, agentIndex));
     }
-    private boolean updateProgress(ArrayList<Vector2D> positions, int agentIndex) {
+    protected boolean updateProgress(List<Vector2D> positions, int agentIndex) {
         for (Vector2D vector2D : positions) {
             if (updateProgress(vector2D, agentIndex)) {
                 return true;
@@ -285,7 +285,7 @@ public class Controller {
     public Vector2D convertRelativeCurrentPosToAbsolute(Vector2D relPos, int agentId) {
         return relPos.add(agentPositions[agentId]);
     }
-    public ArrayList<Vector2D> convertRelativeCurrentPosToAbsolute(ArrayList<Vector2D> relPos, int agentId) {
+    public ArrayList<Vector2D> convertRelativeCurrentPosToAbsolute(List<Vector2D> relPos, int agentId) {
         ArrayList<Vector2D> absPos = new ArrayList<>();
         for (Vector2D vector2D : relPos) {
             absPos.add(convertRelativeCurrentPosToAbsolute(vector2D, agentId));
@@ -296,7 +296,7 @@ public class Controller {
     public Vector2D convertRelativeCurrentPosToRelativeToSpawn(Vector2D relPos, int agentId) {
         return convertAbsoluteToRelativeSpawn(relPos.add(agentPositions[agentId]), agentId);
     }
-    public ArrayList<Vector2D> convertRelativeCurrentPosToRelativeToSpawn (ArrayList<Vector2D> relPos, int agentId) {
+    public ArrayList<Vector2D> convertRelativeCurrentPosToRelativeToSpawn (List<Vector2D> relPos, int agentId) {
         ArrayList<Vector2D> absPos = new ArrayList<>();
         for (Vector2D vector2D : relPos) {
             absPos.add(convertRelativeCurrentPosToRelativeToSpawn(vector2D, agentId));
