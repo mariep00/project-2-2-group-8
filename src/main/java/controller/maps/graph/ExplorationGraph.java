@@ -5,7 +5,6 @@ import controller.maps.HashMap;
 import controller.maps.Tile;
 import controller.maps.Tile.Type;
 
-import java.util.Arrays;
 import java.util.LinkedList;
 
 public class ExplorationGraph {
@@ -14,7 +13,7 @@ public class ExplorationGraph {
     private Node currentPosition;
 
     private HashMap nodes; //all nodes
-    private HashMap frontiers; //nodes with less than 4 edges;
+    public final HashMap frontiers; //nodes with less than 4 edges;
 
     public ExplorationGraph() {
         this.nodes = new HashMap(4000);
@@ -64,7 +63,6 @@ public class ExplorationGraph {
             addSelfEdge(node, direction);
             checkEdges(node);
         }
-
     }
 
     /**

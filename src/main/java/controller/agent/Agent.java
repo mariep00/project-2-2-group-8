@@ -22,7 +22,7 @@ public class Agent {
     private BrainInterface frontierBrain;
 
 
-    private ExplorationGraph explorationGraph;
+    public final ExplorationGraph explorationGraph;
 
 
     public Agent (double base_speed, double sprint_speed, double view_angle, double view_range, double orientation, int brainID) {

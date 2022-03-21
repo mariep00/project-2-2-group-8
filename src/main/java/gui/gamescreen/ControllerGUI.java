@@ -4,8 +4,10 @@ import controller.Controller;
 import controller.Vector2D;
 import controller.agent.Agent;
 import controller.maps.ScenarioMap;
+import controller.maps.graph.Node;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ControllerGUI extends Controller {
     private final GameScreen GAME_SCREEN;
@@ -54,6 +56,18 @@ public class ControllerGUI extends Controller {
     @Override
     protected void updateVision(int agentIndex) {
         super.updateVision(agentIndex);
+
+        // *** test code to show frontiers ***
+
+        List<Node> nodes = agentsGuards[agentIndex].explorationGraph.frontiers.getAllNodes();
+        ArrayList<Vector2D> positions = new ArrayList<>();
+        for (Node node : nodes) {
+            positions.add(node.COORDINATES);
+        }
+        GAME_SCREEN.updateFrontiers(convertRelativeSpawnToAbsolute(positions, agentIndex));
+
+        // ******
+
         ArrayList<Vector2D> positionsInVision = calculateFOV(agentIndex, agentPositions[agentIndex]);
         updateAgentVision(agentIndex, positionsInVision);
         for (Vector2D vector : positionsInVision) {

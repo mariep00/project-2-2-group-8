@@ -35,6 +35,7 @@ public class GameScreen extends Application implements TransitionInterface {
     private ProgressBarCustom progressBar;
     private ArrayList<Vector2D>[] visions;
     private boolean[] showVision;
+    private List<Vector2D> frontiersFirstAgent;
 
     public GameScreen(ScenarioMap scenarioMap) {
         this.scenarioMap = scenarioMap;
@@ -198,6 +199,18 @@ public class GameScreen extends Application implements TransitionInterface {
         if (pos.x<tiles.length && pos.y<tiles[0].length && pos.y>=0 && pos.x>=0) {
             tiles[pos.x][pos.y].setToExplored();
         }
+    }
+
+    public void updateFrontiers(List<Vector2D> positions) {
+        if (frontiersFirstAgent != null) {
+            for (Vector2D pos : frontiersFirstAgent) {
+                tiles[pos.x][pos.y].resetFrontier();
+            }
+        }
+        for (Vector2D pos : positions) {
+            tiles[pos.x][pos.y].setFrontier(imageContainer.getSpawnAreaGuards());
+        }
+        frontiersFirstAgent = positions;
     }
 
     public void updateVision(int agentIndex, ArrayList<Vector2D> positions) {
