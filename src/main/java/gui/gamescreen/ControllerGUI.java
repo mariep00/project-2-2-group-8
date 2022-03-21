@@ -54,6 +54,7 @@ public class ControllerGUI extends Controller {
     @Override
     protected void updateVision(int agentIndex) {
         super.updateVision(agentIndex);
+
         ArrayList<Vector2D> positionsInVision = calculateFOV(agentIndex, agentPositions[agentIndex]);
         updateAgentVision(agentIndex, positionsInVision);
         for (Vector2D vector : positionsInVision) {
