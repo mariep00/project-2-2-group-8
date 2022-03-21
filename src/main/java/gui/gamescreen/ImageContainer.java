@@ -23,6 +23,10 @@ public final class ImageContainer {
     private final Image[] guardSouth;
     private final Image[] guardWest;
 
+    private final Image step;
+    private final Image play;
+    private final Image stop;
+
     private ImageContainer() {
         wallImages = new Image[9];
         wallImages[0] = new Image(this.getClass().getResource("/tiles/base/wall_center.jpg").toString());
@@ -60,6 +64,10 @@ public final class ImageContainer {
         for (int i = 0; i < guardWest.length; i++) {
             guardWest[i] = new Image(this.getClass().getResource("/tiles/character/guard/west/guard_west_"+(i+1)+".png").toString());
         }
+
+        step = new Image(this.getClass().getResource("/ui/step.png").toString());
+        play = new Image(this.getClass().getResource("/ui/play.png").toString());
+        stop = new Image(this.getClass().getResource("/ui/stop.png").toString());
     }
 
     /**
@@ -160,4 +168,8 @@ public final class ImageContainer {
     public Image getWallTopCornerLeft() { return wallImages[6]; }
     public Image getWallTopCornerRight() { return wallImages[7]; }
     public Image getWallTopCornered() { return wallImages[8]; }
+
+    public Image getStep() { return step; }
+    public Image getPlay() { return play; }
+    public Image getStop() { return stop; }
 }
