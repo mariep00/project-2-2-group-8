@@ -167,8 +167,8 @@ public class MapCreator extends Application implements TransitionInterface {
         buttonPlayGame.setOnAction(e -> {
             ScenarioMap scenarioMap = new ScenarioMap();
             scenarioMap.createMap(nrOfTilesWidth, nrOfTilesHeight, 1);
-            for (int x = 0; x < tiles[0].length; x++) {
-                for (int y = 0; y < tiles.length; y++) {
+            for (int x = 0; x < tiles.length; x++) {
+                for (int y = 0; y < tiles[x].length; y++) {
                     if (tiles[x][y].isWall()) scenarioMap.insertElement(x, y, controller.maps.Tile.Type.WALL);
                     else if (tiles[x][y].isSpawnAreaGuards()) scenarioMap.insertSpawnAreaGuard(x, y);
                     else if (tiles[x][y].isSpawnAreaIntruders()) scenarioMap.insertSpawnAreaIntruder(x, y);
@@ -185,7 +185,7 @@ public class MapCreator extends Application implements TransitionInterface {
 
     private void resizeGrid() {
         gridPane.getChildren().remove(0, gridPane.getChildren().size());
-        TileMapCreator[][] tmp = new TileMapCreator[nrOfTilesHeight][nrOfTilesWidth];
+        TileMapCreator[][] tmp = new TileMapCreator[nrOfTilesWidth][nrOfTilesHeight];
         for (int x = 0; x < tmp.length; x++) {
             for (int y = 0; y < tmp[x].length; y++) {
                 if (x < tiles.length && y < tiles[x].length) {
