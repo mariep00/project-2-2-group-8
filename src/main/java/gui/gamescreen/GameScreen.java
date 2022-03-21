@@ -35,7 +35,6 @@ public class GameScreen extends Application implements TransitionInterface {
     private ProgressBarCustom progressBar;
     private ArrayList<Vector2D>[] visions;
     private boolean[] showVision;
-    private List<Vector2D> frontiersFirstAgent;
 
     public GameScreen(ScenarioMap scenarioMap) {
         this.scenarioMap = scenarioMap;
