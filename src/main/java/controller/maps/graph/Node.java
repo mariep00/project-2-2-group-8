@@ -44,7 +44,9 @@ public class Node {
         }
         else {
             for (int i = 0; i < edges.length-1; i++) {
-                if (edges[i] == null) {
+                if (edges[i]!=null) {
+                    if(edges[i].equals(other) && !edges[i].equals(this)) break;
+                } else {
                     edges[i] = other;
                     break;
                 }
