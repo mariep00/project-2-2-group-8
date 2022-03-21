@@ -252,7 +252,7 @@ public class Controller {
         }
         
         for (int i=0; i<scMap.getNumGuards(); i++) {
-            agentsGuards[i] = new Agent(scMap.getBaseSpeedGuard(), 0.0, scMap.getGuardViewAngle(),scMap.getGuardViewRange(),orientations[rand.nextInt(orientations.length)], brainGuards);
+            agentsGuards[i] = new Agent(scMap.getBaseSpeedGuard(), 0.0, scMap.getGuardViewAngle(),scMap.getGuardViewRange(), orientations[rand.nextInt(orientations.length)], brainGuards);
         }
     }
 

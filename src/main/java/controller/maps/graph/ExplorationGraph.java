@@ -159,7 +159,7 @@ public class ExplorationGraph {
     public void checkEdges(Node node) {
         Vector2D[] nodeNeighbours = node.getNeigbours();
         for (int i = 0; i < nodeNeighbours.length; i++) {
-            Node nodeNeighbour = frontiers.getValue(nodeNeighbours[i]);
+            Node nodeNeighbour = nodes.getValue(nodeNeighbours[i]);
             if (nodeNeighbour != null) {
                 addUndirectedEdge(node, nodeNeighbour);
             }
