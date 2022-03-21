@@ -5,6 +5,7 @@ import controller.maps.HashMap;
 import controller.maps.Tile;
 import controller.maps.Tile.Type;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 
 public class ExplorationGraph {
@@ -73,6 +74,11 @@ public class ExplorationGraph {
      * @return true if the Node exists
      */
     private boolean nodeExists(Vector2D vector) {
+        /*Node n = nodes.getValue(vector);
+        if (n != null) {
+            updateFrontiers(n);
+            return true;
+        }*/
         return nodes.getValue(vector) != null;
     }
 
@@ -160,6 +166,7 @@ public class ExplorationGraph {
                 addUndirectedEdge(node, nodeNeighbour);
             }
         }
+        updateFrontiers(node);
     }
 
     /**
@@ -202,6 +209,7 @@ public class ExplorationGraph {
         System.out.println("2. getnextfrontier is called, frontiers length: " + frontiers.getNumberOfNodes());
         LinkedList<Node> nodes = frontiers.getAllNodes();
         if(nodes.isEmpty()) System.out.println("3. Nodes is empty -> mistake in get allNodes");
+        System.out.println(nodes.size() + " " + nodes.toString());
         Node tempnode = null;
         double closest_dist = Double.MAX_VALUE;
         for (int i = 0; i < nodes.size(); i++) {

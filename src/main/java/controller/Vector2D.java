@@ -23,7 +23,7 @@ public class Vector2D {
     public boolean equals(Vector2D other){
         return this.x == other.x && this.y == other.y;
     }
-
+    
     public Vector2D getSide(double dir) {
         return getSide(dir, 1);
     }
@@ -45,6 +45,7 @@ public class Vector2D {
         return null;
     }
     
+
     /**
      * Euclidean distance
      * @param other
@@ -52,6 +53,10 @@ public class Vector2D {
      */
     public double dist(Vector2D other) {
         return Math.sqrt(Math.pow(this.x-other.x, 2)+Math.pow(this.y-other.y, 2));
+    }
+
+    public int manhattanDist (Vector2D other) {
+        return Math.abs(this.x-other.x)+Math.abs(this.y-other.y);
     }
 
     public double getAngleBetweenVector(Vector2D other) {

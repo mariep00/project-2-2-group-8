@@ -1,5 +1,6 @@
 package controller.agent;
 
+import controller.Vector2D;
 import controller.maps.graph.ExplorationGraph;
 import controller.maps.graph.Node;
 
@@ -9,7 +10,6 @@ import java.util.Stack;
 
 public class FrontierBrain implements BrainInterface {
     private Node goalNode;
-    private Node startingNode;
     private Stack<Integer> future_moves;
     private double orientation;
     private ExplorationGraph graph;
@@ -28,7 +28,7 @@ public class FrontierBrain implements BrainInterface {
             System.out.println("1. future moves is empty");
             updateGoal();
             System.out.println("Goal is set " + goalNode.toString());
-            moveTo(graph);
+            moveTo();
         }
 
         return future_moves.pop();
@@ -39,17 +39,19 @@ public class FrontierBrain implements BrainInterface {
         goalNode= graph.getNextFrontier();
     }
 
-    public void moveTo(ExplorationGraph explorationGraph){
+    public void moveTo(){
         Stack<Integer> temporaryStack= new Stack<>();
-        A_Star a_star = new A_Star(goalNode, startingNode);
-        LinkedList<Node> nodesToGoal = a_star.calculateAstar(explorationGraph);
-        Node current_node= explorationGraph.getCurrentPosition();
-        Iterator<Node> iterator = nodesToGoal.descendingIterator();
+        AStar aStar = new AStar(graph, graph.getCurrentPosition(), goalNode);
+        
+        LinkedList<Vector2D> nodesToGoal = aStar.calculate();
+        System.out.println("Astar finishes");
+        Vector2D currentPos= graph.getCurrentPosition().COORDINATES;
+        Iterator<Vector2D> iterator = nodesToGoal.descendingIterator();
         double current_orientation = orientation;
         while (iterator.hasNext()){
-            Node node = iterator.next();
-            int xDif = node.COORDINATES.x - current_node.COORDINATES.x;
-            int yDif = node.COORDINATES.y - current_node.COORDINATES.y;
+            Vector2D pos = iterator.next();
+            int xDif = pos.x - currentPos.x;
+            int yDif = pos.y - currentPos.y;
             if(xDif==1){
                 if(current_orientation==0){
                     temporaryStack.push(0);
@@ -85,7 +87,7 @@ public class FrontierBrain implements BrainInterface {
                     temporaryStack.push(0);
 
                 }
-                else if(current_orientation==90){ //TODO check statement always false
+                else if(current_orientation==90){ 
                     temporaryStack.push(1);
                     temporaryStack.push(0);
                 }
@@ -131,7 +133,7 @@ public class FrontierBrain implements BrainInterface {
                 }
                 current_orientation=270;
             }
-            current_node=node;
+            currentPos=pos;
         }
 
         temporaryStack.push(1);
