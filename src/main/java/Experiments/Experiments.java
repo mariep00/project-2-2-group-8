@@ -14,18 +14,28 @@ public class Experiments {
     public static Controller controller;
     private static final boolean DEBUG = true;
 
+    private static String path1 = "mapGiacomo,90D.txt";
+    private static String path2 = "mapGiacomo,135D.txt";
+    private static String path3 = "mapGiacomo,180D.txt";
+
+
+    private static int currentBrain = 1;
+
+    // 1 random
+    // 2 frontier
     public Experiments(String path){
-        controller = new Controller(new MapBuilder(new File(path)).getMap());
+        controller = new Controller(new MapBuilder(new File(path)).getMap(),currentBrain);
         controller.init();
         controller.start();
     }
 
     public static void main(String[] args) {
 
-        //random 90D
+        currentBrain = 1;
+        //random 90D, map Giacomo
         for (int i=0; i < ITERATIONS; i++) {
 
-            String path1 = "/Users/giaco/project-2-2-group-8/mapGiacomo,90D.txt";
+
             Experiments experiments = new Experiments(path1);
 
             gameCounter ++;
@@ -36,10 +46,11 @@ public class Experiments {
             System.out.println();
 
         }
-        //random 135D
+        currentBrain = 1;
+        //random 135D, map Giacomo
         for (int i=0; i < ITERATIONS; i++) {
 
-            String path2 = "/Users/giaco/project-2-2-group-8/mapGiacomo,135D.txt";
+
             Experiments experiments = new Experiments(path2);
 
             gameCounter ++;
@@ -50,10 +61,12 @@ public class Experiments {
             System.out.println();
 
         }
-        //random 180D
+
+        currentBrain = 1;
+        //random 180D, map Giacomo
         for (int i=0; i < ITERATIONS; i++) {
 
-            String path3 = "/Users/giaco/project-2-2-group-8/mapGiacomo,180D.txt";
+
             Experiments experiments = new Experiments(path3);
 
             gameCounter ++;
@@ -64,6 +77,28 @@ public class Experiments {
             System.out.println();
 
         }
+
+        currentBrain = 2;
+        //frontier 90D, map Giacomo
+        for (int i=0; i < ITERATIONS; i++) {
+
+
+            Experiments experiments = new Experiments(path1);
+
+            gameCounter ++;
+
+            System.out.println();
+
+            if (DEBUG)System.out.println("#########GAME " + gameCounter +" ############");
+            System.out.println();
+
+        }
+
+
+
+
+
+
 
     }
 

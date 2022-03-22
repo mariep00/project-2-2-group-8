@@ -11,7 +11,7 @@ public class Launcher {
         String mapName = "testmap.txt";
         //String path = base+mapName;
         String path = "/Users/Yannick/Documents/DKE_UM/Year_2/Project_2-2/code/src/main/resources/maps/testmap.txt";
-        Controller controller = new Controller(new MapBuilder(new File(path)).getMap());
+        Controller controller = new Controller(new MapBuilder(new File(path)).getMap(), 1);
         controller.init();
         controller.start();
     }
