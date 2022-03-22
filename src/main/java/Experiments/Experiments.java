@@ -8,6 +8,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 
+/**
+ * The three different files are meant to be used on a map where some parameters are changed each time.
+ * For example ViewingRange, ViewingAngle etc.
+ */
+
 public class Experiments {
 
     public static final int ITERATIONS = 10;
