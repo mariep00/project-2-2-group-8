@@ -10,7 +10,7 @@ import java.io.PrintWriter;
 
 public class Experiments {
 
-    public static final int ITERATIONS = 10;
+    public static final int ITERATIONS = 5;
     private static int gameCounter =0;
     private static double totalTime =0;
     private static PrintWriter out;
@@ -20,9 +20,9 @@ public class Experiments {
     private static final boolean DEBUG = true;
     private static final boolean saveResults = true;
 
-    private static String path1 = "mapGiacomo,90D.txt";
-    private static String path2 = "mapGiacomo,135D.txt";
-    private static String path3 = "mapGiacomo,180D.txt";
+    private static String path1 = "/Users/joaquin/project-2-2-group-8/src/main/resources/maps/mapGiacomo,90D.txt";
+    private static String path2 = "/Users/joaquin/project-2-2-group-8/src/main/resources/maps/mapGiacomo,135D.txt";
+    private static String path3 = "/Users/joaquin/project-2-2-group-8/src/main/resources/maps/mapGiacomo,180D.txt";
 
 
     private static int currentBrain = 1;
@@ -36,32 +36,38 @@ public class Experiments {
     }
 
     public static void main(String[] args) {
-        if (saveResults) createFile();
+        if (saveResults) {
+            createFile();
+            if (DEBUG) System.out.println("File created?");
+        }
 
-        currentBrain = 1;
+
         //random 90D, map Giacomo
-        out.println("Iterarions: " + gameCounter);
-        //random 90D
-        out.println("------------------");
+
+        out.println("\n ######################");
         out.println("random 90D");
         totalTime = 0;
+        currentBrain = 1;
         for (int i=0; i < ITERATIONS; i++) {
-
 
             Experiments experiments = new Experiments(path1);
 
             gameCounter ++;
 
             out.println(gameCounter + ".    Time taken: "+ controller.time);
+            totalTime = totalTime + controller.time;
         }
         out.println("Iterations: " + gameCounter);
+        out.println(" <<<< TOTAL time: " + totalTime);
         out.println(" ---- AVG TIME: " + (totalTime/gameCounter));
 
         //random 135D
-        out.println("------------------");
+        currentBrain = 1;
+
+        out.println("\n ######################" );
         out.println("random 135D");
         totalTime = 0;
-        currentBrain = 1;
+        gameCounter = 0;
         for (int i=0; i < ITERATIONS; i++) {
 
 
@@ -70,19 +76,21 @@ public class Experiments {
             gameCounter ++;
 
             out.println(gameCounter + ".    Time taken: "+ controller.time);
+            totalTime = totalTime + controller.time;
         }
         out.println("Iterations: " + gameCounter);
+        out.println(" <<<< TOTAL time: " + totalTime);
         out.println(" ---- AVG TIME: " + (totalTime/gameCounter));
 
 
-        currentBrain = 1;
         //random 180D, map Giacomo
-        out.println("------------------");
+        currentBrain = 1;
+
+        out.println("\n ######################");
         out.println("random 180D");
         totalTime = 0;
+        gameCounter = 0;
         for (int i=0; i < ITERATIONS; i++) {
-
-
             Experiments experiments = new Experiments(path3);
 
             gameCounter ++;
@@ -91,8 +99,9 @@ public class Experiments {
             totalTime = totalTime + controller.time;
         }
         out.println("Iterations: " + gameCounter);
+        out.println(" <<<< TOTAL time: " + totalTime);
         out.println(" ---- AVG TIME: " + (totalTime/gameCounter));
-        
+        out.close();
     }
 
     public static PrintWriter createFile(){
