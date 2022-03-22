@@ -16,21 +16,18 @@ public class FrontierBrain implements BrainInterface {
     private double orientation;
     private ExplorationGraph graph;
 
-    //Pass origin node, goalNode = originNode
     public FrontierBrain(){
         future_moves = new Stack<>();
         goalNode = new Node(new Vector2D(-20000, -20000), new Tile());
     }
 
-
     public int makeDecision(ExplorationGraph graph, double orientation){
         this.orientation = orientation;
         this.graph = graph;
         int frontierIndexToGoTo = 0;
-        if (future_moves.isEmpty() /* && location == goalNode*/){
-            System.out.println("1. future moves is empty");
+        if (future_moves.isEmpty()){
+            
             updateGoal(frontierIndexToGoTo);
-            System.out.println("Goal is set " + goalNode.toString());
             
             boolean foundReachableNode = false;
             while (!foundReachableNode) {

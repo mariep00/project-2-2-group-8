@@ -10,7 +10,7 @@ import java.io.PrintWriter;
 
 public class Experiments {
 
-    public static final int ITERATIONS = 1000;
+    public static final int ITERATIONS = 10;
     private static int gameCounter =0;
     private static double totalTime =0;
     private static PrintWriter out;
