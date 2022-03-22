@@ -15,11 +15,11 @@ public class Controller {
     protected Agent[] agentsGuards;
     private Agent[] agentsIntruders;
     private double timestep;
-    private double time;
+    public double time;
     protected ArrayList<Vector2D>[] visions;
     protected LinkedList<Tile> tilesWithMarker;
 
-    public Controller(ScenarioMap scMap) {
+    public Controller(ScenarioMap scMap, int brain) {
         this.scMap = scMap;
         this.agentSpawnLocations = new Vector2D[scMap.getNumGuards()];
         this.agentsGuards = new Agent[scMap.getNumGuards()];
@@ -31,7 +31,7 @@ public class Controller {
         this.visions = new ArrayList[scMap.getNumGuards()];
         this.tilesWithMarker = new LinkedList<>();
 
-        createAgents(1, 2);
+        createAgents(1, brain);
     }
 
     public void init() {

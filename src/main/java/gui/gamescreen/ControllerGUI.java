@@ -22,7 +22,7 @@ public class ControllerGUI extends Controller {
     private final AtomicInteger simulationDelay = new AtomicInteger();
     private final Thread updateGameLogicThread;
     public ControllerGUI(ScenarioMap scMap, GameScreen gameScreen) {
-        super(scMap);
+        super(scMap, 0);
         this.GAME_SCREEN = gameScreen;
 
         Thread.UncaughtExceptionHandler h = (th, ex) -> System.out.println("Uncaught exception: " + ex);
