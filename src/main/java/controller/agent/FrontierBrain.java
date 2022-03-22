@@ -16,6 +16,8 @@ public class FrontierBrain implements BrainInterface {
     private double orientation;
     private ExplorationGraph graph;
 
+    private int frontierIndexToGoTo = 0;
+
 
     //Pass origin node, goalNode = originNode
     public FrontierBrain(){
@@ -31,17 +33,22 @@ public class FrontierBrain implements BrainInterface {
             //System.out.println("1. future moves is empty");
             updateGoal();
             //System.out.println("Goal is set " + goalNode.toString());
-            if (goalNode == lastNode){ whenStuck();}
-            else moveTo();
+            if (goalNode == lastNode) { whenStuck(); }
+            boolean finished = false;
+            while (!finished) {
+                finished = moveTo();
+                if (!finished) frontierIndexToGoTo++;
+                else frontierIndexToGoTo = 0;
+            }
         }
 
         return future_moves.pop();
     }
 
-    public void updateGoal(){
+    public void updateGoal() {
      //Update the goal node with the  next frontier node on graph
         lastNode=goalNode;
-        goalNode= graph.getNextFrontier();
+        goalNode= graph.getNextFrontier(frontierIndexToGoTo);
         if (goalNode == null) {
             goalNode = graph.getTeleport();
         }
@@ -56,12 +63,13 @@ public class FrontierBrain implements BrainInterface {
         else { System.out.print("Crap");}
     }
 
-    public void moveTo(){
+    public boolean moveTo() {
         Stack<Integer> temporaryStack= new Stack<>();
         AStar aStar = new AStar(graph, graph.getCurrentPosition(), goalNode);
         
         LinkedList<Vector2D> nodesToGoal = aStar.calculate();
-        //System.out.println("Astar finishes");
+        if (nodesToGoal == null) return false;
+
         Vector2D currentPos= graph.getCurrentPosition().COORDINATES;
         Iterator<Vector2D> iterator = nodesToGoal.descendingIterator();
         double current_orientation = orientation;
@@ -160,13 +168,13 @@ public class FrontierBrain implements BrainInterface {
         do{future_moves.push(temporaryStack.pop());}
         while(!temporaryStack.isEmpty());
 
-
+        return true;
         //For every node in nodes to Goal
-                //Check agent's positon
-                //Compare agents Vector2D with nextNode Vector2D
-                //Check if we are facing the next node
-                // if we are, then move forward --> fill stack of future moves
-                // else rotate --> fill stack of future moves
+        //Check agent's positon
+        //Compare agents Vector2D with nextNode Vector2D
+        //Check if we are facing the next node
+        //if we are, then move forward --> fill stack of future moves
+        //else rotate --> fill stack of future moves
         //Once we now what we need to do to reach the new goal
         //Update stack of future moves
 

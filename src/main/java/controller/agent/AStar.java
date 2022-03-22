@@ -36,7 +36,7 @@ public class AStar {
             ANode current = getNextFromOpen();
             open.remove(current);
             closed.add(current);
-
+            if (current == null) return null;
             if(current.POSITION.equals(goal)) {
                 goalANode = current;
                 break;

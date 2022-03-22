@@ -7,7 +7,6 @@ import controller.maps.Tile.Type;
 import controller.quicksort.QuickSort;
 import controller.quicksort.SortObject;
 
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Random;
 
@@ -25,7 +24,7 @@ public class ExplorationGraph {
         this.nodes = new HashMap(4000);
         this.frontiers = new HashMap(1000);
         this.seenTeleports = new LinkedList<>();
-        random = new Random(1);
+        random = new Random();
         Tile t = new Tile();
         t.setType(Type.SPAWN_AREA_GUARDS);
         this.origin = new Node(new Vector2D(0, 0), t);
@@ -194,7 +193,6 @@ public class ExplorationGraph {
         return "Number of nodes: " + nodes.getNumberOfNodes() + " Size Frontier: " + frontiers.getNumberOfNodes();
     }
 
-
     /**
      * Returns all the vertices y s.t. there is an edge from x to y
      *
@@ -214,20 +212,21 @@ public class ExplorationGraph {
     }
 
 
-    public Node getNextFrontier() {
+    public Node getNextFrontier(int index) {
         //System.out.println("2. getnextfrontier is called, frontiers length: " + frontiers.getNumberOfNodes());
         LinkedList<Node> nodes = frontiers.getAllNodes();
         if(nodes.isEmpty()) System.out.println("3. Nodes is empty -> mistake in get allNodes");
         SortObject<Node>[] sortObjects = new SortObject[nodes.size()];
-        System.out.println(nodes.size());
+
         for (int i = 0; i < nodes.size(); i++) {
             sortObjects[i] = new SortObject<Node>(nodes.get(i), nodes.get(i).COORDINATES.dist(currentPosition.COORDINATES));
         }
 
         QuickSort<Node> quickSort = new QuickSort<>();
         SortObject<Node>[] x = quickSort.sort(sortObjects, 0, sortObjects.length-1);
-        System.out.println(Arrays.toString(x));
 
+        if (nodes.size() == 0) return null;
+        return x[index].object;
         //System.out.println(nodes.size() + " " + nodes.toString());
         //Node tempnode = null;
         /*double closest_dist = Double.MAX_VALUE;
@@ -245,7 +244,6 @@ public class ExplorationGraph {
             }
         }
          */
-        return x[0].object;
     }
 
     public Node getTeleport() {
