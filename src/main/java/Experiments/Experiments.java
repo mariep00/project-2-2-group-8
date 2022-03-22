@@ -8,18 +8,31 @@ import java.io.File;
 
 public class Experiments {
 
+    public static final int ITERATIONS = 100;
+    private static int gameCounter =0;
 
-    public static void main(String[] args) {
-        String base = Launcher.class.getResource("/maps/").toString();
-        String mapName = "testmap.txt";
-        //String path = base+mapName;
-        String path = "/Users/giaco/project-2-2-group-8/tetsmap.txt";
+    private String path = "/Users/joaquin/project-2-2-group-8/src/main/resources/maps/testmap.txt";
+    public static Controller controller;
+    private static final boolean DEBUG = true;
 
-        Controller controller = new Controller(new MapBuilder(new File(path)).getMap());
+    public Experiments(){
+        controller = new Controller(new MapBuilder(new File(path)).getMap());
         controller.init();
         controller.start();
+    }
 
-        for (int i = 0; i < 100; i++){
+    public static void main(String[] args) {
+
+        for (int i=0; i < ITERATIONS; i++) {
+
+            Experiments experiments = new Experiments();
+
+            gameCounter ++;
+
+            System.out.println();
+
+            if (DEBUG)System.out.println("#########GAME " + gameCounter +" ############");
+            System.out.println();
 
         }
     }

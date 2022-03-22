@@ -1,6 +1,7 @@
 package controller.agent;
 
 import controller.Vector2D;
+import controller.maps.Tile;
 import controller.maps.graph.ExplorationGraph;
 import controller.maps.graph.Node;
 
@@ -10,6 +11,7 @@ import java.util.Stack;
 
 public class FrontierBrain implements BrainInterface {
     private Node goalNode;
+    private Node lastNode;
     private Stack<Integer> future_moves;
     private double orientation;
     private ExplorationGraph graph;
@@ -18,6 +20,7 @@ public class FrontierBrain implements BrainInterface {
     //Pass origin node, goalNode = originNode
     public FrontierBrain(){
         future_moves = new Stack<>();
+        goalNode = new Node(new Vector2D(-20000, -20000), new Tile());
     }
 
 
@@ -28,7 +31,8 @@ public class FrontierBrain implements BrainInterface {
             System.out.println("1. future moves is empty");
             updateGoal();
             System.out.println("Goal is set " + goalNode.toString());
-            moveTo();
+            if (goalNode == lastNode){ whenStuck();}
+            else moveTo();
         }
 
         return future_moves.pop();
@@ -36,10 +40,20 @@ public class FrontierBrain implements BrainInterface {
 
     public void updateGoal(){
      //Update the goal node with the  next frontier node on graph
+        lastNode=goalNode;
         goalNode= graph.getNextFrontier();
         if (goalNode == null) {
             goalNode = graph.getTeleport();
         }
+    }
+
+    public void whenStuck(){
+        if (goalNode == lastNode){
+            future_moves.push(1);
+            future_moves.push(0);
+            future_moves.push(3);
+        }
+        else { System.out.print("Crap");}
     }
 
     public void moveTo(){

@@ -225,6 +225,11 @@ public class ExplorationGraph {
                 closest_dist = dist;
                 tempnode = nodes.get(i);
             }
+            if (dist == closest_dist){
+                if (random.nextInt(2) == 0){
+                    tempnode = nodes.get(i);
+                }
+            }
         }
         return tempnode;
     }
