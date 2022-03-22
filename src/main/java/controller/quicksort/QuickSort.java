@@ -13,20 +13,20 @@ public class QuickSort<V> {
                 a[j] = t;
             }
         }
-        int t = a[i+1].sortParameter;
+        double t = a[i+1].sortParameter;
         a[i+1] = a[end];
         a[end] = getSortObjct(a, t);
         return (i + 1);
     }
 
-    private SortObject<V> getSortObjct(SortObject<V> a[], int sortParameter) {
+    private SortObject<V> getSortObjct(SortObject<V> a[], double sortParameter) {
         for (SortObject<V> vSortObject : a) {
             if (vSortObject.sortParameter == sortParameter) return vSortObject;
         }
         return null;
     }
 
-    SortObject<V>[] sort(SortObject<V> a[], int start, int end) {
+    public SortObject<V>[] sort(SortObject<V> a[], int start, int end) {
         if (start < end) {
             int p = partition(a, start, end);  //p is partitioning index
             sort(a, start, p - 1);

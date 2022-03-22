@@ -7,6 +7,7 @@ import controller.maps.Tile.Type;
 import controller.quicksort.QuickSort;
 import controller.quicksort.SortObject;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Random;
 
@@ -219,11 +220,12 @@ public class ExplorationGraph {
         if(nodes.isEmpty()) System.out.println("3. Nodes is empty -> mistake in get allNodes");
         SortObject<Node>[] sortObjects = new SortObject[nodes.size()];
         for (int i = 0; i < nodes.size(); i++) {
-            sortObjects[i] = new SortObject<Node>(Node, nodes.get(i).COORDINATES.dist(currentPosition.COORDINATES));
+            sortObjects[i] = new SortObject<Node>(nodes.get(i), nodes.get(i).COORDINATES.dist(currentPosition.COORDINATES));
         }
 
         QuickSort<Node> quickSort = new QuickSort<>();
-        quickSort.
+        SortObject<Node>[] x = quickSort.sort(sortObjects, 0, sortObjects.length-1);
+        System.out.println(Arrays.toString(x));
 
         //System.out.println(nodes.size() + " " + nodes.toString());
         //Node tempnode = null;
@@ -242,7 +244,7 @@ public class ExplorationGraph {
             }
         }
          */
-        return tempnode;
+        return x[0].object;
     }
 
     public Node getTeleport() {
