@@ -16,9 +16,6 @@ public class FrontierBrain implements BrainInterface {
     private double orientation;
     private ExplorationGraph graph;
 
-    private int frontierIndexToGoTo = 0;
-
-
     //Pass origin node, goalNode = originNode
     public FrontierBrain(){
         future_moves = new Stack<>();
@@ -28,24 +25,27 @@ public class FrontierBrain implements BrainInterface {
 
     public int makeDecision(ExplorationGraph graph, double orientation){
         this.orientation = orientation;
-        this.graph=graph;
+        this.graph = graph;
+        int frontierIndexToGoTo = 0;
         if (future_moves.isEmpty() /* && location == goalNode*/){
             //System.out.println("1. future moves is empty");
-            updateGoal();
+            updateGoal(frontierIndexToGoTo);
             //System.out.println("Goal is set " + goalNode.toString());
             if (goalNode == lastNode) { whenStuck(); }
-            boolean finished = false;
-            while (!finished) {
-                finished = moveTo();
-                if (!finished) frontierIndexToGoTo++;
-                else frontierIndexToGoTo = 0;
+            boolean foundReachableNode = false;
+            while (!foundReachableNode) {
+                foundReachableNode = moveTo();
+                if (!foundReachableNode) {
+                    frontierIndexToGoTo++;
+                    updateGoal(frontierIndexToGoTo);
+                }
             }
         }
 
         return future_moves.pop();
     }
 
-    public void updateGoal() {
+    public void updateGoal(int frontierIndexToGoTo) {
      //Update the goal node with the  next frontier node on graph
         lastNode=goalNode;
         goalNode= graph.getNextFrontier(frontierIndexToGoTo);
