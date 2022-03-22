@@ -1,11 +1,11 @@
 package controller.agent;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-
 import controller.Vector2D;
 import controller.maps.graph.ExplorationGraph;
 import controller.maps.graph.Node;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class AStar {
 
