@@ -19,7 +19,7 @@ ___
 4. After finishing type ``` gradle run ```
 
 
-## Running the project in your idea
-1. Load the project in your idea as a Gradle project
+## Running the project in your IDE
+1. Load the project in your IDE as a Gradle project
 2. Go to src/main/java/launchers
 3. Run the LauncherGUI.java class

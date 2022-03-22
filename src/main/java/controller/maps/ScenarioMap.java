@@ -197,13 +197,21 @@ public class ScenarioMap {
     }
 
     public void createMap(int width, int height, float scaling) {
-        this.width = width+1;
-        this.height = height+1;
+        this.width = width+2;
+        this.height = height+2;
         mapGrid = new Tile[this.height][this.width];
-        for (int i=0; i < mapGrid[0].length; i++) {
-            for (int j=0; j < mapGrid.length; j++) {
+        for (int i=0; i < mapGrid[0].length-1; i++) {
+            for (int j=0; j < mapGrid.length-1; j++) {
                 mapGrid[j][i] = new Tile();
             }
+        }
+        for (int j = 0; j < mapGrid.length; j++) {
+            mapGrid[j][0] = new Tile(Type.WALL, false);
+            mapGrid[j][mapGrid[0].length-1] = new Tile(Type.WALL, false);
+        }
+        for (int i = 0; i < mapGrid[0].length; i++) {
+            mapGrid[0][i] = new Tile(Type.WALL, false);
+            mapGrid[mapGrid.length-1][i] = new Tile(Type.WALL, false);
         }
     }
 

@@ -31,7 +31,7 @@ public class EndingExplorationMap {
     }
 
     public boolean isExplored() {
-        //System.out.println(currentTilesExplored + " / " + totalTilesToExplore);
+        System.out.println(currentTilesExplored + " / " + totalTilesToExplore);
         return totalTilesToExplore == currentTilesExplored;
     }
 

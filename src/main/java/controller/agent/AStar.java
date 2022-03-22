@@ -34,6 +34,7 @@ public class AStar {
     public LinkedList<Vector2D> calculate() {
         while(true) {
             ANode current = getNextFromOpen();
+
             open.remove(current);
             closed.add(current);
             if (current == null) return null;

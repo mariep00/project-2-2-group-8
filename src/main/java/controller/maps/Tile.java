@@ -20,10 +20,13 @@ public class Tile {
     private MarkerInterface[] markers;
 
     public Tile () {
-            type = Type.FLOOR;
-            seeThrough = true;
-            shaded = false;
-            markers = new MarkerInterface[1];
+        this(Type.FLOOR, true);
+    }
+    public Tile (Type type, boolean seeThrough) {
+        this.type = type;
+        this.seeThrough = seeThrough;
+        shaded = false;
+        markers = new MarkerInterface[1];
     }
 
     public Type getType() {
