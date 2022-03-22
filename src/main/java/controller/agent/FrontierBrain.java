@@ -28,9 +28,9 @@ public class FrontierBrain implements BrainInterface {
         this.orientation = orientation;
         this.graph=graph;
         if (future_moves.isEmpty() /* && location == goalNode*/){
-            System.out.println("1. future moves is empty");
+            //System.out.println("1. future moves is empty");
             updateGoal();
-            System.out.println("Goal is set " + goalNode.toString());
+            //System.out.println("Goal is set " + goalNode.toString());
             if (goalNode == lastNode){ whenStuck();}
             else moveTo();
         }
@@ -61,7 +61,7 @@ public class FrontierBrain implements BrainInterface {
         AStar aStar = new AStar(graph, graph.getCurrentPosition(), goalNode);
         
         LinkedList<Vector2D> nodesToGoal = aStar.calculate();
-        System.out.println("Astar finishes");
+        //System.out.println("Astar finishes");
         Vector2D currentPos= graph.getCurrentPosition().COORDINATES;
         Iterator<Vector2D> iterator = nodesToGoal.descendingIterator();
         double current_orientation = orientation;

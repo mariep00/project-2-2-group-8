@@ -2,16 +2,15 @@ package Experiments;
 
 import controller.Controller;
 import controller.MapBuilder;
-import launchers.Launcher;
 
 import java.io.File;
 
 public class Experiments {
 
-    public static final int ITERATIONS = 100;
+    public static final int ITERATIONS = 1000;
     private static int gameCounter =0;
 
-    private String path = "/Users/joaquin/project-2-2-group-8/src/main/resources/maps/testmap.txt";
+    private String path = "/Users/Yannick/Documents/DKE_UM/Year_2/Project_2-2/code/src/main/resources/maps/testmap.txt";
     public static Controller controller;
     private static final boolean DEBUG = true;
 
@@ -27,7 +26,7 @@ public class Experiments {
 
             Experiments experiments = new Experiments();
 
-            gameCounter ++;
+            gameCounter++;
 
             System.out.println();
 

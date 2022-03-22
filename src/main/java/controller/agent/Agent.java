@@ -107,6 +107,6 @@ public class Agent {
 
     @Override
     public String toString() {
-        return explorationGraph.toString();
+        return "Orientation: " + orientation + ", graph: " + explorationGraph.toString();
     }
 }

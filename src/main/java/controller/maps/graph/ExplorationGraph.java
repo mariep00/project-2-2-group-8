@@ -22,7 +22,7 @@ public class ExplorationGraph {
         this.nodes = new HashMap(4000);
         this.frontiers = new HashMap(1000);
         this.seenTeleports = new LinkedList<>();
-        random = new Random();
+        random = new Random(1);
         Tile t = new Tile();
         t.setType(Type.SPAWN_AREA_GUARDS);
         this.origin = new Node(new Vector2D(0, 0), t);
@@ -212,7 +212,7 @@ public class ExplorationGraph {
 
 
     public Node getNextFrontier() {
-        System.out.println("2. getnextfrontier is called, frontiers length: " + frontiers.getNumberOfNodes());
+        //System.out.println("2. getnextfrontier is called, frontiers length: " + frontiers.getNumberOfNodes());
         LinkedList<Node> nodes = frontiers.getAllNodes();
         if(nodes.isEmpty()) System.out.println("3. Nodes is empty -> mistake in get allNodes");
         //System.out.println(nodes.size() + " " + nodes.toString());

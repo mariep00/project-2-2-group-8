@@ -241,6 +241,7 @@ public class Controller {
         ArrayList<Integer> indicesUsed = new ArrayList<>();
         ArrayList<Vector2D> spawnAreaGuards = scMap.getSpawnAreaGuards();
 
+        /*
         for (int i = 0; i < agentsGuards.length; i++) {
             while (true) {
                 int rand = random.nextInt(spawnAreaGuards.size());
@@ -251,7 +252,12 @@ public class Controller {
                     break;
                 }
             }
-        }
+        }*/
+
+        agentSpawnLocations[0] = new Vector2D(19,9);
+        //agentSpawnLocations[1] = new Vector2D(3,8);
+        agentPositions[0] = agentSpawnLocations[0];
+        //agentPositions[1] = agentSpawnLocations[1];
     }
 
     private void createAgents(int brainIntruders, int brainGuards) {
@@ -263,7 +269,9 @@ public class Controller {
         }
         
         for (int i=0; i<scMap.getNumGuards(); i++) {
-            agentsGuards[i] = new Agent(scMap.getBaseSpeedGuard(), 0.0, scMap.getGuardViewAngle(),scMap.getGuardViewRange(), orientations[rand.nextInt(orientations.length)], brainGuards);
+            //agentsGuards[i] = new Agent(scMap.getBaseSpeedGuard(), 0.0, scMap.getGuardViewAngle(),scMap.getGuardViewRange(), orientations[rand.nextInt(orientations.length)], brainGuards);
+            agentsGuards[0] = new Agent(scMap.getBaseSpeedGuard(), 0.0, scMap.getGuardViewAngle(),scMap.getGuardViewRange(), 0, brainGuards);
+            //agentsGuards[1] = new Agent(scMap.getBaseSpeedGuard(), 0.0, scMap.getGuardViewAngle(),scMap.getGuardViewRange(), 90, brainGuards);
         }
     }
 
