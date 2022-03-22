@@ -11,7 +11,6 @@ public class Launcher {
 
     /**
      * Launcher without GUI
-     * @param args
      */
     public static void main(String[] args) {
         String path = ""; // Put the path to your map file here
