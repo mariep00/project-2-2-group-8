@@ -15,7 +15,7 @@ public class Controller {
     protected Agent[] agentsGuards;
     private Agent[] agentsIntruders;
     private double timestep;
-    private double time;
+    public double time;
     protected ArrayList<Vector2D>[] visions;
     protected LinkedList<Tile> tilesWithMarker;
 
