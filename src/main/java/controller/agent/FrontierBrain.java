@@ -1,6 +1,7 @@
 package controller.agent;
 
 import controller.Vector2D;
+import controller.maps.Tile;
 import controller.maps.graph.ExplorationGraph;
 import controller.maps.graph.Node;
 
@@ -10,44 +11,68 @@ import java.util.Stack;
 
 public class FrontierBrain implements BrainInterface {
     private Node goalNode;
+    private Node lastNode;
     private Stack<Integer> future_moves;
     private double orientation;
     private ExplorationGraph graph;
 
-
-    //Pass origin node, goalNode = originNode
     public FrontierBrain(){
         future_moves = new Stack<>();
+        goalNode = new Node(new Vector2D(-20000, -20000), new Tile());
     }
-
 
     public int makeDecision(ExplorationGraph graph, double orientation){
         this.orientation = orientation;
-        this.graph=graph;
-        if (future_moves.isEmpty() /* && location == goalNode*/){
-            //System.out.println("1. future moves is empty");
-            updateGoal();
-            //System.out.println("Goal is set " + goalNode.toString());
-            moveTo();
+        this.graph = graph;
+        int frontierIndexToGoTo = 0;
+        if (future_moves.isEmpty()){
+            
+            updateGoal(frontierIndexToGoTo);
+            
+            boolean foundReachableNode = false;
+            while (!foundReachableNode) {
+                if (goalNode == lastNode) { 
+                    whenStuck(); 
+                    break;
+                }
+                foundReachableNode = moveTo();
+                if (!foundReachableNode) {
+                    frontierIndexToGoTo++;
+                    if (goalNode == lastNode) { whenStuck(); }
+                    updateGoal(frontierIndexToGoTo);
+                }
+            }
         }
 
         return future_moves.pop();
     }
 
-    public void updateGoal(){
+    public void updateGoal(int frontierIndexToGoTo) {
      //Update the goal node with the  next frontier node on graph
-        goalNode= graph.getNextFrontier();
+        lastNode=goalNode;
+        goalNode= graph.getNextFrontier(frontierIndexToGoTo);
         if (goalNode == null) {
             goalNode = graph.getTeleport();
         }
     }
 
-    public void moveTo(){
+    public void whenStuck(){
+        if (goalNode == lastNode){
+            future_moves.push(1);
+            future_moves.push(0);
+            future_moves.push(0);
+            future_moves.push(3);
+        }
+        else { System.out.print("Crap");}
+    }
+
+    public boolean moveTo() {
         Stack<Integer> temporaryStack= new Stack<>();
         AStar aStar = new AStar(graph, graph.getCurrentPosition(), goalNode);
         
         LinkedList<Vector2D> nodesToGoal = aStar.calculate();
-        //System.out.println("Astar finishes");
+        if (nodesToGoal == null) return false;
+
         Vector2D currentPos= graph.getCurrentPosition().COORDINATES;
         Iterator<Vector2D> iterator = nodesToGoal.descendingIterator();
         double current_orientation = orientation;
@@ -146,13 +171,13 @@ public class FrontierBrain implements BrainInterface {
         do{future_moves.push(temporaryStack.pop());}
         while(!temporaryStack.isEmpty());
 
-
+        return true;
         //For every node in nodes to Goal
-                //Check agent's positon
-                //Compare agents Vector2D with nextNode Vector2D
-                //Check if we are facing the next node
-                // if we are, then move forward --> fill stack of future moves
-                // else rotate --> fill stack of future moves
+        //Check agent's positon
+        //Compare agents Vector2D with nextNode Vector2D
+        //Check if we are facing the next node
+        //if we are, then move forward --> fill stack of future moves
+        //else rotate --> fill stack of future moves
         //Once we now what we need to do to reach the new goal
         //Update stack of future moves
 

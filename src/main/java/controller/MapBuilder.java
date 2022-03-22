@@ -38,11 +38,11 @@ public class MapBuilder {
                 if(line.contains("//")) {
                     int index = line.indexOf("//");
                     line = line.substring(0, index);
-                    System.out.println(line);
+                    //System.out.println(line);
                     parseLine(line);
                 }
                 else {
-                    System.out.println(line);
+                    //System.out.println(line);
                     parseLine(line);
                 }
             }
@@ -65,8 +65,8 @@ public class MapBuilder {
                 id=id.trim();
                 // in case multiple parameters
                 String[] items=value.split(" ");
-                System.out.println(id);
-                System.out.println(value);;
+                //System.out.println(id);
+                //System.out.println(value);;
 
                 switch(id)
                 {

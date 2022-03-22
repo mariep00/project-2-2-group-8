@@ -15,7 +15,7 @@ public class Controller {
     protected Agent[] agentsGuards;
     private Agent[] agentsIntruders;
     private double timestep;
-    private double time;
+    public double time;
     protected ArrayList<Vector2D>[] visions;
     protected LinkedList<Tile> tilesWithMarker;
 
@@ -233,7 +233,6 @@ public class Controller {
         int minutes = ((int)time % 3600) / 60;
         double seconds = time % 60;
         System.out.println("Everything is explored. It took " + hours + " hour(s) " + minutes + " minutes " + seconds + " seconds.");
-        System.out.println(agentsGuards[0].toString());
     }
 
     protected void spawnAgents() {

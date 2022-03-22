@@ -1,11 +1,11 @@
 package controller.agent;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-
 import controller.Vector2D;
 import controller.maps.graph.ExplorationGraph;
 import controller.maps.graph.Node;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class AStar {
 
@@ -17,6 +17,7 @@ public class AStar {
     private Vector2D goal;
     private ANode start;
     private ANode goalANode;
+    private final boolean DEBUG = true;
 
     public AStar (ExplorationGraph graph, Node startNode, Node goalNode) {
         open = new ArrayList<>();
@@ -33,13 +34,14 @@ public class AStar {
     public LinkedList<Vector2D> calculate() {
         while(true) {
             ANode current = getNextFromOpen();
-            open.remove(current);
-            closed.add(current);
-
+            if (current == null) return null;
             if(current.POSITION.equals(goal)) {
                 goalANode = current;
                 break;
             }
+
+            open.remove(current);
+            closed.add(current);
 
             ArrayList<ANode> neighbours = getNeighbours(current);
 
