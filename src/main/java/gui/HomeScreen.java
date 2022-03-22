@@ -174,7 +174,7 @@ public class HomeScreen extends Application implements TransitionInterface {
                 stage.setResizable(true);
                 transitions.remove(parallelTransitionButtons);
                 vbox.setDisable(false);
-                System.out.println(logo.getTranslateX() + ", " + logo.getTranslateY());
+                //System.out.println(logo.getTranslateX() + ", " + logo.getTranslateY());
             });
         });
     }

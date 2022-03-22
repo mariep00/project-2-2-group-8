@@ -19,6 +19,8 @@ public class Controller {
     protected ArrayList<Vector2D>[] visions;
     protected LinkedList<Tile> tilesWithMarker;
 
+    private boolean finished = false;
+
     public Controller(ScenarioMap scMap) {
         this.scMap = scMap;
         this.agentSpawnLocations = new Vector2D[scMap.getNumGuards()];
@@ -53,11 +55,18 @@ public class Controller {
 
     public void tick() {
         tick(timestep);
+        time += timestep;
     }
     public void tick(double timestep) {
         for (int i=0; i<agentsGuards.length; i++) {
             ArrayList<Tile> tiles = getTilesInVision(visions[i], i);
-            if (updateProgress(visions[i], i)) { break; }
+            if (updateProgress(visions[i], i)) {    
+                if(!finished) {
+                    end();
+                    finished = true;
+                } 
+                break; 
+            }
             List<PheromoneMarker> pheromoneMarkersCloseEnough = getPheromoneMarkersCloseEnough(i);
             double[] pheromoneMarkerDirections = getPheromoneMarkersDirections(agentPositions[i], pheromoneMarkersCloseEnough);
             int task = agentsGuards[i].tick(tiles, convertRelativeCurrentPosToRelativeToSpawn(visions[i], i), pheromoneMarkersCloseEnough, pheromoneMarkerDirections, timestep);
