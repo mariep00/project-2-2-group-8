@@ -9,12 +9,12 @@ import java.io.File;
 
 public class Launcher {
 
-    public static final int ITERATIONS = 10;
+    /**
+     * Launcher without GUI
+     * @param args
+     */
     public static void main(String[] args) {
-        String base = Launcher.class.getResource("/maps/").toString();
-        String mapName = "testmap.txt";
-        //String path = base+mapName;
-        String path = "/Users/Yannick/Documents/DKE_UM/Year_2/Project_2-2/code/src/main/resources/maps/examinermap_phase1.txt";
+        String path = ""; // Put the path to your map file here
         Controller controller = new Controller(new MapBuilder(new File(path)).getMap());
         controller.init();
         controller.start();
