@@ -219,6 +219,7 @@ public class ExplorationGraph {
         LinkedList<Node> nodes = frontiers.getAllNodes();
         if(nodes.isEmpty()) System.out.println("3. Nodes is empty -> mistake in get allNodes");
         SortObject<Node>[] sortObjects = new SortObject[nodes.size()];
+        System.out.println(nodes.size());
         for (int i = 0; i < nodes.size(); i++) {
             sortObjects[i] = new SortObject<Node>(nodes.get(i), nodes.get(i).COORDINATES.dist(currentPosition.COORDINATES));
         }

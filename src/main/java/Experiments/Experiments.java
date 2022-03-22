@@ -7,10 +7,10 @@ import java.io.File;
 
 public class Experiments {
 
-    public static final int ITERATIONS = 1000;
+    public static final int ITERATIONS = 1;
     private static int gameCounter =0;
 
-    private String path = "/Users/Yannick/Documents/DKE_UM/Year_2/Project_2-2/code/src/main/resources/maps/testmap.txt";
+    private String path = "/Users/Johan/Documents/GitHub/project-2-2-group-8/src/main/resources/maps/testmap.txt";
     public static Controller controller;
     private static final boolean DEBUG = true;
 
