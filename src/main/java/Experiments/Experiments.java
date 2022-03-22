@@ -10,7 +10,7 @@ import java.io.PrintWriter;
 
 public class Experiments {
 
-    public static final int ITERATIONS = 5;
+    public static final int ITERATIONS = 1000;
     private static int gameCounter =0;
     private static double totalTime =0;
     private static PrintWriter out;
@@ -20,9 +20,9 @@ public class Experiments {
     private static final boolean DEBUG = true;
     private static final boolean saveResults = true;
 
-    private static String path1 = "/Users/joaquin/project-2-2-group-8/src/main/resources/maps/testmap.txt";
-    private static String path2 = "/Users/joaquin/project-2-2-group-8/src/main/resources/maps/testmap.txt";
-    private static String path3 = "/Users/joaquin/project-2-2-group-8/src/main/resources/maps/testmap.txt";
+    private static String path1 = "/Users/Johan/Documents/GitHub/project-2-2-group-8/src/main/resources/maps/testmap.txt";
+    private static String path2 = "/Users/Johan/Documents/GitHub/project-2-2-group-8/src/main/resources/maps/testmap.txt";
+    private static String path3 = "/Users/Johan/Documents/GitHub/project-2-2-group-8/src/main/resources/maps/testmap.txt";
 
 
     private static int currentBrain = 1;
@@ -115,6 +115,7 @@ public class Experiments {
         }
         return null;
     }
+    
 
+    }
 
-}

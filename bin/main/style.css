@@ -8,30 +8,35 @@
 }
 
 .root {
-    -fx-background-color: #c3e0ff;
+    -fx-background-color: #d3e1ee;
     -fx-font-family: 'Lato';
 }
 .button {
-    -fx-background-color: #99d0ff;
+    -fx-background-color: #d8dcc9;
     -fx-text-fill: #000000;
     -fx-background-radius: 7px;
-    -fx-font-weight: bold;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 3,0,2,3);
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 3,0,2,3);
 }
 .button:disabled {
-    -fx-background-color: #99d0ff;
+    -fx-background-color: #d8dcc9;
     -fx-text-fill: #000000;
     -fx-background-radius: 7px;
     -fx-opacity: 1;
 }
 .button:hover {
-    -fx-background-color: #6cbdff;
+    -fx-background-color: #c0c7b0;
     -fx-text-fill: #ffffff;
     -fx-scale-x: 1.035;
     -fx-scale-y: 1.035
 }
 .button:pressed {
-    -fx-text-fill: #5db5ff;
+    -fx-text-fill: #b6bda7;
+}
+#play_button_clicked {
+    -fx-background-color: #79a3bd;
+    -fx-text-fill: #FFF8EC;
+    -fx-background-radius: 7px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 3,0,2,3);
 }
 #pause_menu {
     -fx-background-color: rgba(0, 0, 0, 0.175);
@@ -43,10 +48,19 @@
     -fx-font_size: 21;
 }
 #dialog_ok_button {
-    -fx-background-color: #7171be;
+    -fx-background-color: #5a86f3;
     -fx-text-fill: white;
 }
 #dialog_ok_button:hover {
-    -fx-background-color: #6363d9;
+    -fx-background-color: #4c72d0;
     -fx-text-fill: white;
+}
+.progress-bar {
+    -fx-accent: #5a86f3;
+}
+.progress-bar .bar {
+    -fx-background-radius: 7px;
+}
+.progress-bar .track {
+    -fx-background-radius: 7px;
 }

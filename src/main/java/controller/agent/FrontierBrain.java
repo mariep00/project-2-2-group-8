@@ -28,15 +28,20 @@ public class FrontierBrain implements BrainInterface {
         this.graph = graph;
         int frontierIndexToGoTo = 0;
         if (future_moves.isEmpty() /* && location == goalNode*/){
-            //System.out.println("1. future moves is empty");
+            System.out.println("1. future moves is empty");
             updateGoal(frontierIndexToGoTo);
-            //System.out.println("Goal is set " + goalNode.toString());
-            if (goalNode == lastNode) { whenStuck(); }
+            System.out.println("Goal is set " + goalNode.toString());
+            
             boolean foundReachableNode = false;
             while (!foundReachableNode) {
+                if (goalNode == lastNode) { 
+                    whenStuck(); 
+                    break;
+                }
                 foundReachableNode = moveTo();
                 if (!foundReachableNode) {
                     frontierIndexToGoTo++;
+                    if (goalNode == lastNode) { whenStuck(); }
                     updateGoal(frontierIndexToGoTo);
                 }
             }
@@ -57,6 +62,7 @@ public class FrontierBrain implements BrainInterface {
     public void whenStuck(){
         if (goalNode == lastNode){
             future_moves.push(1);
+            future_moves.push(0);
             future_moves.push(0);
             future_moves.push(3);
         }
