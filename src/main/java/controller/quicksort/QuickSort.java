@@ -1,4 +1,4 @@
-package controller;
+package controller.quicksort;
 
 public class QuickSort<V> {
     private int partition (SortObject<V> a[], int start, int end) {
@@ -33,14 +33,5 @@ public class QuickSort<V> {
             sort(a, p + 1, end);
         }
         return a;
-    }
-}
-
-class SortObject<V> {
-    public final V object;
-    public final int sortParameter;
-    public SortObject(V object, int sortParameter) {
-        this.object = object;
-        this.sortParameter = sortParameter;
     }
 }

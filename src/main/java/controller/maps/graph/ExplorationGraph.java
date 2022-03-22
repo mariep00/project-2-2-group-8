@@ -4,6 +4,8 @@ import controller.Vector2D;
 import controller.maps.HashMap;
 import controller.maps.Tile;
 import controller.maps.Tile.Type;
+import controller.quicksort.QuickSort;
+import controller.quicksort.SortObject;
 
 import java.util.LinkedList;
 import java.util.Random;
@@ -215,9 +217,17 @@ public class ExplorationGraph {
         //System.out.println("2. getnextfrontier is called, frontiers length: " + frontiers.getNumberOfNodes());
         LinkedList<Node> nodes = frontiers.getAllNodes();
         if(nodes.isEmpty()) System.out.println("3. Nodes is empty -> mistake in get allNodes");
+        SortObject<Node>[] sortObjects = new SortObject[nodes.size()];
+        for (int i = 0; i < nodes.size(); i++) {
+            sortObjects[i] = new SortObject<Node>(Node, nodes.get(i).COORDINATES.dist(currentPosition.COORDINATES));
+        }
+
+        QuickSort<Node> quickSort = new QuickSort<>();
+        quickSort.
+
         //System.out.println(nodes.size() + " " + nodes.toString());
-        Node tempnode = null;
-        double closest_dist = Double.MAX_VALUE;
+        //Node tempnode = null;
+        /*double closest_dist = Double.MAX_VALUE;
         for (int i = 0; i < nodes.size(); i++) {
             Vector2D vector = nodes.get(i).COORDINATES;
             double dist = vector.dist(currentPosition.COORDINATES);
@@ -231,6 +241,7 @@ public class ExplorationGraph {
                 }
             }
         }
+         */
         return tempnode;
     }
 
