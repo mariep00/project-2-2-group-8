@@ -1,8 +1,7 @@
-package Experiments;
+package experiments;
 
 import controller.Controller;
 import controller.MapBuilder;
-import launchers.Launcher;
 
 import java.io.File;
 import java.io.FileNotFoundException;
