@@ -1,7 +1,7 @@
-package controller.maps;
+package gamelogic.maps;
 
-import controller.Vector2D;
-import controller.agent.Agent;
+import gamelogic.Vector2D;
+import gamelogic.agent.Agent;
 
 public class PheromoneMarker implements MarkerInterface {
     public static final double strengthReducePerSecond = 1;

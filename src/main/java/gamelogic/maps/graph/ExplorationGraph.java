@@ -1,11 +1,11 @@
-package controller.maps.graph;
+package gamelogic.maps.graph;
 
-import controller.Vector2D;
-import controller.maps.HashMap;
-import controller.maps.Tile;
-import controller.maps.Tile.Type;
-import controller.quicksort.QuickSort;
-import controller.quicksort.SortObject;
+import gamelogic.Vector2D;
+import gamelogic.maps.HashMap;
+import gamelogic.maps.Tile;
+import gamelogic.maps.Tile.Type;
+import gamelogic.quicksort.QuickSort;
+import gamelogic.quicksort.SortObject;
 
 import java.util.LinkedList;
 import java.util.Random;

@@ -1,6 +1,6 @@
 package gui.mapcreator;
 
-import controller.maps.ScenarioMap;
+import gamelogic.maps.ScenarioMap;
 import gui.MainGUI;
 import gui.TransitionInterface;
 import gui.gamescreen.GameScreen;
@@ -169,10 +169,10 @@ public class MapCreator extends Application implements TransitionInterface {
             scenarioMap.createMap(nrOfTilesWidth, nrOfTilesHeight, 1);
             for (int x = 0; x < tiles.length; x++) {
                 for (int y = 0; y < tiles[x].length; y++) {
-                    if (tiles[x][y].isWall()) scenarioMap.insertElement(x, y, controller.maps.Tile.Type.WALL);
+                    if (tiles[x][y].isWall()) scenarioMap.insertElement(x, y, gamelogic.maps.Tile.Type.WALL);
                     else if (tiles[x][y].isSpawnAreaGuards()) scenarioMap.insertSpawnAreaGuard(x, y);
                     else if (tiles[x][y].isSpawnAreaIntruders()) scenarioMap.insertSpawnAreaIntruder(x, y);
-                    else if (tiles[x][y].isTargetArea()) scenarioMap.insertElement(x, y, controller.maps.Tile.Type.TARGET_AREA);
+                    else if (tiles[x][y].isTargetArea()) scenarioMap.insertElement(x, y, gamelogic.maps.Tile.Type.TARGET_AREA);
 
                     if (tiles[x][y].isShaded()) scenarioMap.setShaded(x, y);
                 }

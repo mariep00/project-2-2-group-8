@@ -1,6 +1,6 @@
 package gui;
 
-import controller.MapBuilder;
+import gamelogic.MapBuilder;
 import gui.gamescreen.GameScreen;
 import gui.mapcreator.MapCreator;
 import javafx.animation.Transition;

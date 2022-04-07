@@ -1,7 +1,7 @@
 package experiments;
 
-import controller.Controller;
-import controller.MapBuilder;
+import gamelogic.controller.Controller;
+import gamelogic.MapBuilder;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -36,7 +36,7 @@ public class Experiments {
     public Experiments(String path){
         controller = new Controller(new MapBuilder(new File(path)).getMap());
         controller.init();
-        controller.start();
+        controller.engine();
     }
 
     public static void main(String[] args) {

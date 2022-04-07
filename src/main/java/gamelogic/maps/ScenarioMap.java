@@ -1,7 +1,7 @@
-package controller.maps;
+package gamelogic.maps;
 
-import controller.Vector2D;
-import controller.maps.Tile.Type;
+import gamelogic.Vector2D;
+import gamelogic.maps.Tile.Type;
 
 import java.util.ArrayList;
 

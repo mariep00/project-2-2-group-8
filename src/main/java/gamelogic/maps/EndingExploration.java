@@ -1,17 +1,17 @@
-package controller.maps;
+package gamelogic.maps;
 
-import controller.Vector2D;
+import gamelogic.Vector2D;
 
 import java.util.ArrayList;
 
-public class EndingExplorationMap {
+public class EndingExploration {
     private int width;
     private int height;
     private int[][] explorationMap;
     private int totalTilesToExplore;
     private int currentTilesExplored = 0;
 
-    public EndingExplorationMap(ScenarioMap map){
+    public EndingExploration(ScenarioMap map){
         this.height = map.getHeight();
         this.width = map.getWidth();
         this.explorationMap = new int[this.height][this.width];

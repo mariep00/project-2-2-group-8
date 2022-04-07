@@ -1,7 +1,7 @@
 package launchers;
 
-import controller.Controller;
-import controller.MapBuilder;
+import gamelogic.controller.Controller;
+import gamelogic.MapBuilder;
 
 import java.io.File;
 
@@ -16,6 +16,6 @@ public class Launcher {
         String path = ""; // Put the path to your map file here
         Controller controller = new Controller(new MapBuilder(new File(path)).getMap());
         controller.init();
-        controller.start();
+        controller.engine();
     }
 }

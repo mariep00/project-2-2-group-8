@@ -1,4 +1,4 @@
-package controller.quicksort;
+package gamelogic.quicksort;
 
 public class SortObject<V> {
     public final V object;

@@ -1,9 +1,8 @@
-package controller.maps.graph;
+package gamelogic.maps.graph;
 
-import controller.Vector2D;
-import controller.maps.TeleportExit;
-import controller.maps.Tile;
-import controller.maps.Tile.Type;
+import gamelogic.Vector2D;
+import gamelogic.maps.TeleportExit;
+import gamelogic.maps.Tile;
 
 public class Node {
 

@@ -1,4 +1,4 @@
-package controller.maps;
+package gamelogic.maps;
 
 public class SpecialFeature {
     

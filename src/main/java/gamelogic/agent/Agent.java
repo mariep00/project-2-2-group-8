@@ -1,11 +1,11 @@
-package controller.agent;
+package gamelogic.agent;
 
-import controller.Vector2D;
-import controller.maps.PheromoneMarker;
-import controller.maps.Tile;
-import controller.maps.Tile.Type;
-import controller.maps.graph.ExplorationGraph;
-import controller.maps.graph.Node;
+import gamelogic.Vector2D;
+import gamelogic.maps.PheromoneMarker;
+import gamelogic.maps.Tile;
+import gamelogic.maps.Tile.Type;
+import gamelogic.maps.graph.ExplorationGraph;
+import gamelogic.maps.graph.Node;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,6 +1,6 @@
-package controller;
+package gamelogic;
 
-import controller.maps.VisionMap;
+import gamelogic.maps.VisionMap;
 
 import java.util.ArrayList;
 

@@ -1,7 +1,7 @@
 package gui.gamescreen;
 
-import controller.Vector2D;
-import controller.maps.ScenarioMap;
+import gamelogic.Vector2D;
+import gamelogic.maps.ScenarioMap;
 import gui.MainGUI;
 import gui.TransitionInterface;
 import javafx.animation.Transition;
@@ -54,15 +54,15 @@ public class GameScreen extends Application implements TransitionInterface {
         showVision = new boolean[scenarioMap.getNumGuards()];
         visions = (ArrayList<Vector2D>[]) new ArrayList[scenarioMap.getNumGuards()];
         tiles = new Tile[scenarioMap.getWidth()][scenarioMap.getHeight()];
-        controller.maps.Tile[][] tilesController = scenarioMap.getMapGrid();
+        gamelogic.maps.Tile[][] tilesController = scenarioMap.getMapGrid();
         for (int x = 0; x < scenarioMap.getWidth(); x++) {
             for (int y = 0; y < scenarioMap.getHeight(); y++) {
                 Tile tile;
-                if (tilesController[y][x].getType() == controller.maps.Tile.Type.WALL) {
+                if (tilesController[y][x].getType() == gamelogic.maps.Tile.Type.WALL) {
                     // It's a wall. Create a tile with the right wall image
                     tile = new Tile(new TileImage(imageContainer.getWall(getBitSetSurroundingWalls(tilesController, x, y))));
                 }
-                else if (tilesController[y][x].getType() == controller.maps.Tile.Type.TELEPORT_ENTRANCE) {
+                else if (tilesController[y][x].getType() == gamelogic.maps.Tile.Type.TELEPORT_ENTRANCE) {
                     // For now a floor, change to teleport image later
                     tile = new Tile(new TileImage(imageContainer.getTeleport()));
                 }
@@ -74,7 +74,7 @@ public class GameScreen extends Application implements TransitionInterface {
                 if (tilesController[y][x].isShaded()) {
                     tile.setShaded(imageContainer.getShaded());
                 }
-                if (tilesController[y][x].getType() == controller.maps.Tile.Type.TARGET_AREA) {
+                if (tilesController[y][x].getType() == gamelogic.maps.Tile.Type.TARGET_AREA) {
                     tile.setTargetArea(imageContainer.getTargetArea());
                 }
 
@@ -203,14 +203,14 @@ public class GameScreen extends Application implements TransitionInterface {
         });
     }
 
-    private BitSet getBitSetSurroundingWalls(controller.maps.Tile[][] tiles, int x, int y) {
+    private BitSet getBitSetSurroundingWalls(gamelogic.maps.Tile[][] tiles, int x, int y) {
         BitSet bitSet = new BitSet(8);
         byte count = 0;
         for (int i = -1; i <= 1; i++) {
             for (int j = -1; j <= 1; j++) {
                 if (i != 0 || j != 0) {
                     if (y + i >= 0 && x + j >= 0 && y + i < tiles.length && x + j < tiles[y].length) {
-                        if (tiles[y + i][x + j].getType() == controller.maps.Tile.Type.WALL) {
+                        if (tiles[y + i][x + j].getType() == gamelogic.maps.Tile.Type.WALL) {
                             bitSet.set(count);
                         }
                     }

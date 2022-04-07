@@ -1,6 +1,6 @@
-package controller.maps;
+package gamelogic.maps;
 
-import controller.Vector2D;
+import gamelogic.Vector2D;
 
 import java.util.ArrayList;
 

@@ -1,6 +1,6 @@
-package controller.agent;
+package gamelogic.agent;
 
-import controller.maps.graph.ExplorationGraph;
+import gamelogic.maps.graph.ExplorationGraph;
 
 public interface BrainInterface {
     

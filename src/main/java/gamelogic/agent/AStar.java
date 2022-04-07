@@ -1,8 +1,8 @@
-package controller.agent;
+package gamelogic.agent;
 
-import controller.Vector2D;
-import controller.maps.graph.ExplorationGraph;
-import controller.maps.graph.Node;
+import gamelogic.Vector2D;
+import gamelogic.maps.graph.ExplorationGraph;
+import gamelogic.maps.graph.Node;
 
 import java.util.ArrayList;
 import java.util.LinkedList;

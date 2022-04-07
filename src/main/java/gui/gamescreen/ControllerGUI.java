@@ -1,9 +1,9 @@
 package gui.gamescreen;
 
-import controller.Controller;
-import controller.Vector2D;
-import controller.agent.Agent;
-import controller.maps.ScenarioMap;
+import gamelogic.controller.Controller;
+import gamelogic.Vector2D;
+import gamelogic.agent.Agent;
+import gamelogic.maps.ScenarioMap;
 import javafx.application.Platform;
 
 import java.util.List;

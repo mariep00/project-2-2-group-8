@@ -1,4 +1,4 @@
-package controller;
+package gamelogic;
 
 public class Vector2D {
     

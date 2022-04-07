@@ -1,7 +1,7 @@
-package controller.maps;
+package gamelogic.maps;
 
-import controller.Vector2D;
-import controller.maps.graph.Node;
+import gamelogic.Vector2D;
+import gamelogic.maps.graph.Node;
 
 import java.util.LinkedList;
 import java.util.List;
