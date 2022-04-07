@@ -32,8 +32,7 @@ public class FrontierBrain implements BrainInterface {
             boolean foundReachableNode = false;
             while (!foundReachableNode) {
                 if (goalNode == lastNode) { 
-                    whenStuck(); 
-                    break;
+                    whenStuck();
                 }
                 foundReachableNode = moveTo();
                 if (!foundReachableNode) {
