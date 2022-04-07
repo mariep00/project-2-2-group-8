@@ -22,6 +22,10 @@ public final class ImageContainer {
     private final Image[] guardEast;
     private final Image[] guardSouth;
     private final Image[] guardWest;
+    private final Image intruderNorth;
+    private final Image intruderEast;
+    private final Image intruderSouth;
+    private final Image intruderWest;
 
     private final Image step;
     private final Image play;
@@ -64,6 +68,11 @@ public final class ImageContainer {
         for (int i = 0; i < guardWest.length; i++) {
             guardWest[i] = new Image(this.getClass().getResource("/tiles/character/guard/west/guard_west_"+(i+1)+".png").toString());
         }
+
+        intruderNorth = new Image(this.getClass().getResource("/tiles/character/intruder/intruder_north_1.png").toString());
+        intruderEast = new Image(this.getClass().getResource("/tiles/character/intruder/intruder_east_1.png").toString());
+        intruderSouth = new Image(this.getClass().getResource("/tiles/character/intruder/intruder_south_1.png").toString());
+        intruderWest = new Image(this.getClass().getResource("/tiles/character/intruder/intruder_west_1.png").toString());
 
         step = new Image(this.getClass().getResource("/ui/step.png").toString());
         play = new Image(this.getClass().getResource("/ui/play.png").toString());
@@ -168,6 +177,11 @@ public final class ImageContainer {
     public Image getWallTopCornerLeft() { return wallImages[6]; }
     public Image getWallTopCornerRight() { return wallImages[7]; }
     public Image getWallTopCornered() { return wallImages[8]; }
+
+    public Image getIntruderNorth() { return intruderNorth; }
+    public Image getIntruderEast() { return intruderEast; }
+    public Image getIntruderSouth() { return intruderSouth; }
+    public Image getIntruderWest() { return intruderWest; }
 
     public Image getStep() { return step; }
     public Image getPlay() { return play; }
