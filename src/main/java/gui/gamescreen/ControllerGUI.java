@@ -68,7 +68,7 @@ public class ControllerGUI extends Controller {
     public void pauseThreads() { gamePaused.set(true); }
     public void continueThreads() { gamePaused.set(false); }
 
-
+/*
     @Override
     protected void spawnAgents() {
         super.spawnAgents();
@@ -117,18 +117,19 @@ public class ControllerGUI extends Controller {
         updateProgress(positionsInVision, agentIndex);
     }
 
-    public Agent getAgent(int index) { return agentsGuards[index]; }
+ */
 
+    public Agent getAgent(int index) { return agents[index]; }
     private void updateAgentVision(int agentIndex, List<Vector2D> positionsInVision) {
         List<Vector2D> absPos = convertRelativeCurrentPosToAbsolute(positionsInVision, agentIndex);
         guiTasksQueue.add(() -> Platform.runLater(() -> GAME_SCREEN.updateVision(executeNextGuiTask, agentIndex, absPos)));
     }
 
     public void hideVision(int agentIndex) {
-        guiTasksQueue.add(() -> Platform.runLater(() -> GAME_SCREEN.removeVision(executeNextGuiTask, agentIndex, convertRelativeCurrentPosToAbsolute(calculateFOV(agentIndex, agentPositions[agentIndex]), agentIndex))));
+        guiTasksQueue.add(() -> Platform.runLater(() -> GAME_SCREEN.removeVision(executeNextGuiTask, agentIndex, convertRelativeCurrentPosToAbsolute(calculateFOV(agentIndex, currentState.getAgentPosition(agentIndex)), agentIndex))));
     }
     public void showVision(int agentIndex) {
-        guiTasksQueue.add(() -> Platform.runLater(() -> GAME_SCREEN.showVision(executeNextGuiTask, convertRelativeCurrentPosToAbsolute(calculateFOV(agentIndex, agentPositions[agentIndex]), agentIndex))));
+        guiTasksQueue.add(() -> Platform.runLater(() -> GAME_SCREEN.showVision(executeNextGuiTask, convertRelativeCurrentPosToAbsolute(calculateFOV(agentIndex, currentState.getAgentPosition(agentIndex)), agentIndex))));
     }
 
     public AtomicBoolean getRunSimulation() { return runSimulation; }

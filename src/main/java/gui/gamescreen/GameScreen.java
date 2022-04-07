@@ -159,7 +159,6 @@ public class GameScreen extends Application implements TransitionInterface {
         stage.setScene(scene);
         loadSceneTransition(borderPane.getChildren());
 
-        controllerGUI.init();
         gridPane.setHgap(-1);
         gridPane.setVgap(-1);
 

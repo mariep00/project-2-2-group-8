@@ -16,7 +16,7 @@ public class RandomBrain implements BrainInterface {
 
         int r = (int)(Math.random()*(max-min+1)+min);
         if(r<=w0){
-            w0 = 60; //TODO adjust the weights
+            w0 = 60;
             w1 = 73;
             w2 = 86;
 

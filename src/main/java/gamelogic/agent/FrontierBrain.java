@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Stack;
 
+// Todo Should be converted to some "task/whatever" which can be executed by some agent; exploration, guard or intruder
 public class FrontierBrain implements BrainInterface {
     private Node goalNode;
     private Node lastNode;

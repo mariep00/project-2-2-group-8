@@ -1,14 +1,12 @@
 package gamelogic.agent;
 
 import gamelogic.Vector2D;
-import gamelogic.maps.PheromoneMarker;
 import gamelogic.maps.Tile;
 import gamelogic.maps.Tile.Type;
 import gamelogic.maps.graph.ExplorationGraph;
 import gamelogic.maps.graph.Node;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class Agent {
 
@@ -25,17 +23,17 @@ public class Agent {
     public final ExplorationGraph explorationGraph;
 
 
-    public Agent (double base_speed, double sprint_speed, double view_angle, double view_range, double orientation, int brainID) {
+    public Agent (double base_speed, double sprint_speed, double view_angle, double view_range, double orientation, BrainInterface brain) {
         this.base_speed = base_speed;
         this.sprint_speed = sprint_speed;
         this.view_angle = view_angle;
         this.view_range = view_range;
         this.orientation = orientation;
-        initBrain(brainID);
+        this.brain = brain;
         explorationGraph = new ExplorationGraph();
     }
 
-    public int tick(ArrayList<Tile> inVision, ArrayList<Vector2D> coordinates, List<PheromoneMarker> pheromoneMarkers, double[] pheromoneMarkerDirections, double timestep) {
+    public int tick(ArrayList<Tile> inVision, ArrayList<Vector2D> coordinates, double[] pheromoneMarkerDirections) {
         updateGraph(inVision, coordinates);
         return brain.makeDecision(explorationGraph, orientation);
     }
@@ -63,14 +61,6 @@ public class Agent {
         }
     }
 
-    private void initBrain(int brainID) {
-        switch (brainID) {
-            case 1: brain = new RandomBrain();
-                break;
-            case 2: brain = new FrontierBrain();
-                break;
-        }
-    }
     public void updatePosition(Vector2D pos) {
         explorationGraph.setCurrentPosition(pos);
     }
@@ -93,7 +83,7 @@ public class Agent {
     }
     public double getOrientation() { return orientation; }
     public double getBase_speed() { return base_speed; }
-    public void creatTeleportDestinationNode(Vector2D entrance, Vector2D destination, Tile entranceTile, Tile destinationTile) {
+    public void createTeleportDestinationNode(Vector2D entrance, Vector2D destination, Tile entranceTile, Tile destinationTile) {
         Node destinationNode = explorationGraph.getNode(destination);
         if (destinationNode == null) destinationNode = explorationGraph.createNode(destination, destinationTile);
 

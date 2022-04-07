@@ -2,6 +2,7 @@ package experiments;
 
 import gamelogic.controller.Controller;
 import gamelogic.MapBuilder;
+import gamelogic.controller.gamemodecontrollers.ControllerExploration;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -34,8 +35,7 @@ public class Experiments {
     // 1 random
     // 2 frontier
     public Experiments(String path){
-        controller = new Controller(new MapBuilder(new File(path)).getMap());
-        controller.init();
+        controller = new ControllerExploration(new MapBuilder(new File(path)).getMap());
         controller.engine();
     }
 

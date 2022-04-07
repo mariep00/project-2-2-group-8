@@ -1,6 +1,8 @@
-package gamelogic.maps;
+package gamelogic.controller.endingconditions;
 
 import gamelogic.Vector2D;
+import gamelogic.maps.ScenarioMap;
+import gamelogic.maps.Tile;
 
 import java.util.ArrayList;
 
@@ -35,7 +37,7 @@ public class EndingExploration {
         return totalTilesToExplore == currentTilesExplored;
     }
 
-    public boolean updateExplorationMap(Vector2D coordinate) {
+    public void updateExplorationMap(Vector2D coordinate) {
         if (coordinate.y<explorationMap.length && coordinate.x<explorationMap[0].length && coordinate.y>=0 && coordinate.x>=0) {
             if (explorationMap[coordinate.y][coordinate.x] != 2) {
                 if (explorationMap[coordinate.y][coordinate.x] == 0) {
@@ -44,7 +46,6 @@ public class EndingExploration {
                 }
             }
         }
-        return totalTilesToExplore==currentTilesExplored;
     }
     public void updateExplorationMap(ArrayList<Vector2D> coordinates) {
         for (Vector2D coordinate : coordinates) {
