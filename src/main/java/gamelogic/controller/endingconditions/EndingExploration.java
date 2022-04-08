@@ -6,7 +6,7 @@ import gamelogic.maps.Tile;
 
 import java.util.ArrayList;
 
-public class EndingExploration {
+public class EndingExploration implements EndingConditionInterface {
     private int width;
     private int height;
     private int[][] explorationMap;
@@ -32,8 +32,9 @@ public class EndingExploration {
         }
     }
 
-    public boolean isExplored() {
-        //System.out.println(currentTilesExplored + " / " + totalTilesToExplore);
+    @Override
+    public boolean gameFinished() {
+        System.out.println(currentTilesExplored + " / " + totalTilesToExplore);
         return totalTilesToExplore == currentTilesExplored;
     }
 

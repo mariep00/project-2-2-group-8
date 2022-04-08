@@ -17,11 +17,8 @@ public class Agent {
     private double view_range;
 
     private BrainInterface brain;
-    private BrainInterface frontierBrain;
-
 
     public final ExplorationGraph explorationGraph;
-
 
     public Agent (double base_speed, double sprint_speed, double view_angle, double view_range, double orientation, BrainInterface brain) {
         this.base_speed = base_speed;
@@ -35,7 +32,8 @@ public class Agent {
 
     public int tick(ArrayList<Tile> inVision, ArrayList<Vector2D> coordinates, double[] pheromoneMarkerDirections) {
         updateGraph(inVision, coordinates);
-        return brain.makeDecision(explorationGraph, orientation);
+        //return brain.makeDecision(explorationGraph, orientation);
+        return new RandomBrain().makeDecision(explorationGraph, orientation); // TODO Just to test if code works, remove when brains and their tasks are properly implemented
     }
 
     private void updateGraph(ArrayList<Tile> inVision, ArrayList<Vector2D> coordinates) {

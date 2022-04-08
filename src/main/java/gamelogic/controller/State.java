@@ -23,7 +23,7 @@ public class State {
     public void setAgentPosition(int agentIndex, Vector2D position) { agentPositions[agentIndex] = position; }
     public void setAgentVision(int agentIndex, ArrayList<Vector2D> vision) { visions[agentIndex] = vision; }
 
-    // *** Actual Tile objects, and the EndingExploration object are not being copied! *** Might have to change this later
+    // *** Actual Tile objects are not being copied! *** Might have to change this later
     public State copyOf() { return new State(agentPositions, visions.clone(), (LinkedList<Tile>) tilesWithMarker.clone()); }
 
     public Vector2D[] getAgentPositions() { return agentPositions; }

@@ -4,11 +4,21 @@ import gamelogic.Vector2D;
 import gamelogic.agent.Agent;
 import gamelogic.agent.brains.ExplorationBrain;
 import gamelogic.controller.Controller;
+import gamelogic.controller.endingconditions.EndingExploration;
 import gamelogic.maps.ScenarioMap;
 
 public class ControllerExploration extends Controller {
-    public ControllerExploration(ScenarioMap scenarioMap) {
-        super(scenarioMap);
+    private final EndingExploration endingExploration;
+
+    public ControllerExploration(ScenarioMap scenarioMap, EndingExploration endingCondition) {
+        super(scenarioMap, endingCondition);
+        this.endingExploration = endingCondition;
+    }
+
+    @Override
+    public void init() {
+        super.init();
+        updateProgress();
     }
 
     @Override

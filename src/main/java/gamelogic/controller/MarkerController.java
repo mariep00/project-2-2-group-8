@@ -1,6 +1,7 @@
 package gamelogic.controller;
 
 import gamelogic.Vector2D;
+import gamelogic.agent.Agent;
 import gamelogic.maps.MarkerInterface;
 import gamelogic.maps.PheromoneMarker;
 import gamelogic.maps.Tile;
@@ -20,8 +21,12 @@ public class MarkerController {
 
     public LinkedList<Tile> init(Vector2D[] startingAgentPositions) {
         LinkedList<Tile> tilesWithMarker = new LinkedList<>();
-        for (Vector2D pos : startingAgentPositions) {
+        for (int i = 0; i < controller.numberOfGuards+controller.numberOfIntruders; i++) {
+            Vector2D pos = startingAgentPositions[i];
+            Agent agent = controller.getAgent(i);
+
             tilesWithMarker.add(controller.scenarioMap.getTile(pos));
+            controller.scenarioMap.getTile(pos).addMarker(new PheromoneMarker(agent, pos, controller.scenarioMap.getSmellingDistance()));
         }
         return tilesWithMarker;
     }

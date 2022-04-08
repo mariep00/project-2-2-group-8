@@ -5,13 +5,17 @@ import gamelogic.agent.Agent;
 import gamelogic.agent.brains.GuardBrain;
 import gamelogic.agent.brains.IntruderBrain;
 import gamelogic.controller.Controller;
+import gamelogic.controller.endingconditions.EndingSurveillance;
 import gamelogic.maps.ScenarioMap;
 
 import java.util.ArrayList;
 
 public class ControllerSurveillance extends Controller {
-    public ControllerSurveillance(ScenarioMap scenarioMap) {
-        super(scenarioMap);
+    private final EndingSurveillance endingSurveillance;
+
+    public ControllerSurveillance(ScenarioMap scenarioMap, EndingSurveillance endingCondition) {
+        super(scenarioMap, endingCondition);
+        this.endingSurveillance = endingCondition;
     }
 
     @Override

@@ -3,7 +3,7 @@ package gamelogic.controller;
 import gamelogic.FOV;
 import gamelogic.Vector2D;
 import gamelogic.agent.Agent;
-import gamelogic.controller.endingconditions.EndingExploration;
+import gamelogic.controller.endingconditions.EndingConditionInterface;
 import gamelogic.maps.ScenarioMap;
 import gamelogic.maps.Tile;
 
@@ -11,14 +11,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-// Abstract because you should not create a Controller class, but either a ControllerExploration or ControllerSurveillance class
+// Abstract because you should not instantiate a Controller class, but either a ControllerExploration or ControllerSurveillance class
 public abstract class Controller {
     protected final Random rand = new Random();
 
     public final MovementController movementController;
     public final MarkerController markerController;
     protected final ScenarioMap scenarioMap;
-    protected final EndingExploration endingExploration;
+    private final EndingConditionInterface endingCondition;
     protected final int numberOfGuards;
     protected final int numberOfIntruders;
     protected final Agent[] agents;
@@ -31,7 +31,7 @@ public abstract class Controller {
     protected double timestep;
     public double time;
 
-    public Controller(ScenarioMap scenarioMap) {
+    public Controller(ScenarioMap scenarioMap, EndingConditionInterface endingCondition) {
         this.scenarioMap = scenarioMap;
         this.numberOfGuards = scenarioMap.getNumGuards();
         this.numberOfIntruders = scenarioMap.getNumIntruders();
@@ -41,27 +41,26 @@ public abstract class Controller {
         this.timestep = scenarioMap.getTimestep();
         this.movementController = new MovementController(this);
         this.markerController = new MarkerController(this);
-        this.endingExploration = new EndingExploration(scenarioMap);
-
-        init();
+        this.endingCondition = endingCondition;
     }
 
-    private void init() {
+    public void init() {
         initializeAgents();
 
         Vector2D[] initialPositions = spawnAgents();
-        ArrayList<Vector2D>[] visions = new ArrayList[numberOfGuards+numberOfIntruders];
+        currentState = new State(initialPositions, null, null);
+
+        ArrayList<Vector2D>[] visions = new ArrayList[numberOfGuards + numberOfIntruders];
         for (int i = 0; i < visions.length; i++) {
-            visions[i] = calculateFOV(i, initialPositions[i]);
+            visions[i] = calculateFOVAbsolute(i, initialPositions[i]);
         }
 
         currentState = new State(initialPositions, visions, markerController.init(initialPositions));
         nextState = currentState.copyOf();
-        updateProgress(); // Set the beginning "progress"
     }
 
-    public void engine(){
-        while (!endingExploration.isExplored()) {
+    public void engine() {
+        while (!endingCondition.gameFinished()) {
             tick();
         }
         end();
@@ -69,33 +68,40 @@ public abstract class Controller {
 
     public void tick() {
         for (int i = 0; i < agents.length; i++) {
-            int movementTask = agents[i].tick(getTilesInVision(currentState.getVision(i), i),
-                    convertRelativeCurrentPosToRelativeToSpawn(currentState.getVision(i), i),
+            int movementTask = agents[i].tick(getTilesInVision(currentState.getVision(i)),
+                    convertAbsoluteToRelativeSpawn(currentState.getVision(i), i),
                     markerController.getPheromoneMarkersDirections(i, currentState.getAgentPosition(i)));
 
             movementController.moveAgent(i, movementTask);
-            nextState.setAgentVision(i, calculateFOV(i, currentState.getAgentPosition(i)));
+            nextState.setAgentVision(i, calculateFOVAbsolute(i, currentState.getAgentPosition(i)));
         }
         markerController.tick();
         updateProgress();
+        switchToNextState();
+    }
 
+    protected void switchToNextState() {
+        updateGui();
         currentState = nextState;
         nextState = currentState.copyOf();
         time += timestep;
     }
 
+    protected void updateGui() {}
     protected void initializeAgents() {}
     protected void updateProgress() {}
 
     protected ArrayList<Vector2D> calculateFOV(int agentIndex, Vector2D agentPosition) {
         return fov.calculate(agents[agentIndex].getView_angle(), agents[agentIndex].getView_range(), scenarioMap.createAreaMap(agentPosition, agents[agentIndex].getView_range()), agents[agentIndex].getOrientation()).getInVision();
     }
+    protected ArrayList<Vector2D> calculateFOVAbsolute(int agentIndex, Vector2D agentPosition) {
+        return convertRelativeCurrentPosToAbsolute(calculateFOV(agentIndex, agentPosition), agentIndex);
+    }
 
-    private ArrayList<Tile> getTilesInVision(ArrayList<Vector2D> positions, int agentIndex) {
+    private ArrayList<Tile> getTilesInVision(ArrayList<Vector2D> vision) {
         ArrayList<Tile> tiles = new ArrayList<>();
-        for (Vector2D vector2D : positions) {
-            Vector2D abs = convertRelativeCurrentPosToAbsolute(vector2D, agentIndex);
-            tiles.add(scenarioMap.getTile(abs));
+        for (Vector2D pos : vision) {
+            tiles.add(scenarioMap.getTile(pos));
         }
         return tiles;
     }
@@ -130,6 +136,8 @@ public abstract class Controller {
         return timestep;
     }
 
+    public Agent getAgent(int agentIndex) { return agents[agentIndex]; }
+
     public Vector2D convertRelativeSpawnToAbsolute(Vector2D relPos, int agentId) {
         return relPos.add(agentSpawnLocations[agentId]);
     }
@@ -143,6 +151,13 @@ public abstract class Controller {
 
     public Vector2D convertAbsoluteToRelativeSpawn(Vector2D absPos, int agentId) {
         return absPos.subtract(agentSpawnLocations[agentId]);
+    }
+    public ArrayList<Vector2D> convertAbsoluteToRelativeSpawn(List<Vector2D> absPos, int agentId) {
+        ArrayList<Vector2D> relPos = new ArrayList<>();
+        for (Vector2D vector2D : absPos) {
+            relPos.add(convertAbsoluteToRelativeSpawn(vector2D, agentId));
+        }
+        return relPos;
     }
 
     public Vector2D convertRelativeCurrentPosToAbsolute(Vector2D relPos, int agentId) {
@@ -166,4 +181,9 @@ public abstract class Controller {
         }
         return absPos;
     }
+
+    public int getNumberOfGuards() { return numberOfGuards; }
+    public int getNumberOfIntruders() { return numberOfIntruders; }
+    public State getCurrentState() { return currentState; }
+    public State getNextState() { return nextState; }
 }
