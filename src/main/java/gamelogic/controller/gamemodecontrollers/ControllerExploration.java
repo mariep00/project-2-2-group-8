@@ -34,7 +34,7 @@ public class ControllerExploration extends Controller {
     protected void updateProgress() {
         for (int i = 0; i < numberOfGuards+numberOfIntruders; i++) {
             for (Vector2D vector : nextState.getVision(i)) {
-                endingExploration.updateExplorationMap(convertRelativeCurrentPosToAbsolute(vector, i));
+                endingExploration.updateExplorationMap(vector);
             }
         }
     }

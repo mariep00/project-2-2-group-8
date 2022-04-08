@@ -1,6 +1,7 @@
 package gamelogic.agent;
 
 import gamelogic.Vector2D;
+import gamelogic.agent.brains.BrainInterface;
 import gamelogic.maps.Tile;
 import gamelogic.maps.Tile.Type;
 import gamelogic.maps.graph.ExplorationGraph;
@@ -32,8 +33,8 @@ public class Agent {
 
     public int tick(ArrayList<Tile> inVision, ArrayList<Vector2D> coordinates, double[] pheromoneMarkerDirections) {
         updateGraph(inVision, coordinates);
-        //return brain.makeDecision(explorationGraph, orientation);
-        return new RandomBrain().makeDecision(explorationGraph, orientation); // TODO Just to test if code works, remove when brains and their tasks are properly implemented
+        return brain.makeDecision(explorationGraph, orientation);
+        //return new RandomBrain().makeDecision(explorationGraph, orientation); // TODO Just to test if code works, remove when brains and their tasks are properly implemented
     }
 
     private void updateGraph(ArrayList<Tile> inVision, ArrayList<Vector2D> coordinates) {

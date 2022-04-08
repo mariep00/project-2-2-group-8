@@ -1,6 +1,8 @@
-package gamelogic.agent;
+package gamelogic.agent.tasks;
 
 import gamelogic.Vector2D;
+import gamelogic.agent.AStar;
+import gamelogic.agent.tasks.TaskContainer.TaskType;
 import gamelogic.maps.Tile;
 import gamelogic.maps.graph.ExplorationGraph;
 import gamelogic.maps.graph.Node;
@@ -9,42 +11,43 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Stack;
 
-// Todo Should be converted to some "task/whatever" which can be executed by some agent; exploration, guard or intruder
-public class FrontierBrain implements BrainInterface {
+public class ExplorationTaskFrontier implements TaskInterface {
     private Node goalNode;
     private Node lastNode;
-    private Stack<Integer> future_moves;
+    private Stack<Integer> futureMoves;
     private double orientation;
     private ExplorationGraph graph;
 
-    public FrontierBrain(){
-        future_moves = new Stack<>();
+    private TaskType type = TaskType.EXPLORATION;
+
+    public ExplorationTaskFrontier(){
+        
         goalNode = new Node(new Vector2D(-20000, -20000), new Tile());
     }
 
-    public int makeDecision(ExplorationGraph graph, double orientation){
+    public Stack<Integer> performTask(ExplorationGraph graph, double orientation){
+        futureMoves = new Stack<>();
         this.orientation = orientation;
         this.graph = graph;
         int frontierIndexToGoTo = 0;
-        if (future_moves.isEmpty()){
-            
-            updateGoal(frontierIndexToGoTo);
-            
-            boolean foundReachableNode = false;
-            while (!foundReachableNode) {
-                if (goalNode == lastNode) { 
-                    whenStuck();
-                }
-                foundReachableNode = moveTo();
-                if (!foundReachableNode) {
-                    frontierIndexToGoTo++;
-                    if (goalNode == lastNode) { whenStuck(); }
-                    updateGoal(frontierIndexToGoTo);
-                }
+        
+        updateGoal(frontierIndexToGoTo);
+        
+        boolean foundReachableNode = false;
+        while (!foundReachableNode) {
+            if (goalNode == lastNode) { 
+                whenStuck();
+            }
+            foundReachableNode = moveTo();
+            if (!foundReachableNode) {
+                frontierIndexToGoTo++;
+                if (goalNode == lastNode) { whenStuck(); }
+                updateGoal(frontierIndexToGoTo);
             }
         }
+        
 
-        return future_moves.pop();
+        return futureMoves;
     }
 
     public void updateGoal(int frontierIndexToGoTo) {
@@ -58,10 +61,10 @@ public class FrontierBrain implements BrainInterface {
 
     public void whenStuck(){
         if (goalNode == lastNode){
-            future_moves.push(1);
-            future_moves.push(0);
-            future_moves.push(0);
-            future_moves.push(3);
+            futureMoves.push(1);
+            futureMoves.push(0);
+            futureMoves.push(0);
+            futureMoves.push(3);
         }
         else { System.out.print("Crap");}
     }
@@ -168,7 +171,7 @@ public class FrontierBrain implements BrainInterface {
         temporaryStack.push(1);
         temporaryStack.push(1);
 
-        do{future_moves.push(temporaryStack.pop());}
+        do{futureMoves.push(temporaryStack.pop());}
         while(!temporaryStack.isEmpty());
 
         return true;
@@ -183,6 +186,11 @@ public class FrontierBrain implements BrainInterface {
 
         //Once we reach goal node, rotate 360
 
+    }
+
+    @Override
+    public TaskType getType() {
+        return type;
     }
 
 
