@@ -5,25 +5,8 @@ import gamelogic.maps.VisionMap;
 import java.util.ArrayList;
 
 public class FOV {
-    
-    private double visionAngle;
-    private double normalVisionRange;
-    private double currentVisionRange;
-    private double direction;
-    private Vector2D center;
 
-    private double range = 4.0; // How many rows of endpoints should be added. Higher number means slower code because of more rays but also better accuracy. Maybe make dependent on viewRange?
-    
-    private VisionMap visionMap;
-    private VisionMap areaMap;
-    private ArrayList<Vector2D> endpoints;
-
-    public FOV (double normalVisionRange) {
-        this.normalVisionRange = normalVisionRange;
-        visionMap = new VisionMap(normalVisionRange);
-        areaMap = new VisionMap(normalVisionRange);
-        endpoints = new ArrayList<>();
-    }
+    private static double range = 4.0; // How many rows of endpoints should be added. Higher number means slower code because of more rays but also better accuracy. Maybe make dependent on viewRange?
 
     /**
      * Calculates the visible tiles for an Agent
@@ -33,97 +16,102 @@ public class FOV {
      * @param direction direction of sight of the agent
      * @return Returns a VisionMap where all tiles that are visible to the agent are marked
      */
-    public VisionMap calculate (double visionAngle, double newVisionRange, VisionMap areaMap, double direction) {
-        this.visionAngle = visionAngle;
-        this.direction = direction;
-        this.areaMap = areaMap;
-        this.visionMap = new VisionMap(newVisionRange);
-        this.endpoints = new ArrayList<>();
+    public static VisionMap calculate (double visionAngle, double visionRange, VisionMap areaMap, double direction) {
+        VisionMap visionMap = new VisionMap(visionRange);
 
-        if(newVisionRange!=normalVisionRange) { currentVisionRange = newVisionRange;
-        } else { currentVisionRange = normalVisionRange;}
-
-        initiateViewingField();
-        rayTracing();
+        ArrayList<Vector2D> endpoints = initiateEndpoints(direction, visionAngle, visionRange, visionMap.getCenter());
+        visionMap = rayTracing(visionMap, endpoints, areaMap);
         return visionMap;
     }
 
     /**
      * Initiates the viewing field of the agent. 
      * Calculates the correct angles and endpoints given the range, direction and vision angle.
+     * @param center
+     * @param visionRange
+     * @param visionAngle
+     * @param direction
      */
-    private void initiateViewingField() {
+    private static ArrayList<Vector2D> initiateEndpoints(double direction, double visionAngle, double visionRange, Vector2D center) {
+        ArrayList<Vector2D> endpoints = new ArrayList<>();
         double[] angles = calculateAngles(direction, visionAngle);
         double[] angles2 = calculateAngles(direction, visionAngle/2);
-        this.center = visionMap.getCenter();
 
-        Vector2D p1 = calculatePoint(center, currentVisionRange, angles[0]);
-        Vector2D p2 = calculatePoint(center, currentVisionRange, angles2[0]);
-        Vector2D p3 = calculatePoint(center, currentVisionRange, direction);
-        Vector2D p4 = calculatePoint(center, currentVisionRange, angles2[1]);
-        Vector2D p5 = calculatePoint(center, currentVisionRange, angles[1]);
+        Vector2D p1 = calculatePoint(center, visionRange, angles[0]);
+        Vector2D p2 = calculatePoint(center, visionRange, angles2[0]);
+        Vector2D p3 = calculatePoint(center, visionRange, direction);
+        Vector2D p4 = calculatePoint(center, visionRange, angles2[1]);
+        Vector2D p5 = calculatePoint(center, visionRange, angles[1]);
      
         Vector2D[] line1 = calculateLine(p1, p2);
-        addToEndpoints(line1);
+        endpoints = addArrayToList(endpoints, line1);
         
         Vector2D[] line2 = calculateLine(p2, p3);
-        addToEndpoints(line2);
+        endpoints = addArrayToList(endpoints, line2);
         
         Vector2D[] line3 = calculateLine(p3, p4);
-        addToEndpoints(line3);
+        endpoints = addArrayToList(endpoints, line3);
         
         Vector2D[] line4 = calculateLine(p4, p5);
-        addToEndpoints(line4);
+        endpoints = addArrayToList(endpoints, line4);
         
-        if (currentVisionRange>range+1.0) {
-            Vector2D p6 = calculatePoint(center, currentVisionRange-range, angles[0]);
-            p2 = calculatePoint(center, currentVisionRange-range, angles2[0]);
-            p3 = calculatePoint(center, currentVisionRange-range, direction);
-            p4 = calculatePoint(center, currentVisionRange-range, angles2[1]);
-            Vector2D p7 = calculatePoint(center, currentVisionRange-range, angles[1]);
+        if (visionRange>range+1.0) {
+            Vector2D p6 = calculatePoint(center, visionRange-range, angles[0]);
+            p2 = calculatePoint(center, visionRange-range, angles2[0]);
+            p3 = calculatePoint(center, visionRange-range, direction);
+            p4 = calculatePoint(center, visionRange-range, angles2[1]);
+            Vector2D p7 = calculatePoint(center, visionRange-range, angles[1]);
 
             line1 = calculateLine(p6, p2);
-            addToEndpoints(line1);
+            endpoints = addArrayToList(endpoints, line1);
             
             line2 = calculateLine(p2, p3);
-            addToEndpoints(line2);
+            endpoints = addArrayToList(endpoints, line2);
             
             line3 = calculateLine(p3, p4);
-            addToEndpoints(line3);
+            endpoints = addArrayToList(endpoints, line3);
             
             line4 = calculateLine(p4, p7);
-            addToEndpoints(line4);
+            endpoints = addArrayToList(endpoints, line4);
 
             Vector2D[] line5 = calculateLine(p6, p1);
-            addToEndpoints(line5);
+            endpoints = addArrayToList(endpoints, line5);
 
             Vector2D[] line6 = calculateLine(p7, p5);
-            addToEndpoints(line6);
+            endpoints = addArrayToList(endpoints, line6);
 
-            this.endpoints = floodFillEndpoints(calculatePoint(center, currentVisionRange-2.0, direction));
+            endpoints = floodFillEndpoints(calculatePoint(center, visionRange-2.0, direction), endpoints, visionRange);
             
-        }     
+        }   
+        return endpoints;  
         
     }
 
     /**
      * Casts rays (lines) to the endpoints and fills in the VisionMap with all visible tiles
+     * @param endpoints
+     * @param visionMap
+     * @param areaMap
+     * @return 
      */
-    private void rayTracing () { 
+    private static VisionMap rayTracing (VisionMap visionMap, ArrayList<Vector2D> endpoints, VisionMap areaMap) { 
+        Vector2D center = visionMap.getCenter();
         for (int i=0; i<endpoints.size(); i++) {
-            Vector2D[] inVision = rayTracingLine(center, endpoints.get(i));
+            Vector2D[] inVision = rayTracingLine(center, endpoints.get(i), areaMap);
     
             visionMap.insertElement(inVision, 1);
         }     
+        return visionMap;
     }
 
     /**
      * Single instance of casting a ray
      * @param p0 starting point of the ray
      * @param p1 ending point of the ray
+     * @param areaMap
      * @return Returns all visible positions 
      */
-    private Vector2D[] rayTracingLine (Vector2D p0, Vector2D p1) {
+    private static Vector2D[] rayTracingLine (Vector2D p0, Vector2D p1, VisionMap areaMap) {
         ArrayList<Vector2D> line = new ArrayList<Vector2D>();
         int n = calculateDistance(p0, p1);
         boolean noWall = true;
@@ -148,7 +136,7 @@ public class FOV {
      * @param p1 ending point of the line
      * @return Returns an array of points that together represent a line
      */
-    public Vector2D[] calculateLine (Vector2D p0, Vector2D p1) {
+    public static Vector2D[] calculateLine (Vector2D p0, Vector2D p1) {
         ArrayList<Vector2D> line = new ArrayList<Vector2D>();
         final int N = calculateDistance(p0, p1);
         for (int i=0; i<=N; i++) {
@@ -167,7 +155,7 @@ public class FOV {
      * @param t
      * @return
      */
-    private double lerp (int start, int end, double t) {
+    private static double lerp (int start, int end, double t) {
         return (start+t*(end-start));
     }
 
@@ -178,17 +166,17 @@ public class FOV {
      * @param t
      * @return
      */
-    private Vector2D lerpPoint (Vector2D p0, Vector2D p1, double t) {
+    private static Vector2D lerpPoint (Vector2D p0, Vector2D p1, double t) {
         return new Vector2D((int)Math.round(lerp(p0.x, p1.x, t)), (int)Math.round(lerp(p0.y, p1.y, t)));
     }
 
-    private int calculateDistance(Vector2D center, Vector2D other) {
+    private static int calculateDistance(Vector2D center, Vector2D other) {
         int dx = other.x - center.x;
         int dy = other.y - center.y;
         return Math.max(Math.abs(dx), Math.abs(dy));
     }
 
-    private Vector2D calculatePoint (Vector2D center, double distance, double angle) {
+    private static Vector2D calculatePoint (Vector2D center, double distance, double angle) {
         double angleRad = Math.toRadians(angle);
         int x = (int)Math.round(center.x+(distance*Math.cos(angleRad)));
         int y = (int)Math.round(center.y+(distance*Math.sin(angleRad)));
@@ -196,7 +184,7 @@ public class FOV {
         return new Vector2D(x, y);
     }
 
-    private double[] calculateAngles (double midAngle, double betwAngle) {
+    private static double[] calculateAngles (double midAngle, double betwAngle) {
         double[] results = new double[2];
         results[0] = checkAngle(midAngle-(0.5*betwAngle));
         results[1] = checkAngle(midAngle+(0.5*betwAngle));
@@ -204,7 +192,7 @@ public class FOV {
         return results;
     }
 
-    private double checkAngle (double angle) {
+    private static double checkAngle (double angle) {
         double corrAngle = angle;
         if (angle<0) {
             corrAngle = angle + 360.0;
@@ -214,15 +202,15 @@ public class FOV {
         return corrAngle;
     }
 
-    private ArrayList<Vector2D> floodFillEndpoints (Vector2D start) {
-        VisionMap tmp = new VisionMap(currentVisionRange);
+    private static ArrayList<Vector2D> floodFillEndpoints (Vector2D start, ArrayList<Vector2D> endpoints, double visionRange) {
+        VisionMap tmp = new VisionMap(visionRange);
         tmp.insertElement(endpoints, 1);
         ArrayList<Vector2D> frontiers = new ArrayList<>();
         frontiers.add(start);
         tmp.setTile(start.x, start.y, 1);
         while (frontiers.size()>0) {
             for (int i=0; i<frontiers.size(); i++) {
-                Vector2D[] adj = getNeighbours(frontiers.get(i));
+                Vector2D[] adj = frontiers.get(i).getNeighbours();
                 for (int j=0;j<adj.length;j++) {
                     if (tmp.getTile(adj[j].x, adj[j].y) == 0) {
                         tmp.setTile(adj[j].x, adj[j].y, 1);
@@ -235,25 +223,12 @@ public class FOV {
         return tmp.getInVisionAbsolute();
     }
 
-    private Vector2D[] getNeighbours (Vector2D center) {
-        Vector2D[] neighbours = new Vector2D[4];
-
-        //north
-        neighbours[0] = new Vector2D(center.x, center.y-1);
-        //east
-        neighbours[1] = new Vector2D(center.x+1, center.y);
-        //south
-        neighbours[2] = new Vector2D(center.x, center.y+1);
-        //west
-        neighbours[3] = new Vector2D(center.x-1, center.y);
-
-        return neighbours;
-    }
-
-    private void addToEndpoints (Vector2D[] line) {
-        for (int i=0; i < line.length; i++) {
-            endpoints.add(line[i]);
+    //TODO Could be a generally helpful method (maybe create collection of those)
+    private static ArrayList<Vector2D> addArrayToList (ArrayList<Vector2D> list, Vector2D[] array) {
+        for (int i=0; i < array.length; i++) {
+            list.add(array[i]);
         }
+        return list;
     }
 
 }

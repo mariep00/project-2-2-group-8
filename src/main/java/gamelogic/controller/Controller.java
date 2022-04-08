@@ -37,7 +37,7 @@ public abstract class Controller {
         this.numberOfIntruders = scenarioMap.getNumIntruders();
         this.agentSpawnLocations = new Vector2D[numberOfGuards + numberOfIntruders];
         this.agents = new Agent[numberOfGuards + numberOfIntruders];
-        this.fov = new FOV(scenarioMap.getGuardViewRange());
+        this.fov = new FOV();
         this.timestep = scenarioMap.getTimestep();
         this.movementController = new MovementController(this);
         this.markerController = new MarkerController(this);
