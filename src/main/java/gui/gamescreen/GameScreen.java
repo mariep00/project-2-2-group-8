@@ -1,6 +1,7 @@
 package gui.gamescreen;
 
 import gamelogic.Vector2D;
+import gamelogic.controller.endingconditions.EndingExploration;
 import gamelogic.maps.ScenarioMap;
 import gui.MainGUI;
 import gui.TransitionInterface;
@@ -15,7 +16,10 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Slider;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.*;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import org.jetbrains.annotations.NotNull;
 
@@ -38,7 +42,7 @@ public class GameScreen extends Application implements TransitionInterface {
 
     public GameScreen(ScenarioMap scenarioMap) {
         this.scenarioMap = scenarioMap;
-        this.controllerExplorationGUI = new ControllerExplorationGUI(scenarioMap, this);
+        this.controllerExplorationGUI = new ControllerExplorationGUI(scenarioMap, new EndingExploration(scenarioMap), this);
     }
 
     @Override
@@ -52,8 +56,9 @@ public class GameScreen extends Application implements TransitionInterface {
         gridPane.setAlignment(Pos.CENTER);
 
         showVision = new boolean[scenarioMap.getNumGuards()];
-        tiles = new Tile[scenarioMap.getWidth()][scenarioMap.getHeight()];
+        tiles = new Tile[scenarioMap.getHeight()][scenarioMap.getWidth()];
         gamelogic.maps.Tile[][] tilesController = scenarioMap.getMapGrid();
+
         for (int x = 0; x < scenarioMap.getWidth(); x++) {
             for (int y = 0; y < scenarioMap.getHeight(); y++) {
                 Tile tile;
@@ -78,7 +83,7 @@ public class GameScreen extends Application implements TransitionInterface {
                 }
 
                 gridPane.add(tile, x, y);
-                tiles[x][y] = tile;
+                tiles[y][x] = tile;
                 tile.addEventFilter(MouseEvent.MOUSE_CLICKED,e -> {
                     tile.getTileImageAgent().onClick();
                     e.consume();
@@ -98,39 +103,48 @@ public class GameScreen extends Application implements TransitionInterface {
 
         progressBar = new ProgressBarCustom();
         progressBar.getProgressBar().setPrefWidth(400);
-        progressBar.getProgressBar().setPrefHeight(30);
+        progressBar.getProgressBar().setPrefHeight(35);
 
         HBox hboxButtons = new HBox(10);
-        Button buttonShowAllVisions = new Button("Show vision");
-        buttonShowAllVisions.setPrefWidth(130);
-        buttonShowAllVisions.setPrefHeight(30);
-        Button buttonHideAllVisions = new Button("Hide vision");
-        buttonHideAllVisions.setPrefWidth(130);
-        buttonHideAllVisions.setPrefHeight(30);
+        Button buttonShowAllVisions = new Button();
+        ImageView showVisionImageView = new ImageView(imageContainer.getShowVision());
+        showVisionImageView.setFitWidth(25);
+        showVisionImageView.setFitHeight(25);
+        buttonShowAllVisions.setGraphic(showVisionImageView);
+        buttonShowAllVisions.setPrefWidth(35);
+        buttonShowAllVisions.setPrefHeight(35);
+
+        Button buttonHideAllVisions = new Button();
+        ImageView hideVisionImageView = new ImageView(imageContainer.getHideVision());
+        hideVisionImageView.setFitWidth(25);
+        hideVisionImageView.setFitHeight(25);
+        buttonHideAllVisions.setGraphic(hideVisionImageView);
+        buttonHideAllVisions.setPrefWidth(35);
+        buttonHideAllVisions.setPrefHeight(35);
 
         Button buttonStep = new Button();
         ImageView stepImageView = new ImageView(imageContainer.getStep());
-        stepImageView.setFitWidth(20);
-        stepImageView.setFitHeight(20);
+        stepImageView.setFitWidth(25);
+        stepImageView.setFitHeight(25);
         buttonStep.setGraphic(stepImageView);
-        buttonStep.setPrefWidth(30);
-        buttonStep.setPrefHeight(30);
+        buttonStep.setPrefWidth(35);
+        buttonStep.setPrefHeight(35);
 
         Button buttonPlaySimulation = new Button();
         ImageView playImageView = new ImageView(imageContainer.getPlay());
-        playImageView.setFitWidth(20);
-        playImageView.setFitHeight(20);
+        playImageView.setFitWidth(25);
+        playImageView.setFitHeight(25);
         buttonPlaySimulation.setGraphic(playImageView);
-        buttonPlaySimulation.setPrefWidth(30);
-        buttonPlaySimulation.setPrefHeight(30);
+        buttonPlaySimulation.setPrefWidth(35);
+        buttonPlaySimulation.setPrefHeight(35);
 
         Button buttonStopSimulation = new Button();
         ImageView stopImageView = new ImageView(imageContainer.getStop());
-        stopImageView.setFitWidth(20);
-        stopImageView.setFitHeight(20);
+        stopImageView.setFitWidth(25);
+        stopImageView.setFitHeight(25);
         buttonStopSimulation.setGraphic(stopImageView);
-        buttonStopSimulation.setPrefWidth(30);
-        buttonStopSimulation.setPrefHeight(30);
+        buttonStopSimulation.setPrefWidth(35);
+        buttonStopSimulation.setPrefHeight(35);
 
         Slider simulationSlider = new Slider();
         simulationSlider.setMax(800);
@@ -139,7 +153,7 @@ public class GameScreen extends Application implements TransitionInterface {
         simulationSlider.setShowTickMarks(true);
         simulationSlider.setValue(400);
         simulationSlider.setPrefWidth(260);
-        simulationSlider.setPrefHeight(30);
+        simulationSlider.setPrefHeight(35);
 
         hboxButtons.getChildren().addAll(  buttonShowAllVisions, buttonHideAllVisions, simulationSlider, buttonStep, buttonPlaySimulation, buttonStopSimulation);
         hboxButtons.setAlignment(Pos.CENTER_RIGHT);
@@ -162,10 +176,10 @@ public class GameScreen extends Application implements TransitionInterface {
         gridPane.setVgap(-1);
 
         simulationSlider.setOnMouseDragged(e -> {
-            controllerExplorationGUI.setSimulationDelay((int)simulationSlider.getValue());
+            controllerExplorationGUI.setSimulationDelay((int)(simulationSlider.maxProperty().get()-simulationSlider.getValue()));
         });
         simulationSlider.setOnMouseReleased(e -> {
-            controllerExplorationGUI.setSimulationDelay((int)simulationSlider.getValue());
+            controllerExplorationGUI.setSimulationDelay((int)(simulationSlider.maxProperty().get()-simulationSlider.getValue()));
         });
 
         buttonStep.setOnAction(e -> {
@@ -177,7 +191,11 @@ public class GameScreen extends Application implements TransitionInterface {
         });
         buttonPlaySimulation.setOnAction(e -> {
             buttonPlaySimulation.setId("play_button_clicked");
-            controllerExplorationGUI.runSimulation();
+            if (!controllerExplorationGUI.getRunSimulation().get()) controllerExplorationGUI.runSimulation();
+            else {
+                controllerExplorationGUI.stopSimulation();
+                buttonPlaySimulation.setId("");
+            }
         });
         buttonStopSimulation.setOnAction(e -> {
             buttonPlaySimulation.setId("");
@@ -246,18 +264,18 @@ public class GameScreen extends Application implements TransitionInterface {
     }
 
     public void spawnAgent(int agentIndex, Vector2D position) {
-        tiles[position.x][position.y].setCharacter(this, imageContainer.getAgent(AgentType.GUARD, controllerExplorationGUI.getAgent(agentIndex).getOrientation()), agentIndex);
+        tiles[position.y][position.x].setCharacter(this, imageContainer.getAgent(AgentType.GUARD, controllerExplorationGUI.getAgent(agentIndex).getOrientation()), agentIndex);
     }
 
     public void moveAgent(AtomicBoolean executeNextGuiTask, int agentIndex, Vector2D from, Vector2D to) {
-        tiles[from.x][from.y].resetCharacterImage();
-        tiles[to.x][to.y].setCharacter(this, imageContainer.getAgent(AgentType.GUARD, controllerExplorationGUI.getAgent(agentIndex).getOrientation()), agentIndex);
+        tiles[from.y][from.x].resetCharacterImage();
+        tiles[to.y][to.x].setCharacter(this, imageContainer.getAgent(AgentType.GUARD, controllerExplorationGUI.getAgent(agentIndex).getOrientation()), agentIndex);
         executeNextGuiTask.set(true);
     }
 
     public void setToExplored(AtomicBoolean executeNextGuiTask, List<Vector2D> positions) {
         for (Vector2D pos : positions) {
-            tiles[pos.x][pos.y].setToExplored();
+            tiles[pos.y][pos.x].setToExplored();
         }
         executeNextGuiTask.set(true);
     }
@@ -272,32 +290,19 @@ public class GameScreen extends Application implements TransitionInterface {
 
     public void showVision(AtomicBoolean executeNextGuiTask, List<Vector2D> visionToShow) {
         for (Vector2D pos : visionToShow) {
-            tiles[pos.x][pos.y].setToInVision(imageContainer.getVision());
+            tiles[pos.y][pos.x].setToInVision(imageContainer.getVision());
         }
         if (executeNextGuiTask != null) executeNextGuiTask.set(true);
     }
 
     public void removeVision(AtomicBoolean executeNextGuiTask, int agentIndex, List<Vector2D> visionToRemove) {
-        /*for (Vector2D pos : visionToRemove) {
-            boolean remove = true;
-            outer:
-            for (int i = 0; i < visions.length; i++) {
-                if (i != agentIndex && showVision[i]) {
-                    ArrayList<Vector2D> others = visions[i];
-                    for (Vector2D posOther : others) {
-                        if (posOther.equals(pos)) {
-                            remove = false;
-                            break outer;
-                        }
-                    }
-                }
-            }
-            if (remove) tiles[pos.x][pos.y].setToOutOfVision();
+        for (Vector2D pos : visionToRemove) {
+            tiles[pos.y][pos.x].setToOutOfVision();
         }
         if (executeNextGuiTask != null) executeNextGuiTask.set(true);
-         */
-        executeNextGuiTask.set(true);
     }
+
+    public boolean getShowVision(int agentIndex) { return showVision[agentIndex]; }
 
     @Override
     public @NotNull List<Transition> getTransitions() {

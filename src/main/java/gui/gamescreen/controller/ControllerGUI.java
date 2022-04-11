@@ -1,30 +1,34 @@
 package gui.gamescreen.controller;
 
-import gamelogic.agent.Agent;
+import gamelogic.Vector2D;
 import gamelogic.controller.Controller;
 import gui.gamescreen.GameScreen;
 import javafx.application.Platform;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class ControllerGUI {
-    private final GameScreen gameScreen;
+public class ControllerGUI implements ControllerGUIInterface {
     private final Controller controller;
+    private final GameScreen gameScreen;
     private final ConcurrentLinkedQueue<Runnable> guiTasksQueue = new ConcurrentLinkedQueue<>();
     private final AtomicBoolean executeNextGuiTask = new AtomicBoolean(true);
     private final AtomicBoolean performControllerTick = new AtomicBoolean(true);
     private final AtomicBoolean gamePaused = new AtomicBoolean(false);
     private final AtomicBoolean runSimulation = new AtomicBoolean(false);
     private final AtomicInteger simulationDelay = new AtomicInteger();
-    private final Thread updateGameLogicThread;
+    private Thread updateGameLogicThread;
 
-    public ControllerGUI(GameScreen gameScreen, Controller controller) {
-        this.gameScreen = gameScreen;
+    public ControllerGUI(Controller controller, GameScreen gameScreen) {
         this.controller = controller;
+        this.gameScreen = gameScreen;
+    }
 
+    public void init() {
         Thread.UncaughtExceptionHandler h = (th, ex) -> System.out.println("Uncaught exception: " + ex);
 
         final Thread updateGuiThread = new Thread(() -> {
@@ -55,44 +59,73 @@ public class ControllerGUI {
         });
         updateGameLogicThread.setDaemon(true);
         updateGameLogicThread.setUncaughtExceptionHandler(h);
-    }
 
-    public void init() {
         for (int i = 0; i < controller.getNumberOfGuards()+controller.getNumberOfIntruders(); i++) {
             gameScreen.spawnAgent(i, controller.getCurrentState().getAgentPosition(i));
-            gameScreen.showVision(null, controller.getCurrentState().getVision(i));
         }
     }
 
-    protected void updateGui() {
-        performControllerTick.set(false);
+    public void updateGui() {
         for (int i = 0; i < controller.getNumberOfGuards()+controller.getNumberOfIntruders(); i++) {
             int finalI = i;
-            guiTasksQueue.add(() -> Platform.runLater(() -> gameScreen.moveAgent(executeNextGuiTask, finalI,controller.getCurrentState().getAgentPosition(finalI),controller.getNextState().getAgentPosition(finalI))));
-            guiTasksQueue.add(() -> Platform.runLater(() -> gameScreen.updateVision(executeNextGuiTask, finalI, controller.getCurrentState().getVision(finalI), controller.getNextState().getVision(finalI))));
+            Vector2D currentPos = controller.getCurrentState().getAgentPosition(finalI);
+            Vector2D nextPos = controller.getNextState().getAgentPosition(finalI);
+            List<Vector2D> currentVision = getVisionToRemove(finalI, controller.getCurrentState().getVision(finalI));
+            List<Vector2D> nextVision = controller.getNextState().getVision(finalI);
+
+            guiTasksQueue.add(() -> Platform.runLater(() -> gameScreen.moveAgent(executeNextGuiTask, finalI, currentPos, nextPos)));
+            guiTasksQueue.add(() -> Platform.runLater(() -> gameScreen.updateVision(executeNextGuiTask, finalI, currentVision, nextVision)));
         }
-        while (!performControllerTick.get()) {}
     }
 
+    private List<Vector2D> getVisionToRemove(int agentIndex, List<Vector2D> visionToRemove) {
+        ArrayList<Vector2D> visionToRemoveFinal = new ArrayList<>();
+        for (Vector2D pos : visionToRemove) {
+            boolean remove = true;
+            outer:
+            for (int i = 0; i < controller.getCurrentState().getVisions().length; i++) {
+                if (i != agentIndex && gameScreen.getShowVision(i)) {
+                    List<Vector2D> others = controller.getNextState().getVision(i);
+                    for (Vector2D posOther : others) {
+                        if (posOther.equals(pos)) {
+                            remove = false;
+                            break outer;
+                        }
+                    }
+                }
+            }
+            if (remove) visionToRemoveFinal.add(pos);
+        }
+        return visionToRemoveFinal;
+    }
+
+    @Override
     public void hideVision(int agentIndex) {
-        guiTasksQueue.add(() -> Platform.runLater(() -> gameScreen.removeVision(executeNextGuiTask, agentIndex, controller.getCurrentState().getVision(agentIndex))));
+        List<Vector2D> visionToRemove = getVisionToRemove(agentIndex, controller.getCurrentState().getVision(agentIndex));
+        guiTasksQueue.add(() -> Platform.runLater(() -> gameScreen.removeVision(executeNextGuiTask, agentIndex, visionToRemove)));
     }
+    @Override
     public void showVision(int agentIndex) {
-        guiTasksQueue.add(() -> Platform.runLater(() -> gameScreen.showVision(executeNextGuiTask, controller.getCurrentState().getVision(agentIndex))));
+        List<Vector2D> visionToShow = controller.getCurrentState().getVision(agentIndex);
+        guiTasksQueue.add(() -> Platform.runLater(() -> gameScreen.showVision(executeNextGuiTask, visionToShow)));
     }
-
-    public AtomicBoolean getRunSimulation() { return runSimulation; }
+    @Override
     public void setSimulationDelay(int val) { this.simulationDelay.set(val); }
-
+    @Override
     public void runSimulation() {
         runSimulation.set(true);
         if (!updateGameLogicThread.isAlive()) updateGameLogicThread.start();
     }
+    @Override
     public void stopSimulation() {
         runSimulation.set(false);
     }
-
+    @Override
     public void pauseThreads() { gamePaused.set(true); }
+    @Override
     public void continueThreads() { gamePaused.set(false); }
-    public Agent getAgent(int index) { return controller.getAgent(index); }
+    @Override
+    public AtomicBoolean getRunSimulation() { return runSimulation; }
+    public AtomicBoolean getExecuteNextGuiTask() { return executeNextGuiTask; }
+    public void addGuiRunnableToQueue(Runnable runnable) { guiTasksQueue.add(() -> Platform.runLater(runnable)); }
 }

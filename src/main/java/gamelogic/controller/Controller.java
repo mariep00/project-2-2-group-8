@@ -17,12 +17,12 @@ public abstract class Controller {
     public final MovementController movementController;
     public final MarkerController markerController;
     protected final ScenarioMap scenarioMap;
-    private final EndingConditionInterface endingCondition;
+    protected final EndingConditionInterface endingCondition;
     protected final int numberOfGuards;
     protected final int numberOfIntruders;
     protected final Agent[] agents;
     protected final Vector2D[] agentSpawnLocations;
-    
+
     protected State currentState;
     protected State nextState;
 
@@ -49,7 +49,7 @@ public abstract class Controller {
 
         ArrayList<Vector2D>[] visions = new ArrayList[numberOfGuards + numberOfIntruders];
         for (int i = 0; i < visions.length; i++) {
-            visions[i] = calculateFOVAbsolute(i, initialPositions[i]);
+            visions[i] = calculateFOVAbsolute(i, initialPositions[i], currentState);
         }
 
         currentState = new State(initialPositions, visions, markerController.init(initialPositions));
@@ -70,7 +70,7 @@ public abstract class Controller {
                     markerController.getPheromoneMarkersDirections(i, currentState.getAgentPosition(i)));
 
             movementController.moveAgent(i, movementTask);
-            nextState.setAgentVision(i, calculateFOVAbsolute(i, currentState.getAgentPosition(i)));
+            nextState.setAgentVision(i, calculateFOVAbsolute(i, nextState.getAgentPosition(i), nextState));
         }
         markerController.tick();
         updateProgress();
@@ -84,18 +84,14 @@ public abstract class Controller {
         time += timestep;
     }
 
-    protected void updateGui() {}
-    protected void initializeAgents() {}
-    protected void updateProgress() {}
-
     protected ArrayList<Vector2D> calculateFOV(int agentIndex, Vector2D agentPosition) {
         return VisionController.calculateVision(agents[agentIndex].getView_angle(), agents[agentIndex].getView_range(), scenarioMap.createAreaMap(agentPosition, agents[agentIndex].getView_range()), agents[agentIndex].getOrientation()).getInVision();
     }
-    protected ArrayList<Vector2D> calculateFOVAbsolute(int agentIndex, Vector2D agentPosition) {
-        return convertRelativeCurrentPosToAbsolute(calculateFOV(agentIndex, agentPosition), agentIndex);
+    protected ArrayList<Vector2D> calculateFOVAbsolute(int agentIndex, Vector2D agentPosition, State state) {
+        return convertRelativeCurrentPosToAbsolute(calculateFOV(agentIndex, agentPosition), agentIndex, state);
     }
 
-    private ArrayList<Tile> getTilesInVision(ArrayList<Vector2D> vision) {
+    private ArrayList<Tile> getTilesInVision(List<Vector2D> vision) {
         ArrayList<Tile> tiles = new ArrayList<>();
         for (Vector2D pos : vision) {
             tiles.add(scenarioMap.getTile(pos));
@@ -129,12 +125,6 @@ public abstract class Controller {
         return agentPositions;
     }
 
-    public double getTimestep() {
-        return timestep;
-    }
-
-    public Agent getAgent(int agentIndex) { return agents[agentIndex]; }
-
     public Vector2D convertRelativeSpawnToAbsolute(Vector2D relPos, int agentId) {
         return relPos.add(agentSpawnLocations[agentId]);
     }
@@ -157,30 +147,38 @@ public abstract class Controller {
         return relPos;
     }
 
-    public Vector2D convertRelativeCurrentPosToAbsolute(Vector2D relPos, int agentId) {
-        return relPos.add(currentState.getAgentPosition(agentId));
+    public Vector2D convertRelativeCurrentPosToAbsolute(Vector2D relPos, int agentId, State state) {
+        return relPos.add(state.getAgentPosition(agentId));
     }
-    public ArrayList<Vector2D> convertRelativeCurrentPosToAbsolute(List<Vector2D> relPos, int agentId) {
+    public ArrayList<Vector2D> convertRelativeCurrentPosToAbsolute(List<Vector2D> relPos, int agentId, State state) {
         ArrayList<Vector2D> absPos = new ArrayList<>();
         for (Vector2D vector2D : relPos) {
-            absPos.add(convertRelativeCurrentPosToAbsolute(vector2D, agentId));
+            absPos.add(convertRelativeCurrentPosToAbsolute(vector2D, agentId, state));
         }
         return absPos;
     }
 
-    public Vector2D convertRelativeCurrentPosToRelativeToSpawn(Vector2D relPos, int agentId) {
-        return convertAbsoluteToRelativeSpawn(relPos.add(currentState.getAgentPosition(agentId)), agentId);
+    public Vector2D convertRelativeCurrentPosToRelativeToSpawn(Vector2D relPos, int agentId, State state) {
+        return convertAbsoluteToRelativeSpawn(relPos.add(state.getAgentPosition(agentId)), agentId);
     }
-    public ArrayList<Vector2D> convertRelativeCurrentPosToRelativeToSpawn (List<Vector2D> relPos, int agentId) {
+    public ArrayList<Vector2D> convertRelativeCurrentPosToRelativeToSpawn (List<Vector2D> relPos, int agentId, State state) {
         ArrayList<Vector2D> absPos = new ArrayList<>();
         for (Vector2D vector2D : relPos) {
-            absPos.add(convertRelativeCurrentPosToRelativeToSpawn(vector2D, agentId));
+            absPos.add(convertRelativeCurrentPosToRelativeToSpawn(vector2D, agentId, state));
         }
         return absPos;
     }
+
+    protected void updateGui() {}
+    protected void initializeAgents() {}
+    protected void updateProgress() {}
 
     public int getNumberOfGuards() { return numberOfGuards; }
     public int getNumberOfIntruders() { return numberOfIntruders; }
     public State getCurrentState() { return currentState; }
     public State getNextState() { return nextState; }
+    public double getTimestep() {
+        return timestep;
+    }
+    public Agent getAgent(int agentIndex) { return agents[agentIndex]; }
 }

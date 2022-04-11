@@ -30,6 +30,8 @@ public final class ImageContainer {
     private final Image step;
     private final Image play;
     private final Image stop;
+    private final Image showVision;
+    private final Image hideVision;
 
     private ImageContainer() {
         wallImages = new Image[9];
@@ -77,6 +79,8 @@ public final class ImageContainer {
         step = new Image(this.getClass().getResource("/ui/step.png").toString());
         play = new Image(this.getClass().getResource("/ui/play.png").toString());
         stop = new Image(this.getClass().getResource("/ui/stop.png").toString());
+        showVision = new Image(this.getClass().getResource("/ui/vision_show.png").toString());
+        hideVision = new Image(this.getClass().getResource("/ui/vision_hide.png").toString());
     }
 
     /**
@@ -186,4 +190,6 @@ public final class ImageContainer {
     public Image getStep() { return step; }
     public Image getPlay() { return play; }
     public Image getStop() { return stop; }
+    public Image getShowVision() { return showVision; }
+    public Image getHideVision() { return hideVision; }
 }
