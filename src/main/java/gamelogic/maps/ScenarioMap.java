@@ -156,23 +156,23 @@ public class ScenarioMap {
         TeleportEntrance tmp = new TeleportEntrance(new Vector2D(x3, y3), rotation);
         for (int i=y1; i<=y2; i++) {
             for (int j=x1; j<=x2; j++) {
-                mapGrid[i][j].setSpecialFeature(tmp);
-                mapGrid[i][j].setType(Tile.Type.TELEPORT_ENTRANCE);;
+                mapGrid[i+1][j+1].setSpecialFeature(tmp);
+                mapGrid[i+1][j+1].setType(Tile.Type.TELEPORT_ENTRANCE);;
             }
         } 
-        mapGrid[y3][x3].setSpecialFeature(new TeleportExit(tmp));
-        mapGrid[y3][x3].setType(Type.TELEPORT_EXIT);
+        mapGrid[y3+1][x3+1].setSpecialFeature(new TeleportExit(tmp));
+        mapGrid[y3+1][x3+1].setType(Type.TELEPORT_EXIT);
     }
 
     public void setShaded (int x1, int y1, int x2, int y2) {
         for (int i=y1; i<=y2; i++) {
             for (int j=x1; j<=x2; j++) {
-                mapGrid[i][j].setShaded(true);
+                mapGrid[i+1][j+1].setShaded(true);
             }
         }
     }
     public void setShaded(int x, int y) {
-        mapGrid[y][x].setShaded(true);
+        mapGrid[y+1][x+1].setShaded(true);
     }
 
     public boolean checkWall(Vector2D pos) {
@@ -192,8 +192,7 @@ public class ScenarioMap {
     }
 
     public void setTile(int x, int y, Object tile) {
-        mapGrid[y][x] = (Tile)tile;
-        
+        mapGrid[y+1][x+1] = (Tile)tile;
     }
 
     public void createMap(int width, int height, float scaling) {
@@ -218,40 +217,40 @@ public class ScenarioMap {
     public void insertElement(int x1, int y1, int x2, int y2, Type type) {
         for (int i = x1; i <= x2; i++) {
             for (int j = y1; j <= y2; j++) {
-                mapGrid[j][i].setType(type);;
+                mapGrid[j+1][i+1].setType(type);;
             }
         }
     }
 
     public void insertElement(int x, int y, Type type) {
-        mapGrid[y][x].setType(type);
+        mapGrid[y+1][x+1].setType(type);
     }
 
     public void insertSpawnAreaGuard(int x1, int y1, int x2, int y2) {
         for (int i = x1; i <= x2; i++) {
             for (int j = y1; j <= y2; j++) {
-                spawnAreaGuards.add(new Vector2D(i, j));
+                spawnAreaGuards.add(new Vector2D(i+1, j+1));
             }
         }
     }
     public void insertSpawnAreaGuard(int x, int y) {
-        spawnAreaGuards.add(new Vector2D(x, y));
+        spawnAreaGuards.add(new Vector2D(x+1, y+1));
     }
 
     public void insertSpawnAreaIntruder(int x1, int y1, int x2, int y2) {
         for (int i = x1; i <= x2; i++) {
             for (int j = y1; j <= y2; j++) {
-                spawnAreaIntruders.add(new Vector2D(i, j));
+                spawnAreaIntruders.add(new Vector2D(i+1, j+1));
             }
         }
     }
     public void insertSpawnAreaIntruder(int x, int y) {
-        spawnAreaIntruders.add(new Vector2D(x, y));
+        spawnAreaIntruders.add(new Vector2D(x+1, y+1));
     }
 
     public void insertElement(Vector2D[] points, Type type) {
         for (int i=0; i<points.length; i++) {
-            mapGrid[points[i].y][points[i].x].setType(type);
+            mapGrid[points[i].y+1][points[i].x+1].setType(type);
         }
         
     }

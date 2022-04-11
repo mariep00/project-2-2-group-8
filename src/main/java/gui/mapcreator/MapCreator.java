@@ -71,12 +71,12 @@ public class MapCreator extends Application implements TransitionInterface {
         gridPane = new GridPane();
         gridPane.setAlignment(Pos.CENTER);
 
-        tiles = new TileMapCreator[nrOfTilesWidth][nrOfTilesHeight];
-        for (int i = 0; i < nrOfTilesWidth; i++) {
-            for (int j = 0; j < nrOfTilesHeight; j++) {
+        tiles = new TileMapCreator[nrOfTilesHeight][nrOfTilesWidth];
+        for (int x = 0; x < nrOfTilesWidth; x++) {
+            for (int y = 0; y < nrOfTilesHeight; y++) {
                 TileMapCreator tile = new TileMapCreator(new TileImageMapCreator(imageContainer.getFloor(), TileType.FLOOR));
-                gridPane.add(tile, i, j);
-                tiles[i][j] = tile;
+                gridPane.add(tile, x, y);
+                tiles[y][x] = tile;
             }
         }
 
@@ -149,12 +149,12 @@ public class MapCreator extends Application implements TransitionInterface {
             int indexX = (int) Math.floor((posX / Tile.tileSize));
             int indexY = (int) Math.floor((posY / Tile.tileSize));
 
-            if (indexX < tiles.length && indexY < tiles[0].length && indexX >= 0 && indexY >= 0) {
+            if (indexX < tiles[0].length && indexY < tiles.length && indexX >= 0 && indexY >= 0) {
                 if (e.isPrimaryButtonDown()) {
-                    tiles[indexX][indexY].setImageToSelected();
+                    tiles[indexY][indexX].setImageToSelected();
                 }
                 else if (e.isSecondaryButtonDown()) {
-                    tiles[indexX][indexY].resetTile();
+                    tiles[indexY][indexX].resetTile();
                 }
             }
         });
@@ -167,14 +167,14 @@ public class MapCreator extends Application implements TransitionInterface {
         buttonPlayGame.setOnAction(e -> {
             ScenarioMap scenarioMap = new ScenarioMap();
             scenarioMap.createMap(nrOfTilesWidth, nrOfTilesHeight, 1);
-            for (int x = 0; x < tiles.length; x++) {
-                for (int y = 0; y < tiles[x].length; y++) {
-                    if (tiles[x][y].isWall()) scenarioMap.insertElement(x, y, gamelogic.maps.Tile.Type.WALL);
-                    else if (tiles[x][y].isSpawnAreaGuards()) scenarioMap.insertSpawnAreaGuard(x, y);
-                    else if (tiles[x][y].isSpawnAreaIntruders()) scenarioMap.insertSpawnAreaIntruder(x, y);
-                    else if (tiles[x][y].isTargetArea()) scenarioMap.insertElement(x, y, gamelogic.maps.Tile.Type.TARGET_AREA);
-
-                    if (tiles[x][y].isShaded()) scenarioMap.setShaded(x, y);
+            for (int x = 0; x < tiles[0].length; x++) {
+                for (int y = 0; y < tiles.length; y++) {
+                    if (tiles[y][x].isWall()) scenarioMap.insertElement(x, y, gamelogic.maps.Tile.Type.WALL);
+                    else if (tiles[y][x].isSpawnAreaGuards()) scenarioMap.insertSpawnAreaGuard(x, y);
+                    else if (tiles[y][x].isSpawnAreaIntruders()) scenarioMap.insertSpawnAreaIntruder(x, y);
+                    else if (tiles[y][x].isTargetArea()) scenarioMap.insertElement(x, y, gamelogic.maps.Tile.Type.TARGET_AREA);
+                    else if (tiles[y][x].isTeleport()) scenarioMap.setTeleport(x, y, x, y, x+1, y+1, 0); // TODO input for custom exit and rotation, can cause errors now
+                    if (tiles[y][x].isShaded()) scenarioMap.setShaded(x, y);
                 }
             }
             scenarioMap.setNumGuards(isStringNumeric(numGuards.getText()) ? Integer.parseInt(numGuards.getText()) : 0);
@@ -185,16 +185,16 @@ public class MapCreator extends Application implements TransitionInterface {
 
     private void resizeGrid() {
         gridPane.getChildren().remove(0, gridPane.getChildren().size());
-        TileMapCreator[][] tmp = new TileMapCreator[nrOfTilesWidth][nrOfTilesHeight];
-        for (int x = 0; x < tmp.length; x++) {
-            for (int y = 0; y < tmp[x].length; y++) {
-                if (x < tiles.length && y < tiles[x].length) {
-                    tmp[x][y] = tiles[x][y];
+        TileMapCreator[][] tmp = new TileMapCreator[nrOfTilesHeight][nrOfTilesWidth];
+        for (int x = 0; x < tmp[0].length; x++) {
+            for (int y = 0; y < tmp.length; y++) {
+                if (x < tiles[0].length && y < tiles.length) {
+                    tmp[y][x] = tiles[y][x];
                 }
                 else {
-                    tmp[x][y] = new TileMapCreator(new TileImageMapCreator(imageContainer.getFloor(), TileType.FLOOR));
+                    tmp[y][x] = new TileMapCreator(new TileImageMapCreator(imageContainer.getFloor(), TileType.FLOOR));
                 }
-                gridPane.add(tmp[x][y], x, y);
+                gridPane.add(tmp[y][x], x, y);
             }
         }
         tiles = tmp;
@@ -254,12 +254,12 @@ public class MapCreator extends Application implements TransitionInterface {
 
             for (int x = 0; x < tiles[0].length; x++) {
                 for (int y = 0; y < tiles.length; y++) {
-                    TileMapCreator tile = tiles[x][y];
+                    TileMapCreator tile = tiles[y][x];
                     if (tile.isWall()) writer.println("wall = " + x + " " + y + " " + x + " " + y);
                     else if (tile.isSpawnAreaGuards()) writer.println("spawnAreaGuards = " + x + " " + y + " " + x + " " + y);
                     else if (tile.isSpawnAreaIntruders()) writer.println("spawnAreaIntruders = " + x + " " + y + " " + x + " " + y);
                     else if (tile.isTargetArea()) writer.println("targetArea = " + x + " " + y + " " + x + " " + y);
-
+                    else if (tile.isTeleport()) writer.println("teleport = " + x + " " + y + " " + x + " " + y + " " + (x+1) + " " + (y+1) + " " + 0); // TODO input for custom exit and rotation, can cause errors now
                     if (tile.isShaded()) writer.println("shaded = " + x + " " + y + " " + x + " " + y);
                 }
             }

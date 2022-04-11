@@ -58,4 +58,5 @@ public class TileMapCreator extends Tile {
     public boolean isSpawnAreaGuards() { return ((TileImageMapCreator)tileImages[4]).getTileType() == TileType.SPAWN_AREA_GUARDS; }
     public boolean isSpawnAreaIntruders() { return ((TileImageMapCreator)tileImages[4]).getTileType() == TileType.SPAWN_AREA_INTRUDERS; }
     public boolean isTargetArea() { return ((TileImageMapCreator)tileImages[4]).getTileType() == TileType.TARGET_AREA; }
+    public boolean isTeleport() { return ((TileImageMapCreator)tileImages[0]).getTileType() == TileType.TELEPORT; }
 }
