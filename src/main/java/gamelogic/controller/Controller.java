@@ -22,8 +22,7 @@ public abstract class Controller {
     protected final int numberOfIntruders;
     protected final Agent[] agents;
     protected final Vector2D[] agentSpawnLocations;
-    protected VisionController fov; // TODO Should become an array, such that every agent has their own object. Or make it s.t. FOV does not store any variables that change for each agent
-
+    
     protected State currentState;
     protected State nextState;
 
@@ -36,7 +35,6 @@ public abstract class Controller {
         this.numberOfIntruders = scenarioMap.getNumIntruders();
         this.agentSpawnLocations = new Vector2D[numberOfGuards + numberOfIntruders];
         this.agents = new Agent[numberOfGuards + numberOfIntruders];
-        this.fov = new VisionController();
         this.timestep = scenarioMap.getTimestep();
         this.movementController = new MovementController(this);
         this.markerController = new MarkerController(this);
@@ -91,7 +89,7 @@ public abstract class Controller {
     protected void updateProgress() {}
 
     protected ArrayList<Vector2D> calculateFOV(int agentIndex, Vector2D agentPosition) {
-        return fov.calculateVision(agents[agentIndex].getView_angle(), agents[agentIndex].getView_range(), scenarioMap.createAreaMap(agentPosition, agents[agentIndex].getView_range()), agents[agentIndex].getOrientation()).getInVision();
+        return VisionController.calculateVision(agents[agentIndex].getView_angle(), agents[agentIndex].getView_range(), scenarioMap.createAreaMap(agentPosition, agents[agentIndex].getView_range()), agents[agentIndex].getOrientation()).getInVision();
     }
     protected ArrayList<Vector2D> calculateFOVAbsolute(int agentIndex, Vector2D agentPosition) {
         return convertRelativeCurrentPosToAbsolute(calculateFOV(agentIndex, agentPosition), agentIndex);

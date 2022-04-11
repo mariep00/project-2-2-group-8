@@ -57,7 +57,7 @@ public class Node {
     public void addSelfEdge (int direction) {
         if (!walls[direction]) {
             walls[direction] = true;
-            addEdge(this);
+            //addEdge(this);
         }
     }
 
@@ -78,6 +78,9 @@ public class Node {
         for (int i = 0; i < edges.length-1; i++) {
             Node edge = edges[i];
             if (edge != null) count++;
+        }
+        for (int j=0; j<walls.length; j++) {
+            if (walls[j]==true) count++;
         }
         return count;
     }

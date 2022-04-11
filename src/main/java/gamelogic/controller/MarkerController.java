@@ -89,7 +89,7 @@ public class MarkerController {
     }
 
     private boolean isWallInBetween(Vector2D begin, Vector2D end) {
-        Vector2D[] positions = controller.fov.calculateLine(begin, end);
+        Vector2D[] positions = VisionController.calculateLine(begin, end);
         for (Vector2D pos : positions) {
             if (controller.scenarioMap.getTile(pos).isWall()) return true;
         }
