@@ -6,7 +6,7 @@ import controller.maps.graph.Node;
 import java.util.LinkedList;
 import java.util.List;
 
-public class HashMap {
+public class HashMap<T> {
     private int capacity;
     private Bucket[] buckets;
 
