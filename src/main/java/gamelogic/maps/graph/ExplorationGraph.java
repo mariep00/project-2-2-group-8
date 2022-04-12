@@ -250,4 +250,8 @@ public class ExplorationGraph {
         int i = random.nextInt(seenTeleports.size());
         return seenTeleports.get(i);
     }
+
+    public int getNumberOfNodes() {
+        return nodes.getNumberOfNodes();
+    }
 }

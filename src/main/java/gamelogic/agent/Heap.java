@@ -2,19 +2,20 @@ package gamelogic.agent;
 
 @SuppressWarnings("unchecked")
 
-public class Heap<T extends Comparable<T>> {
+public class Heap<T extends HeapItemInterface<T>> {
 
     T[] items;
     int itemCount;
     
     public Heap(int size) {
-        items = (T[])new Object[size];
+        items = (T[])new HeapItemInterface[size];
         itemCount = 0;
     }
 
     public void add(T item) {
         items[itemCount] = item;
-        sortUp();
+        item.setHeapIndex(itemCount);
+        sortUp(itemCount);
         itemCount++;  
     }
 
@@ -23,14 +24,12 @@ public class Heap<T extends Comparable<T>> {
         itemCount--;
         swap(0, itemCount);
         items[itemCount] = null;
-        sortDown();
+        sortDown(0);
 
         return firstItem;
     }
 
-    private void sortUp() {
-        int index = itemCount;
-
+    private void sortUp(int index) {
         while(hasParent(index) && (parent(index).compareTo(items[index]) > 0)) {
             int parentIndex = parentIndex(index);
             swap(index, parentIndex);
@@ -54,6 +53,8 @@ public class Heap<T extends Comparable<T>> {
         T tmp = items[index];
         items[index] = items[parentIndex];
         items[parentIndex] = tmp;
+        items[index].setHeapIndex(index);
+        items[parentIndex].setHeapIndex(parentIndex);
     }
 
     private int leftChildIndex(int index) {
@@ -64,8 +65,7 @@ public class Heap<T extends Comparable<T>> {
         return (2*index)+2;
     }
 
-    private void sortDown() {
-        int index = 0;
+    private void sortDown(int index) {
         while(hasLeftChild(index)) {
             int smaller = leftChildIndex(index);
             if (hasRightChild(index) && items[smaller].compareTo(items[rightChildIndex(index)]) > 0) {
@@ -87,6 +87,14 @@ public class Heap<T extends Comparable<T>> {
     }
 
     public void updateItem(T item) {
-        
+        sortUp(item.getHeapIndex());
+        sortDown(item.getHeapIndex());
+    }
+
+    public T contains(T item) {
+        for (int i=0; i < itemCount; i++) {
+            if (items[i].equals(item)) return items[i];
+        }
+        return null;
     }
 }
