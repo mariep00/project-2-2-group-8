@@ -84,6 +84,13 @@ public abstract class Controller {
         time += timestep;
     }
 
+    protected void end() {
+        int hours = (int) time / 3600;
+        int minutes = ((int)time % 3600) / 60;
+        double seconds = time % 60;
+        System.out.println("Everything is explored. It took " + hours + " hour(s) " + minutes + " minutes " + seconds + " seconds.");
+    }
+
     protected ArrayList<Vector2D> calculateFOV(int agentIndex, Vector2D agentPosition) {
         return VisionController.calculateVision(agents[agentIndex].getView_angle(), agents[agentIndex].getView_range(), scenarioMap.createAreaMap(agentPosition, agents[agentIndex].getView_range()), agents[agentIndex].getOrientation()).getInVision();
     }
@@ -97,13 +104,6 @@ public abstract class Controller {
             tiles.add(scenarioMap.getTile(pos));
         }
         return tiles;
-    }
-
-    protected void end() {
-        int hours = (int) time / 3600;
-        int minutes = ((int)time % 3600) / 60;
-        double seconds = time % 60;
-        System.out.println("Everything is explored. It took " + hours + " hour(s) " + minutes + " minutes " + seconds + " seconds.");
     }
 
     protected Vector2D[] spawnAgents() {
