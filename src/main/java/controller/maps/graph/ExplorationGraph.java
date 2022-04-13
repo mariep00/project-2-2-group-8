@@ -39,7 +39,7 @@ public class ExplorationGraph {
      * @return Node with the specified Vector2D
      */
     public Node getNode(Vector2D vector) {
-        return nodes.getValue(vector);
+        return (Node) nodes.getValue(vector);
     }
 
     /**
@@ -169,7 +169,7 @@ public class ExplorationGraph {
     public void checkEdges(Node node) {
         Vector2D[] nodeNeighbours = node.getNeigbours();
         for (int i = 0; i < nodeNeighbours.length; i++) {
-            Node nodeNeighbour = nodes.getValue(nodeNeighbours[i]);
+            Node nodeNeighbour = (Node) nodes.getValue(nodeNeighbours[i]);
             if (nodeNeighbour != null) {
                 addUndirectedEdge(node, nodeNeighbour);
             }
@@ -203,7 +203,7 @@ public class ExplorationGraph {
         LinkedList<Node> neighbours = new LinkedList<>();
         Vector2D[] vector1 = x.getNeigbours();
         for (int i = 0; i < vector1.length; i++) {
-            Node n = nodes.getValue(vector1[i]);
+            Node n = (Node) nodes.getValue(vector1[i]);
             if (n != null) {
                 neighbours.add(n);
             }

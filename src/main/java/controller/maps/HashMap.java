@@ -3,15 +3,13 @@ package controller.maps;
 import java.util.LinkedList;
 import java.util.List;
 
-public class HashMap<T, V> implements KeyInterface<T> {
+public class HashMap<T, V> {
     private int capacity;
     private Bucket<T, V>[] buckets;
 
     final private double loadFactor;
     private int size = 0;
     private int numberOfNodes = 0;
-
-    private T key;
 
     public HashMap(int capacity) {
         this.capacity = capacity;
@@ -21,7 +19,7 @@ public class HashMap<T, V> implements KeyInterface<T> {
 
     public void addEntry(T key, V value) {
         numberOfNodes++;
-        int hash = getHash(key);
+        int hash = hashCode(key);
         if (buckets[hash] == null) {
             size++;
             buckets[hash] = new Bucket();
@@ -31,7 +29,7 @@ public class HashMap<T, V> implements KeyInterface<T> {
     }
 
     public void removeEntry(T key) {
-        int hash = getHash(key);
+        int hash = hashCode(key);
         if (buckets[hash] != null) {
             if (buckets[hash].removeEntry(key)) {
                 numberOfNodes--;
@@ -44,7 +42,7 @@ public class HashMap<T, V> implements KeyInterface<T> {
     }
 
     public V getValue(T key) {
-        Bucket<T, V> bucket = buckets[getHash(key)];
+        Bucket<T, V> bucket = buckets[hashCode(key)];
         if (bucket != null) {
             Entry<T, V> entry = bucket.getEntry(key);
             if (entry != null) return entry.getValue();
@@ -74,7 +72,7 @@ public class HashMap<T, V> implements KeyInterface<T> {
         for (Bucket<T, V> oldBucket : oldBuckets) {
             if (oldBucket != null) {
                 for (Entry<T, V> entry : oldBucket.getEntries()) {
-                    int hash = getHash(entry.key);
+                    int hash = hashCode(entry.key);
                     if (buckets[hash] == null) buckets[hash] = new Bucket();
                     buckets[hash].addEntry(entry);
                 }
@@ -82,11 +80,8 @@ public class HashMap<T, V> implements KeyInterface<T> {
         }
     }
 
-    @Override
-    public int getHash(T key) {
-        int hash = 31+key.x;
-        hash = (hash*31)+key.y;
-        return hash % this.capacity;
+    public int hashCode(T key) {
+        return key.hashCode() % this.capacity;
     }
 
     public int getNumberOfNodes() { return numberOfNodes; }
