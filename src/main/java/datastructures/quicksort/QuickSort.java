@@ -1,4 +1,4 @@
-package gamelogic.quicksort;
+package datastructures.quicksort;
 
 public class QuickSort<V> {
     private int partition (SortObject<V> a[], int start, int end) {

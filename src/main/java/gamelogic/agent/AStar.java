@@ -1,6 +1,8 @@
 package gamelogic.agent;
 
-import gamelogic.Vector2D;
+import datastructures.minheap.Heap;
+import datastructures.minheap.HeapItemInterface;
+import datastructures.Vector2D;
 import gamelogic.maps.graph.ExplorationGraph;
 import gamelogic.maps.graph.Node;
 
@@ -99,7 +101,7 @@ public class AStar {
 }
 
 
-class ANode implements HeapItemInterface<ANode>{
+class ANode implements HeapItemInterface<ANode> {
     public final Vector2D POSITION;
     public ANode parent;
     private int g; //distance from starting node

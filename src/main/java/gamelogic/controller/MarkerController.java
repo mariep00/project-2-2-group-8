@@ -1,6 +1,6 @@
 package gamelogic.controller;
 
-import gamelogic.Vector2D;
+import datastructures.Vector2D;
 import gamelogic.agent.Agent;
 import gamelogic.maps.MarkerInterface;
 import gamelogic.maps.PheromoneMarker;

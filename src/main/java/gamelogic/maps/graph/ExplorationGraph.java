@@ -1,11 +1,11 @@
 package gamelogic.maps.graph;
 
-import gamelogic.Vector2D;
-import gamelogic.maps.HashMap;
+import datastructures.Vector2D;
+import datastructures.HashMap;
 import gamelogic.maps.Tile;
 import gamelogic.maps.Tile.Type;
-import gamelogic.quicksort.QuickSort;
-import gamelogic.quicksort.SortObject;
+import datastructures.quicksort.QuickSort;
+import datastructures.quicksort.SortObject;
 
 import java.util.LinkedList;
 import java.util.Random;

@@ -1,6 +1,5 @@
-package gamelogic.maps;
+package datastructures;
 
-import gamelogic.Vector2D;
 import gamelogic.maps.graph.Node;
 
 import java.util.LinkedList;

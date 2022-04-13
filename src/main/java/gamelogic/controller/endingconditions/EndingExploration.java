@@ -1,6 +1,6 @@
 package gamelogic.controller.endingconditions;
 
-import gamelogic.Vector2D;
+import datastructures.Vector2D;
 import gamelogic.maps.ScenarioMap;
 import gamelogic.maps.Tile;
 

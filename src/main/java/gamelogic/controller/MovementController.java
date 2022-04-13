@@ -1,6 +1,6 @@
 package gamelogic.controller;
 
-import gamelogic.Vector2D;
+import datastructures.Vector2D;
 import gamelogic.maps.TeleportEntrance;
 import gamelogic.maps.Tile;
 

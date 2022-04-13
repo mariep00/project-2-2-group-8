@@ -1,6 +1,6 @@
 package gamelogic.maps;
 
-import gamelogic.Vector2D;
+import datastructures.Vector2D;
 
 public class TeleportEntrance extends SpecialFeature {
     private Vector2D exit;

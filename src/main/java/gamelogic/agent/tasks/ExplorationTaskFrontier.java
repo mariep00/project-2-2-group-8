@@ -1,6 +1,6 @@
 package gamelogic.agent.tasks;
 
-import gamelogic.Vector2D;
+import datastructures.Vector2D;
 import gamelogic.agent.AStar;
 import gamelogic.agent.tasks.TaskContainer.TaskType;
 import gamelogic.maps.Tile;

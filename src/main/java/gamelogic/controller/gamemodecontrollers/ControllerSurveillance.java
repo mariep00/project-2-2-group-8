@@ -1,6 +1,6 @@
 package gamelogic.controller.gamemodecontrollers;
 
-import gamelogic.Vector2D;
+import datastructures.Vector2D;
 import gamelogic.agent.Agent;
 import gamelogic.agent.brains.GuardBrain;
 import gamelogic.agent.brains.IntruderBrain;

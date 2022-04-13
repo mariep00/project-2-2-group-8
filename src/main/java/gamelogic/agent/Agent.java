@@ -1,6 +1,6 @@
 package gamelogic.agent;
 
-import gamelogic.Vector2D;
+import datastructures.Vector2D;
 import gamelogic.agent.brains.BrainInterface;
 import gamelogic.maps.Tile;
 import gamelogic.maps.Tile.Type;

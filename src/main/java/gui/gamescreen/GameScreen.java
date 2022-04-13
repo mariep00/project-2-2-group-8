@@ -1,6 +1,6 @@
 package gui.gamescreen;
 
-import gamelogic.Vector2D;
+import datastructures.Vector2D;
 import gamelogic.controller.endingconditions.EndingExploration;
 import gamelogic.maps.ScenarioMap;
 import gui.MainGUI;

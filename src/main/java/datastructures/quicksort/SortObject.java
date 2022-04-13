@@ -1,4 +1,4 @@
-package gamelogic.quicksort;
+package datastructures.quicksort;
 
 public class SortObject<V> {
     public final V object;

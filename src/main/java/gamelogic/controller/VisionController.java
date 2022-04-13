@@ -1,6 +1,6 @@
 package gamelogic.controller;
 
-import gamelogic.Vector2D;
+import datastructures.Vector2D;
 import gamelogic.maps.VisionMap;
 
 import java.util.ArrayList;
@@ -12,7 +12,7 @@ public class VisionController {
     /**
      * Calculates the visible tiles for an Agent
      * @param visionAngle angle of the visible field
-     * @param newVisionRange how far the agent can see
+     * @param visionRange how far the agent can see
      * @param areaMap small map of the immediate surroundings of the agent
      * @param direction direction of sight of the agent
      * @return Returns a VisionMap where all tiles that are visible to the agent are marked

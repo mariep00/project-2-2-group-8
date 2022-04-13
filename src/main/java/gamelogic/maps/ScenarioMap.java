@@ -1,6 +1,6 @@
 package gamelogic.maps;
 
-import gamelogic.Vector2D;
+import datastructures.Vector2D;
 import gamelogic.maps.Tile.Type;
 
 import java.util.ArrayList;

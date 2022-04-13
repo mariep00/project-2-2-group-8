@@ -1,6 +1,6 @@
 package gamelogic.maps.graph;
 
-import gamelogic.Vector2D;
+import datastructures.Vector2D;
 import gamelogic.maps.TeleportExit;
 import gamelogic.maps.Tile;
 

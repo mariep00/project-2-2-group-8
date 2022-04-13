@@ -1,6 +1,6 @@
 package gui.gamescreen.controller;
 
-import gamelogic.Vector2D;
+import datastructures.Vector2D;
 import gamelogic.controller.Controller;
 import gui.gamescreen.GameScreen;
 import javafx.application.Platform;

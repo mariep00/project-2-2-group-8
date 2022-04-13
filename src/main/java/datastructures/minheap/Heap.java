@@ -1,4 +1,4 @@
-package gamelogic.agent;
+package datastructures.minheap;
 
 @SuppressWarnings("unchecked")
 
