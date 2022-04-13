@@ -114,7 +114,7 @@ public abstract class Controller {
         for (int i = 0; i < numberOfGuards; i++) {
             while (true) {
                 int randNumber = rand.nextInt(spawnAreaGuards.size());
-                if (!indicesUsed.contains(rand)) {
+                if (!indicesUsed.contains(randNumber)) {
                     indicesUsed.add(randNumber);
                     agentSpawnLocations[i] = spawnAreaGuards.get(randNumber);
                     agentPositions[i] = agentSpawnLocations[i];
@@ -122,6 +122,7 @@ public abstract class Controller {
                 }
             }
         }
+
         return agentPositions;
     }
 
