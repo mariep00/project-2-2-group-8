@@ -74,4 +74,12 @@ public class Vector2D {
         neighbours[3] = new Vector2D((this.x-1), (this.y));
         return neighbours;
     }
+
+
+    @Override
+    public int hashCode() {
+        int hash = 31+this.x;
+        hash = (hash*31)+this.y;
+        return hash;
+    }
 }
