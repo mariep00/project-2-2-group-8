@@ -11,7 +11,8 @@ public class AStar {
 
     private ExplorationGraph graph;
     
-    private ArrayList<ANode> open;
+    //TODO: Once HashMap is generic, implement closed as HashMap
+    private Heap<ANode> open;
     private ArrayList<ANode> closed;
 
     private Vector2D goal;
@@ -20,7 +21,7 @@ public class AStar {
     private final boolean DEBUG = true;
 
     public AStar (ExplorationGraph graph, Node startNode, Node goalNode) {
-        open = new ArrayList<>();
+        open = new Heap<>(graph.getNumberOfNodes());
         closed = new ArrayList<>();
         this.goal = goalNode.COORDINATES; 
         this.graph = graph;
@@ -33,21 +34,20 @@ public class AStar {
 
     public LinkedList<Vector2D> calculate() {
         while(true) {
-            ANode current = getNextFromOpen();
+            ANode current = open.removeFirst();
             if (current == null) return null;
             if(current.POSITION.equals(goal)) {
                 goalANode = current;
                 break;
             }
 
-            open.remove(current);
             closed.add(current);
 
             ArrayList<ANode> neighbours = getNeighbours(current);
 
             for (ANode node: neighbours) {
                 int g = current.getG()+1;
-                ANode x = isInOpen(node.POSITION);
+                ANode x = open.contains(node);
                 if (x!=null) {
                     if(g<x.getG()) {
                         x.setG(g);
@@ -76,13 +76,6 @@ public class AStar {
         return path;
     }
 
-    private ANode isInOpen(Vector2D pos) {
-        for (ANode n: open) {
-            if(n.POSITION.equals(pos)) return n;
-        }
-        return null;
-    }
-
     private ArrayList<ANode> getNeighbours(ANode current) {
         ArrayList<ANode> neighbours = new ArrayList<>();
         Node[] edges = graph.getNode(current.POSITION).getEdges();
@@ -103,29 +96,19 @@ public class AStar {
         }
         return false;
     }
-
-    private ANode getNextFromOpen() {
-        ANode next = null;
-        int lowestFCost = Integer.MAX_VALUE;
-        for (ANode n: open) {
-            if(n.getF()<lowestFCost) {
-                next = n;
-                lowestFCost=n.getF();
-            }
-        }
-        return next;
-    }
 }
 
 
-class ANode {
+class ANode implements HeapItemInterface<ANode>{
     public final Vector2D POSITION;
     public ANode parent;
     private int g; //distance from starting node
     private int h; //distance from end node
+    private int heapIndex;
 
     public ANode (Vector2D pos) {
         POSITION = pos;
+        heapIndex = -1;
     }
 
     public void setParent(ANode parent) { this.parent = parent; }
@@ -139,4 +122,41 @@ class ANode {
     public int getH() { return h; }
 
     public int getF() { return g+h; }
+
+    @Override
+    public void setHeapIndex(int index) {
+        heapIndex = index;    
+    }
+
+    @Override
+    public int getHeapIndex() {
+        return heapIndex;
+    }
+
+    @Override
+    public int compareTo(ANode other) {
+        if (getF()>other.getF()) {
+            return 1;
+        } else if (getF()==other.getF()) {
+            if (h > other.getH()) {
+                return 1;
+            } else if (h == other.getH()) {
+                return 0;
+            } else {
+                return -1;
+            }
+        } else {
+            return -1;
+        }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        ANode other = (ANode) o;
+        if (POSITION.equals(other.POSITION)) {
+            return true;
+        } else {
+            return false;
+        }
+    }   
 }
