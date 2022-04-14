@@ -48,9 +48,7 @@ public class Tile extends StackPane {
     public void setShaded(Image shadedImage) {
         tileImages[3].setImage(shadedImage);
     }
-    public void setTargetArea(Image targetArea) {
-        tileImages[4].setImage(targetArea);
-    }
+    public void setTargetArea(Image targetArea) { tileImages[4].setImage(targetArea); }
     public void setToExplored() { tileImages[5].resetTileImage(); }
     public void setToInVision(Image inVisionImage) { tileImages[6].setImage(inVisionImage); }
     public void setToOutOfVision() { tileImages[6].resetTileImage(); }

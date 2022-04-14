@@ -1,5 +1,7 @@
 package gui;
 
+import gui.utils.MainGUI;
+import gui.utils.TransitionInterface;
 import javafx.animation.*;
 import javafx.application.Application;
 import javafx.embed.swing.SwingFXUtils;

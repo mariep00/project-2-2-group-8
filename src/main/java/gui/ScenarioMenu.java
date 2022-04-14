@@ -1,8 +1,10 @@
 package gui;
 
-import gamelogic.MapBuilder;
+import gamelogic.maps.ScenarioMap;
 import gui.gamescreen.GameScreen;
 import gui.mapcreator.MapCreator;
+import gui.utils.HelperGUI;
+import gui.utils.TransitionInterface;
 import javafx.animation.Transition;
 import javafx.application.Application;
 import javafx.geometry.Pos;
@@ -12,10 +14,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -86,10 +86,8 @@ public class ScenarioMenu extends Application implements TransitionInterface {
         loadSceneTransition( vboxButtons);
 
         buttonLoadMap.setOnAction(e -> {
-            FileChooser fileChooser = new FileChooser();
-            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text Files", "*.txt"));
-            File selectedFile = fileChooser.showOpenDialog(stage);
-            if (selectedFile != null) quitSceneTransition(() -> new GameScreen(new MapBuilder(selectedFile).getMap()).start(stage), vboxButtons);
+            ScenarioMap scenarioMap = HelperGUI.loadMapWithFileChooser(stage);
+            if (scenarioMap != null) quitSceneTransition(() -> new GameScreen(scenarioMap).start(stage), vboxButtons);
         });
         buttonCreateMap.setOnAction(e -> quitSceneTransition(() -> new MapCreator().start(stage), vboxButtons));
     }

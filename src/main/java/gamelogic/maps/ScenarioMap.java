@@ -27,11 +27,8 @@ public class ScenarioMap {
     private Tile[][] mapGrid;
     private int width;
     private int height;
-    private double scaling;
 
-    public ScenarioMap() {
-
-    }
+    public ScenarioMap() { }
 
     public int getHeight() {
         return height;
@@ -195,10 +192,12 @@ public class ScenarioMap {
         mapGrid[y+1][x+1] = (Tile)tile;
     }
 
-    public void createMap(int width, int height, float scaling) {
+    public void createMap(int width, int height) {
         this.width = width+2;
         this.height = height+2;
+
         mapGrid = new Tile[this.height][this.width];
+
         for (int i=0; i < mapGrid[0].length-1; i++) {
             for (int j=0; j < mapGrid.length-1; j++) {
                 mapGrid[j][i] = new Tile();
@@ -206,11 +205,11 @@ public class ScenarioMap {
         }
         for (int j = 0; j < mapGrid.length; j++) {
             mapGrid[j][0] = new Tile(Type.WALL, false);
-            mapGrid[j][mapGrid[0].length-1] = new Tile(Type.WALL, false);
+            mapGrid[j][mapGrid[0].length - 1] = new Tile(Type.WALL, false);
         }
         for (int i = 0; i < mapGrid[0].length; i++) {
             mapGrid[0][i] = new Tile(Type.WALL, false);
-            mapGrid[mapGrid.length-1][i] = new Tile(Type.WALL, false);
+            mapGrid[mapGrid.length - 1][i] = new Tile(Type.WALL, false);
         }
     }
 

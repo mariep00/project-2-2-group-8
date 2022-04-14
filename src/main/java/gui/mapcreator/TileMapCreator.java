@@ -52,7 +52,18 @@ public class TileMapCreator extends Tile {
     public void resetCharacterImage() { tileImages[1].setImage(null); }
 
     public void setBaseImageToFloor() { ((TileImageMapCreator)tileImages[0]).resetImageToFloor(); }
-
+    public void setSpawnArea(Image spawnArea, TileType tileType) {
+        tileImages[4].setImage(spawnArea);
+        ((TileImageMapCreator) tileImages[4]).setTileType(tileType);
+    }
+    public void setShaded(Image shaded, TileType tileType) {
+        tileImages[3].setImage(shaded);
+        ((TileImageMapCreator) tileImages[3]).setTileType(tileType);
+    }
+    public void setTargetArea(Image targetArea, TileType tileType) {
+        tileImages[4].setImage(targetArea);
+        ((TileImageMapCreator) tileImages[4]).setTileType(tileType);
+    }
     public boolean isWall() { return ((TileImageMapCreator)tileImages[0]).getTileType() == TileType.WALL; }
     public boolean isShaded() { return ((TileImageMapCreator)tileImages[3]).getTileType() == TileType.SHADED; }
     public boolean isSpawnAreaGuards() { return ((TileImageMapCreator)tileImages[4]).getTileType() == TileType.SPAWN_AREA_GUARDS; }

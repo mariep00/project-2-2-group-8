@@ -1,11 +1,13 @@
 package gui.mapcreator;
 
+import datastructures.Vector2D;
 import gamelogic.maps.ScenarioMap;
-import gui.MainGUI;
-import gui.TransitionInterface;
 import gui.gamescreen.GameScreen;
 import gui.gamescreen.ImageContainer;
 import gui.gamescreen.Tile;
+import gui.utils.HelperGUI;
+import gui.utils.MainGUI;
+import gui.utils.TransitionInterface;
 import javafx.animation.Transition;
 import javafx.application.Application;
 import javafx.geometry.Bounds;
@@ -81,16 +83,16 @@ public class MapCreator extends Application implements TransitionInterface {
         }
 
         ScrollPane scrollPane = new ScrollPane(gridPane);
-        //scrollPane.setPannable(true); // Causes issues when "painting" while dragging
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         scrollPane.setFitToHeight(true);
         scrollPane.setFitToWidth(true);
 
         Button buttonReset = new Button("Reset map");
+        Button buttonLoad = new Button("Load map");
         Button buttonExport = new Button("Export map");
         Button buttonPlayGame = new Button("Play game with map");
-        HBox hbox = new HBox(15, buttonReset, buttonExport, buttonPlayGame);
+        HBox hbox = new HBox(15, buttonReset, buttonLoad, buttonExport, buttonPlayGame);
         hbox.setAlignment(Pos.CENTER_RIGHT);
         BorderPane borderPane = new BorderPane(scrollPane);
         BorderPane.setAlignment(gridPane, Pos.CENTER);
@@ -158,6 +160,54 @@ public class MapCreator extends Application implements TransitionInterface {
                 }
             }
         });
+        buttonLoad.setOnAction(e -> {
+            ScenarioMap scenarioMap = HelperGUI.loadMapWithFileChooser(stage);
+
+            if (scenarioMap != null) {
+                gridPane.getChildren().clear();
+
+                nrOfTilesWidth = scenarioMap.getWidth();
+                nrOfTilesHeight = scenarioMap.getHeight();
+                widthField.setText(String.valueOf(nrOfTilesWidth));
+                heightField.setText(String.valueOf(nrOfTilesHeight));
+
+                tiles = new TileMapCreator[nrOfTilesHeight][nrOfTilesWidth];
+                gamelogic.maps.Tile[][] tilesScenarioMap = scenarioMap.getMapGrid();
+
+                for (int x = 0; x < scenarioMap.getWidth(); x++) {
+                    for (int y = 0; y < scenarioMap.getHeight(); y++) {
+                        TileMapCreator tile;
+                        if (tilesScenarioMap[y][x].getType() == gamelogic.maps.Tile.Type.WALL) {
+                            // It's a wall. Create a tile with the right wall image
+                            tile = new TileMapCreator(new TileImageMapCreator(imageContainer.getWall(HelperGUI.getBitSetSurroundingWalls(tilesScenarioMap, x, y)), TileType.WALL));
+                        } else if (tilesScenarioMap[y][x].getType() == gamelogic.maps.Tile.Type.TELEPORT_ENTRANCE) {
+                            // For now a floor, change to teleport image later
+                            tile = new TileMapCreator(new TileImageMapCreator(imageContainer.getTeleport(), TileType.TELEPORT));
+                        }
+                        // If it's none of above, it's always a floor
+                        else {
+                            tile = new TileMapCreator(new TileImageMapCreator(imageContainer.getFloor(), TileType.FLOOR));
+                        }
+
+                        if (tilesScenarioMap[y][x].isShaded()) {
+                            tile.setShaded(imageContainer.getShaded(), TileType.SHADED);
+                        }
+                        if (tilesScenarioMap[y][x].getType() == gamelogic.maps.Tile.Type.TARGET_AREA) {
+                            tile.setTargetArea(imageContainer.getTargetArea(), TileType.TARGET_AREA);
+                        }
+
+                        gridPane.add(tile, x, y);
+                        tiles[y][x] = tile;
+                    }
+                }
+                for (Vector2D pos : scenarioMap.getSpawnAreaGuards()) {
+                    tiles[pos.y][pos.x].setSpawnArea(imageContainer.getSpawnAreaGuards(), TileType.SPAWN_AREA_GUARDS);
+                }
+                for (Vector2D pos : scenarioMap.getSpawnAreaIntruders()) {
+                    tiles[pos.y][pos.x].setSpawnArea(imageContainer.getSpawnAreaIntruders(), TileType.SPAWN_AREA_INTRUDERS);
+                }
+            }
+        });
         buttonExport.setOnAction(e -> {
             FileChooser fileChooser = new FileChooser();
             fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text Files", "*.txt"));
@@ -165,16 +215,17 @@ public class MapCreator extends Application implements TransitionInterface {
             if (selectedFile != null) exportMap(selectedFile);
         });
         buttonPlayGame.setOnAction(e -> {
+            int[] mapBuildIndices = mapBuildIndices();
             ScenarioMap scenarioMap = new ScenarioMap();
-            scenarioMap.createMap(nrOfTilesWidth, nrOfTilesHeight, 1);
-            for (int x = 0; x < tiles[0].length; x++) {
-                for (int y = 0; y < tiles.length; y++) {
-                    if (tiles[y][x].isWall()) scenarioMap.insertElement(x, y, gamelogic.maps.Tile.Type.WALL);
-                    else if (tiles[y][x].isSpawnAreaGuards()) scenarioMap.insertSpawnAreaGuard(x, y);
-                    else if (tiles[y][x].isSpawnAreaIntruders()) scenarioMap.insertSpawnAreaIntruder(x, y);
-                    else if (tiles[y][x].isTargetArea()) scenarioMap.insertElement(x, y, gamelogic.maps.Tile.Type.TARGET_AREA);
-                    else if (tiles[y][x].isTeleport()) scenarioMap.setTeleport(x, y, x, y, x+1, y+1, 0); // TODO input for custom exit and rotation, can cause errors now
-                    if (tiles[y][x].isShaded()) scenarioMap.setShaded(x, y);
+            scenarioMap.createMap(nrOfTilesWidth-mapBuildIndices[0]-(nrOfTilesWidth-mapBuildIndices[1]), nrOfTilesHeight-mapBuildIndices[2]-(nrOfTilesHeight-mapBuildIndices[3]));
+            for (int x = mapBuildIndices[0]; x < mapBuildIndices[1]; x++) {
+                for (int y = mapBuildIndices[2]; y < mapBuildIndices[3]; y++) {
+                    if (tiles[y][x].isWall()) scenarioMap.insertElement((x-mapBuildIndices[0]), (y-mapBuildIndices[2]), gamelogic.maps.Tile.Type.WALL);
+                    else if (tiles[y][x].isSpawnAreaGuards()) scenarioMap.insertSpawnAreaGuard((x-mapBuildIndices[0]), (y-mapBuildIndices[2]));
+                    else if (tiles[y][x].isSpawnAreaIntruders()) scenarioMap.insertSpawnAreaIntruder((x-mapBuildIndices[0]), (y-mapBuildIndices[2]));
+                    else if (tiles[y][x].isTargetArea()) scenarioMap.insertElement((x-mapBuildIndices[0]), (y-mapBuildIndices[2]), gamelogic.maps.Tile.Type.TARGET_AREA);
+                    else if (tiles[y][x].isTeleport()) scenarioMap.setTeleport((x-mapBuildIndices[0]), (y-mapBuildIndices[2]), (x-mapBuildIndices[0]), (y-mapBuildIndices[2]), (x-mapBuildIndices[0])+1, (y-mapBuildIndices[2])+1, 0); // TODO input for custom exit and rotation, can cause errors now
+                    if (tiles[y][x].isShaded()) scenarioMap.setShaded((x-mapBuildIndices[0]), (y-mapBuildIndices[2]));
                 }
             }
             scenarioMap.setNumGuards(isStringNumeric(numGuards.getText()) ? Integer.parseInt(numGuards.getText()) : 0);
@@ -241,10 +292,12 @@ public class MapCreator extends Application implements TransitionInterface {
 
     private void exportMap(File selectedFile) {
         try(PrintWriter writer = new PrintWriter(selectedFile)) {
+            int[] mapBuildIndices = mapBuildIndices();
+
             writer.println("name = test scenario");
             writer.println("gameMode = 0");
-            writer.println("height = " + nrOfTilesHeight);
-            writer.println("width = " + nrOfTilesWidth);
+            writer.println("height = " + (nrOfTilesHeight-mapBuildIndices[2]-(nrOfTilesHeight-mapBuildIndices[3])));
+            writer.println("width = " + (nrOfTilesWidth-mapBuildIndices[0]-(nrOfTilesWidth-mapBuildIndices[1])));
             writer.println("numGuards = " + (isStringNumeric(numGuards.getText()) ? numGuards.getText() : 0));
             writer.println("numIntruders = " + (isStringNumeric(numIntruders.getText()) ? numIntruders.getText() : 0));
             writer.println("baseSpeedIntruder = 14.0");
@@ -252,21 +305,34 @@ public class MapCreator extends Application implements TransitionInterface {
             writer.println("baseSpeedGuard = 14.0");
             writer.println("timeStep = 0.1");
 
-            for (int x = 0; x < tiles[0].length; x++) {
-                for (int y = 0; y < tiles.length; y++) {
+            for (int x = mapBuildIndices[0]; x < mapBuildIndices[1]; x++) {
+                for (int y = mapBuildIndices[2]; y < mapBuildIndices[3]; y++) {
                     TileMapCreator tile = tiles[y][x];
-                    if (tile.isWall()) writer.println("wall = " + x + " " + y + " " + x + " " + y);
-                    else if (tile.isSpawnAreaGuards()) writer.println("spawnAreaGuards = " + x + " " + y + " " + x + " " + y);
-                    else if (tile.isSpawnAreaIntruders()) writer.println("spawnAreaIntruders = " + x + " " + y + " " + x + " " + y);
-                    else if (tile.isTargetArea()) writer.println("targetArea = " + x + " " + y + " " + x + " " + y);
-                    else if (tile.isTeleport()) writer.println("teleport = " + x + " " + y + " " + x + " " + y + " " + (x+1) + " " + (y+1) + " " + 0); // TODO input for custom exit and rotation, can cause errors now
-                    if (tile.isShaded()) writer.println("shaded = " + x + " " + y + " " + x + " " + y);
+                    if (tile.isWall()) writer.println("wall = " + (x-mapBuildIndices[0]) + " " + (y-mapBuildIndices[2]) + " " + (x-mapBuildIndices[0]) + " " + (y-mapBuildIndices[2]));
+                    else if (tile.isSpawnAreaGuards()) writer.println("spawnAreaGuards = " + (x-mapBuildIndices[0]) + " " + (y-mapBuildIndices[2]) + " " + (x-mapBuildIndices[0]) + " " + (y-mapBuildIndices[2]));
+                    else if (tile.isSpawnAreaIntruders()) writer.println("spawnAreaIntruders = " + (x-mapBuildIndices[0]) + " " + (y-mapBuildIndices[2]) + " " + (x-mapBuildIndices[0]) + " " + (y-mapBuildIndices[2]));
+                    else if (tile.isTargetArea()) writer.println("targetArea = " + (x-mapBuildIndices[0]) + " " + (y-mapBuildIndices[2]) + " " + (x-mapBuildIndices[0]) + " " + (y-mapBuildIndices[2]));
+                    else if (tile.isTeleport()) writer.println("teleport = " + (x-mapBuildIndices[0]) + " " + (y-mapBuildIndices[2]) + " " + (x-mapBuildIndices[0]) + " " + (y-mapBuildIndices[2]) + " " + ((x-mapBuildIndices[0])+1) + " " + ((y-mapBuildIndices[2])+1) + " " + 0); // TODO input for custom exit and rotation, can cause errors now
+                    if (tile.isShaded()) writer.println("shaded = " + (x-mapBuildIndices[0]) + " " + (y-mapBuildIndices[2]) + " " + (x-mapBuildIndices[0]) + " " + (y-mapBuildIndices[2]));
                 }
             }
         }
         catch (IOException exception) {
             exception.printStackTrace();
         }
+    }
+
+    private int[] mapBuildIndices() {
+        int[] indices = {1, tiles[0].length-1, 1, tiles.length-1}; // first column, last column, first row, last row
+        for (int y = 0; y < tiles.length; y++) {
+            if (!tiles[y][0].isWall()) indices[0] = 0;
+            if (!tiles[y][tiles[0].length-1].isWall()) indices[1] = tiles[0].length;
+        }
+        for (int x = 0; x < tiles[0].length; x++) {
+            if (!tiles[0][x].isWall()) indices[2] = 0;
+            if (!tiles[tiles.length-1][x].isWall()) indices[3] = tiles.length;
+        }
+        return indices;
     }
 
     private boolean isStringNumeric(String string) {

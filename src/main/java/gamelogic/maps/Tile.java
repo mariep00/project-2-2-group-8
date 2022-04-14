@@ -6,7 +6,6 @@ public class Tile {
         FLOOR,
         WALL,
         TARGET_AREA,
-        SPAWN_AREA_GUARDS,
         DOOR,
         WINDOW,
         TELEPORT_ENTRANCE,

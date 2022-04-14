@@ -26,7 +26,6 @@ public class ExplorationGraph {
         this.seenTeleports = new LinkedList<>();
         random = new Random();
         Tile t = new Tile();
-        t.setType(Type.SPAWN_AREA_GUARDS);
         this.origin = new Node(new Vector2D(0, 0), t);
         addVertex(origin);
         this.currentPosition = origin;

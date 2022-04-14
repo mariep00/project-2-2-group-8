@@ -1,15 +1,14 @@
 package gui.gamescreen;
 
-import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 
-public class ProgressBarCustom extends StackPane {
-    private final ProgressBar progressBar;
+public class ProgressBar extends StackPane {
+    private final javafx.scene.control.ProgressBar progressBar;
     private final Text text;
-    public ProgressBarCustom() {
+    public ProgressBar() {
         super();
-        progressBar = new ProgressBar();
+        progressBar = new javafx.scene.control.ProgressBar();
         text = new Text();
         getChildren().addAll(progressBar, text);
     }
@@ -19,5 +18,5 @@ public class ProgressBarCustom extends StackPane {
         text.setText(Math.round(value*10000)/100.0+"%");
     }
 
-    public ProgressBar getProgressBar() { return progressBar; }
+    public javafx.scene.control.ProgressBar getProgressBar() { return progressBar; }
 }

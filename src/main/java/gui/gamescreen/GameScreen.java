@@ -3,9 +3,10 @@ package gui.gamescreen;
 import datastructures.Vector2D;
 import gamelogic.controller.endingconditions.EndingExploration;
 import gamelogic.maps.ScenarioMap;
-import gui.MainGUI;
-import gui.TransitionInterface;
 import gui.gamescreen.controller.ControllerExplorationGUI;
+import gui.utils.HelperGUI;
+import gui.utils.MainGUI;
+import gui.utils.TransitionInterface;
 import javafx.animation.Transition;
 import javafx.application.Application;
 import javafx.geometry.Insets;
@@ -13,7 +14,6 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.Slider;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -25,7 +25,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.BitSet;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -37,7 +36,7 @@ public class GameScreen extends Application implements TransitionInterface {
     private final ScenarioMap scenarioMap;
 
     private Tile[][] tiles;
-    private ProgressBarCustom progressBar;
+    private ProgressBar progressBar;
     private boolean[] showVision;
 
     public GameScreen(ScenarioMap scenarioMap) {
@@ -56,6 +55,7 @@ public class GameScreen extends Application implements TransitionInterface {
         gridPane.setAlignment(Pos.CENTER);
 
         showVision = new boolean[scenarioMap.getNumGuards()];
+
         tiles = new Tile[scenarioMap.getHeight()][scenarioMap.getWidth()];
         gamelogic.maps.Tile[][] tilesController = scenarioMap.getMapGrid();
 
@@ -64,7 +64,7 @@ public class GameScreen extends Application implements TransitionInterface {
                 Tile tile;
                 if (tilesController[y][x].getType() == gamelogic.maps.Tile.Type.WALL) {
                     // It's a wall. Create a tile with the right wall image
-                    tile = new Tile(new TileImage(imageContainer.getWall(getBitSetSurroundingWalls(tilesController, x, y))));
+                    tile = new Tile(new TileImage(imageContainer.getWall(HelperGUI.getBitSetSurroundingWalls(tilesController, x, y))));
                 }
                 else if (tilesController[y][x].getType() == gamelogic.maps.Tile.Type.TELEPORT_ENTRANCE) {
                     // For now a floor, change to teleport image later
@@ -84,7 +84,7 @@ public class GameScreen extends Application implements TransitionInterface {
 
                 gridPane.add(tile, x, y);
                 tiles[y][x] = tile;
-                tile.addEventFilter(MouseEvent.MOUSE_CLICKED,e -> {
+                tile.addEventFilter(MouseEvent.MOUSE_CLICKED, e -> {
                     tile.getTileImageAgent().onClick();
                     e.consume();
                 });
@@ -101,7 +101,7 @@ public class GameScreen extends Application implements TransitionInterface {
         BorderPane borderPane = new BorderPane(scrollPane);
         BorderPane.setAlignment(gridPane, Pos.CENTER);
 
-        progressBar = new ProgressBarCustom();
+        progressBar = new ProgressBar();
         progressBar.getProgressBar().setPrefWidth(400);
         progressBar.getProgressBar().setPrefHeight(35);
 
@@ -146,14 +146,7 @@ public class GameScreen extends Application implements TransitionInterface {
         buttonStopSimulation.setPrefWidth(35);
         buttonStopSimulation.setPrefHeight(35);
 
-        Slider simulationSlider = new Slider();
-        simulationSlider.setMax(800);
-        simulationSlider.setMin(5);
-        simulationSlider.setMajorTickUnit(266.67);
-        simulationSlider.setShowTickMarks(true);
-        simulationSlider.setValue(400);
-        simulationSlider.setPrefWidth(260);
-        simulationSlider.setPrefHeight(35);
+        SimulationSpeedSlider simulationSlider = new SimulationSpeedSlider();
 
         hboxButtons.getChildren().addAll(  buttonShowAllVisions, buttonHideAllVisions, simulationSlider, buttonStep, buttonPlaySimulation, buttonStopSimulation);
         hboxButtons.setAlignment(Pos.CENTER_RIGHT);
@@ -176,10 +169,10 @@ public class GameScreen extends Application implements TransitionInterface {
         gridPane.setVgap(-1);
 
         simulationSlider.setOnMouseDragged(e -> {
-            controllerExplorationGUI.setSimulationDelay((int)(simulationSlider.maxProperty().get()-simulationSlider.getValue()));
+            controllerExplorationGUI.setSimulationDelay((int)(simulationSlider.slider.maxProperty().get()-simulationSlider.slider.getValue()));
         });
         simulationSlider.setOnMouseReleased(e -> {
-            controllerExplorationGUI.setSimulationDelay((int)(simulationSlider.maxProperty().get()-simulationSlider.getValue()));
+            controllerExplorationGUI.setSimulationDelay((int)(simulationSlider.slider.maxProperty().get()-simulationSlider.slider.getValue()));
         });
 
         buttonStep.setOnAction(e -> {
@@ -219,24 +212,6 @@ public class GameScreen extends Application implements TransitionInterface {
         });
 
         controllerExplorationGUI.init();
-    }
-
-    private BitSet getBitSetSurroundingWalls(gamelogic.maps.Tile[][] tiles, int x, int y) {
-        BitSet bitSet = new BitSet(8);
-        byte count = 0;
-        for (int i = -1; i <= 1; i++) {
-            for (int j = -1; j <= 1; j++) {
-                if (i != 0 || j != 0) {
-                    if (y + i >= 0 && x + j >= 0 && y + i < tiles.length && x + j < tiles[y].length) {
-                        if (tiles[y + i][x + j].getType() == gamelogic.maps.Tile.Type.WALL) {
-                            bitSet.set(count);
-                        }
-                    }
-                    count++;
-                }
-            }
-        }
-        return bitSet;
     }
 
     public void pauseGame() {

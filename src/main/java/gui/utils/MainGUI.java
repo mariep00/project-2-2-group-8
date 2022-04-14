@@ -1,5 +1,7 @@
-package gui;
+package gui.utils;
 
+import gui.HomeScreen;
+import gui.PauseMenu;
 import gui.gamescreen.GameScreen;
 import javafx.application.Platform;
 import javafx.geometry.Insets;

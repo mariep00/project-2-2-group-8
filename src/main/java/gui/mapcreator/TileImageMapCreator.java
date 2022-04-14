@@ -35,6 +35,7 @@ public class TileImageMapCreator extends TileImage {
         this.tileType = TileType.FLOOR;
         setImage(ImageContainer.getInstance().getFloor());
     }
+    public void setTileType(TileType tileType) { this.tileType = tileType; }
 
     @Override
     public void resetTileImage() {
