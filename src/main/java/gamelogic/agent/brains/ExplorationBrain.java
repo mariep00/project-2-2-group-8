@@ -1,12 +1,11 @@
 package gamelogic.agent.brains;
 
-import java.util.Stack;
-
 import gamelogic.agent.tasks.ExplorationTaskFrontier;
-import gamelogic.agent.tasks.ExplorationTaskRandom;
 import gamelogic.agent.tasks.TaskContainer;
 import gamelogic.agent.tasks.TaskContainer.TaskType;
 import gamelogic.maps.graph.ExplorationGraph;
+
+import java.util.Stack;
 
 public class ExplorationBrain implements BrainInterface {
     private TaskContainer tasks;

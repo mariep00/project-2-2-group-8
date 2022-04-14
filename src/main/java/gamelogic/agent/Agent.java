@@ -33,6 +33,7 @@ public class Agent {
 
     public int tick(ArrayList<Tile> inVision, ArrayList<Vector2D> coordinates, double[] pheromoneMarkerDirections) {
         updateGraph(inVision, coordinates);
+        //System.out.println(Arrays.toString(explorationGraph.frontiers.getAllNodes().toArray()));
         return brain.makeDecision(explorationGraph, orientation);
     }
 

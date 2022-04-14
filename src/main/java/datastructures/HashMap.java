@@ -1,4 +1,4 @@
-package controller.maps;
+package datastructures;
 
 import java.util.LinkedList;
 import java.util.List;

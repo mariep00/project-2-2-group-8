@@ -32,7 +32,6 @@ public class ExplorationTaskFrontier implements TaskInterface {
         int frontierIndexToGoTo = 0;
         
         updateGoal(frontierIndexToGoTo);
-        
         boolean foundReachableNode = false;
         while (!foundReachableNode) {
             if (goalNode == lastNode) { 

@@ -20,8 +20,13 @@ public class Vector2D {
     }
     public Vector2D add (Vector2D other) { return new Vector2D(x+other.x, y+other.y); }
 
-    public boolean equals(Vector2D other){
-        return this.x == other.x && this.y == other.y;
+    @Override
+    public boolean equals(Object other){
+        if (other == null) return false;
+        if (other.getClass() != this.getClass()) return false;
+
+        Vector2D otherVector = (Vector2D) other;
+        return this.x == otherVector.x && this.y == otherVector.y;
     }
     
     public Vector2D getSide(double dir) {

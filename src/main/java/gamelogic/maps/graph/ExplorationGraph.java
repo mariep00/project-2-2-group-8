@@ -1,28 +1,28 @@
 package gamelogic.maps.graph;
 
-import datastructures.Vector2D;
 import datastructures.HashMap;
-import gamelogic.maps.Tile;
-import gamelogic.maps.Tile.Type;
+import datastructures.Vector2D;
 import datastructures.quicksort.QuickSort;
 import datastructures.quicksort.SortObject;
+import gamelogic.maps.Tile;
+import gamelogic.maps.Tile.Type;
 
 import java.util.LinkedList;
 import java.util.Random;
 
 public class ExplorationGraph {
 
-    private Node origin;
+    private final Node origin;
     private Node currentPosition;
-    private LinkedList<Node> seenTeleports;
-    private Random random;
+    private final LinkedList<Node> seenTeleports;
+    private final Random random;
 
-    private HashMap nodes; //all nodes
-    public final HashMap frontiers; //nodes with less than 4 edges;
+    private final HashMap<Vector2D, Node> nodes; //all nodes
+    public final HashMap<Vector2D, Node> frontiers; //nodes with less than 4 edges;
 
     public ExplorationGraph() {
-        this.nodes = new HashMap(4000);
-        this.frontiers = new HashMap(1000);
+        this.nodes = new HashMap<>(4000);
+        this.frontiers = new HashMap<>(1000);
         this.seenTeleports = new LinkedList<>();
         random = new Random();
         Tile t = new Tile();
@@ -39,7 +39,7 @@ public class ExplorationGraph {
      * @return Node with the specified Vector2D
      */
     public Node getNode(Vector2D vector) {
-        return (Node) nodes.getValue(vector);
+        return nodes.getValue(vector);
     }
 
     /**
@@ -169,7 +169,7 @@ public class ExplorationGraph {
     public void checkEdges(Node node) {
         Vector2D[] nodeNeighbours = node.getNeigbours();
         for (int i = 0; i < nodeNeighbours.length; i++) {
-            Node nodeNeighbour = (Node) nodes.getValue(nodeNeighbours[i]);
+            Node nodeNeighbour = nodes.getValue(nodeNeighbours[i]);
             if (nodeNeighbour != null) {
                 addUndirectedEdge(node, nodeNeighbour);
             }
@@ -203,7 +203,7 @@ public class ExplorationGraph {
         LinkedList<Node> neighbours = new LinkedList<>();
         Vector2D[] vector1 = x.getNeigbours();
         for (int i = 0; i < vector1.length; i++) {
-            Node n = (Node) nodes.getValue(vector1[i]);
+            Node n = nodes.getValue(vector1[i]);
             if (n != null) {
                 neighbours.add(n);
             }
