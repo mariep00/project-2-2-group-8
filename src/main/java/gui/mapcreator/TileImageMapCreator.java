@@ -1,7 +1,7 @@
 package gui.mapcreator;
 
 
-import gui.gamescreen.ImageContainer;
+import gui.util.ImageContainer;
 import gui.gamescreen.TileImage;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseButton;

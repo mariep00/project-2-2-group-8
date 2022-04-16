@@ -1,12 +1,13 @@
 package gui.gamescreen;
 
 import datastructures.Vector2D;
-import gamelogic.controller.endingconditions.EndingExploration;
+import gamelogic.controller.Controller;
 import gamelogic.maps.ScenarioMap;
-import gui.gamescreen.controller.ControllerExplorationGUI;
-import gui.utils.HelperGUI;
-import gui.utils.MainGUI;
-import gui.utils.TransitionInterface;
+import gui.gamescreen.controller.ControllerGUIInterface;
+import gui.util.HelperGUI;
+import gui.util.ImageContainer;
+import gui.util.MainGUI;
+import gui.util.TransitionInterface;
 import javafx.animation.Transition;
 import javafx.application.Application;
 import javafx.geometry.Insets;
@@ -29,68 +30,31 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class GameScreen extends Application implements TransitionInterface {
-    private final ControllerExplorationGUI controllerExplorationGUI;
-    private final ImageContainer imageContainer = ImageContainer.getInstance();
+    protected final ImageContainer imageContainer = ImageContainer.getInstance();
     private Stage stage;
-    private ArrayList<Transition> transitions = new ArrayList<>();
+    private final ArrayList<Transition> transitions = new ArrayList<>();
     private final ScenarioMap scenarioMap;
 
-    private Tile[][] tiles;
-    private ProgressBar progressBar;
+    protected Tile[][] tiles;
     private boolean[] showVision;
 
     public GameScreen(ScenarioMap scenarioMap) {
         this.scenarioMap = scenarioMap;
-        this.controllerExplorationGUI = new ControllerExplorationGUI(scenarioMap, new EndingExploration(scenarioMap), this);
     }
 
     @Override
     public void start(Stage stage) {
         this.stage = stage;
-        loadGameScreen(scenarioMap);
+        Scene scene = loadGameScreen(scenarioMap);
+        MainGUI.setupScene(this, scene, stage);
+        stage.setScene(scene);
+        loadSceneTransition(scene.getRoot().getChildrenUnmodifiable());
     }
 
-    private void loadGameScreen(ScenarioMap scenarioMap) {
-        GridPane gridPane = new GridPane();
-        gridPane.setAlignment(Pos.CENTER);
-
+    private Scene loadGameScreen(ScenarioMap scenarioMap) {
         showVision = new boolean[scenarioMap.getNumGuards()];
 
-        tiles = new Tile[scenarioMap.getHeight()][scenarioMap.getWidth()];
-        gamelogic.maps.Tile[][] tilesController = scenarioMap.getMapGrid();
-
-        for (int x = 0; x < scenarioMap.getWidth(); x++) {
-            for (int y = 0; y < scenarioMap.getHeight(); y++) {
-                Tile tile;
-                if (tilesController[y][x].getType() == gamelogic.maps.Tile.Type.WALL) {
-                    // It's a wall. Create a tile with the right wall image
-                    tile = new Tile(new TileImage(imageContainer.getWall(HelperGUI.getBitSetSurroundingWalls(tilesController, x, y))));
-                }
-                else if (tilesController[y][x].getType() == gamelogic.maps.Tile.Type.TELEPORT_ENTRANCE) {
-                    // For now a floor, change to teleport image later
-                    tile = new Tile(new TileImage(imageContainer.getTeleport()));
-                }
-                // If it's none of above, it's always a floor
-                else {
-                    tile = new Tile(new TileImage(imageContainer.getFloor()), new TileImage(imageContainer.getUndiscovered()));
-                }
-
-                if (tilesController[y][x].isShaded()) {
-                    tile.setShaded(imageContainer.getShaded());
-                }
-                if (tilesController[y][x].getType() == gamelogic.maps.Tile.Type.TARGET_AREA) {
-                    tile.setTargetArea(imageContainer.getTargetArea());
-                }
-
-                gridPane.add(tile, x, y);
-                tiles[y][x] = tile;
-                tile.addEventFilter(MouseEvent.MOUSE_CLICKED, e -> {
-                    tile.getTileImageAgent().onClick();
-                    e.consume();
-                });
-            }
-        }
-
+        GridPane gridPane = loadGridPane();
         ScrollPane scrollPane = new ScrollPane(gridPane);
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
@@ -101,10 +65,15 @@ public class GameScreen extends Application implements TransitionInterface {
         BorderPane borderPane = new BorderPane(scrollPane);
         BorderPane.setAlignment(gridPane, Pos.CENTER);
 
-        progressBar = new ProgressBar();
-        progressBar.getProgressBar().setPrefWidth(400);
-        progressBar.getProgressBar().setPrefHeight(35);
+        AnchorPane anchorPane = loadInformationBar();
 
+        BorderPane.setMargin(anchorPane, new Insets(5, 5, 5, 5));
+        borderPane.setTop(anchorPane);
+
+        return new Scene(borderPane);
+    }
+
+    protected AnchorPane loadInformationBar() {
         HBox hboxButtons = new HBox(10);
         Button buttonShowAllVisions = new Button();
         ImageView showVisionImageView = new ImageView(imageContainer.getShowVision());
@@ -152,112 +121,132 @@ public class GameScreen extends Application implements TransitionInterface {
         hboxButtons.setAlignment(Pos.CENTER_RIGHT);
 
         AnchorPane anchorPane = new AnchorPane();
-        anchorPane.getChildren().add(progressBar);
-        AnchorPane.setLeftAnchor(progressBar, 0.0);
         anchorPane.getChildren().add(hboxButtons);
         AnchorPane.setRightAnchor(hboxButtons, 0.0);
 
-        BorderPane.setMargin(anchorPane, new Insets(5, 5, 5, 5));
-        borderPane.setTop(anchorPane);
-
-        Scene scene = new Scene(borderPane);
-        MainGUI.setupScene(this, scene, stage);
-        stage.setScene(scene);
-        loadSceneTransition(borderPane.getChildren());
-
-        gridPane.setHgap(-1);
-        gridPane.setVgap(-1);
-
         simulationSlider.setOnMouseDragged(e -> {
-            controllerExplorationGUI.setSimulationDelay((int)(simulationSlider.slider.maxProperty().get()-simulationSlider.slider.getValue()));
+            getController().setSimulationDelay((int)(simulationSlider.slider.maxProperty().get()-simulationSlider.slider.getValue()));
         });
         simulationSlider.setOnMouseReleased(e -> {
-            controllerExplorationGUI.setSimulationDelay((int)(simulationSlider.slider.maxProperty().get()-simulationSlider.slider.getValue()));
+            getController().setSimulationDelay((int)(simulationSlider.slider.maxProperty().get()-simulationSlider.slider.getValue()));
         });
 
         buttonStep.setOnAction(e -> {
-            if (controllerExplorationGUI.getRunSimulation().get()) {
+            if (getController().getRunSimulation().get()) {
                 buttonPlaySimulation.setId("");
-                controllerExplorationGUI.stopSimulation();
+                getController().stopSimulation();
             }
-            new Thread(controllerExplorationGUI::tick).start();
+            new Thread(((Controller) getController())::tick).start();
         });
         buttonPlaySimulation.setOnAction(e -> {
             buttonPlaySimulation.setId("play_button_clicked");
-            if (!controllerExplorationGUI.getRunSimulation().get()) controllerExplorationGUI.runSimulation();
+            if (!getController().getRunSimulation().get()) getController().runSimulation();
             else {
-                controllerExplorationGUI.stopSimulation();
+                getController().stopSimulation();
                 buttonPlaySimulation.setId("");
             }
         });
         buttonStopSimulation.setOnAction(e -> {
             buttonPlaySimulation.setId("");
-            controllerExplorationGUI.stopSimulation();
+            getController().stopSimulation();
         });
         buttonShowAllVisions.setOnAction(e -> {
-            if (!controllerExplorationGUI.getRunSimulation().get()) {
+            if (!getController().getRunSimulation().get()) {
                 Arrays.fill(showVision, true);
                 for (int i = 0; i < scenarioMap.getNumGuards(); i++) {
-                    controllerExplorationGUI.showVision(i);
+                    getController().showVision(i);
                 }
             }
         });
         buttonHideAllVisions.setOnAction(e -> {
-            if (!controllerExplorationGUI.getRunSimulation().get()) {
+            if (!getController().getRunSimulation().get()) {
                 Arrays.fill(showVision, false);
                 for (int i = 0; i < scenarioMap.getNumGuards(); i++) {
-                    controllerExplorationGUI.hideVision(i);
+                    getController().hideVision(i);
                 }
             }
         });
 
-        controllerExplorationGUI.init();
+        return anchorPane;
     }
 
+    private GridPane loadGridPane() {
+        GridPane gridPane = new GridPane();
+        gridPane.setAlignment(Pos.CENTER);
+        gridPane.setHgap(-1);
+        gridPane.setVgap(-1);
+
+        tiles = new Tile[scenarioMap.getHeight()][scenarioMap.getWidth()];
+        gamelogic.maps.Tile[][] tilesScenarioMap = scenarioMap.getMapGrid();
+
+        for (int x = 0; x < scenarioMap.getWidth(); x++) {
+            for (int y = 0; y < scenarioMap.getHeight(); y++) {
+                Tile tile;
+                if (tilesScenarioMap[y][x].getType() == gamelogic.maps.Tile.Type.WALL) {
+                    // It's a wall. Create a tile with the right wall image
+                    tile = new Tile(new TileImage(imageContainer.getWall(HelperGUI.getBitSetSurroundingWalls(tilesScenarioMap, x, y))));
+                }
+                else if (tilesScenarioMap[y][x].getType() == gamelogic.maps.Tile.Type.TELEPORT_ENTRANCE) {
+                    tile = new Tile(new TileImage(imageContainer.getTeleport()));
+                }
+                // If it's none of above, it's always a floor
+                else {
+                    tile = getInitialFloorTile();
+                }
+
+                if (tilesScenarioMap[y][x].isShaded()) {
+                    tile.setShaded(imageContainer.getShaded());
+                }
+                if (tilesScenarioMap[y][x].getType() == gamelogic.maps.Tile.Type.TARGET_AREA) {
+                    tile.setTargetArea(imageContainer.getTargetArea());
+                }
+
+                gridPane.add(tile, x, y);
+                tiles[y][x] = tile;
+                tile.addEventFilter(MouseEvent.MOUSE_CLICKED, e -> {
+                    tile.getTileImageAgent().onClick();
+                    e.consume();
+                });
+            }
+        }
+
+        return gridPane;
+    }
+
+    protected Tile getInitialFloorTile() { return null; }
+
     public void pauseGame() {
-        controllerExplorationGUI.pauseThreads();
+        getController().pauseThreads();
     }
     public void continueGame() {
-        controllerExplorationGUI.continueThreads();
+        getController().continueThreads();
     }
 
     public void toggleVision(int agentIndex) {
-        if (!controllerExplorationGUI.getRunSimulation().get()) {
+        if (!getController().getRunSimulation().get()) {
             if (showVision[agentIndex]) {
                 showVision[agentIndex] = false;
-                controllerExplorationGUI.hideVision(agentIndex);
+                getController().hideVision(agentIndex);
             } else {
                 showVision[agentIndex] = true;
-                controllerExplorationGUI.showVision(agentIndex);
+                getController().showVision(agentIndex);
             }
         }
     }
 
-    public void setProgress(AtomicBoolean executeNextGuiTask, int numberOfTilesExplored, int  numberOfTilesToExplore) {
-        progressBar.setProgress((float)numberOfTilesExplored/numberOfTilesToExplore);
-        executeNextGuiTask.set(true);
+    public void spawnAgent(int agentIndex, Vector2D position, AgentType agentType) {
+        tiles[position.y][position.x].setCharacter(this, imageContainer.getAgent(agentType, ((Controller) getController()).getAgent(agentIndex).getOrientation()), agentIndex);
     }
 
-    public void spawnAgent(int agentIndex, Vector2D position) {
-        tiles[position.y][position.x].setCharacter(this, imageContainer.getAgent(AgentType.GUARD, controllerExplorationGUI.getAgent(agentIndex).getOrientation()), agentIndex);
-    }
-
-    public void moveAgent(AtomicBoolean executeNextGuiTask, int agentIndex, Vector2D from, Vector2D to) {
+    public void moveAgent(AtomicBoolean executeNextGuiTask, int agentIndex, Vector2D from, Vector2D to, AgentType agentType) {
         tiles[from.y][from.x].resetCharacterImage();
-        tiles[to.y][to.x].setCharacter(this, imageContainer.getAgent(AgentType.GUARD, controllerExplorationGUI.getAgent(agentIndex).getOrientation()), agentIndex);
-        executeNextGuiTask.set(true);
-    }
-
-    public void setToExplored(AtomicBoolean executeNextGuiTask, List<Vector2D> positions) {
-        for (Vector2D pos : positions) {
-            tiles[pos.y][pos.x].setToExplored();
-        }
+        tiles[to.y][to.x].setCharacter(this, imageContainer.getAgent(agentType, ((Controller) getController()).getAgent(agentIndex).getOrientation()), agentIndex);
         executeNextGuiTask.set(true);
     }
 
     public void updateVision(AtomicBoolean executeNextGuiTask, int agentIndex, List<Vector2D> oldVision, List<Vector2D> newVision) {
         if (showVision[agentIndex]) {
-            removeVision(null, agentIndex, oldVision);
+            removeVision(null, oldVision);
             showVision(null, newVision);
         }
         executeNextGuiTask.set(true);
@@ -270,7 +259,7 @@ public class GameScreen extends Application implements TransitionInterface {
         if (executeNextGuiTask != null) executeNextGuiTask.set(true);
     }
 
-    public void removeVision(AtomicBoolean executeNextGuiTask, int agentIndex, List<Vector2D> visionToRemove) {
+    public void removeVision(AtomicBoolean executeNextGuiTask, List<Vector2D> visionToRemove) {
         for (Vector2D pos : visionToRemove) {
             tiles[pos.y][pos.x].setToOutOfVision();
         }
@@ -278,6 +267,8 @@ public class GameScreen extends Application implements TransitionInterface {
     }
 
     public boolean getShowVision(int agentIndex) { return showVision[agentIndex]; }
+
+    protected ControllerGUIInterface getController() { return null; }
 
     @Override
     public @NotNull List<Transition> getTransitions() {

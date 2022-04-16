@@ -2,12 +2,12 @@ package gui.mapcreator;
 
 import datastructures.Vector2D;
 import gamelogic.maps.ScenarioMap;
-import gui.gamescreen.GameScreen;
-import gui.gamescreen.ImageContainer;
+import gui.ScenarioMenu;
+import gui.util.ImageContainer;
 import gui.gamescreen.Tile;
-import gui.utils.HelperGUI;
-import gui.utils.MainGUI;
-import gui.utils.TransitionInterface;
+import gui.util.HelperGUI;
+import gui.util.MainGUI;
+import gui.util.TransitionInterface;
 import javafx.animation.Transition;
 import javafx.application.Application;
 import javafx.geometry.Bounds;
@@ -181,7 +181,6 @@ public class MapCreator extends Application implements TransitionInterface {
                             // It's a wall. Create a tile with the right wall image
                             tile = new TileMapCreator(new TileImageMapCreator(imageContainer.getWall(HelperGUI.getBitSetSurroundingWalls(tilesScenarioMap, x, y)), TileType.WALL));
                         } else if (tilesScenarioMap[y][x].getType() == gamelogic.maps.Tile.Type.TELEPORT_ENTRANCE) {
-                            // For now a floor, change to teleport image later
                             tile = new TileMapCreator(new TileImageMapCreator(imageContainer.getTeleport(), TileType.TELEPORT));
                         }
                         // If it's none of above, it's always a floor
@@ -230,7 +229,7 @@ public class MapCreator extends Application implements TransitionInterface {
             }
             scenarioMap.setNumGuards(isStringNumeric(numGuards.getText()) ? Integer.parseInt(numGuards.getText()) : 0);
             scenarioMap.setNumIntruders(isStringNumeric(numIntruders.getText()) ? Integer.parseInt(numIntruders.getText()) : 0);
-            quitSceneTransition(() -> new GameScreen(scenarioMap).start(stage), vbox, scrollPane, hbox);
+            quitSceneTransition(() -> new ScenarioMenu(scenarioMap).start(stage), vbox, scrollPane, hbox);
         });
     }
 
@@ -264,7 +263,6 @@ public class MapCreator extends Application implements TransitionInterface {
         listItemsView.getItems().add(new ListItem("Wall top corner right", TileType.WALL,imageContainer.getWallTopCornerRight()));
         listItemsView.getItems().add(new ListItem("Wall top cornered", TileType.WALL,imageContainer.getWallTopCornered()));
         listItemsView.getItems().add(new ListItem("Teleport", TileType.TELEPORT,imageContainer.getTeleport()));
-        listItemsView.getItems().add(new ListItem("Guard south", TileType.GUARD, imageContainer.getGuard()));
         listItemsView.getItems().add(new ListItem("Shaded", TileType.SHADED,imageContainer.getShaded()));
         listItemsView.getItems().add(new ListItem("Spawn area guards", TileType.SPAWN_AREA_GUARDS, imageContainer.getSpawnAreaGuards()));
         listItemsView.getItems().add(new ListItem("Spawn area intruders", TileType.SPAWN_AREA_INTRUDERS, imageContainer.getSpawnAreaIntruders()));

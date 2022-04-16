@@ -34,7 +34,7 @@ public class EndingExploration implements EndingConditionInterface {
 
     @Override
     public boolean gameFinished() {
-        System.out.println(currentTilesExplored + " / " + totalTilesToExplore);
+        //System.out.println(currentTilesExplored + " / " + totalTilesToExplore);
         return totalTilesToExplore == currentTilesExplored;
     }
 

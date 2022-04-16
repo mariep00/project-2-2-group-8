@@ -1,6 +1,6 @@
 package launchers;
 
-import gamelogic.MapBuilder;
+import gamelogic.maps.MapBuilder;
 import gamelogic.controller.Controller;
 import gamelogic.controller.endingconditions.EndingExploration;
 import gamelogic.controller.gamemodecontrollers.ControllerExploration;
@@ -26,6 +26,6 @@ public class Launcher {
             controller.init();
             controller.engine();
         }
-        else System.out.println("******** Map not found ********");
+        else System.out.println("******** Map named " + fileName + " not found ********");
     }
 }

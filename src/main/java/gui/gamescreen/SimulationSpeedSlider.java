@@ -10,6 +10,7 @@ public class SimulationSpeedSlider extends VBox {
     public final Slider slider;
     public SimulationSpeedSlider() {
         super();
+
         slider = new Slider();
         slider.setMax(800);
         slider.setMin(5);

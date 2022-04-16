@@ -1,4 +1,4 @@
-package gui.utils;
+package gui.util;
 
 import gui.HomeScreen;
 import gui.PauseMenu;
@@ -20,8 +20,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Objects;
 
 public class MainGUI {
-    public static final int WINDOW_STARTING_WIDTH = (int) Screen.getPrimary().getVisualBounds().getWidth();
-    public static final int WINDOW_STARTING_HEIGHT = (int) Screen.getPrimary().getVisualBounds().getHeight();
+    public static final int WINDOW_STARTING_WIDTH = (int) Screen.getPrimary().getBounds().getWidth();
+    public static final int WINDOW_STARTING_HEIGHT = (int) Screen.getPrimary().getBounds().getHeight();
 
     private static PauseMenu pauseMenu;
 

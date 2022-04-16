@@ -1,42 +1,31 @@
 package gui.gamescreen.controller;
 
-import datastructures.Vector2D;
-import gamelogic.controller.endingconditions.EndingExploration;
-import gamelogic.controller.gamemodecontrollers.ControllerExploration;
+import gamelogic.controller.endingconditions.EndingSurveillance;
+import gamelogic.controller.gamemodecontrollers.ControllerSurveillance;
 import gamelogic.maps.ScenarioMap;
 import gui.gamescreen.GameScreen;
-import gui.gamescreen.GameScreenExploration;
 
-import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class ControllerExplorationGUI extends ControllerExploration implements ControllerGUIInterface {
+public class ControllerSurveillanceGUI extends ControllerSurveillance implements ControllerGUIInterface {
     private final GameScreen gameScreen;
     private final ControllerGUI controllerGUI;
-    public ControllerExplorationGUI(ScenarioMap scenarioMap, EndingExploration endingCondition, GameScreen gameScreen) {
+
+    public ControllerSurveillanceGUI(ScenarioMap scenarioMap, EndingSurveillance endingCondition, GameScreen gameScreen) {
         super(scenarioMap, endingCondition);
         this.gameScreen = gameScreen;
         this.controllerGUI = new ControllerGUI(this, gameScreen);
-    }
-
-    private void updateExplored() {
-        for (List<Vector2D> vision : nextState.getVisions()) {
-            controllerGUI.addGuiRunnableToQueue(() -> ((GameScreenExploration) gameScreen).setToExplored(controllerGUI.getExecuteNextGuiTask(), vision));
-        }
-        controllerGUI.addGuiRunnableToQueue(() -> ((GameScreenExploration) gameScreen).setProgress(controllerGUI.getExecuteNextGuiTask(), ((EndingExploration) endingCondition).getCurrentTilesExplored(), ((EndingExploration) endingCondition).getTotalTilesToExplore()));
     }
 
     @Override
     public void init() {
         super.init();
         controllerGUI.init();
-        updateExplored();
     }
 
     @Override
     public void updateGui() {
         controllerGUI.updateGui();
-        updateExplored();
     }
 
     @Override
@@ -78,6 +67,4 @@ public class ControllerExplorationGUI extends ControllerExploration implements C
     public AtomicBoolean getRunSimulation() {
         return controllerGUI.getRunSimulation();
     }
-
-    // TODO Update the progress of the exploration in the gui
 }

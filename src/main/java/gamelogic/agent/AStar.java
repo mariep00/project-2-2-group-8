@@ -1,8 +1,9 @@
 package gamelogic.agent;
 
+import datastructures.HashMap;
+import datastructures.Vector2D;
 import datastructures.minheap.Heap;
 import datastructures.minheap.HeapItemInterface;
-import datastructures.Vector2D;
 import gamelogic.maps.graph.ExplorationGraph;
 import gamelogic.maps.graph.Node;
 
@@ -11,20 +12,18 @@ import java.util.LinkedList;
 
 public class AStar {
 
-    private ExplorationGraph graph;
-    
-    //TODO: Once HashMap is generic, implement closed as HashMap
-    private Heap<ANode> open;
-    private ArrayList<ANode> closed;
+    private final ExplorationGraph graph;
 
-    private Vector2D goal;
-    private ANode start;
+    private final Heap<ANode> open;
+    private final HashMap<Vector2D, ANode> closed;
+
+    private final Vector2D goal;
+    private final ANode start;
     private ANode goalANode;
-    private final boolean DEBUG = true;
 
     public AStar (ExplorationGraph graph, Node startNode, Node goalNode) {
         open = new Heap<>(graph.getNumberOfNodes());
-        closed = new ArrayList<>();
+        closed = new HashMap<>(3000);
         this.goal = goalNode.COORDINATES; 
         this.graph = graph;
         start = new ANode(startNode.COORDINATES);
@@ -43,7 +42,7 @@ public class AStar {
                 break;
             }
 
-            closed.add(current);
+            closed.addEntry(current.POSITION, current);
 
             ArrayList<ANode> neighbours = getNeighbours(current);
 
@@ -93,10 +92,7 @@ public class AStar {
     }
 
     private boolean isInClosed(Vector2D pos) {
-        for (ANode n: closed) {
-            if(n.POSITION.equals(pos)) return true;
-        }
-        return false;
+        return closed.getValue(pos) != null;
     }
 }
 
@@ -155,10 +151,6 @@ class ANode implements HeapItemInterface<ANode> {
     @Override
     public boolean equals(Object o) {
         ANode other = (ANode) o;
-        if (POSITION.equals(other.POSITION)) {
-            return true;
-        } else {
-            return false;
-        }
+        return POSITION.equals(other.POSITION);
     }   
 }

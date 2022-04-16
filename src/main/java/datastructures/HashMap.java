@@ -1,11 +1,13 @@
 package datastructures;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.util.LinkedList;
 import java.util.List;
 
-public class HashMap<T, V> {
+public class HashMap<K, V> {
     private int capacity;
-    private Bucket<T, V>[] buckets;
+    private Bucket<K, V>[] buckets;
 
     final private double loadFactor;
     private int size = 0;
@@ -17,7 +19,7 @@ public class HashMap<T, V> {
         loadFactor = 0.75;
     }
 
-    public void addEntry(T key, V value) {
+    public void addEntry(K key, V value) {
         numberOfNodes++;
         int hash = hashCode(key);
         if (buckets[hash] == null) {
@@ -28,7 +30,7 @@ public class HashMap<T, V> {
         if (shouldExpand()) expand();
     }
 
-    public void removeEntry(T key) {
+    public void removeEntry(K key) {
         int hash = hashCode(key);
         if (buckets[hash] != null) {
             if (buckets[hash].removeEntry(key)) {
@@ -41,10 +43,11 @@ public class HashMap<T, V> {
         }
     }
 
-    public V getValue(T key) {
-        Bucket<T, V> bucket = buckets[hashCode(key)];
+    @Nullable
+    public V getValue(K key) {
+        Bucket<K, V> bucket = buckets[hashCode(key)];
         if (bucket != null) {
-            Entry<T, V> entry = bucket.getEntry(key);
+            Entry<K, V> entry = bucket.getEntry(key);
             if (entry != null) return entry.getValue();
         }
         return null;
@@ -52,9 +55,9 @@ public class HashMap<T, V> {
 
     public LinkedList<V> getAllNodes() {
         LinkedList<V> allNodes = new LinkedList<>();
-        for (Bucket<T, V> bucket: buckets) {
+        for (Bucket<K, V> bucket: buckets) {
             if (bucket != null) {
-                for (Entry<T, V> entry: bucket.getEntries()) {
+                for (Entry<K, V> entry: bucket.getEntries()) {
                     allNodes.add(entry.getValue());
                 }
             }
@@ -66,12 +69,12 @@ public class HashMap<T, V> {
 
     private void expand() {
         capacity = capacity*2;
-        Bucket<T, V>[] oldBuckets = this.buckets;
+        Bucket<K, V>[] oldBuckets = this.buckets;
         buckets = new Bucket[capacity];
 
-        for (Bucket<T, V> oldBucket : oldBuckets) {
+        for (Bucket<K, V> oldBucket : oldBuckets) {
             if (oldBucket != null) {
-                for (Entry<T, V> entry : oldBucket.getEntries()) {
+                for (Entry<K, V> entry : oldBucket.getEntries()) {
                     int hash = hashCode(entry.key);
                     if (buckets[hash] == null) buckets[hash] = new Bucket();
                     buckets[hash].addEntry(entry);
@@ -80,18 +83,18 @@ public class HashMap<T, V> {
         }
     }
 
-    public int hashCode(T key) {
+    public int hashCode(K key) {
         return key.hashCode() % this.capacity;
     }
 
     public int getNumberOfNodes() { return numberOfNodes; }
 }
 
-class Entry<T, V> {
-    public T key;
+class Entry<K, V> {
+    public K key;
     public V value;
 
-    public Entry(T key, V value) {
+    public Entry(K key, V value) {
         this.key = key;
         this.value = value;
     }
@@ -99,22 +102,22 @@ class Entry<T, V> {
     public V getValue() { return value; }
 }
 
-class Bucket<T, V> {
-    private LinkedList<Entry<T, V>> entries;
+class Bucket<K, V> {
+    private LinkedList<Entry<K, V>> entries;
 
-    public void addEntry(Entry<T, V> entry){
+    public void addEntry(Entry<K, V> entry){
         if (entries == null) entries = new LinkedList<>();
         entries.add(entry);
     }
 
-    public Entry<T, V> getEntry(T key) {
-        for (Entry<T, V> entry : entries) {
+    public Entry<K, V> getEntry(K key) {
+        for (Entry<K, V> entry : entries) {
             if (entry.key.equals(key)) return entry;
         }
         return null;
     }
 
-    public boolean removeEntry(T key) {
+    public boolean removeEntry(K key) {
         for (int i = 0; i < entries.size(); i++) {
             if (entries.get(i).key.equals(key)) {
                 entries.remove(i);
@@ -124,5 +127,5 @@ class Bucket<T, V> {
         return false;
     }
 
-    public List<Entry<T, V>> getEntries() { return entries; }
+    public List<Entry<K, V>> getEntries() { return entries; }
 }

@@ -212,13 +212,12 @@ public class ExplorationGraph {
 
 
     public Node getNextFrontier(int index) {
-        //System.out.println("2. getnextfrontier is called, frontiers length: " + frontiers.getNumberOfNodes());
         LinkedList<Node> nodes = frontiers.getAllNodes();
         if(nodes.isEmpty()) System.out.println("3. Nodes is empty -> mistake in get allNodes");
         SortObject<Node>[] sortObjects = new SortObject[nodes.size()];
 
         for (int i = 0; i < nodes.size(); i++) {
-            sortObjects[i] = new SortObject<Node>(nodes.get(i), nodes.get(i).COORDINATES.dist(currentPosition.COORDINATES));
+            sortObjects[i] = new SortObject<>(nodes.get(i), nodes.get(i).COORDINATES.dist(currentPosition.COORDINATES));
         }
 
         QuickSort<Node> quickSort = new QuickSort<>();
@@ -226,23 +225,6 @@ public class ExplorationGraph {
 
         if (nodes.size() == 0) return null;
         return x[index].object;
-        //System.out.println(nodes.size() + " " + nodes.toString());
-        //Node tempnode = null;
-        /*double closest_dist = Double.MAX_VALUE;
-        for (int i = 0; i < nodes.size(); i++) {
-            Vector2D vector = nodes.get(i).COORDINATES;
-            double dist = vector.dist(currentPosition.COORDINATES);
-            if (dist < closest_dist) {
-                closest_dist = dist;
-                tempnode = nodes.get(i);
-            }
-            if (dist == closest_dist){
-                if (random.nextInt(2) == 0){
-                    tempnode = nodes.get(i);
-                }
-            }
-        }
-         */
     }
 
     public Node getTeleport() {

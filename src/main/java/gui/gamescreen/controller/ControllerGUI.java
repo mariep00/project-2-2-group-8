@@ -2,6 +2,7 @@ package gui.gamescreen.controller;
 
 import datastructures.Vector2D;
 import gamelogic.controller.Controller;
+import gui.gamescreen.AgentType;
 import gui.gamescreen.GameScreen;
 import javafx.application.Platform;
 
@@ -60,20 +61,27 @@ public class ControllerGUI implements ControllerGUIInterface {
         updateGameLogicThread.setDaemon(true);
         updateGameLogicThread.setUncaughtExceptionHandler(h);
 
-        for (int i = 0; i < controller.getNumberOfGuards()+controller.getNumberOfIntruders(); i++) {
-            gameScreen.spawnAgent(i, controller.getCurrentState().getAgentPosition(i));
+        for (int i = 0; i < controller.getNumberOfGuards(); i++) {
+            gameScreen.spawnAgent(i, controller.getCurrentState().getAgentPosition(i), AgentType.GUARD);
+        }
+        for (int i = 0; i < controller.getNumberOfIntruders(); i++) {
+            gameScreen.spawnAgent(i, controller.getCurrentState().getAgentPosition(i), AgentType.INTRUDER);
         }
     }
 
     public void updateGui() {
         for (int i = 0; i < controller.getNumberOfGuards()+controller.getNumberOfIntruders(); i++) {
+            AgentType agentType;
+            if (i < controller.getNumberOfGuards()) agentType = AgentType.GUARD;
+            else agentType = AgentType.INTRUDER;
+
             int finalI = i;
             Vector2D currentPos = controller.getCurrentState().getAgentPosition(finalI);
             Vector2D nextPos = controller.getNextState().getAgentPosition(finalI);
             List<Vector2D> currentVision = getVisionToRemove(finalI, controller.getCurrentState().getVision(finalI));
             List<Vector2D> nextVision = controller.getNextState().getVision(finalI);
 
-            guiTasksQueue.add(() -> Platform.runLater(() -> gameScreen.moveAgent(executeNextGuiTask, finalI, currentPos, nextPos)));
+            guiTasksQueue.add(() -> Platform.runLater(() -> gameScreen.moveAgent(executeNextGuiTask, finalI, currentPos, nextPos, agentType)));
             guiTasksQueue.add(() -> Platform.runLater(() -> gameScreen.updateVision(executeNextGuiTask, finalI, currentVision, nextVision)));
         }
     }
@@ -102,7 +110,7 @@ public class ControllerGUI implements ControllerGUIInterface {
     @Override
     public void hideVision(int agentIndex) {
         List<Vector2D> visionToRemove = getVisionToRemove(agentIndex, controller.getCurrentState().getVision(agentIndex));
-        guiTasksQueue.add(() -> Platform.runLater(() -> gameScreen.removeVision(executeNextGuiTask, agentIndex, visionToRemove)));
+        guiTasksQueue.add(() -> Platform.runLater(() -> gameScreen.removeVision(executeNextGuiTask, visionToRemove)));
     }
     @Override
     public void showVision(int agentIndex) {

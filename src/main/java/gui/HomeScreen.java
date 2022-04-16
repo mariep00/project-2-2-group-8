@@ -1,7 +1,7 @@
 package gui;
 
-import gui.utils.MainGUI;
-import gui.utils.TransitionInterface;
+import gui.util.MainGUI;
+import gui.util.TransitionInterface;
 import javafx.animation.*;
 import javafx.application.Application;
 import javafx.embed.swing.SwingFXUtils;
@@ -124,7 +124,7 @@ public class HomeScreen extends Application implements TransitionInterface {
         stage.show();
         loadHomeScreenTransition(vboxButtons, logo);
 
-        playButton.setOnAction(e -> quitSceneTransition(() -> new ScenarioMenu(scene).start(stage), vboxButtons));
+        playButton.setOnAction(e -> quitSceneTransition(() -> new LoadCreateMapMenu(scene).start(stage), vboxButtons));
         quitButton.setOnAction(e -> MainGUI.quitToDesktopAlert(stage));
     }
 

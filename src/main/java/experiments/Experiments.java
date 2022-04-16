@@ -1,7 +1,7 @@
 package experiments;
 
 import gamelogic.controller.Controller;
-import gamelogic.MapBuilder;
+import gamelogic.maps.MapBuilder;
 import gamelogic.controller.endingconditions.EndingExploration;
 import gamelogic.controller.gamemodecontrollers.ControllerExploration;
 import gamelogic.maps.ScenarioMap;

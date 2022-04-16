@@ -1,6 +1,6 @@
-package gui.utils;
+package gui.util;
 
-import gamelogic.MapBuilder;
+import gamelogic.maps.MapBuilder;
 import gamelogic.maps.ScenarioMap;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;

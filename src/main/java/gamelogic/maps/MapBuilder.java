@@ -1,7 +1,4 @@
-package gamelogic;
-
-import gamelogic.maps.ScenarioMap;
-import gamelogic.maps.Tile;
+package gamelogic.maps;
 
 import java.io.File;
 import java.nio.charset.Charset;

@@ -1,99 +1,55 @@
 package gui;
 
 import gamelogic.maps.ScenarioMap;
-import gui.gamescreen.GameScreen;
-import gui.mapcreator.MapCreator;
-import gui.utils.HelperGUI;
-import gui.utils.TransitionInterface;
+import gui.gamescreen.GameScreenExploration;
+import gui.gamescreen.GameScreenSurveillance;
+import gui.util.MainGUI;
+import gui.util.TransitionInterface;
 import javafx.animation.Transition;
 import javafx.application.Application;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class ScenarioMenu extends Application implements TransitionInterface {
+    private final ScenarioMap scenarioMap;
     private Stage stage;
     private final ArrayList<Transition> transitions = new ArrayList<>();
-    private final Scene sceneToUse;
 
-    public ScenarioMenu(Scene sceneToUse) {
-        this.sceneToUse = sceneToUse;
+    public ScenarioMenu(ScenarioMap scenarioMap) {
+        this.scenarioMap = scenarioMap;
     }
-    /**
-     * Start method which is called by JavaFX
-     *
-     * @param stage the stage which is used to display the scene
-     */
+
     @Override
     public void start(Stage stage) {
         this.stage = stage;
-        ImageView logo;
-        try {
-            logo = new ImageView(new Image(Objects.requireNonNull(this.getClass().getResource("/logo.png")).toString()));
-        } catch (NullPointerException exception) {
-            System.out.println("WARNING: Logo not found in the given directory.");
-            logo = new ImageView();
-        }
-        logo.setPreserveRatio(true);
-        logo.setFitWidth(400);
-        logo.setFitHeight(400);
-        Button buttonCreateMap = new Button("Create map");
-        Button buttonLoadMap = new Button("Load map");
 
-        VBox vboxButtons = new VBox(30, buttonLoadMap, buttonCreateMap);
-        vboxButtons.setDisable(true); // To make sure you cannot click on buttons while transitions are playing
-        vboxButtons.setMaxWidth(270);
-        vboxButtons.setMaxHeight(175);
+        Button buttonPlayExploration = new Button("Play exploration");
+        Button buttonPlaySurveillance = new Button("Play surveillance");
 
-        VBox vboxLogo = new VBox(logo);
-        vboxLogo.setAlignment(Pos.TOP_CENTER);
-        VBox vboxCombined = new VBox(30, vboxLogo, vboxButtons);
-        vboxCombined.setAlignment(Pos.CENTER);
-        // Create a borderpane, with the logo centered in the top
-        // and the buttons centered in the middle of the screen
-        BorderPane borderPane = new BorderPane();
-        //borderPane.setTop(vboxLogo);
-        //BorderPane.setAlignment(vboxLogo, Pos.TOP_CENTER);
-        //borderPane.setCenter(vboxButtons);
-        vboxButtons.setAlignment(Pos.TOP_CENTER);
-        borderPane.setCenter(vboxCombined);
-        BorderPane.setAlignment(vboxCombined, Pos.CENTER);
+        HBox hBox = new HBox(buttonPlayExploration, buttonPlaySurveillance);
 
-        buttonLoadMap.setPrefWidth(270);
-        buttonLoadMap.setPrefHeight(80);
-        buttonCreateMap.setPrefWidth(270);
-        buttonCreateMap.setPrefHeight(80);
+        // TODO Add fields with details about the map (view range, speed, number of guards etc. etc.) and make them changeable, also show the title of the map or file name
+        // TODO Add option to export map --> move from MapCreator
+        // TODO Button to go back (back to LoadCreateMap or MapCreator, depending where user came from)
+        // TODO Add fields to customize agent i.e. choose what algorithms agent should use
 
-        buttonLoadMap.setStyle("-fx-font-size: " + 19 + "px;");
-        buttonCreateMap.setStyle("-fx-font-size: " + 19 + "px;");
+        Scene scene = new Scene(hBox);
+        MainGUI.setupScene(this, scene, stage);
+        stage.setScene(scene);
+        loadSceneTransition(hBox);
 
-        //Scene scene = new Scene(borderPane);
-        //MainGUI.setupScene(this, scene, stage);
-
-        vboxButtons.setOpacity(0);
-
-        //stage.setScene(scene);
-        sceneToUse.setRoot(borderPane);
-        loadSceneTransition( vboxButtons);
-
-        buttonLoadMap.setOnAction(e -> {
-            ScenarioMap scenarioMap = HelperGUI.loadMapWithFileChooser(stage);
-            if (scenarioMap != null) quitSceneTransition(() -> new GameScreen(scenarioMap).start(stage), vboxButtons);
-        });
-        buttonCreateMap.setOnAction(e -> quitSceneTransition(() -> new MapCreator().start(stage), vboxButtons));
+        buttonPlayExploration.setOnAction(e -> quitSceneTransition(() -> new GameScreenExploration(scenarioMap).start(stage), hBox));
+        buttonPlaySurveillance.setOnAction(e -> quitSceneTransition(() -> new GameScreenSurveillance(scenarioMap).start(stage), hBox));
     }
 
     @Override
-    public List<Transition> getTransitions() {
+    public @NotNull List<Transition> getTransitions() {
         return transitions;
     }
 }

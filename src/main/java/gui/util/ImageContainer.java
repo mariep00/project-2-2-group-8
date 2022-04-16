@@ -1,5 +1,6 @@
-package gui.gamescreen;
+package gui.util;
 
+import gui.gamescreen.AgentType;
 import javafx.scene.image.Image;
 
 import java.util.BitSet;
