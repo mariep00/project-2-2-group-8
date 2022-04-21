@@ -1,9 +1,9 @@
 package gamelogic.agent.tasks;
 
-import java.util.Stack;
-
-import gamelogic.maps.graph.ExplorationGraph;
 import gamelogic.agent.tasks.TaskContainer.TaskType;
+import gamelogic.maps.graph.ExplorationGraph;
+
+import java.util.Stack;
 
 public class ExplorationTaskRandom implements TaskInterface {
 
@@ -20,7 +20,7 @@ public class ExplorationTaskRandom implements TaskInterface {
     }
 
     @Override
-    public Stack<Integer> performTask(ExplorationGraph graph, double orientation) {
+    public Stack<Integer> performTask(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection) {
         
         int r = (int)(Math.random()*(max-min+1)+min);
         if(r<=w0){

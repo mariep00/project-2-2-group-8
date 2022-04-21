@@ -31,10 +31,9 @@ public class Agent {
         explorationGraph = new ExplorationGraph();
     }
 
-    public int tick(ArrayList<Tile> inVision, ArrayList<Vector2D> coordinates, double[] pheromoneMarkerDirections) {
+    public int tick(ArrayList<Tile> inVision, ArrayList<Vector2D> coordinates, double pheromoneMarkerDirection) {
         updateGraph(inVision, coordinates);
-        //System.out.println(Arrays.toString(explorationGraph.frontiers.getAllNodes().toArray()));
-        return brain.makeDecision(explorationGraph, orientation);
+        return brain.makeDecision(explorationGraph, orientation, pheromoneMarkerDirection);
     }
 
     private void updateGraph(ArrayList<Tile> inVision, ArrayList<Vector2D> coordinates) {

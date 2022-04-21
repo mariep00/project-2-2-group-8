@@ -18,7 +18,7 @@ public class IntruderBrain implements BrainInterface {
 
     //TODO: Add logic for when to switch between different tasks in the container
     @Override
-    public int makeDecision(ExplorationGraph graph, double orientation) {
+    public int makeDecision(ExplorationGraph graph, double orientation, double pheromoneMarker) {
         return -1;
     }
 }

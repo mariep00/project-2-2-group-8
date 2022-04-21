@@ -17,7 +17,7 @@ public class Launcher {
      * Launcher without GUI
      */
     public static void main(String[] args) throws URISyntaxException {
-        String fileName = "testmap.txt"; // ONLY change this string to the name of the map file you want to use (make sure the txt file is located in: resources/maps/)
+        String fileName = "ExperimentMap1.txt"; // ONLY change this string to the name of the map file you want to use (make sure the txt file is located in: resources/maps/)
 
         URL url = Launcher.class.getClassLoader().getResource("maps/"+fileName);
         if (url != null) {

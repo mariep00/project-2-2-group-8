@@ -12,15 +12,16 @@ import javafx.animation.Transition;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Camera;
+import javafx.scene.PerspectiveCamera;
 import javafx.scene.Scene;
+import javafx.scene.SubScene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import org.jetbrains.annotations.NotNull;
 
@@ -37,6 +38,9 @@ public class GameScreen extends Application implements TransitionInterface {
 
     protected Tile[][] tiles;
     private boolean[] showVision;
+
+    private final int maxZoom = -10000;
+    private final int minZoom = -100;
 
     public GameScreen(ScenarioMap scenarioMap) {
         this.scenarioMap = scenarioMap;
@@ -62,15 +66,55 @@ public class GameScreen extends Application implements TransitionInterface {
         scrollPane.setFitToWidth(true);
         scrollPane.setStyle("-fx-focus-color: transparent;");
 
-        BorderPane borderPane = new BorderPane(scrollPane);
-        BorderPane.setAlignment(gridPane, Pos.CENTER);
+        BorderPane borderPane = new BorderPane();
 
         AnchorPane anchorPane = loadInformationBar();
 
         BorderPane.setMargin(anchorPane, new Insets(5, 5, 5, 5));
         borderPane.setTop(anchorPane);
 
-        return new Scene(borderPane);
+        SubScene subScene = new SubScene(new Pane(gridPane), stage.getWidth(), stage.getHeight()-45);
+        Camera camera = new PerspectiveCamera(true);
+        subScene.setCamera(camera);
+        double initialZ;
+        if (scenarioMap.getWidth() < scenarioMap.getHeight()) {
+            initialZ = (((float)scenarioMap.getWidth()/2)*Tile.tileSize)/Math.tan(Math.toRadians(15));
+        }
+        else initialZ = (((float)scenarioMap.getHeight()/2)*Tile.tileSize)/Math.tan(Math.toRadians(15));
+
+        initialZ *= -1;
+
+        camera.setTranslateX(((float)scenarioMap.getWidth()*Tile.tileSize)/2);
+        camera.setTranslateY(((float)scenarioMap.getHeight()*Tile.tileSize)/2);
+        camera.setTranslateZ(initialZ);
+        camera.setNearClip(0.1);
+        camera.setFarClip(100000);
+
+        borderPane.setCenter(subScene);
+
+        Scene scene = new Scene(borderPane);
+
+        scene.setOnKeyPressed(e -> {
+            if (e.getCode() == KeyCode.D) {
+                camera.setTranslateX(camera.getTranslateX()+25);
+            }
+            if (e.getCode() == KeyCode.A) {
+                camera.setTranslateX(camera.getTranslateX()-25);
+            }
+            if (e.getCode() == KeyCode.W) {
+                camera.setTranslateY(camera.getTranslateY()-25);
+            }
+            if (e.getCode() == KeyCode.S) {
+                camera.setTranslateY(camera.getTranslateY()+25);
+            }
+        });
+
+        scene.setOnScroll(e -> {
+            double newVal = camera.getTranslateZ()+e.getDeltaY();
+            if (newVal <= minZoom && newVal >= maxZoom) camera.setTranslateZ(newVal);
+        });
+
+        return scene;
     }
 
     protected AnchorPane loadInformationBar() {

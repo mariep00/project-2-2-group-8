@@ -79,13 +79,15 @@ public class MarkerController {
         return markersCloseEnough;
     }
 
-    public double[] getPheromoneMarkersDirections(int agentIndex, Vector2D agentPosition) {
+    public double getPheromoneMarkersDirection(int agentIndex, Vector2D agentPosition) {
         List<PheromoneMarker> pheromoneMarkers = getPheromoneMarkersCloseEnough(agentIndex);
-        double[] pheromoneMarkerDirections = new double[pheromoneMarkers.size()];
+        if (pheromoneMarkers.size() == 0) return -1;
+
+        double angleSum = 0;
         for (int i = 0; i < pheromoneMarkers.size(); i++) {
-            pheromoneMarkerDirections[i] = agentPosition.getAngleBetweenVector(pheromoneMarkers.get(i).getPosition());
+            angleSum += agentPosition.getAngleBetweenVector(pheromoneMarkers.get(i).getPosition()); //TODO add randomness
         }
-        return pheromoneMarkerDirections;
+        return angleSum/pheromoneMarkers.size();
     }
 
     private boolean isWallInBetween(Vector2D begin, Vector2D end) {

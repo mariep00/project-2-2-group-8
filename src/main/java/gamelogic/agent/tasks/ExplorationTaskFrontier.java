@@ -1,12 +1,15 @@
 package gamelogic.agent.tasks;
 
 import datastructures.Vector2D;
+import datastructures.quicksort.QuickSort;
+import datastructures.quicksort.SortObject;
 import gamelogic.agent.AStar;
 import gamelogic.agent.tasks.TaskContainer.TaskType;
 import gamelogic.maps.Tile;
 import gamelogic.maps.graph.ExplorationGraph;
 import gamelogic.maps.graph.Node;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Stack;
@@ -25,13 +28,13 @@ public class ExplorationTaskFrontier implements TaskInterface {
         goalNode = new Node(new Vector2D(-20000, -20000), new Tile());
     }
 
-    public Stack<Integer> performTask(ExplorationGraph graph, double orientation){
+    public Stack<Integer> performTask(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection){
         futureMoves = new Stack<>();
         this.orientation = orientation;
         this.graph = graph;
         int frontierIndexToGoTo = 0;
         
-        updateGoal(frontierIndexToGoTo);
+        updateGoal(frontierIndexToGoTo, pheromoneMarkerDirection);
         boolean foundReachableNode = false;
         while (!foundReachableNode) {
             if (goalNode == lastNode) { 
@@ -41,7 +44,7 @@ public class ExplorationTaskFrontier implements TaskInterface {
             if (!foundReachableNode) {
                 frontierIndexToGoTo++;
                 if (goalNode == lastNode) { whenStuck(); }
-                updateGoal(frontierIndexToGoTo);
+                updateGoal(frontierIndexToGoTo, pheromoneMarkerDirection);
             }
         }
         
@@ -49,13 +52,63 @@ public class ExplorationTaskFrontier implements TaskInterface {
         return futureMoves;
     }
 
-    public void updateGoal(int frontierIndexToGoTo) {
+    public void updateGoal(int frontierIndexToGoTo, double pheromoneMarkerDirection) {
      //Update the goal node with the  next frontier node on graph
-        lastNode=goalNode;
-        goalNode= graph.getNextFrontier(frontierIndexToGoTo);
+        lastNode = goalNode;
+        goalNode = getNextFrontier(frontierIndexToGoTo, pheromoneMarkerDirection);
         if (goalNode == null) {
             goalNode = graph.getTeleport();
         }
+    }
+
+
+    private Node getNextFrontier(int index, double pheromoneMarkerDirection) {
+        LinkedList<Node> nodes = graph.frontiers.getAllNodes();
+        if(nodes.isEmpty()) System.out.println("3. Nodes is empty -> mistake in get allNodes");
+        SortObject<Node>[] sortObjects = new SortObject[nodes.size()];
+
+        QuickSort<Node> quickSort = new QuickSort<>();
+        SortObject<Node>[] sortedArray;
+
+        if (pheromoneMarkerDirection != -1) {
+            double[] frontierAnglesDiffPheromone = new double[nodes.size()];
+            for (int i = 0; i < frontierAnglesDiffPheromone.length; i++) {
+                frontierAnglesDiffPheromone[i] = Math.abs(180 - Math.abs(pheromoneMarkerDirection - graph.getCurrentPosition().COORDINATES.getAngleBetweenVector(nodes.get(i).COORDINATES)));
+            }
+
+            for (int i = 0; i < nodes.size(); i++) {
+                sortObjects[i] = new SortObject<>(nodes.get(i), frontierAnglesDiffPheromone[i]);
+            }
+
+            SortObject<Node>[] sortedArrayPheromoneAngle = quickSort.sort(sortObjects, 0, sortObjects.length-1);
+
+            ArrayList<Node> candidates = new ArrayList<>();
+            double threshold = 30;
+            while (candidates.size() == 0) {
+                for (SortObject<Node> sortObject : sortedArrayPheromoneAngle) {
+                    if (sortObject.sortParameter <= threshold) candidates.add(sortObject.object);
+                    else break;
+                }
+                threshold += 5;
+            }
+
+            sortObjects = new SortObject[candidates.size()];
+            for (int i = 0; i < candidates.size(); i++) {
+                sortObjects[i] = new SortObject<>(candidates.get(i), candidates.get(i).COORDINATES.dist(graph.getCurrentPosition().COORDINATES));
+            }
+
+            sortedArray = quickSort.sort(sortObjects, 0, sortObjects.length-1);
+        }
+        else {
+            for (int i = 0; i < nodes.size(); i++) {
+                sortObjects[i] = new SortObject<Node>(nodes.get(i), nodes.get(i).COORDINATES.dist(graph.getCurrentPosition().COORDINATES));
+            }
+            sortedArray = quickSort.sort(sortObjects, 0, sortObjects.length-1);
+        }
+
+
+        if (nodes.size() == 0) return null;
+        return sortedArray[index].object;
     }
 
     public void whenStuck(){

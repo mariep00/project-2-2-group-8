@@ -2,8 +2,6 @@ package gamelogic.maps.graph;
 
 import datastructures.HashMap;
 import datastructures.Vector2D;
-import datastructures.quicksort.QuickSort;
-import datastructures.quicksort.SortObject;
 import gamelogic.maps.Tile;
 import gamelogic.maps.Tile.Type;
 
@@ -208,23 +206,6 @@ public class ExplorationGraph {
             }
         }
         return neighbours;
-    }
-
-
-    public Node getNextFrontier(int index) {
-        LinkedList<Node> nodes = frontiers.getAllNodes();
-        if(nodes.isEmpty()) System.out.println("3. Nodes is empty -> mistake in get allNodes");
-        SortObject<Node>[] sortObjects = new SortObject[nodes.size()];
-
-        for (int i = 0; i < nodes.size(); i++) {
-            sortObjects[i] = new SortObject<>(nodes.get(i), nodes.get(i).COORDINATES.dist(currentPosition.COORDINATES));
-        }
-
-        QuickSort<Node> quickSort = new QuickSort<>();
-        SortObject<Node>[] x = quickSort.sort(sortObjects, 0, sortObjects.length-1);
-
-        if (nodes.size() == 0) return null;
-        return x[index].object;
     }
 
     public Node getTeleport() {

@@ -19,9 +19,9 @@ public class ExplorationBrain implements BrainInterface {
     }
 
     @Override
-    public int makeDecision(ExplorationGraph graph, double orientation) {
+    public int makeDecision(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection) {
         if (futureMoves.isEmpty()) {
-            futureMoves = tasks.getCurrentTask().performTask(graph, orientation);
+            futureMoves = tasks.getCurrentTask().performTask(graph, orientation, pheromoneMarkerDirection);
             return futureMoves.pop();
         } else {
             return futureMoves.pop();

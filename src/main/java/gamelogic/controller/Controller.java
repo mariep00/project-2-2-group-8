@@ -67,7 +67,7 @@ public abstract class Controller {
         for (int i = 0; i < agents.length; i++) {
             int movementTask = agents[i].tick(getTilesInVision(currentState.getVision(i)),
                     convertAbsoluteToRelativeSpawn(currentState.getVision(i), i),
-                    markerController.getPheromoneMarkersDirections(i, currentState.getAgentPosition(i)));
+                    markerController.getPheromoneMarkersDirection(i, currentState.getAgentPosition(i)));
 
             movementController.moveAgent(i, movementTask);
             nextState.setAgentVision(i, calculateFOVAbsolute(i, nextState.getAgentPosition(i), nextState));
