@@ -17,7 +17,6 @@ import javafx.scene.PerspectiveCamera;
 import javafx.scene.Scene;
 import javafx.scene.SubScene;
 import javafx.scene.control.Button;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
@@ -59,15 +58,7 @@ public class GameScreen extends Application implements TransitionInterface {
         showVision = new boolean[scenarioMap.getNumGuards()];
 
         GridPane gridPane = loadGridPane();
-        ScrollPane scrollPane = new ScrollPane(gridPane);
-        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        scrollPane.setFitToHeight(true);
-        scrollPane.setFitToWidth(true);
-        scrollPane.setStyle("-fx-focus-color: transparent;");
-
         BorderPane borderPane = new BorderPane();
-
         AnchorPane anchorPane = loadInformationBar();
 
         BorderPane.setMargin(anchorPane, new Insets(5, 5, 5, 5));
