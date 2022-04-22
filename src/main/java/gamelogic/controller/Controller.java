@@ -44,6 +44,7 @@ public abstract class Controller {
     public void init() {
         initializeAgents();
 
+
         Vector2D[] initialPositions = spawnAgents();
         currentState = new State(initialPositions, null, null);
 
@@ -57,9 +58,18 @@ public abstract class Controller {
     }
 
     public void engine() {
+        //If (exploration){}
         while (!endingCondition.gameFinished()) {
             tick();
         }
+
+        /*
+        if survaillance{
+            while (!survaillanceEndingCOndition){
+                tick()
+            }
+         }
+         */
         end();
     }
 
@@ -181,5 +191,7 @@ public abstract class Controller {
     public double getTimestep() {
         return timestep;
     }
+    public double getTime() {return time;}
+
     public Agent getAgent(int agentIndex) { return agents[agentIndex]; }
 }
