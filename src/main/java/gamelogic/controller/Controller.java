@@ -7,6 +7,7 @@ import gamelogic.maps.ScenarioMap;
 import gamelogic.maps.Tile;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -16,6 +17,7 @@ public abstract class Controller {
 
     public final MovementController movementController;
     public final MarkerController markerController;
+    public final SoundController soundController;
     protected final ScenarioMap scenarioMap;
     protected final EndingConditionInterface endingCondition;
     protected final int numberOfGuards;
@@ -38,6 +40,7 @@ public abstract class Controller {
         this.timestep = scenarioMap.getTimestep();
         this.movementController = new MovementController(this);
         this.markerController = new MarkerController(this);
+        this.soundController = new SoundController(this);
         this.endingCondition = endingCondition;
     }
 
@@ -65,12 +68,16 @@ public abstract class Controller {
 
     public void tick() {
         for (int i = 0; i < agents.length; i++) {
+            System.out.println(Arrays.toString(soundController.getGuardYellDirections(i).toArray()));
+            // TODO We have two options here; 1. A guard can only yell once when he sees an intruder (then if guard loses intruder from vision, and finds him again he yells again). 2. A guard can always yell, also when he is already in pursuit with an intruder (then it would be the easiest to change the task to an object, because then an agent can move and yell at the same time. An object could also fix the A* 1 tile per tick issue I think)
             int movementTask = agents[i].tick(getTilesInVision(currentState.getVision(i)),
                     convertAbsoluteToRelativeSpawn(currentState.getVision(i), i),
-                    markerController.getPheromoneMarkersDirection(i, currentState.getAgentPosition(i)));
+                    markerController.getPheromoneMarkersDirection(i, currentState.getAgentPosition(i)),
+                    soundController.getSoundDirections(i));
 
             movementController.moveAgent(i, movementTask);
             nextState.setAgentVision(i, calculateFOVAbsolute(i, nextState.getAgentPosition(i), nextState));
+            if (i == 0) soundController.guardYell(i);
         }
         markerController.tick();
         updateProgress();

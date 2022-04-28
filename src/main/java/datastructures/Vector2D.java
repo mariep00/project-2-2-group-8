@@ -68,8 +68,7 @@ public class Vector2D {
         Vector2D directionalVector = new Vector2D(other.x-this.x, this.y-other.y); // this.y-other.y because in our coordinate system y "upwards" on the axis is minus, while y "downwards" the axis is plus.
         double theta = Math.atan2(directionalVector.x, directionalVector.y);
         double thetaWithEastToRight = theta-(Math.PI/2);
-        double result = thetaWithEastToRight < 0 ? Math.toDegrees(thetaWithEastToRight)+360 : Math.toDegrees(thetaWithEastToRight);
-        return result;
+        return thetaWithEastToRight < 0 ? Math.toDegrees(thetaWithEastToRight)+360 : Math.toDegrees(thetaWithEastToRight);
     }
     public Vector2D[] getNeighbours () {
         Vector2D[] neighbours = new Vector2D[4];

@@ -60,9 +60,6 @@ public class ScenarioMenu extends Application implements TransitionInterface {
         ScenarioMenuField viewRangeIntruder = new ScenarioMenuField("View range intruder", scenarioMap.getIntruderViewRange());
 
 
-        int guardRow = 1;
-        int intruderRow = 2;
-
         gridPane.add(mapName, 0, 0, 2, 1);
         gridPane.setMargin(mapName, new Insets(30, 0, 30, 0));
         gridPane.add(numberOfGuards, 0, 1);
@@ -73,7 +70,6 @@ public class ScenarioMenu extends Application implements TransitionInterface {
         gridPane.add(viewAngleIntruder, 1, 3);
         gridPane.add(viewRangeGuard, 0, 4);
         gridPane.add(viewRangeIntruder, 1, 4);
-
 
 
         borderPane.setCenter(gridPane);

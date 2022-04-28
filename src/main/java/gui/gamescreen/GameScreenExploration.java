@@ -4,7 +4,7 @@ import datastructures.Vector2D;
 import gamelogic.controller.endingconditions.EndingExploration;
 import gamelogic.maps.ScenarioMap;
 import gui.gamescreen.controller.ControllerExplorationGUI;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
 import java.util.List;
@@ -26,17 +26,16 @@ public class GameScreenExploration extends GameScreen {
     }
 
     @Override
-    protected AnchorPane loadInformationBar() {
-        AnchorPane anchorPane = super.loadInformationBar();
+    protected HBox loadInformationBar() {
+        HBox barHBox = super.loadInformationBar();
 
         progressBar = new ProgressBar();
         progressBar.getProgressBar().setPrefWidth(400);
         progressBar.getProgressBar().setPrefHeight(35);
 
-        anchorPane.getChildren().add(progressBar);
-        AnchorPane.setLeftAnchor(progressBar, 0.0);
+        barHBox.getChildren().add(0, progressBar);
 
-        return anchorPane;
+        return barHBox;
     }
 
     public void setProgress(AtomicBoolean executeNextGuiTask, int numberOfTilesExplored, int  numberOfTilesToExplore) {

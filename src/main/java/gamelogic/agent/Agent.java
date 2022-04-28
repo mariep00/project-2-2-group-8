@@ -8,16 +8,17 @@ import gamelogic.maps.graph.ExplorationGraph;
 import gamelogic.maps.graph.Node;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Agent {
 
-    private double base_speed;
-    private double sprint_speed;
+    private final double base_speed;
+    private final double sprint_speed;
+    private final double view_angle;
+    private final double view_range;
     private double orientation;
-    private double view_angle;
-    private double view_range;
 
-    private BrainInterface brain;
+    private final BrainInterface brain;
 
     public final ExplorationGraph explorationGraph;
 
@@ -31,12 +32,12 @@ public class Agent {
         explorationGraph = new ExplorationGraph();
     }
 
-    public int tick(ArrayList<Tile> inVision, ArrayList<Vector2D> coordinates, double pheromoneMarkerDirection) {
+    public int tick(List<Tile> inVision, List<Vector2D> coordinates, double pheromoneMarkerDirection, List<Double> soundDirections) {
         updateGraph(inVision, coordinates);
-        return brain.makeDecision(explorationGraph, orientation, pheromoneMarkerDirection);
+        return brain.makeDecision(explorationGraph, orientation, pheromoneMarkerDirection, soundDirections);
     }
 
-    private void updateGraph(ArrayList<Tile> inVision, ArrayList<Vector2D> coordinates) {
+    private void updateGraph(List<Tile> inVision, List<Vector2D> coordinates) {
         if (inVision.size() == coordinates.size()) {
             ArrayList<Integer> walls = new ArrayList<>();
             ArrayList<Integer> notWalls = new ArrayList<>();
@@ -47,6 +48,7 @@ public class Agent {
                     notWalls.add(i);
                 }
             }
+
             for (Integer i: notWalls) {
                 explorationGraph.createNode(coordinates.get(i), inVision.get(i));
             }
@@ -95,6 +97,6 @@ public class Agent {
 
     @Override
     public String toString() {
-        return "Orientation: " + orientation + ", graph: " + explorationGraph.toString();
+        return "Orientation: " + orientation + ", graph: " + explorationGraph;
     }
 }
