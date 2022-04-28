@@ -267,6 +267,8 @@ public class ScenarioMap {
                     areaMap.insertElement(new Vector2D(Math.abs(x-start.x), Math.abs(y-start.y)), 2);
                 } else if (mapGrid[y][x].getType()==Type.WALL) {
                     areaMap.insertElement(new Vector2D(x-start.x, y-start.y), 1);
+                } else if (mapGrid[y][x].isShaded()) {
+                    areaMap.insertElement(new Vector2D(x-start.x, y-start.y), 3);
                 }
             }
         }

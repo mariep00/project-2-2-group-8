@@ -8,7 +8,7 @@ import java.util.ArrayList;
 public class VisionController {
 
     private static double range = 4.0; // How many rows of endpoints should be added. Higher number means slower code because of more rays but also better accuracy. Maybe make dependent on viewRange?
-
+    private static double shadedReduction = 0.5; //In percent 
     /**
      * Calculates the visible tiles for an Agent
      * @param visionAngle angle of the visible field
@@ -116,15 +116,24 @@ public class VisionController {
         ArrayList<Vector2D> line = new ArrayList<Vector2D>();
         int n = calculateDistance(p0, p1);
         boolean noWall = true;
-        for (int i=0; noWall&&i<=n; i++) {
+        boolean notShaded = true;
+        int shadedCounter = -1;
+        for (int i=0; noWall && i<=n && notShaded ; i++) {
             double t = ((double)i)/n;
             Vector2D p = lerpPoint(p0, p1, t);
+            if (areaMap.getTile(p.x, p.y)==3) {
+                if (shadedCounter<0) {
+                    shadedCounter = (int)((n-i)*shadedReduction);
+                }
+            }
             if (areaMap.getTile(p.x, p.y)==1 || areaMap.getTile(p.x, p.y)==2) {
                 noWall = false;
             }
             if (areaMap.getTile(p.x, p.y)!=2) {
                 line.add(p);
             }
+            if (shadedCounter==0) notShaded = false;
+            shadedCounter--;
         }
         Vector2D[] pointsLine = new Vector2D[line.size()];
         pointsLine = line.toArray(pointsLine);
