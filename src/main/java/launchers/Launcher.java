@@ -21,11 +21,17 @@ public class Launcher {
 
         URL url = Launcher.class.getClassLoader().getResource("maps/"+fileName);
         if (url != null) {
-            ScenarioMap scenarioMap = new MapBuilder(Paths.get(url.toURI()).toFile()).getMap();
-            Controller controller = new ControllerExploration(scenarioMap, new EndingExploration(scenarioMap));
-            controller.init();
-            controller.engine();
+            long startTime = System.nanoTime();
+            for (int i = 0; i < 1000; i++) {
+                System.out.println(i);
+                ScenarioMap scenarioMap = new MapBuilder(Paths.get(url.toURI()).toFile()).getMap();
+                Controller controller = new ControllerExploration(scenarioMap, new EndingExploration(scenarioMap));
+                controller.init();
+                controller.engine();
+            }
+            long stopTime = System.nanoTime();
+            System.out.println((stopTime - startTime)/1000000);
         }
-        else System.out.println("******** Map named " + fileName + " not found ********");
+        else System.out.println("******** Map not found ********");
     }
 }

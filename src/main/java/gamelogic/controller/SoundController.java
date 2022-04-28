@@ -5,7 +5,6 @@ import datastructures.Vector2D;
 import java.util.ArrayList;
 import java.util.List;
 
-// TODO Might want to add sound loudness
 public class SoundController {
     private final Controller controller;
     private final int footstepMaxDistance = 8;
@@ -15,35 +14,39 @@ public class SoundController {
         this.controller = controller;
     }
 
-    public List<Double> getSoundDirections(int agentIndex) {
-        ArrayList<Double> soundAngles = new ArrayList<>();
+    public List<Sound> getSoundDirections(int agentIndex) {
+        ArrayList<Sound> sounds = new ArrayList<>();
         for (int i = 0; i < controller.numberOfGuards+controller.numberOfIntruders; i++) {
             if (i != agentIndex) {
-                if (controller.getCurrentState().getAgentPosition(agentIndex).dist(controller.getCurrentState().getAgentPosition(i)) <= footstepMaxDistance) {
+                double distance = controller.getCurrentState().getAgentPosition(agentIndex).dist(controller.getCurrentState().getAgentPosition(i));
+                if (distance <= footstepMaxDistance) {
                     double angle = controller.getCurrentState().getAgentPosition(agentIndex).getAngleBetweenVector(controller.getCurrentState().getAgentPosition(i));
                     double angleNormalDistributed = addNoiseToSound(angle);
-                    soundAngles.add(angleNormalDistributed >= 360 ? angleNormalDistributed-360 : angleNormalDistributed);
+                    sounds.add(new Sound(angleNormalDistributed >= 360 ? angleNormalDistributed-360 : angleNormalDistributed, distance / footstepMaxDistance));
                 }
             }
         }
-        return soundAngles;
+        return sounds;
     }
 
-    public List<Double> getGuardYellDirections(int agentIndex) {
+    public List<Sound> getGuardYellDirections(int agentIndex) {
         Vector2D currentPos = controller.getCurrentState().getAgentPosition(agentIndex);
-        List<Yell> guardYells = controller.getCurrentState().getGuardYells();
-        ArrayList<Double> anglesOfGuardYell = new ArrayList<>();
-        for (Yell yell : guardYells) {
-            if (yell.agentIndex != agentIndex && currentPos.dist(yell.position) <= yellMaxDistance) {
-                double angleWithNoise = addNoiseToSound(currentPos.getAngleBetweenVector(yell.position));
-                anglesOfGuardYell.add(angleWithNoise >= 360 ? angleWithNoise - 360 : angleWithNoise);
+        List<GuardYell> guardGuardYells = controller.getCurrentState().getGuardYells();
+        ArrayList<Sound> anglesOfGuardYell = new ArrayList<>();
+        for (GuardYell guardYell : guardGuardYells) {
+            if (guardYell.agentIndex != agentIndex ) {
+                double distance = currentPos.dist(guardYell.position);
+                if (distance <= yellMaxDistance) {
+                    double angleWithNoise = addNoiseToSound(currentPos.getAngleBetweenVector(guardYell.position));
+                    anglesOfGuardYell.add(new Sound(angleWithNoise >= 360 ? angleWithNoise - 360 : angleWithNoise, distance / yellMaxDistance));
+                }
             }
         }
         return anglesOfGuardYell;
     }
 
     public void guardYell(int agentIndex) {
-        controller.nextState.addGuardYell(new Yell(controller.getCurrentState().getAgentPosition(agentIndex), agentIndex));
+        controller.nextState.addGuardYell(new GuardYell(controller.getCurrentState().getAgentPosition(agentIndex), agentIndex));
     }
 
     private double addNoiseToSound(double angle) {

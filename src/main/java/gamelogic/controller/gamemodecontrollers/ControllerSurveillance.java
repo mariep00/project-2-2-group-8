@@ -5,6 +5,7 @@ import gamelogic.agent.Agent;
 import gamelogic.agent.brains.GuardBrain;
 import gamelogic.agent.brains.IntruderBrain;
 import gamelogic.controller.Controller;
+import gamelogic.controller.GuardYell;
 import gamelogic.controller.endingconditions.EndingSurveillance;
 import gamelogic.maps.ScenarioMap;
 
@@ -32,7 +33,7 @@ public class ControllerSurveillance extends Controller {
         for (int i = numberOfGuards; i < numberOfIntruders + numberOfGuards; i++) {
             while (true) {
                 int randNumber = rand.nextInt(spawnAreaIntruders.size());
-                if (!indicesUsed.contains(rand)) {
+                if (!indicesUsed.contains(randNumber)) {
                     indicesUsed.add(randNumber);
                     agentSpawnLocations[i] = spawnAreaIntruders.get(randNumber);
                     agentPositions[i] = agentSpawnLocations[i];
@@ -53,6 +54,18 @@ public class ControllerSurveillance extends Controller {
         }
         for (int i = 0; i < numberOfGuards; i++) {
             agents[i] = new Agent(scenarioMap.getBaseSpeedGuard(), 0.0, scenarioMap.getGuardViewAngle(),scenarioMap.getGuardViewRange(), orientations[rand.nextInt(orientations.length)], new GuardBrain());
+        }
+    }
+
+    @Override
+    protected void tickAgents() {
+        super.tickAgents();
+        for (int i = 0; i < numberOfGuards; i++) {
+            for (int j = numberOfIntruders; j < numberOfGuards+numberOfIntruders; j++) {
+                if (currentState.getVision(i).contains(currentState.getAgentPosition(j))) {
+                    currentState.addGuardYell(new GuardYell(currentState.getAgentPosition(i), i));
+                }
+            }
         }
     }
 }

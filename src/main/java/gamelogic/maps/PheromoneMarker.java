@@ -4,7 +4,7 @@ import datastructures.Vector2D;
 import gamelogic.agent.Agent;
 
 public class PheromoneMarker implements MarkerInterface {
-    public static final double strengthReducePerSecond = 1;
+    public static final double strengthReducePerSecond = 0.2;
     private final Agent agent;
     private final int initialSmellingDistance;
     private final Vector2D position; 
