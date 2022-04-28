@@ -13,13 +13,13 @@ public class State {
 
     private final List<Vector2D>[] visions;
     private final LinkedList<Tile> tilesWithMarker;
-    private final ArrayList<Yell> guardYells;
+    private final ArrayList<GuardYell> guardGuardYells;
 
-    public State(Vector2D[] agentPositions, List<Vector2D>[] visions, LinkedList<Tile> tilesWithMarker, ArrayList<Yell> guardYells) {
+    public State(Vector2D[] agentPositions, List<Vector2D>[] visions, LinkedList<Tile> tilesWithMarker, ArrayList<GuardYell> guardGuardYells) {
         this.agentPositions = agentPositions;
         this.visions = visions;
         this.tilesWithMarker = tilesWithMarker;
-        this.guardYells = guardYells;
+        this.guardGuardYells = guardGuardYells;
     }
 
     public State(Vector2D[] agentPositions, List<Vector2D>[] visions, LinkedList<Tile> tilesWithMarker) {
@@ -29,7 +29,7 @@ public class State {
     public void addTileWithMarker(Tile tile) { tilesWithMarker.add(tile); }
     public void setAgentPosition(int agentIndex, Vector2D position) { agentPositions[agentIndex] = position; }
     public void setAgentVision(int agentIndex, List<Vector2D> vision) { visions[agentIndex] = vision; }
-    public void addGuardYell(Yell yell) { guardYells.add(yell); }
+    public void addGuardYell(GuardYell guardYell) { guardGuardYells.add(guardYell); }
 
     // *** Actual Tile objects are not being copied! *** Might have to change this later
     public State copyOf() { return new State(agentPositions.clone(), visions.clone(), (LinkedList<Tile>) tilesWithMarker.clone()); }
@@ -39,7 +39,7 @@ public class State {
     public List<Vector2D>[] getVisions() { return visions; }
     public List<Vector2D> getVision(int agentIndex) { return visions[agentIndex]; }
     public LinkedList<Tile> getTilesWithMarker() { return tilesWithMarker; }
-    public List<Yell> getGuardYells() { return guardYells; }
+    public List<GuardYell> getGuardYells() { return guardGuardYells; }
 
     public String toString() { return "Agent positions: " + Arrays.toString(agentPositions); }
 }

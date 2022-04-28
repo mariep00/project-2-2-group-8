@@ -2,6 +2,7 @@ package gamelogic.agent;
 
 import datastructures.Vector2D;
 import gamelogic.agent.brains.BrainInterface;
+import gamelogic.controller.Sound;
 import gamelogic.maps.Tile;
 import gamelogic.maps.Tile.Type;
 import gamelogic.maps.graph.ExplorationGraph;
@@ -32,9 +33,9 @@ public class Agent {
         explorationGraph = new ExplorationGraph();
     }
 
-    public int tick(List<Tile> inVision, List<Vector2D> coordinates, double pheromoneMarkerDirection, List<Double> soundDirections) {
+    public int tick(List<Tile> inVision, List<Vector2D> coordinates, double pheromoneMarkerDirection, List<Sound> sounds) {
         updateGraph(inVision, coordinates);
-        return brain.makeDecision(explorationGraph, orientation, pheromoneMarkerDirection, soundDirections);
+        return brain.makeDecision(explorationGraph, orientation, pheromoneMarkerDirection, sounds);
     }
 
     private void updateGraph(List<Tile> inVision, List<Vector2D> coordinates) {
