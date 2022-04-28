@@ -4,6 +4,7 @@ import datastructures.HashMap;
 import datastructures.Vector2D;
 import datastructures.minheap.Heap;
 import datastructures.minheap.HeapItemInterface;
+import gamelogic.maps.Tile.Type;
 import gamelogic.maps.graph.ExplorationGraph;
 import gamelogic.maps.graph.Node;
 
@@ -35,8 +36,12 @@ public class AStar {
 
     public LinkedList<Vector2D> calculate() {
         while(true) {
+
+            if (open.isEmpty()) return null;
             ANode current = open.removeFirst();
-            if (current == null) return null;
+            
+            //if (current == null) return null;
+            //System.out.println("current: " + current.POSITION + ", goal: " + goal);
             if(current.POSITION.equals(goal)) {
                 goalANode = current;
                 break;
@@ -45,7 +50,7 @@ public class AStar {
             closed.addEntry(current.POSITION, current);
 
             ArrayList<ANode> neighbours = getNeighbours(current);
-
+            //System.out.println("neigbours size: " + neighbours.size());
             for (ANode node: neighbours) {
                 int g = current.getG()+1;
                 ANode x = open.contains(node);
@@ -79,12 +84,25 @@ public class AStar {
 
     private ArrayList<ANode> getNeighbours(ANode current) {
         ArrayList<ANode> neighbours = new ArrayList<>();
-        Node[] edges = graph.getNode(current.POSITION).getEdges();
-        for (Node n: edges) {
-            if(n!=null) {
-                if(!isInClosed(n.COORDINATES)) {
-                    ANode node = new ANode(n.COORDINATES);
+        Node currentNode = graph.getNode(current.POSITION);
+        Node[] edges = currentNode.getEdges();
+        
+        if (currentNode.getTile().getType().equals(Type.TELEPORT_ENTRANCE)) {
+            Node exit = edges[edges.length-1];
+            if (exit != null) {
+                if(!isInClosed(exit.COORDINATES)) {
+                    ANode node = new ANode(exit.COORDINATES);
                     neighbours.add(node);
+                }
+            }  
+        } else {
+            for (Node n: edges) {
+                if(n!=null) {
+                    
+                    if(!isInClosed(n.COORDINATES)) {
+                        ANode node = new ANode(n.COORDINATES);
+                        neighbours.add(node);
+                    }
                 }
             }
         }

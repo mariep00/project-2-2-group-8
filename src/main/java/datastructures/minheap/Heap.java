@@ -22,6 +22,7 @@ public class Heap<T extends HeapItemInterface<T>> {
     public T removeFirst() {
         T firstItem = items[0];
         itemCount--;
+        //System.out.println("ItemCount" + itemCount);
         swap(0, itemCount);
         items[itemCount] = null;
         sortDown(0);
@@ -96,5 +97,10 @@ public class Heap<T extends HeapItemInterface<T>> {
             if (items[i].equals(item)) return items[i];
         }
         return null;
+    }
+
+    public boolean isEmpty() {
+        if (itemCount==0) return true;
+        else return false;
     }
 }
