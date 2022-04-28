@@ -38,8 +38,10 @@ public class GameScreen extends Application implements TransitionInterface {
     protected Tile[][] tiles;
     private boolean[] showVision;
 
-    private final int maxZoom = -10000;
     private final int minZoom = -100;
+
+    private double mouseX;
+    private double mouseY;
 
     public GameScreen(ScenarioMap scenarioMap) {
         this.scenarioMap = scenarioMap;
@@ -59,56 +61,84 @@ public class GameScreen extends Application implements TransitionInterface {
 
         GridPane gridPane = loadGridPane();
         BorderPane borderPane = new BorderPane();
-        AnchorPane anchorPane = loadInformationBar();
+        HBox barHBox = loadInformationBar();
 
-        BorderPane.setMargin(anchorPane, new Insets(5, 5, 5, 5));
-        borderPane.setTop(anchorPane);
+        BorderPane.setMargin(barHBox, new Insets(5, 5, 5, 5));
+        borderPane.setTop(barHBox);
 
         SubScene subScene = new SubScene(new Pane(gridPane), stage.getWidth(), stage.getHeight()-45);
         Camera camera = new PerspectiveCamera(true);
         subScene.setCamera(camera);
-        double initialZ;
+
+        double initialTranslateX = ((float)scenarioMap.getWidth()/2)*Tile.tileSize;
+        double initialTranslateY = ((float)scenarioMap.getHeight()/2)*Tile.tileSize;
+        double initialTranslateZ;
         if (scenarioMap.getWidth() < scenarioMap.getHeight()) {
-            initialZ = (((float)scenarioMap.getWidth()/2)*Tile.tileSize)/Math.tan(Math.toRadians(15));
+            initialTranslateZ = initialTranslateX/Math.tan(Math.toRadians(15));
         }
-        else initialZ = (((float)scenarioMap.getHeight()/2)*Tile.tileSize)/Math.tan(Math.toRadians(15));
+        else initialTranslateZ = initialTranslateY/Math.tan(Math.toRadians(15));
 
-        initialZ *= -1;
+        initialTranslateZ *= -1;
 
-        camera.setTranslateX(((float)scenarioMap.getWidth()*Tile.tileSize)/2);
-        camera.setTranslateY(((float)scenarioMap.getHeight()*Tile.tileSize)/2);
-        camera.setTranslateZ(initialZ);
+        camera.setTranslateX(initialTranslateX);
+        camera.setTranslateY(initialTranslateY);
+        camera.setTranslateZ(initialTranslateZ);
         camera.setNearClip(0.1);
         camera.setFarClip(100000);
+        double maxZoom = initialTranslateZ-50;
 
         borderPane.setCenter(subScene);
 
         Scene scene = new Scene(borderPane);
 
         scene.setOnKeyPressed(e -> {
-            if (e.getCode() == KeyCode.D) {
-                camera.setTranslateX(camera.getTranslateX()+25);
+            if (e.getCode() == KeyCode.D || e.getCode() == KeyCode.RIGHT) {
+                translateCamera(camera, 25, 0);
             }
-            if (e.getCode() == KeyCode.A) {
-                camera.setTranslateX(camera.getTranslateX()-25);
+            else if (e.getCode() == KeyCode.A || e.getCode() == KeyCode.LEFT) {
+                translateCamera(camera, -25, 0);
             }
-            if (e.getCode() == KeyCode.W) {
-                camera.setTranslateY(camera.getTranslateY()-25);
+            else if (e.getCode() == KeyCode.W || e.getCode() == KeyCode.UP) {
+                translateCamera(camera, 0, -25);
             }
-            if (e.getCode() == KeyCode.S) {
-                camera.setTranslateY(camera.getTranslateY()+25);
+            else if (e.getCode() == KeyCode.S || e.getCode() == KeyCode.DOWN) {
+                translateCamera(camera, 0, 25);
             }
         });
 
-        scene.setOnScroll(e -> {
+        scene.setOnMousePressed(e -> {
+            mouseX = e.getSceneX();
+            mouseY = e.getSceneY();
+        });
+        double finalInitialTranslateZ = initialTranslateZ;
+        scene.addEventHandler(MouseEvent.MOUSE_DRAGGED, e -> {
+            double speedMultiplier = camera.getTranslateZ()/finalInitialTranslateZ;
+            translateCamera(camera, (-(e.getSceneX()-mouseX))*speedMultiplier, (-(e.getSceneY()-mouseY))*speedMultiplier);
+            mouseX = e.getSceneX();
+            mouseY = e.getSceneY();
+        });
+
+        subScene.setOnScroll(e -> {
+            mouseX = e.getSceneX();
+            mouseY = e.getSceneY();
             double newVal = camera.getTranslateZ()+e.getDeltaY();
-            if (newVal <= minZoom && newVal >= maxZoom) camera.setTranslateZ(newVal);
+            if (newVal <= minZoom && newVal >= maxZoom) {
+                //System.out.println("CAMERA " + camera.getTranslateX() +", " + camera.getTranslateY());
+                //System.out.println("MOUSE " + camera.sceneToLocal(mouseX, mouseY));
+                //translateCamera(camera, -((mouseX+initialTranslateX)-camera.getTranslateX())*e.getDeltaY()*0.0005, -((mouseY+initialTranslateY)-camera.getTranslateY())*e.getDeltaY()*0.0005);
+                camera.setTranslateZ(newVal);
+            }
         });
 
         return scene;
     }
 
-    protected AnchorPane loadInformationBar() {
+    private void translateCamera(Camera camera, double deltaX, double deltaY) {
+        camera.setTranslateX(camera.getTranslateX()+deltaX);
+        camera.setTranslateY(camera.getTranslateY()+deltaY);
+    }
+
+    protected HBox loadInformationBar() {
         HBox hboxButtons = new HBox(10);
         Button buttonShowAllVisions = new Button();
         ImageView showVisionImageView = new ImageView(imageContainer.getShowVision());
@@ -155,9 +185,10 @@ public class GameScreen extends Application implements TransitionInterface {
         hboxButtons.getChildren().addAll(  buttonShowAllVisions, buttonHideAllVisions, simulationSlider, buttonStep, buttonPlaySimulation, buttonStopSimulation);
         hboxButtons.setAlignment(Pos.CENTER_RIGHT);
 
-        AnchorPane anchorPane = new AnchorPane();
-        anchorPane.getChildren().add(hboxButtons);
-        AnchorPane.setRightAnchor(hboxButtons, 0.0);
+        Region spacingRegion = new Region();
+        HBox.setHgrow(spacingRegion, Priority.ALWAYS);
+        HBox barHBox = new HBox();
+        barHBox.getChildren().addAll(spacingRegion, hboxButtons);
 
         simulationSlider.setOnMouseDragged(e -> {
             getController().setSimulationDelay((int)(simulationSlider.slider.maxProperty().get()-simulationSlider.slider.getValue()));
@@ -202,7 +233,7 @@ public class GameScreen extends Application implements TransitionInterface {
             }
         });
 
-        return anchorPane;
+        return barHBox;
     }
 
     private GridPane loadGridPane() {

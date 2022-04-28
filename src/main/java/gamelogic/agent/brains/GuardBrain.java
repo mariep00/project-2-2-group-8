@@ -5,6 +5,8 @@ import gamelogic.agent.tasks.TaskContainer;
 import gamelogic.agent.tasks.TaskContainer.TaskType;
 import gamelogic.maps.graph.ExplorationGraph;
 
+import java.util.List;
+
 public class GuardBrain implements BrainInterface {
 
     private TaskContainer tasks;
@@ -18,7 +20,7 @@ public class GuardBrain implements BrainInterface {
 
     //TODO: Add logic for when to switch between different tasks in the container
     @Override
-    public int makeDecision(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection) {
+    public int makeDecision(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection, List<Double> soundDirections) {
         return -1;
     }
 }

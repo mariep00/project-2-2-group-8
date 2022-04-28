@@ -18,6 +18,7 @@ public class PheromoneMarker implements MarkerInterface {
     }
 
     public double getDistance() { return strength*initialSmellingDistance; }
+    public double getStrength() { return strength; }
 
     @Override
     public boolean shouldRemove() { return strength <= 0; }
