@@ -116,12 +116,15 @@ public class VisionController {
         ArrayList<Vector2D> line = new ArrayList<Vector2D>();
         int n = calculateDistance(p0, p1);
         boolean noWall = true;
-        for (int i=0; noWall&&i<=n; i++) {
+        boolean notShaded = true;
+        int shadedCounter = -1;
+        for (int i=0; noWall && i<=n && notShaded ; i++) {
             double t = ((double)i)/n;
             Vector2D p = lerpPoint(p0, p1, t);
             if (areaMap.getTile(p.x, p.y)==3) {
-                n = n-(int)(n*shadedReduction);
-                System.out.println(n);
+                if (shadedCounter<0) {
+                    shadedCounter = (int)((n-i)*shadedReduction);
+                }
             }
             if (areaMap.getTile(p.x, p.y)==1 || areaMap.getTile(p.x, p.y)==2) {
                 noWall = false;
@@ -129,6 +132,8 @@ public class VisionController {
             if (areaMap.getTile(p.x, p.y)!=2) {
                 line.add(p);
             }
+            if (shadedCounter==0) notShaded = false;
+            shadedCounter--;
         }
         Vector2D[] pointsLine = new Vector2D[line.size()];
         pointsLine = line.toArray(pointsLine);
