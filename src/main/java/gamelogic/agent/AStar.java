@@ -36,7 +36,6 @@ public class AStar {
 
     public LinkedList<Vector2D> calculate() {
         while(true) {
-
             if (open.isEmpty()) return null;
             ANode current = open.removeFirst();
             
@@ -50,7 +49,6 @@ public class AStar {
             closed.addEntry(current.POSITION, current);
 
             ArrayList<ANode> neighbours = getNeighbours(current);
-            //System.out.println("neigbours size: " + neighbours.size());
             for (ANode node: neighbours) {
                 int g = current.getG()+1;
                 ANode x = open.contains(node);
@@ -98,7 +96,6 @@ public class AStar {
         } else {
             for (Node n: edges) {
                 if(n!=null) {
-                    
                     if(!isInClosed(n.COORDINATES)) {
                         ANode node = new ANode(n.COORDINATES);
                         neighbours.add(node);

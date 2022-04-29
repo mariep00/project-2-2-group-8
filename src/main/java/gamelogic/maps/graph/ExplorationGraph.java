@@ -79,11 +79,6 @@ public class ExplorationGraph {
      * @return true if the Node exists
      */
     private boolean nodeExists(Vector2D vector) {
-        /*Node n = nodes.getValue(vector);
-        if (n != null) {
-            updateFrontiers(n);
-            return true;
-        }*/
         return nodes.getValue(vector) != null;
     }
 

@@ -5,7 +5,7 @@ import gamelogic.agent.Agent;
 import gamelogic.agent.brains.GuardBrain;
 import gamelogic.agent.brains.IntruderBrain;
 import gamelogic.controller.Controller;
-import gamelogic.controller.GuardYell;
+import gamelogic.datacarriers.GuardYell;
 import gamelogic.controller.endingconditions.EndingSurveillance;
 import gamelogic.maps.ScenarioMap;
 

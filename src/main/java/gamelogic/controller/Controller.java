@@ -3,8 +3,8 @@ package gamelogic.controller;
 import datastructures.Vector2D;
 import gamelogic.agent.Agent;
 import gamelogic.controller.endingconditions.EndingConditionInterface;
+import gamelogic.datacarriers.Vision;
 import gamelogic.maps.ScenarioMap;
-import gamelogic.maps.Tile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +49,7 @@ public abstract class Controller {
         Vector2D[] initialPositions = spawnAgents();
         currentState = new State(initialPositions, null, null);
 
-        ArrayList<Vector2D>[] visions = new ArrayList[numberOfGuards + numberOfIntruders];
+        List<Vector2D>[] visions = new ArrayList[numberOfGuards + numberOfIntruders];
         for (int i = 0; i < visions.length; i++) {
             visions[i] = calculateFOVAbsolute(i, initialPositions[i], currentState);
         }
@@ -74,8 +74,7 @@ public abstract class Controller {
 
     protected void tickAgents() {
         for (int i = 0; i < agents.length; i++) {
-            int movementTask = agents[i].tick(getTilesInVision(currentState.getVision(i)),
-                    convertAbsoluteToRelativeSpawn(currentState.getVision(i), i),
+            int movementTask = agents[i].tick(getVisions(i),
                     markerController.getPheromoneMarkersDirection(i, currentState.getAgentPosition(i)),
                     soundController.getSoundDirections(i));
 
@@ -98,19 +97,21 @@ public abstract class Controller {
         System.out.println("Everything is explored. It took " + hours + " hour(s) " + minutes + " minutes " + seconds + " seconds.");
     }
 
-    protected ArrayList<Vector2D> calculateFOV(int agentIndex, Vector2D agentPosition) {
+    protected List<Vector2D> calculateFOV(int agentIndex, Vector2D agentPosition) {
         return VisionController.calculateVision(agents[agentIndex].getView_angle(), agents[agentIndex].getView_range(), scenarioMap.createAreaMap(agentPosition, agents[agentIndex].getView_range()), agents[agentIndex].getOrientation()).getInVision();
     }
-    protected ArrayList<Vector2D> calculateFOVAbsolute(int agentIndex, Vector2D agentPosition, State state) {
+    protected List<Vector2D> calculateFOVAbsolute(int agentIndex, Vector2D agentPosition, State state) {
         return convertRelativeCurrentPosToAbsolute(calculateFOV(agentIndex, agentPosition), agentIndex, state);
     }
 
-    private ArrayList<Tile> getTilesInVision(List<Vector2D> vision) {
-        ArrayList<Tile> tiles = new ArrayList<>();
-        for (Vector2D pos : vision) {
-            tiles.add(scenarioMap.getTile(pos));
+    private Vision[] getVisions(int agentIndex) {
+        List<Vector2D> positionsInVision = currentState.getVision(agentIndex);
+        Vision[] visions = new Vision[positionsInVision.size()];
+        for (int i = 0; i < visions.length; i++) {
+            Vector2D pos = positionsInVision.get(i);
+            visions[i] = new Vision(scenarioMap.getTile(pos), convertAbsoluteToRelativeSpawn(pos, agentIndex));
         }
-        return tiles;
+        return visions;
     }
 
     protected Vector2D[] spawnAgents() {
@@ -185,8 +186,6 @@ public abstract class Controller {
     public int getNumberOfIntruders() { return numberOfIntruders; }
     public State getCurrentState() { return currentState; }
     public State getNextState() { return nextState; }
-    public double getTimestep() {
-        return timestep;
-    }
+    public double getTimestep() { return timestep; }
     public Agent getAgent(int agentIndex) { return agents[agentIndex]; }
 }

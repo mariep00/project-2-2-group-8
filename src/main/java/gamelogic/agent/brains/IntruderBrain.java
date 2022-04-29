@@ -3,7 +3,7 @@ package gamelogic.agent.brains;
 import gamelogic.agent.tasks.ExplorationTaskFrontier;
 import gamelogic.agent.tasks.TaskContainer;
 import gamelogic.agent.tasks.TaskContainer.TaskType;
-import gamelogic.controller.Sound;
+import gamelogic.datacarriers.Sound;
 import gamelogic.maps.graph.ExplorationGraph;
 
 import java.util.List;

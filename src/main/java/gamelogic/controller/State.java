@@ -1,6 +1,7 @@
 package gamelogic.controller;
 
 import datastructures.Vector2D;
+import gamelogic.datacarriers.GuardYell;
 import gamelogic.maps.Tile;
 
 import java.util.ArrayList;

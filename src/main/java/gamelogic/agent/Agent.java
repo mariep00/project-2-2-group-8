@@ -2,7 +2,8 @@ package gamelogic.agent;
 
 import datastructures.Vector2D;
 import gamelogic.agent.brains.BrainInterface;
-import gamelogic.controller.Sound;
+import gamelogic.datacarriers.Sound;
+import gamelogic.datacarriers.Vision;
 import gamelogic.maps.Tile;
 import gamelogic.maps.Tile.Type;
 import gamelogic.maps.graph.ExplorationGraph;
@@ -33,31 +34,25 @@ public class Agent {
         explorationGraph = new ExplorationGraph();
     }
 
-    public int tick(List<Tile> inVision, List<Vector2D> coordinates, double pheromoneMarkerDirection, List<Sound> sounds) {
-        updateGraph(inVision, coordinates);
+    public int tick(Vision[] inVision, double pheromoneMarkerDirection, List<Sound> sounds) {
+        updateGraph(inVision);
         return brain.makeDecision(explorationGraph, orientation, pheromoneMarkerDirection, sounds);
     }
 
-    private void updateGraph(List<Tile> inVision, List<Vector2D> coordinates) {
-        if (inVision.size() == coordinates.size()) {
-            ArrayList<Integer> walls = new ArrayList<>();
-            ArrayList<Integer> notWalls = new ArrayList<>();
-            for (int i=0; i<inVision.size(); i++) {
-                if (inVision.get(i).getType() == Type.WALL) {
-                    walls.add(i);
-                } else {
-                    notWalls.add(i);
-                }
+    private void updateGraph(Vision[] inVision) {
+        ArrayList<Integer> walls = new ArrayList<>();
+        for (int i=0; i<inVision.length; i++) {
+            if (inVision[i].tile().getType() == Type.WALL) {
+                walls.add(i);
+            } else {
+                explorationGraph.createNode(inVision[i].position(), inVision[i].tile());
             }
+        }
 
-            for (Integer i: notWalls) {
-                explorationGraph.createNode(coordinates.get(i), inVision.get(i));
-            }
-            for (Integer i: walls) {
-                Vector2D[] neighbours = coordinates.get(i).getNeighbours();
-                for (int j=0; j<neighbours.length; j++) {
-                    explorationGraph.addWall(neighbours[j], j);
-                }
+        for (Integer i: walls) {
+            Vector2D[] neighbours = inVision[i].position().getNeighbours();
+            for (int j=0; j<neighbours.length; j++) {
+                explorationGraph.addWall(neighbours[j], j);
             }
         }
     }

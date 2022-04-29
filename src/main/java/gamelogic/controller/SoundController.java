@@ -1,6 +1,8 @@
 package gamelogic.controller;
 
 import datastructures.Vector2D;
+import gamelogic.datacarriers.GuardYell;
+import gamelogic.datacarriers.Sound;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,10 +36,10 @@ public class SoundController {
         List<GuardYell> guardGuardYells = controller.getCurrentState().getGuardYells();
         ArrayList<Sound> anglesOfGuardYell = new ArrayList<>();
         for (GuardYell guardYell : guardGuardYells) {
-            if (guardYell.agentIndex != agentIndex ) {
-                double distance = currentPos.dist(guardYell.position);
+            if (guardYell.agentIndex() != agentIndex ) {
+                double distance = currentPos.dist(guardYell.origin());
                 if (distance <= yellMaxDistance) {
-                    double angleWithNoise = addNoiseToSound(currentPos.getAngleBetweenVector(guardYell.position));
+                    double angleWithNoise = addNoiseToSound(currentPos.getAngleBetweenVector(guardYell.origin()));
                     anglesOfGuardYell.add(new Sound(angleWithNoise >= 360 ? angleWithNoise - 360 : angleWithNoise, distance / yellMaxDistance));
                 }
             }

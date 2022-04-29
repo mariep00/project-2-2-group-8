@@ -1,6 +1,6 @@
 package gamelogic.agent.brains;
 
-import gamelogic.controller.Sound;
+import gamelogic.datacarriers.Sound;
 import gamelogic.maps.graph.ExplorationGraph;
 
 import java.util.List;
