@@ -11,7 +11,7 @@ import java.util.concurrent.*;
 
 // Abstract because you should not instantiate a Controller class, but either a ControllerExploration or ControllerSurveillance class
 public abstract class Controller {
-    private static final boolean MULTITHREADING = true;
+    private static final boolean MULTITHREAD_CONTROLLER = true; // Change this to enable or disable multithreading in the controller. Currently, only ticking agents will be multithreaded.
     protected final Random rand = new Random();
 
     public final MovementController movementController;
@@ -43,7 +43,8 @@ public abstract class Controller {
         this.markerController = new MarkerController(this);
         this.soundController = new SoundController(this);
         this.endingCondition = endingCondition;
-        threadPool = new ThreadPoolExecutor(Runtime.getRuntime().availableProcessors(), 50, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
+        if (MULTITHREAD_CONTROLLER) threadPool = new ThreadPoolExecutor(Runtime.getRuntime().availableProcessors()/2, 50, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
+        else threadPool = null;
     }
 
     public void init() {
@@ -80,7 +81,7 @@ public abstract class Controller {
 
         for (int i = 0; i < agents.length; i++) {
             int finalI = i;
-            if (MULTITHREADING) futures.add(threadPool.submit(() -> tickAgent(finalI)));
+            if (MULTITHREAD_CONTROLLER) futures.add(threadPool.submit(() -> tickAgent(finalI)));
             else tickAgent(finalI);
         }
         // Wait for all threads to be finished i.e. wait until all agents have ticked

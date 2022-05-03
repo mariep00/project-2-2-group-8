@@ -9,29 +9,48 @@ import gamelogic.maps.ScenarioMap;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Paths;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 
 public class Launcher {
+    private final static boolean MULTITHREAD_LAUNCHER = true; // Change this to enable or disable multithreading in the launcher. I.e. running multiple games in parallel.
+    private final static int NUMBER_OF_GAMES = 1000; // Change this to change the number of games to run
+    private final static String FILE_NAME = "testmap.txt"; // Change this string to the file name of the map you want to run. Make sure the map is located in resources/maps.
 
     /**
      * Launcher without GUI
      */
-    public static void main(String[] args) throws URISyntaxException {
-        String fileName = "testmap.txt"; // ONLY change this string to the name of the map file you want to use (make sure the txt file is located in: resources/maps/)
-
-        URL url = Launcher.class.getClassLoader().getResource("maps/"+fileName);
+    public static void main(String[] args) throws InterruptedException {
+        URL url = Launcher.class.getClassLoader().getResource("maps/"+FILE_NAME);
+        ThreadPoolExecutor threadPool = new ThreadPoolExecutor(Runtime.getRuntime().availableProcessors()/2, 50, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
         if (url != null) {
             long startTime = System.nanoTime();
-            for (int i = 0; i < 1000; i++) {
-                System.out.println(i);
-                ScenarioMap scenarioMap = new MapBuilder(Paths.get(url.toURI()).toFile()).getMap();
-                Controller controller = new ControllerExploration(scenarioMap, new EndingExploration(scenarioMap));
-                controller.init();
-                controller.engine();
+            for (int i = 0; i < NUMBER_OF_GAMES; i++) {
+                int finalI = i;
+                if (MULTITHREAD_LAUNCHER) threadPool.submit(() -> runGame(finalI, url));
+                else runGame(finalI, url);
             }
+            threadPool.shutdown();
+            threadPool.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
             long stopTime = System.nanoTime();
             System.out.println((stopTime - startTime)/1000000);
         }
         else System.out.println("******** Map not found ********");
     }
+
+    private static void runGame(int i, URL url) {
+        System.out.println("Game " + i + " / " + NUMBER_OF_GAMES);
+        ScenarioMap scenarioMap = null;
+        try {
+            scenarioMap = new MapBuilder(Paths.get(url.toURI()).toFile()).getMap();
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+        Controller controller = new ControllerExploration(scenarioMap, new EndingExploration(scenarioMap));
+        controller.init();
+        controller.engine();
+    }
+
 }
