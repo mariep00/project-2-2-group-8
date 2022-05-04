@@ -60,6 +60,9 @@ public class Controller {
     public void tick(double timestep) {
         for (int i=0; i<agentsGuards.length; i++) {
             ArrayList<Tile> tiles = getTilesInVision(visions[i], i);
+            //ArrayLists for updating other agents positions + types
+            //positions: Vector2D
+            //types: several types (explorer/intruder/guard --> brainID)--> find representation for each within same ArrayList
             if (updateProgress(visions[i], i)) {    
                 if(!finished) {
                     end();
