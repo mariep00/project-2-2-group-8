@@ -19,8 +19,8 @@ public class Agent {
     private double view_range;
 
     private BrainInterface brain;
+    private int brainID;
     private BrainInterface frontierBrain;
-
 
     public final ExplorationGraph explorationGraph;
 
@@ -32,6 +32,7 @@ public class Agent {
         this.view_range = view_range;
         this.orientation = orientation;
         initBrain(brainID);
+        this.brainID = brainID;
         explorationGraph = new ExplorationGraph();
     }
 
@@ -109,4 +110,13 @@ public class Agent {
     public String toString() {
         return "Orientation: " + orientation + ", graph: " + explorationGraph.toString();
     }
+
+    public int getBrainID() {
+        return brainID;
+    }
+
+    public Vector2D getCurrentPosition() {
+        return explorationGraph.getCurrentPosition().getCOORDINATES();
+    }
+    //change referential
 }

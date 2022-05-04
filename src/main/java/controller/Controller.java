@@ -2,6 +2,7 @@ package controller;
 
 import controller.agent.Agent;
 import controller.maps.*;
+import gui.gamescreen.AgentType;
 
 import java.util.*;
 
@@ -313,5 +314,21 @@ public class Controller {
             absPos.add(convertRelativeCurrentPosToRelativeToSpawn(vector2D, agentId));
         }
         return absPos;
+    }
+
+    public Vector2D[] getAgentPositions(Agent agent) {
+        if (agent.getBrainID() == 1) {
+            Vector2D[] guardsPositions = new Vector2D[agentsGuards.length];
+            for (int i = 0; i < guardsPositions.length; i++) {
+                guardsPositions[i] = agentsGuards[i].getCurrentPosition();
+            }
+            return guardsPositions;
+        } else {
+            Vector2D[] intrudersPositions = new Vector2D[agentsIntruders.length];
+            for (int i = 0; i < intrudersPositions.length; i++) {
+                intrudersPositions[i] = agentsIntruders[i].getCurrentPosition();
+            }
+            return intrudersPositions;
+        }
     }
 }
