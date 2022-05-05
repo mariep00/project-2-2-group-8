@@ -136,4 +136,7 @@ public class ControllerGUI implements ControllerGUIInterface {
     public AtomicBoolean getRunSimulation() { return runSimulation; }
     public AtomicBoolean getExecuteNextGuiTask() { return executeNextGuiTask; }
     public void addGuiRunnableToQueue(Runnable runnable) { guiTasksQueue.add(() -> Platform.runLater(runnable)); }
+    public void end(){
+
+    }
 }
