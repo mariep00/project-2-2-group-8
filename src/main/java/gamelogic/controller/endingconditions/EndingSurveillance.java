@@ -1,28 +1,33 @@
 package gamelogic.controller.endingconditions;
 
 import gamelogic.controller.Controller;
+import gamelogic.controller.State;
+import gamelogic.controller.gamemodecontrollers.ControllerSurveillance;
+import gamelogic.maps.ScenarioMap;
 import gamelogic.maps.Tile;
 import gamelogic.maps.graph.ExplorationGraph;
 
 //TODO Add the ending conditions for the surveillance gamemode
 public class EndingSurveillance implements EndingConditionInterface {
 
-    private ExplorationGraph graph;
+    private static ScenarioMap map;
     private static double timerInsideTarget;
     private static double timerOutsideTarget;
-    private static Controller controller;
+    private static ControllerSurveillance controller;
     private static double elapsedTimeInside;
     private static double elapsedTimeOutside;
     private int targetVisitCounter;
+    private State currentState;
 
     private static final int goalTimeInside = 3;
     private static final int goalTargetGap = 5;
 
-    public EndingSurveillance(ExplorationGraph graph){
-        this.graph = graph;
+    public EndingSurveillance(ScenarioMap map){
+        this.map = map;
         timerInsideTarget = 0;
         timerOutsideTarget = 0;
         targetVisitCounter = 0;
+        currentState = null;
     }
 
     @Override
@@ -31,30 +36,27 @@ public class EndingSurveillance implements EndingConditionInterface {
         1. All intruders are caught
                - what will happen to intruders when caught?
          */
-
-
         //2. Intruders reach the target (and stay inside)
             //This part is done :)
 
         // Stay X amount of seconds inside target area
-        if (graph.getCurrentPosition().getTile().getType() == Tile.Type.TARGET_AREA) {
-            targetVisitCounter ++;
-            timerOutsideTarget= 0;
-            if (countSecondsInsideTargetArea()) {
+        for (int i= controller.getNumberOfGuards(); i<= controller.getNumberOfGuards() + controller.getNumberOfIntruders(); i++) {
+            if (map.getTile(currentState.getAgentPosition(i)).getType() == Tile.Type.TARGET_AREA) {
+                targetVisitCounter++;
+                timerOutsideTarget = 0;
+                if (countSecondsInsideTargetArea()) {
+                    return true;
+                }
+            } else if (map.getTile(currentState.getAgentPosition(i)).getType() != Tile.Type.TARGET_AREA) {
+                timerInsideTarget = 0;
+                countSecondsOutsideTargetArea();
+            }
+
+            //twice in ≥ 3 sec
+            if (targetVisitCounter >= 2 && countSecondsOutsideTargetArea() && map.getTile(currentState.getAgentPosition(i)).getType() == Tile.Type.TARGET_AREA) {
                 return true;
             }
         }
-        else if (graph.getCurrentPosition().getTile().getType() != Tile.Type.TARGET_AREA) {
-            timerInsideTarget = 0;
-            countSecondsOutsideTargetArea();
-        }
-
-        //twice in ≥ 3 sec
-        if (targetVisitCounter >= 2 && countSecondsOutsideTargetArea() && graph.getCurrentPosition().getTile().getType() == Tile.Type.TARGET_AREA){
-            return true;
-        }
-
-
         return false;
     }
 
@@ -78,5 +80,10 @@ public class EndingSurveillance implements EndingConditionInterface {
             if (elapsedTimeOutside >= goalTargetGap) return true;
         }
         return false;
+    }
+
+    public void updateState (State state){
+        currentState = state;
+
     }
 }

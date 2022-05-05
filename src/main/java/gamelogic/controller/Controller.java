@@ -43,8 +43,6 @@ public abstract class Controller {
 
     public void init() {
         initializeAgents();
-
-
         Vector2D[] initialPositions = spawnAgents();
         currentState = new State(initialPositions, null, null);
 
@@ -52,24 +50,14 @@ public abstract class Controller {
         for (int i = 0; i < visions.length; i++) {
             visions[i] = calculateFOVAbsolute(i, initialPositions[i], currentState);
         }
-
         currentState = new State(initialPositions, visions, markerController.init(initialPositions));
         nextState = currentState.copyOf();
     }
 
     public void engine() {
-        //If (exploration){}
         while (!endingCondition.gameFinished()) {
             tick();
         }
-
-        /*
-        if survaillance{
-            while (!survaillanceEndingCOndition){
-                tick()
-            }
-         }
-         */
         end();
     }
 
@@ -132,7 +120,6 @@ public abstract class Controller {
                 }
             }
         }
-
         return agentPositions;
     }
 

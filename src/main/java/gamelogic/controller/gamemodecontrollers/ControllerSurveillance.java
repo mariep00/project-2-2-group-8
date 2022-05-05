@@ -55,4 +55,9 @@ public class ControllerSurveillance extends Controller {
             agents[i] = new Agent(scenarioMap.getBaseSpeedGuard(), 0.0, scenarioMap.getGuardViewAngle(),scenarioMap.getGuardViewRange(), orientations[rand.nextInt(orientations.length)], new GuardBrain());
         }
     }
+
+    @Override
+    protected void updateProgress() {
+        endingSurveillance.updateState(currentState);
+    }
 }
