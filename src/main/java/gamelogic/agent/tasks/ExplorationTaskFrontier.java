@@ -27,8 +27,7 @@ public class ExplorationTaskFrontier implements TaskInterface {
     private SortObject<Node>[] sortedArray;
     private SortObject<Node>[] sortedArrayPheromoneAngle;
 
-    public ExplorationTaskFrontier(){
-        
+    public ExplorationTaskFrontier() {
         goalNode = new Node(new Vector2D(-20000, -20000), new Tile());
     }
 
@@ -261,6 +260,9 @@ public class ExplorationTaskFrontier implements TaskInterface {
     public TaskType getType() {
         return type;
     }
+
+    @Override
+    public TaskInterface newInstance() { return new ExplorationTaskFrontier(); }
 
 
 

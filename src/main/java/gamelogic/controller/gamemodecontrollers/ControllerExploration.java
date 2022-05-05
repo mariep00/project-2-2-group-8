@@ -3,6 +3,7 @@ package gamelogic.controller.gamemodecontrollers;
 import datastructures.Vector2D;
 import gamelogic.agent.Agent;
 import gamelogic.agent.brains.ExplorationBrain;
+import gamelogic.agent.tasks.TaskContainer;
 import gamelogic.controller.Controller;
 import gamelogic.controller.endingconditions.EndingExploration;
 import gamelogic.maps.ScenarioMap;
@@ -10,8 +11,8 @@ import gamelogic.maps.ScenarioMap;
 public class ControllerExploration extends Controller {
     private final EndingExploration endingExploration;
 
-    public ControllerExploration(ScenarioMap scenarioMap, EndingExploration endingCondition) {
-        super(scenarioMap, endingCondition);
+    public ControllerExploration(ScenarioMap scenarioMap, EndingExploration endingCondition, TaskContainer taskContainer) {
+        super(scenarioMap, endingCondition, taskContainer);
         this.endingExploration = endingCondition;
     }
 
@@ -26,7 +27,7 @@ public class ControllerExploration extends Controller {
         int[] orientations = {0, 90, 180, 270};
 
         for (int i = 0; i < numberOfGuards; i++) {
-            agents[i] = new Agent(scenarioMap.getBaseSpeedGuard(), 0.0, scenarioMap.getGuardViewAngle(),scenarioMap.getGuardViewRange(), orientations[rand.nextInt(orientations.length)], new ExplorationBrain());
+            agents[i] = new Agent(scenarioMap.getBaseSpeedGuard(), 0.0, scenarioMap.getGuardViewAngle(),scenarioMap.getGuardViewRange(), orientations[rand.nextInt(orientations.length)], new ExplorationBrain(taskContainer));
         }
     }
 

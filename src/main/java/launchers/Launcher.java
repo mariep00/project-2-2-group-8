@@ -1,9 +1,11 @@
 package launchers;
 
-import gamelogic.maps.MapBuilder;
+import gamelogic.agent.tasks.ExplorationTaskFrontier;
+import gamelogic.agent.tasks.TaskContainer;
 import gamelogic.controller.Controller;
 import gamelogic.controller.endingconditions.EndingExploration;
 import gamelogic.controller.gamemodecontrollers.ControllerExploration;
+import gamelogic.maps.MapBuilder;
 import gamelogic.maps.ScenarioMap;
 
 import java.net.URISyntaxException;
@@ -18,6 +20,7 @@ public class Launcher {
     private final static boolean MULTITHREAD_LAUNCHER = true; // Change this to enable or disable multithreading in the launcher. I.e. running multiple games in parallel.
     private final static int NUMBER_OF_GAMES = 1000; // Change this to change the number of games to run
     private final static String FILE_NAME = "testmap.txt"; // Change this string to the file name of the map you want to run. Make sure the map is located in resources/maps.
+    private final static TaskContainer TASK_CONTAINER = new TaskContainer(new ExplorationTaskFrontier()); // Change this to change the tasks that can be performed by agents
 
     /**
      * Launcher without GUI
@@ -48,7 +51,7 @@ public class Launcher {
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
-        Controller controller = new ControllerExploration(scenarioMap, new EndingExploration(scenarioMap));
+        Controller controller = new ControllerExploration(scenarioMap, new EndingExploration(scenarioMap), TASK_CONTAINER);
         controller.init();
         controller.engine();
     }

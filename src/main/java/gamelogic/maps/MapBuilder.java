@@ -43,6 +43,7 @@ public class MapBuilder {
                     parseLine(line);
                 }
             }
+            map.setFileName(file.getName());
         }
         catch(Exception e) {
             e.printStackTrace();
@@ -68,7 +69,7 @@ public class MapBuilder {
                 switch(id)
                 {
                     case "name":
-                        map.setName(value);
+                        map.setMapName(value);
                         break;
                     case "gameFile":
                         break;
@@ -139,8 +140,23 @@ public class MapBuilder {
                     case "numberMarkers":
                         map.setNumberMarkers(Integer.parseInt(value));
                         break;
-                    case "smellingDistance":
-                        map.setSmellingDistance(Integer.parseInt(value));
+                    case "pheromoneMaxSmellingDistance":
+                        map.setPheromoneMaxSmellingDistance(Double.parseDouble(value));
+                        break;
+                    case "pheromoneReductionPerSecond":
+                        map.setPheromoneReduction(Double.parseDouble(value));
+                        break;
+                    case "shadedReduction":
+                        map.setShadedReduction(Double.parseDouble(value));
+                        break;
+                    case "footstepMaxHearingDistance":
+                        map.setFootstepMaxHearingDistance(Double.parseDouble(value));
+                        break;
+                    case "yellMaxHearingDistance":
+                        map.setYellMaxHearingDistance(Double.parseDouble(value));
+                        break;
+                    case "soundStandardDeviation":
+                        map.setSoundStandardDeviation(Double.parseDouble(value));
                         break;
                 }
             }

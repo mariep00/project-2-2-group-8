@@ -26,7 +26,7 @@ public class MarkerController {
             Agent agent = controller.getAgent(i);
 
             tilesWithMarker.add(controller.scenarioMap.getTile(pos));
-            controller.scenarioMap.getTile(pos).addMarker(new PheromoneMarker(agent, pos, controller.scenarioMap.getSmellingDistance()));
+            controller.scenarioMap.getTile(pos).addMarker(new PheromoneMarker(agent, pos, controller.scenarioMap.getPheromoneMaxSmellingDistance(), controller.scenarioMap.getPheromoneReduction()));
         }
         return tilesWithMarker;
     }
@@ -49,7 +49,7 @@ public class MarkerController {
         // Add the new pheromone markers
         for (int i = 0; i < controller.agents.length; i++) {
             addMarker(controller.nextState.getAgentPosition(i), new PheromoneMarker(controller.agents[i],
-                    controller.nextState.getAgentPosition(i), controller.scenarioMap.getSmellingDistance()));
+                    controller.nextState.getAgentPosition(i), controller.scenarioMap.getPheromoneMaxSmellingDistance(), controller.scenarioMap.getPheromoneReduction()));
         }
     }
 

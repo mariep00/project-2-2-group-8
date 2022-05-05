@@ -7,7 +7,8 @@ import java.util.ArrayList;
 
 public class ScenarioMap {
 
-    private String name = "";
+    private String fileName = "";
+    private String mapName = "";
     private int gameMode = 0;
     private int numGuards;
     private int numIntruders;
@@ -21,8 +22,13 @@ public class ScenarioMap {
     private double timestep;
     private ArrayList<Vector2D> spawnAreaGuards = new ArrayList<>();
     private ArrayList<Vector2D> spawnAreaIntruders = new ArrayList<>();
-    private int smellingDistance = 10;
     private int numberMarkers = 5;
+    private double shadedReduction = 0.5;
+    private double footstepMaxHearingDistance = 8;
+    private double yellMaxHearingDistance = 50;
+    private double soundStandardDeviation = 10;
+    private double pheromoneMaxSmellingDistance = 10;
+    private double pheromoneReduction = 0.2;
 
     private Tile[][] mapGrid;
     private int width;
@@ -38,12 +44,12 @@ public class ScenarioMap {
         return width;
     }
     
-    public String getName() {
-        return name;
+    public String getMapName() {
+        return mapName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setMapName(String mapName) {
+        this.mapName = mapName;
     }
 
     public int getGameMode() {
@@ -81,6 +87,34 @@ public class ScenarioMap {
     public double getBaseSpeedGuard() {
         return baseSpeedGuard;
     }
+
+    public double getShadedReduction() { return shadedReduction; }
+
+    public double getFootstepMaxHearingDistance() { return footstepMaxHearingDistance; }
+
+    public double getYellMaxHearingDistance() { return yellMaxHearingDistance; }
+
+    public double getSoundStandardDeviation() { return soundStandardDeviation; }
+
+    public double getPheromoneMaxSmellingDistance() { return pheromoneMaxSmellingDistance; }
+
+    public double getPheromoneReduction() { return pheromoneReduction; }
+
+    public void setShadedReduction(double shadedReduction) { this.shadedReduction = shadedReduction; }
+
+    public void setFootstepMaxHearingDistance(double footstepMaxHearingDistance) { this.footstepMaxHearingDistance = footstepMaxHearingDistance; }
+
+    public void setYellMaxHearingDistance(double yellMaxHearingDistance) { this.yellMaxHearingDistance = yellMaxHearingDistance; }
+
+    public void setSoundStandardDeviation(double soundStandardDeviation) { this.soundStandardDeviation = soundStandardDeviation; }
+
+    public void setPheromoneMaxSmellingDistance(double pheromoneMaxSmellingDistance) { this.pheromoneMaxSmellingDistance = pheromoneMaxSmellingDistance; }
+
+    public void setPheromoneReduction(double pheromoneReduction) { this.pheromoneReduction = pheromoneReduction; }
+
+    public String getFileName() { return fileName; }
+
+    public void setFileName(String fileName) { this.fileName = fileName; }
 
     public void setBaseSpeedGuard(double baseSpeedGuard) {
         if (timestep == 0.0) {
@@ -275,13 +309,7 @@ public class ScenarioMap {
         return areaMap;
     }
 
-    public int getSmellingDistance() { return smellingDistance; }
-
     public void setNumberMarkers(int numMarkers) {
         numberMarkers = numMarkers;
-    }
-
-    public void setSmellingDistance(int smellDistance) {
-        smellingDistance = smellDistance;
     }
 }

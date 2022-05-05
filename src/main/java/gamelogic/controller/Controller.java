@@ -2,6 +2,7 @@ package gamelogic.controller;
 
 import datastructures.Vector2D;
 import gamelogic.agent.Agent;
+import gamelogic.agent.tasks.TaskContainer;
 import gamelogic.controller.endingconditions.EndingConditionInterface;
 import gamelogic.datacarriers.Vision;
 import gamelogic.maps.ScenarioMap;
@@ -14,6 +15,7 @@ public abstract class Controller {
     private static final boolean MULTITHREAD_CONTROLLER = true; // Change this to enable or disable multithreading in the controller. Currently, only ticking agents will be multithreaded.
     protected final Random rand = new Random();
 
+    public final TaskContainer taskContainer;
     public final MovementController movementController;
     public final MarkerController markerController;
     public final SoundController soundController;
@@ -32,7 +34,8 @@ public abstract class Controller {
 
     private final ThreadPoolExecutor threadPool;
 
-    public Controller(ScenarioMap scenarioMap, EndingConditionInterface endingCondition) {
+    public Controller(ScenarioMap scenarioMap, EndingConditionInterface endingCondition, TaskContainer taskContainer) {
+        this.taskContainer = taskContainer;
         this.scenarioMap = scenarioMap;
         this.numberOfGuards = scenarioMap.getNumGuards();
         this.numberOfIntruders = scenarioMap.getNumIntruders();

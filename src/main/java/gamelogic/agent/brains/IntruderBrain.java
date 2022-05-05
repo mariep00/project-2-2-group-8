@@ -1,8 +1,8 @@
 package gamelogic.agent.brains;
 
-import gamelogic.agent.tasks.ExplorationTaskFrontier;
 import gamelogic.agent.tasks.TaskContainer;
 import gamelogic.agent.tasks.TaskContainer.TaskType;
+import gamelogic.agent.tasks.TaskInterface;
 import gamelogic.datacarriers.Sound;
 import gamelogic.maps.graph.ExplorationGraph;
 
@@ -10,12 +10,12 @@ import java.util.List;
 
 public class IntruderBrain implements BrainInterface {
 
-    private TaskContainer tasks;
+    private final TaskContainer tasks;
+    private TaskInterface currentTask;
 
-    public IntruderBrain () {
-        tasks = new TaskContainer();
-        tasks.addTask(new ExplorationTaskFrontier());
-        tasks.switchToTask(TaskType.EXPLORATION);
+    public IntruderBrain (TaskContainer taskContainer) {
+        this.tasks = taskContainer;
+        currentTask = tasks.getTask(TaskType.EXPLORATION);
         //TODO: implement other tasks than exploration for intruders and add them to the container
     }
 
