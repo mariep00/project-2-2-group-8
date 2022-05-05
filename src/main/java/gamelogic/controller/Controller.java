@@ -2,6 +2,7 @@ package gamelogic.controller;
 
 import datastructures.Vector2D;
 import gamelogic.agent.Agent;
+import gamelogic.agent.SeenAgent;
 import gamelogic.controller.endingconditions.EndingConditionInterface;
 import gamelogic.datacarriers.Vision;
 import gamelogic.maps.ScenarioMap;
@@ -188,4 +189,29 @@ public abstract class Controller {
     public State getNextState() { return nextState; }
     public double getTimestep() { return timestep; }
     public Agent getAgent(int agentIndex) { return agents[agentIndex]; }
+
+    public SeenAgent[] whatAgentSees(int agentIndex) {
+
+        Vision[] vision = getVisions(agentIndex);
+
+        SeenAgent[] otherAgentsPositions = new SeenAgent[currentState.getAgentPositions().length];
+
+        for(int i=0; i < otherAgentsPositions.length; i++) {
+            if(i == agentIndex) {
+                otherAgentsPositions[i] = null;
+            }
+            else {
+                for(int j=0; j < vision.length; j++) {
+                    if(vision[j].position() == currentState.getAgentPosition(i)) {
+                        otherAgentsPositions[i] = vision[j].position();
+                    }
+                    else {
+                        otherAgentsPositions[i] = null;
+                    }
+                }
+            }
+        }
+        return otherAgentsPositions;
+    }
+
 }

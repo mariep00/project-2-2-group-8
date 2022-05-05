@@ -37,6 +37,7 @@ public class State {
 
     public Vector2D[] getAgentPositions() { return agentPositions; }
     public Vector2D getAgentPosition(int agentIndex) { return agentPositions[agentIndex]; }
+    
     public List<Vector2D>[] getVisions() { return visions; }
     public List<Vector2D> getVision(int agentIndex) { return visions[agentIndex]; }
     public LinkedList<Tile> getTilesWithMarker() { return tilesWithMarker; }
