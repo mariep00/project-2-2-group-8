@@ -2,7 +2,7 @@ package gamelogic.controller;
 
 import datastructures.Vector2D;
 import gamelogic.agent.Agent;
-import gamelogic.agent.SeenAgent;
+import gamelogic.agent.AgentsSeen;
 import gamelogic.controller.endingconditions.EndingConditionInterface;
 import gamelogic.datacarriers.Vision;
 import gamelogic.maps.ScenarioMap;
@@ -48,14 +48,20 @@ public abstract class Controller {
         initializeAgents();
 
         Vector2D[] initialPositions = spawnAgents();
-        currentState = new State(initialPositions, null, null);
+        currentState = new State(initialPositions, null, null, null);
 
         List<Vector2D>[] visions = new ArrayList[numberOfGuards + numberOfIntruders];
         for (int i = 0; i < visions.length; i++) {
             visions[i] = calculateFOVAbsolute(i, initialPositions[i], currentState);
         }
 
-        currentState = new State(initialPositions, visions, markerController.init(initialPositions));
+        AgentsSeen[] agentLastSeenPositions = new AgentsSeen[numberOfGuards + numberOfIntruders];
+        for (int i = 0; i < agentLastSeenPositions.length; i++) {
+            agentLastSeenPositions[i] = getAgentPositionsInVision(i);
+        }
+        currentState = new State(initialPositions, visions, markerController.init(initialPositions),
+                agentLastSeenPositions);
+
         nextState = currentState.copyOf();
     }
 
@@ -77,10 +83,11 @@ public abstract class Controller {
         for (int i = 0; i < agents.length; i++) {
             int movementTask = agents[i].tick(getVisions(i),
                     markerController.getPheromoneMarkersDirection(i, currentState.getAgentPosition(i)),
-                    soundController.getSoundDirections(i));
+                    soundController.getSoundDirections(i), currentState.getAgentsSeen(i));
 
             movementController.moveAgent(i, movementTask);
             nextState.setAgentVision(i, calculateFOVAbsolute(i, nextState.getAgentPosition(i), nextState));
+            nextState.setAgentLastSeenPositions(i, getAgentPositionsInVision(i));
         }
     }
 
@@ -179,6 +186,10 @@ public abstract class Controller {
         return absPos;
     }
 
+    public Vector2D convertAbsolutePosToRelativeToCurrentPos(Vector2D absPos, int agentId, State state) {
+        return new Vector2D(absPos.x-state.getAgentPosition(agentId).x, absPos.y-state.getAgentPosition(agentId).y);
+    }
+
     protected void updateGui() {}
     protected void initializeAgents() {}
     protected void updateProgress() {}
@@ -190,28 +201,21 @@ public abstract class Controller {
     public double getTimestep() { return timestep; }
     public Agent getAgent(int agentIndex) { return agents[agentIndex]; }
 
-    public SeenAgent[] whatAgentSees(int agentIndex) {
-
+    public AgentsSeen getAgentPositionsInVision(int agentIndex) {
         Vision[] vision = getVisions(agentIndex);
+        Vector2D[] positionsSeen = new Vector2D[numberOfGuards+numberOfIntruders];
 
-        SeenAgent[] otherAgentsPositions = new SeenAgent[currentState.getAgentPositions().length];
-
-        for(int i=0; i < otherAgentsPositions.length; i++) {
-            if(i == agentIndex) {
-                otherAgentsPositions[i] = null;
-            }
-            else {
+        for(int i=0; i < positionsSeen.length; i++) {
+            if(i != agentIndex) {
                 for(int j=0; j < vision.length; j++) {
-                    if(vision[j].position() == currentState.getAgentPosition(i)) {
-                        otherAgentsPositions[i] = vision[j].position();
-                    }
-                    else {
-                        otherAgentsPositions[i] = null;
+                    if (vision[j].position().equals(currentState.getAgentPosition(i))) {
+                        positionsSeen[i] = convertAbsolutePosToRelativeToCurrentPos(vision[j].position(), i, currentState);
                     }
                 }
             }
+            else positionsSeen[i] = null;
         }
-        return otherAgentsPositions;
+        return new AgentsSeen(positionsSeen, agentIndex);
     }
 
 }

@@ -10,6 +10,7 @@ import gamelogic.maps.graph.ExplorationGraph;
 import gamelogic.maps.graph.Node;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Agent {
@@ -34,8 +35,9 @@ public class Agent {
         explorationGraph = new ExplorationGraph();
     }
 
-    public int tick(Vision[] inVision, double pheromoneMarkerDirection, List<Sound> sounds) {
+    public int tick(Vision[] inVision, double pheromoneMarkerDirection, List<Sound> sounds, AgentsSeen agentsSeen) {
         updateGraph(inVision);
+        System.out.println(Arrays.toString(agentsSeen.getPositions()));
         return brain.makeDecision(explorationGraph, orientation, pheromoneMarkerDirection, sounds);
     }
 
