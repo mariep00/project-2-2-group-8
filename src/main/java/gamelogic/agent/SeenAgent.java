@@ -3,25 +3,19 @@ package gamelogic.agent;
 import datastructures.Vector2D;
 
 public class SeenAgent {
+    private Vector2D position;
+    private int nrTimeStepsAgo;
 
-    private Vector2D[] seenAgentPositions;
+    public SeenAgent(Vector2D position) {
+        this.position = position;
+        this.nrTimeStepsAgo = 0;
+    }
 
-    public SeenAgent() {
+    public void tick(Vector2D agentCurrentPosition) {
+        nrTimeStepsAgo++;
 
     }
 
-    public Vector2D getSeenAgentPosition(int agentIndex) {
-        Vector2D seenAgentPosition = new Vector2D(0, 0);
-        for (int i = 0; i < seenAgentPositions.length; i++) {
-            if (seenAgentPositions[i].equals(agentIndex)) {
-                seenAgentPosition = seenAgentPositions[i];
-            }
-        }
-        return seenAgentPosition;
-    }
-
-    public Vector2D[] getSeenAgentPositions() {
-        return seenAgentPositions;
-    }
-
+    public Vector2D getPosition() { return position; }
+    public int getNrTimeStepsAgo() { return nrTimeStepsAgo; }
 }
