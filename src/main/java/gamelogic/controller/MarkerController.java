@@ -6,10 +6,7 @@ import gamelogic.maps.MarkerInterface;
 import gamelogic.maps.PheromoneMarker;
 import gamelogic.maps.Tile;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 // Might split this controller into a controller for each marker separately. Depends on what markers we want to implement
 public class MarkerController {

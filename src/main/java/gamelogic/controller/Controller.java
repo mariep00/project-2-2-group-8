@@ -48,19 +48,20 @@ public abstract class Controller {
         initializeAgents();
 
         Vector2D[] initialPositions = spawnAgents();
-        currentState = new State(initialPositions, null, null, null);
+        currentState = new State(initialPositions, new ArrayList[numberOfGuards + numberOfIntruders], null, null);
 
         List<Vector2D>[] visions = new ArrayList[numberOfGuards + numberOfIntruders];
         for (int i = 0; i < visions.length; i++) {
             visions[i] = calculateFOVAbsolute(i, initialPositions[i], currentState);
+            currentState.setAgentVision(i, visions[i]);
         }
 
-        AgentsSeen[] agentLastSeenPositions = new AgentsSeen[numberOfGuards + numberOfIntruders];
-        for (int i = 0; i < agentLastSeenPositions.length; i++) {
-            agentLastSeenPositions[i] = getAgentPositionsInVision(i);
-        }
         currentState = new State(initialPositions, visions, markerController.init(initialPositions),
-                agentLastSeenPositions);
+                new AgentsSeen[numberOfGuards + numberOfIntruders]);
+
+        for (int i = 0; i < numberOfGuards+numberOfIntruders; i++) {
+            currentState.setAgentsSeen(i, getAgentPositionsInVision(i, currentState));
+        }
 
         nextState = currentState.copyOf();
     }
@@ -87,7 +88,7 @@ public abstract class Controller {
 
             movementController.moveAgent(i, movementTask);
             nextState.setAgentVision(i, calculateFOVAbsolute(i, nextState.getAgentPosition(i), nextState));
-            nextState.setAgentLastSeenPositions(i, getAgentPositionsInVision(i));
+            nextState.setAgentsSeen(i, getAgentPositionsInVision(i, nextState));
         }
     }
 
@@ -120,6 +121,36 @@ public abstract class Controller {
             visions[i] = new Vision(scenarioMap.getTile(pos), convertAbsoluteToRelativeSpawn(pos, agentIndex));
         }
         return visions;
+    }
+
+    public AgentsSeen getAgentPositionsInVision(int agentIndex, State state) {
+        Vector2D[] otherAgentsSeen;
+        int[] nrTimeStepsAgo;
+        if (state.getAgentsSeen(agentIndex) != null) {
+            otherAgentsSeen = state.getAgentsSeen(agentIndex).getPositions();
+            nrTimeStepsAgo = state.getAgentsSeen(agentIndex).getNrTimeStepsAgo();
+        }
+        else {
+            // This would only happen when called from init()
+            otherAgentsSeen = new Vector2D[numberOfGuards + numberOfIntruders];
+            nrTimeStepsAgo = new int[numberOfGuards + numberOfIntruders];
+        }
+
+        for (int i=0; i < otherAgentsSeen.length; i++) {
+            outer:
+            if (i != agentIndex) {
+                for (Vector2D pos : state.getVision(agentIndex)) {
+                    if (pos.equals(state.getAgentPosition(i))) {
+                        otherAgentsSeen[i] = convertAbsolutePosToRelativeToCurrentPos(pos, agentIndex, state);
+                        nrTimeStepsAgo[i] = 0;
+                        break outer;
+                    }
+                }
+                if (state != currentState) nrTimeStepsAgo[i]++;
+            }
+            else otherAgentsSeen[i] = null;
+        }
+        return new AgentsSeen(otherAgentsSeen, nrTimeStepsAgo, numberOfGuards);
     }
 
     protected Vector2D[] spawnAgents() {
@@ -200,22 +231,4 @@ public abstract class Controller {
     public State getNextState() { return nextState; }
     public double getTimestep() { return timestep; }
     public Agent getAgent(int agentIndex) { return agents[agentIndex]; }
-
-    public AgentsSeen getAgentPositionsInVision(int agentIndex) {
-        Vision[] vision = getVisions(agentIndex);
-        Vector2D[] positionsSeen = new Vector2D[numberOfGuards+numberOfIntruders];
-
-        for(int i=0; i < positionsSeen.length; i++) {
-            if(i != agentIndex) {
-                for(int j=0; j < vision.length; j++) {
-                    if (vision[j].position().equals(currentState.getAgentPosition(i))) {
-                        positionsSeen[i] = convertAbsolutePosToRelativeToCurrentPos(vision[j].position(), i, currentState);
-                    }
-                }
-            }
-            else positionsSeen[i] = null;
-        }
-        return new AgentsSeen(positionsSeen, agentIndex);
-    }
-
 }

@@ -13,6 +13,6 @@ public class ScenarioMenuDropdown {
         this.fieldDesription.setId("scenarioMenuText");
 
         this.dropdown = new ComboBox<TaskInterface>();
-        this.dropdown.getItems().addAll(tasks);
+        //this.dropdown.getItems().addAll(tasks);
     }
 }
