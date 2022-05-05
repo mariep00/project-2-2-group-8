@@ -124,6 +124,7 @@ public abstract class Controller {
         int minutes = ((int)time % 3600) / 60;
         double seconds = time % 60;
         threadPool.shutdown();
+
         System.out.println("Everything is explored. It took " + hours + " hour(s) " + minutes + " minutes " + seconds + " seconds.");
     }
 
