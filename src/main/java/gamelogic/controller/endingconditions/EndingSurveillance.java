@@ -35,7 +35,19 @@ public class EndingSurveillance implements EndingConditionInterface {
         /*
         1. All intruders are caught
                - what will happen to intruders when caught?
+
+               The code inside the for loop will works if we assume agents position will be set to null once they are caught
          */
+        for(int i= controller.getNumberOfGuards(); i<= controller.getNumberOfGuards() + controller.getNumberOfIntruders(); i++) {
+            if (currentState.getAgentPosition(i) == null){
+                if (i == controller.getNumberOfGuards() + controller.getNumberOfIntruders()){
+                    return true;
+                }
+                continue;
+            }
+            else break;
+        }
+
         //2. Intruders reach the target (and stay inside)
             //This part is done :)
 
