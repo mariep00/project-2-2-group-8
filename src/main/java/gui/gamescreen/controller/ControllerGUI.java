@@ -24,7 +24,7 @@ public class ControllerGUI implements ControllerGUIInterface {
     private final AtomicInteger simulationDelay = new AtomicInteger();
     private Thread updateGameLogicThread;
 
-    private AtomicBoolean threadsKilled;
+    private AtomicBoolean threadsKilled; // set to true when end method is called
 
     public ControllerGUI(Controller controller, GameScreen gameScreen) {
         this.controller = controller;
@@ -139,7 +139,6 @@ public class ControllerGUI implements ControllerGUIInterface {
     public AtomicBoolean getRunSimulation() { return runSimulation; }
     public AtomicBoolean getExecuteNextGuiTask() { return executeNextGuiTask; }
     public void addGuiRunnableToQueue(Runnable runnable) { guiTasksQueue.add(() -> Platform.runLater(runnable)); }
-    public void end(){
+    public void killThreads(){threadsKilled.set(true);}
 
-    }
 }

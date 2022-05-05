@@ -3,6 +3,7 @@ package gui.gamescreen;
 import datastructures.Vector2D;
 import gamelogic.controller.Controller;
 import gamelogic.maps.ScenarioMap;
+import gui.EndingScreen;
 import gui.gamescreen.controller.ControllerGUIInterface;
 import gui.util.HelperGUI;
 import gui.util.ImageContainer;
@@ -340,5 +341,11 @@ public class GameScreen extends Application implements TransitionInterface {
     @Override
     public @NotNull List<Transition> getTransitions() {
         return transitions;
+    }
+
+
+    public void endScreen(){
+        EndingScreen endingScreen = new EndingScreen(this, stage.getScene(), stage);
+        System.out.println("was here");
     }
 }

@@ -72,6 +72,9 @@ public abstract class Controller {
         end();
     }
 
+    public void tick(){
+        tick(true);
+    }
     public void tick(boolean checkEndingCondition) {
         if (checkEndingCondition && !endingCondition.gameFinished()) {
             tickAgents();

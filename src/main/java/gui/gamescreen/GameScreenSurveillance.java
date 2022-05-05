@@ -26,4 +26,9 @@ public class GameScreenSurveillance extends GameScreen {
 
     @Override
     protected ControllerSurveillanceGUI getController() { return controllerSurveillanceGUI; }
+
+    @Override
+    public void endScreen(){
+
+    }
 }

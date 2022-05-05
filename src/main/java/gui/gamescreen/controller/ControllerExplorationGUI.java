@@ -28,6 +28,11 @@ public class ControllerExplorationGUI extends ControllerExploration implements C
     }
 
     @Override
+    public void end(){
+        controllerGUI.killThreads();
+        gameScreen.endScreen();
+    }
+    @Override
     public void init() {
         super.init();
         controllerGUI.init();
