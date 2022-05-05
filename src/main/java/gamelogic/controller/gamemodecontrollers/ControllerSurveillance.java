@@ -4,9 +4,10 @@ import datastructures.Vector2D;
 import gamelogic.agent.Agent;
 import gamelogic.agent.brains.GuardBrain;
 import gamelogic.agent.brains.IntruderBrain;
+import gamelogic.agent.tasks.TaskContainer;
 import gamelogic.controller.Controller;
-import gamelogic.datacarriers.GuardYell;
 import gamelogic.controller.endingconditions.EndingSurveillance;
+import gamelogic.datacarriers.GuardYell;
 import gamelogic.maps.ScenarioMap;
 
 import java.util.ArrayList;
@@ -14,8 +15,8 @@ import java.util.ArrayList;
 public class ControllerSurveillance extends Controller {
     private final EndingSurveillance endingSurveillance;
 
-    public ControllerSurveillance(ScenarioMap scenarioMap, EndingSurveillance endingCondition) {
-        super(scenarioMap, endingCondition);
+    public ControllerSurveillance(ScenarioMap scenarioMap, EndingSurveillance endingCondition, TaskContainer taskContainer) {
+        super(scenarioMap, endingCondition, taskContainer);
         this.endingSurveillance = endingCondition;
     }
 
@@ -49,11 +50,11 @@ public class ControllerSurveillance extends Controller {
     protected void initializeAgents() {
         int[] orientations = {0, 90, 180, 270};
 
-        for (int i = 0; i < numberOfIntruders; i++) {
-            agents[i] = new Agent(scenarioMap.getBaseSpeedIntruder(), scenarioMap.getSprintSpeedIntruder(), scenarioMap.getIntruderViewAngle(), scenarioMap.getIntruderViewRange(), orientations[rand.nextInt(orientations.length)], new IntruderBrain());
-        }
         for (int i = 0; i < numberOfGuards; i++) {
-            agents[i] = new Agent(scenarioMap.getBaseSpeedGuard(), 0.0, scenarioMap.getGuardViewAngle(),scenarioMap.getGuardViewRange(), orientations[rand.nextInt(orientations.length)], new GuardBrain());
+            agents[i] = new Agent(scenarioMap.getBaseSpeedGuard(), 0.0, scenarioMap.getGuardViewAngle(),scenarioMap.getGuardViewRange(), orientations[rand.nextInt(orientations.length)], new GuardBrain(taskContainer));
+        }
+        for (int i = numberOfGuards; i < numberOfIntruders; i++) {
+            agents[i] = new Agent(scenarioMap.getBaseSpeedIntruder(), scenarioMap.getSprintSpeedIntruder(), scenarioMap.getIntruderViewAngle(), scenarioMap.getIntruderViewRange(), orientations[rand.nextInt(orientations.length)], new IntruderBrain(taskContainer));
         }
     }
 

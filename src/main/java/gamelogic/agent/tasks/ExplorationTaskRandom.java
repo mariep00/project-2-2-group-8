@@ -58,6 +58,9 @@ public class ExplorationTaskRandom implements TaskInterface {
         return type;
     }
 
+    @Override
+    public TaskInterface newInstance() { return new ExplorationTaskRandom(); }
+
 }
 
 

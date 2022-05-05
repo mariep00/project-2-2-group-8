@@ -24,16 +24,19 @@ public class ControllerGUI implements ControllerGUIInterface {
     private final AtomicInteger simulationDelay = new AtomicInteger();
     private Thread updateGameLogicThread;
 
+    private AtomicBoolean threadsKilled;
+
     public ControllerGUI(Controller controller, GameScreen gameScreen) {
         this.controller = controller;
         this.gameScreen = gameScreen;
+        this.threadsKilled = new AtomicBoolean(false);
     }
 
     public void init() {
         Thread.UncaughtExceptionHandler h = (th, ex) -> System.out.println("Uncaught exception: " + ex);
 
         final Thread updateGuiThread = new Thread(() -> {
-            while (true) {
+            while (!threadsKilled.get()) {
                 if (executeNextGuiTask.get() && !guiTasksQueue.isEmpty() && !gamePaused.get()) {
                     executeNextGuiTask.set(false);
                     guiTasksQueue.remove().run();
@@ -46,7 +49,7 @@ public class ControllerGUI implements ControllerGUIInterface {
         updateGuiThread.start();
 
         updateGameLogicThread = new Thread(() -> {
-            while (true) {
+            while (!threadsKilled.get()) {
                 if (runSimulation.get() && performControllerTick.get() && !gamePaused.get()) {
                     performControllerTick.set(false);
                     try {
@@ -54,7 +57,7 @@ public class ControllerGUI implements ControllerGUIInterface {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    controller.tick();
+                    controller.tick(true);
                 }
             }
         });
