@@ -67,16 +67,19 @@ public abstract class Controller {
 
     public void engine() {
         while (!endingCondition.gameFinished()) {
-            tick();
+            tick(false);
         }
         end();
     }
 
-    public void tick() {
-        tickAgents();
-        markerController.tick();
-        updateProgress();
-        switchToNextState();
+    public void tick(boolean checkEndingCondition) {
+        if (checkEndingCondition && !endingCondition.gameFinished()) {
+            tickAgents();
+            markerController.tick();
+            updateProgress();
+            switchToNextState();
+        }
+        else end();
     }
 
     protected void tickAgents() {
