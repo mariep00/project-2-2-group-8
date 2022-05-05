@@ -1,8 +1,13 @@
 package gamelogic.controller;
 
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Stack;
+
 import datastructures.Vector2D;
 import gamelogic.maps.TeleportEntrance;
 import gamelogic.maps.Tile;
+import gamelogic.maps.graph.ExplorationGraph;
 
 public class MovementController {
     private final Controller controller;
@@ -74,5 +79,127 @@ public class MovementController {
             if (controller.currentState.getAgentPosition(i).equals(pos)) return true;
         }
         return false;
+    }
+    /**
+     * Method to convert a path of Vector2D's to actions in integers for the controller
+     * @param graph the exploration graph of the agent
+     * @param path the path calculated by e.g. AStar
+     * @param length how many moves should be returned, -1 if all
+     * @return
+     */
+    public static Stack<Integer> convertPath (ExplorationGraph graph, double orientation, LinkedList<Vector2D> path, int length) {
+        int maxSteps = length;
+        if (length == -1) maxSteps = Integer.MAX_VALUE;
+        
+        Stack<Integer> temporaryStack = new Stack<>();
+        Stack<Integer> futureMoves = new Stack<>();
+        Vector2D currentPos= graph.getCurrentPosition().COORDINATES;
+        Iterator<Vector2D> iterator = path.descendingIterator();
+        double current_orientation = orientation;
+        int count = 0;
+
+        while (iterator.hasNext() && count <= maxSteps) {
+            Vector2D pos = iterator.next();
+            int xDif = pos.x - currentPos.x;
+            int yDif = pos.y - currentPos.y;
+            count++;
+            if(xDif==1){
+                if(current_orientation==0){
+                    temporaryStack.push(0);
+                }
+                else if(current_orientation==90){
+                    temporaryStack.push(3);
+                    temporaryStack.push(0);
+                }
+                else if(current_orientation==180){
+                    temporaryStack.push(1);
+                    temporaryStack.push(1);
+                    temporaryStack.push(0);
+                }
+                else if(current_orientation==270){
+                    temporaryStack.push(1);
+                    temporaryStack.push(0);
+                }
+                current_orientation=0;
+            }
+            else if(xDif==-1){
+                if(current_orientation==180){
+                    temporaryStack.push(0);
+                }
+                else if(current_orientation==270){
+                    temporaryStack.push(3);
+                    temporaryStack.push(0);
+                }
+                else if(current_orientation==0){
+                    temporaryStack.push(1);
+                    temporaryStack.push(1);
+                    temporaryStack.push(0);
+
+                }
+                else if(current_orientation==90){ 
+                    temporaryStack.push(1);
+                    temporaryStack.push(0);
+                }
+                current_orientation=180;
+            }
+            else if(yDif==1){
+                if(current_orientation==90){
+                    temporaryStack.push(0);
+                }
+                else if(current_orientation==180){
+                    temporaryStack.push(3);
+                    temporaryStack.push(0);
+                }
+                else if(current_orientation==270){
+                    temporaryStack.push(1);
+                    temporaryStack.push(1);
+                    temporaryStack.push(0);
+
+                }
+                else if(current_orientation==0){
+                    temporaryStack.push(1);
+                    temporaryStack.push(0);
+                }
+                current_orientation=90;
+            }
+            else if(yDif==-1){
+                if(current_orientation==270){
+                    temporaryStack.push(0);
+                }
+                else if(current_orientation==0){
+                    temporaryStack.push(3);
+                    temporaryStack.push(0);
+                }
+                else if(current_orientation==90){
+                    temporaryStack.push(1);
+                    temporaryStack.push(1);
+                    temporaryStack.push(0);
+
+                }
+                else if(current_orientation==180){
+                    temporaryStack.push(1);
+                    temporaryStack.push(0);
+                }
+                current_orientation=270;
+            }
+            currentPos=pos;
+
+            if (count>maxSteps) {
+                if (current_orientation != orientation) {
+                    count--;
+                }
+            }
+        }
+
+        if (length == -1) {
+            temporaryStack.push(1);
+            temporaryStack.push(1);
+            temporaryStack.push(1);
+        }
+
+        do{futureMoves.push(temporaryStack.pop());}
+        while(!temporaryStack.isEmpty());
+
+        return futureMoves;
     }
 }
