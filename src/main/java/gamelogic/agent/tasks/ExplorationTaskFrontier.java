@@ -5,6 +5,7 @@ import datastructures.quicksort.QuickSort;
 import datastructures.quicksort.SortObject;
 import gamelogic.agent.AStar;
 import gamelogic.agent.tasks.TaskContainer.TaskType;
+import gamelogic.controller.MovementController;
 import gamelogic.maps.Tile;
 import gamelogic.maps.graph.ExplorationGraph;
 import gamelogic.maps.graph.Node;
@@ -139,110 +140,11 @@ public class ExplorationTaskFrontier implements TaskInterface {
     }
 
     public boolean moveTo() {
-        Stack<Integer> temporaryStack= new Stack<>();
-        AStar aStar = new AStar(graph, graph.getCurrentPosition(), goalNode);
         
-        LinkedList<Vector2D> nodesToGoal = aStar.calculate();
+        LinkedList<Vector2D> nodesToGoal = AStar.calculate(graph, graph.getCurrentPosition(), goalNode);
         if (nodesToGoal == null) return false;
 
-        Vector2D currentPos= graph.getCurrentPosition().COORDINATES;
-        Iterator<Vector2D> iterator = nodesToGoal.descendingIterator();
-        double current_orientation = orientation;
-        while (iterator.hasNext()){
-            Vector2D pos = iterator.next();
-            int xDif = pos.x - currentPos.x;
-            int yDif = pos.y - currentPos.y;
-            if(xDif==1){
-                if(current_orientation==0){
-                    temporaryStack.push(0);
-
-                }
-                else if(current_orientation==90){
-                    temporaryStack.push(3);
-                    temporaryStack.push(0);
-                }
-                else if(current_orientation==180){
-                    temporaryStack.push(1);
-                    temporaryStack.push(1);
-                    temporaryStack.push(0);
-
-                }
-                else if(current_orientation==270){
-                    temporaryStack.push(1);
-                    temporaryStack.push(0);
-                }
-                current_orientation=0;
-            }
-            else if(xDif==-1){
-                if(current_orientation==180){
-                    temporaryStack.push(0);
-                }
-                else if(current_orientation==270){
-                    temporaryStack.push(3);
-                    temporaryStack.push(0);
-                }
-                else if(current_orientation==0){
-                    temporaryStack.push(1);
-                    temporaryStack.push(1);
-                    temporaryStack.push(0);
-
-                }
-                else if(current_orientation==90){ 
-                    temporaryStack.push(1);
-                    temporaryStack.push(0);
-                }
-                current_orientation=180;
-            }
-            else if(yDif==1){
-                if(current_orientation==90){
-                    temporaryStack.push(0);
-                }
-                else if(current_orientation==180){
-                    temporaryStack.push(3);
-                    temporaryStack.push(0);
-                }
-                else if(current_orientation==270){
-                    temporaryStack.push(1);
-                    temporaryStack.push(1);
-                    temporaryStack.push(0);
-
-                }
-                else if(current_orientation==0){
-                    temporaryStack.push(1);
-                    temporaryStack.push(0);
-                }
-                current_orientation=90;
-            }
-            else if(yDif==-1){
-                if(current_orientation==270){
-                    temporaryStack.push(0);
-                }
-                else if(current_orientation==0){
-                    temporaryStack.push(3);
-                    temporaryStack.push(0);
-                }
-                else if(current_orientation==90){
-                    temporaryStack.push(1);
-                    temporaryStack.push(1);
-                    temporaryStack.push(0);
-
-                }
-                else if(current_orientation==180){
-                    temporaryStack.push(1);
-                    temporaryStack.push(0);
-                }
-                current_orientation=270;
-            }
-            currentPos=pos;
-        }
-
-        temporaryStack.push(1);
-        temporaryStack.push(1);
-        temporaryStack.push(1);
-
-        do{futureMoves.push(temporaryStack.pop());}
-        while(!temporaryStack.isEmpty());
-
+        futureMoves = MovementController.convertPath(graph, orientation, nodesToGoal, -1);
         return true;
         //For every node in nodes to Goal
         //Check agent's positon

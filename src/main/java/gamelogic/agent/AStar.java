@@ -13,34 +13,22 @@ import java.util.LinkedList;
 
 public class AStar {
 
-    private final ExplorationGraph graph;
-
-    private final Heap<ANode> open;
-    private final HashMap<Vector2D, ANode> closed;
-
-    private final Vector2D goal;
-    private final ANode start;
-    private ANode goalANode;
-
-    public AStar (ExplorationGraph graph, Node startNode, Node goalNode) {
-        open = new Heap<>(graph.getNumberOfNodes());
-        closed = new HashMap<>(3000);
-        this.goal = goalNode.COORDINATES; 
-        this.graph = graph;
-        start = new ANode(startNode.COORDINATES);
+    public static LinkedList<Vector2D> calculate(ExplorationGraph graph, Node startNode, Node goalNode) {
+        Heap<ANode> open = new Heap<>(graph.getNumberOfNodes());
+        HashMap<Vector2D, ANode> closed = new HashMap<>(3000);
+        Vector2D goal = goalNode.COORDINATES; 
+        ANode start = new ANode(startNode.COORDINATES);
+        ANode goalANode = null;
         start.setParent(null);
         start.setG(0);
         start.setH(start.POSITION.manhattanDist(goal));
         open.add(start);
-    }
-
-    public LinkedList<Vector2D> calculate() {
+        
         while(true) {
+
             if (open.isEmpty()) return null;
             ANode current = open.removeFirst();
-            
-            //if (current == null) return null;
-            //System.out.println("current: " + current.POSITION + ", goal: " + goal);
+
             if(current.POSITION.equals(goal)) {
                 goalANode = current;
                 break;
@@ -48,7 +36,7 @@ public class AStar {
 
             closed.addEntry(current.POSITION, current);
 
-            ArrayList<ANode> neighbours = getNeighbours(current);
+            ArrayList<ANode> neighbours = getNeighbours(graph, current, closed);
             for (ANode node: neighbours) {
                 int g = current.getG()+1;
                 ANode x = open.contains(node);
@@ -65,11 +53,7 @@ public class AStar {
                 }
             }
         }
-        return getPath();
 
-    }
-
-    private LinkedList<Vector2D> getPath() {
         LinkedList<Vector2D> path = new LinkedList<>();
         ANode currentParent = goalANode;
         while (currentParent != null) {
@@ -77,10 +61,12 @@ public class AStar {
             ANode oldNode = currentParent;
             currentParent = oldNode.parent;
         }
+        
         return path;
+
     }
 
-    private ArrayList<ANode> getNeighbours(ANode current) {
+    private static ArrayList<ANode> getNeighbours(ExplorationGraph graph, ANode current, HashMap<Vector2D, ANode> closed) {
         ArrayList<ANode> neighbours = new ArrayList<>();
         Node currentNode = graph.getNode(current.POSITION);
         Node[] edges = currentNode.getEdges();
@@ -88,7 +74,7 @@ public class AStar {
         if (currentNode.getTile().getType().equals(Type.TELEPORT_ENTRANCE)) {
             Node exit = edges[edges.length-1];
             if (exit != null) {
-                if(!isInClosed(exit.COORDINATES)) {
+                if(closed.getValue(exit.COORDINATES) == null) {
                     ANode node = new ANode(exit.COORDINATES);
                     neighbours.add(node);
                 }
@@ -96,7 +82,7 @@ public class AStar {
         } else {
             for (Node n: edges) {
                 if(n!=null) {
-                    if(!isInClosed(n.COORDINATES)) {
+                    if(closed.getValue(n.COORDINATES) == null) {
                         ANode node = new ANode(n.COORDINATES);
                         neighbours.add(node);
                     }
@@ -104,10 +90,6 @@ public class AStar {
             }
         }
         return neighbours;
-    }
-
-    private boolean isInClosed(Vector2D pos) {
-        return closed.getValue(pos) != null;
     }
 }
 
