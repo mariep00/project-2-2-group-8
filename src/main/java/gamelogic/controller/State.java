@@ -1,7 +1,7 @@
 package gamelogic.controller;
 
 import datastructures.Vector2D;
-import gamelogic.agent.AgentsSeen;
+import gamelogic.datacarriers.VisionMemory;
 import gamelogic.datacarriers.GuardYell;
 import gamelogic.maps.Tile;
 
@@ -16,10 +16,10 @@ public class State {
     private final List<Vector2D>[] visions;
     private final LinkedList<Tile> tilesWithMarker;
     private final ArrayList<GuardYell> guardGuardYells;
-    private final AgentsSeen[][] agentsSeen;
+    private final VisionMemory[][] agentsSeen;
 
     public State(Vector2D[] agentPositions, List<Vector2D>[] visions, LinkedList<Tile> tilesWithMarker,
-                 ArrayList<GuardYell> guardGuardYells, AgentsSeen[][] agentsSeen) {
+                 ArrayList<GuardYell> guardGuardYells, VisionMemory[][] agentsSeen) {
         this.agentPositions = agentPositions;
         this.visions = visions;
         this.tilesWithMarker = tilesWithMarker;
@@ -27,7 +27,7 @@ public class State {
         this.agentsSeen = agentsSeen;
     }
 
-    public State(Vector2D[] agentPositions, List<Vector2D>[] visions, LinkedList<Tile> tilesWithMarker, AgentsSeen[][] agentsSeen) {
+    public State(Vector2D[] agentPositions, List<Vector2D>[] visions, LinkedList<Tile> tilesWithMarker, VisionMemory[][] agentsSeen) {
         this(agentPositions, visions, tilesWithMarker, new ArrayList<>(), agentsSeen);
     }
 
@@ -35,21 +35,12 @@ public class State {
     public void setAgentPosition(int agentIndex, Vector2D position) { agentPositions[agentIndex] = position; }
     public void setAgentVision(int agentIndex, List<Vector2D> vision) { visions[agentIndex] = vision; }
     public void addGuardYell(GuardYell guardYell) { guardGuardYells.add(guardYell); }
-    public void setAgentsSeen(int agentIndex, AgentsSeen[] agentsSeen) {
+    public void setAgentsSeen(int agentIndex, VisionMemory[] agentsSeen) {
         this.agentsSeen[agentIndex] = agentsSeen;
     }
 
     public State copyOf() {
-        AgentsSeen[][] agentsSeensNew = new AgentsSeen[agentsSeen.length][agentsSeen[0].length];
-        for (int i = 0; i < agentsSeensNew.length; i++) {
-            for (int j = 0; j < agentsSeensNew[0].length; j++) {
-                if (agentsSeen[i][j] != null) {
-                    agentsSeensNew[i][j] = new AgentsSeen(agentsSeen[i][j].getPosition(), agentsSeen[i][j].getNrTimeStepsAgo());
-                }
-                else agentsSeensNew[i][j] = null;
-            }
-        }
-        return new State(agentPositions.clone(), visions.clone(), (LinkedList<Tile>) tilesWithMarker.clone(), agentsSeensNew);
+        return new State(agentPositions.clone(), visions.clone(), (LinkedList<Tile>) tilesWithMarker.clone(), agentsSeen.clone());
     }
 
     public Vector2D[] getAgentPositions() { return agentPositions; }
@@ -59,7 +50,7 @@ public class State {
     public List<Vector2D> getVision(int agentIndex) { return visions[agentIndex]; }
     public LinkedList<Tile> getTilesWithMarker() { return tilesWithMarker; }
     public List<GuardYell> getGuardYells() { return guardGuardYells; }
-    public AgentsSeen[] getAgentsSeen(int agentIndex) { return agentsSeen[agentIndex]; }
+    public VisionMemory[] getAgentsSeen(int agentIndex) { return agentsSeen[agentIndex]; }
 
     public String toString() { return "Agent positions: " + Arrays.toString(agentPositions); }
 }

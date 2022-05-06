@@ -2,9 +2,9 @@ package gamelogic.controller;
 
 import datastructures.Vector2D;
 import gamelogic.agent.Agent;
-import gamelogic.agent.AgentsSeen;
 import gamelogic.controller.endingconditions.EndingConditionInterface;
 import gamelogic.datacarriers.Vision;
+import gamelogic.datacarriers.VisionMemory;
 import gamelogic.maps.ScenarioMap;
 
 import java.util.ArrayList;
@@ -58,10 +58,10 @@ public abstract class Controller {
         }
 
         currentState = new State(initialPositions, visions, markerController.init(initialPositions),
-                new AgentsSeen[numberOfGuards + numberOfIntruders][numberOfGuards + numberOfIntruders]);
+                new VisionMemory[numberOfGuards + numberOfIntruders][numberOfGuards + numberOfIntruders]);
 
         for (int i = 0; i < numberOfGuards+numberOfIntruders; i++) {
-            currentState.setAgentsSeen(i, getAgentPositionsInVision(i, currentState));
+            currentState.setAgentsSeen(i, updateAgentVisionMemory(i, currentState));
         }
 
         nextState = currentState.copyOf();
@@ -76,6 +76,7 @@ public abstract class Controller {
 
     public void tick() {
         tickAgents();
+        updateAgentsSeen(); // Has to be after all agents moved / ticked
         markerController.tick();
         updateProgress();
         switchToNextState();
@@ -85,12 +86,11 @@ public abstract class Controller {
         for (int i = 0; i < agents.length; i++) {
             int movementTask = agents[i].tick(getVisions(i),
                     markerController.getPheromoneMarkersDirection(i, currentState.getAgentPosition(i)),
-                    soundController.getSoundDirections(i));
+                    soundController.getSoundDirections(i), Arrays.copyOfRange(currentState.getAgentsSeen(i), 0, numberOfGuards),
+                    Arrays.copyOfRange(currentState.getAgentsSeen(i), numberOfGuards, numberOfGuards+numberOfIntruders));
 
             movementController.moveAgent(i, movementTask);
             nextState.setAgentVision(i, calculateFOVAbsolute(i, nextState.getAgentPosition(i), nextState));
-            System.out.println("");
-            nextState.setAgentsSeen(i, getAgentPositionsInVision(i, nextState));
         }
     }
 
@@ -106,6 +106,12 @@ public abstract class Controller {
         int minutes = ((int)time % 3600) / 60;
         double seconds = time % 60;
         System.out.println("Everything is explored. It took " + hours + " hour(s) " + minutes + " minutes " + seconds + " seconds.");
+    }
+
+    private void updateAgentsSeen() {
+        for (int i = 0; i < agents.length; i++) {
+            nextState.setAgentsSeen(i, updateAgentVisionMemory(i, nextState));
+        }
     }
 
     protected List<Vector2D> calculateFOV(int agentIndex, Vector2D agentPosition) {
@@ -125,31 +131,33 @@ public abstract class Controller {
         return visions;
     }
 
-    public AgentsSeen[] getAgentPositionsInVision(int agentIndex, State state) {
-        AgentsSeen[] otherAgentsSeen;
+    public VisionMemory[] updateAgentVisionMemory(int agentIndex, State state) {
+        VisionMemory[] otherAgentsSeen;
         if (state.getAgentsSeen(agentIndex) != null) {
             otherAgentsSeen = state.getAgentsSeen(agentIndex);
         }
         else {
             // This would only happen when called from init()
-            otherAgentsSeen = new AgentsSeen[numberOfGuards + numberOfIntruders];
+            otherAgentsSeen = new VisionMemory[numberOfGuards + numberOfIntruders];
         }
-        System.out.println("BEFORE IT WAS " + Arrays.toString(otherAgentsSeen));
 
         for (int i=0; i < otherAgentsSeen.length; i++) {
             outer:
             if (i != agentIndex) {
                 for (Vector2D pos : state.getVision(agentIndex)) {
                     if (pos.equals(state.getAgentPosition(i))) {
-                        System.out.println("Agent " + agentIndex + " sees other agent at " + pos);
-                        otherAgentsSeen[i] = new AgentsSeen(convertAbsolutePosToRelativeToCurrentPos(pos, agentIndex, state), 0);
+                        otherAgentsSeen[i] = new VisionMemory(convertAbsolutePosToRelativeToCurrentPos(pos, agentIndex, state), 0);
                         break outer;
                     }
                 }
-                if (otherAgentsSeen[i] != null) otherAgentsSeen[i].incrementNrTimeStepsAgo();
+                if (otherAgentsSeen[i] != null) {
+                    // Position is updated s.t. it stays relative to the current position of the agent
+                    // Seconds ago is incremented with the timestep
+                    otherAgentsSeen[i] = new VisionMemory(otherAgentsSeen[i].position().subtract((nextState.getAgentPosition(agentIndex).subtract(currentState.getAgentPosition(agentIndex)))),
+                            otherAgentsSeen[i].secondsAgo()+timestep);
+                }
             }
         }
-        System.out.println("AFTER AKA RETURNING " + Arrays.toString(otherAgentsSeen));
         return otherAgentsSeen;
     }
 
