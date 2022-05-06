@@ -10,14 +10,10 @@ import gamelogic.maps.ScenarioMap;
 
 import java.util.*;
 import java.util.concurrent.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
 
 // Abstract because you should not instantiate a Controller class, but either a ControllerExploration or ControllerSurveillance class
 public abstract class Controller {
-    private static final boolean MULTITHREAD_CONTROLLER = true; // Change this to enable or disable multithreading in the controller. Currently, only ticking agents will be multithreaded.
+    private static final boolean MULTITHREAD_CONTROLLER = false; // Change this to enable or disable multithreading in the controller. Currently, only ticking agents will be multithreaded.
     protected final Random rand = new Random();
 
     public final TaskContainer taskContainer;
@@ -59,7 +55,7 @@ public abstract class Controller {
         initializeAgents();
 
         Vector2D[] initialPositions = spawnAgents();
-        currentState = new State(initialPositions, new ArrayList[numberOfGuards + numberOfIntruders], null, null, null);
+        currentState = new State(initialPositions, new ArrayList[numberOfGuards + numberOfIntruders], null, null);
 
         List<Vector2D>[] visions = new ArrayList[numberOfGuards + numberOfIntruders];
         for (int i = 0; i < visions.length; i++) {
@@ -95,26 +91,39 @@ public abstract class Controller {
     }
 
     public void tickMethods() {
+        // First tick the agents, after that update other stuff
         tickAgents();
-        updateAgentsSeen(); // Has to be after all agents moved / ticked
-        markerController.tick();
-        updateProgress();
+
+        List<Callable<Void>> taskList = new ArrayList<>();
+        if (MULTITHREAD_CONTROLLER) taskList.add(toCallable(this::updateAgentsSeen));
+        else updateAgentsSeen();
+        if (MULTITHREAD_CONTROLLER) taskList.add(toCallable(markerController::tick));
+        else markerController.tick();
+        if (MULTITHREAD_CONTROLLER) taskList.add(toCallable(this::updateProgress));
+        else updateProgress();
+
+        if (MULTITHREAD_CONTROLLER) {
+            try {
+                threadPool.invokeAll(taskList);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
         switchToNextState();
     }
 
     protected void tickAgents() {
-        Collection<Future<?>> futures = new LinkedList<>();
+        List<Callable<Void>> taskList = new ArrayList<>();
 
         for (int i = 0; i < agents.length; i++) {
             int finalI = i;
-            if (MULTITHREAD_CONTROLLER) futures.add(threadPool.submit(() -> tickAgent(finalI)));
+            if (MULTITHREAD_CONTROLLER) taskList.add(toCallable(() -> tickAgent(finalI)));
             else tickAgent(finalI);
         }
-        // Wait for all threads to be finished i.e. wait until all agents have ticked
-        for (Future<?> future : futures) {
+        if (MULTITHREAD_CONTROLLER) {
             try {
-                future.get();
-            } catch (InterruptedException | ExecutionException e) {
+                threadPool.invokeAll(taskList);
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
@@ -170,13 +179,8 @@ public abstract class Controller {
 
     public VisionMemory[] updateAgentVisionMemory(int agentIndex, State state) {
         VisionMemory[] otherAgentsSeen;
-        if (state.getAgentsSeen(agentIndex) != null) {
-            otherAgentsSeen = state.getAgentsSeen(agentIndex);
-        }
-        else {
-            // This would only happen when called from init()
-            otherAgentsSeen = new VisionMemory[numberOfGuards + numberOfIntruders];
-        }
+        if (state.getAgentsSeen(agentIndex) != null) otherAgentsSeen = state.getAgentsSeen(agentIndex);
+        else otherAgentsSeen = new VisionMemory[numberOfGuards + numberOfIntruders]; // This would only happen when called from init()
 
         for (int i=0; i < otherAgentsSeen.length; i++) {
             outer:
@@ -277,4 +281,11 @@ public abstract class Controller {
     public State getNextState() { return nextState; }
     public double getTimestep() { return timestep; }
     public Agent getAgent(int agentIndex) { return agents[agentIndex]; }
+
+    private Callable<Void> toCallable(final Runnable runnable) {
+        return () -> {
+            runnable.run();
+            return null;
+        };
+    }
 }

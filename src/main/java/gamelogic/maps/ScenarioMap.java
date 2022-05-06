@@ -24,11 +24,12 @@ public class ScenarioMap {
     private ArrayList<Vector2D> spawnAreaIntruders = new ArrayList<>();
     private int numberMarkers = 5;
     private double shadedReduction = 0.5;
-    private double footstepMaxHearingDistance = 8;
+    private double footstepMaxHearingDistance = 16;
+    private double rotatingMaxHearingDistance = 9;
     private double yellMaxHearingDistance = 50;
     private double soundStandardDeviation = 10;
-    private double pheromoneMaxSmellingDistance = 10;
-    private double pheromoneReduction = 0.2;
+    private double pheromoneMaxSmellingDistance = 20;
+    private double pheromoneReduction = 0.1;
 
     private Tile[][] mapGrid;
     private int width;
@@ -100,6 +101,8 @@ public class ScenarioMap {
 
     public double getPheromoneReduction() { return pheromoneReduction; }
 
+    public double getRotatingMaxHearingDistance() { return rotatingMaxHearingDistance; }
+
     public void setShadedReduction(double shadedReduction) { this.shadedReduction = shadedReduction; }
 
     public void setFootstepMaxHearingDistance(double footstepMaxHearingDistance) { this.footstepMaxHearingDistance = footstepMaxHearingDistance; }
@@ -111,6 +114,8 @@ public class ScenarioMap {
     public void setPheromoneMaxSmellingDistance(double pheromoneMaxSmellingDistance) { this.pheromoneMaxSmellingDistance = pheromoneMaxSmellingDistance; }
 
     public void setPheromoneReduction(double pheromoneReduction) { this.pheromoneReduction = pheromoneReduction; }
+
+    public void setRotatingMaxHearingDistance(double rotatingMaxHearingDistance) { this.rotatingMaxHearingDistance = rotatingMaxHearingDistance; }
 
     public String getFileName() { return fileName; }
 

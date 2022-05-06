@@ -3,6 +3,8 @@ package gamelogic.controller;
 import datastructures.Vector2D;
 import gamelogic.datacarriers.GuardYell;
 import gamelogic.datacarriers.Sound;
+import gamelogic.datacarriers.SoundOrigin;
+import gamelogic.datacarriers.SoundType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,27 +12,32 @@ import java.util.List;
 public class SoundController {
     private final Controller controller;
     private final double footstepMaxHearingDistance;
+    private final double rotatingMaxHearingDistance;
     private final double yellMaxHearingDistance;
     private final double soundStandardDeviation;
 
     public SoundController(Controller controller) {
         this.controller = controller;
         this.footstepMaxHearingDistance = controller.scenarioMap.getFootstepMaxHearingDistance();
+        this.rotatingMaxHearingDistance = controller.scenarioMap.getRotatingMaxHearingDistance();
         this.yellMaxHearingDistance = controller.scenarioMap.getYellMaxHearingDistance();
         this.soundStandardDeviation = controller.scenarioMap.getSoundStandardDeviation();
     }
 
     public List<Sound> getSoundDirections(int agentIndex) {
         ArrayList<Sound> sounds = new ArrayList<>();
-        for (int i = 0; i < controller.numberOfGuards+controller.numberOfIntruders; i++) {
-            if (i != agentIndex) {
-                // TODO Different noise for turning
-                // TODO No noise when standing still
-                double distance = controller.getCurrentState().getAgentPosition(agentIndex).dist(controller.getCurrentState().getAgentPosition(i));
-                if (distance <= footstepMaxHearingDistance) {
-                    double angle = controller.getCurrentState().getAgentPosition(agentIndex).getAngleBetweenVector(controller.getCurrentState().getAgentPosition(i));
+        for (SoundOrigin soundOrigin : controller.currentState.getSoundOrigins()) {
+            if (soundOrigin.agentIndex() != agentIndex) {
+                double distance = controller.getCurrentState().getAgentPosition(agentIndex).dist(soundOrigin.origin());
+                double threshold;
+                if (soundOrigin.soundType() == SoundType.WALKING) threshold = footstepMaxHearingDistance;
+                else threshold = rotatingMaxHearingDistance;
+
+                if (distance <= threshold) {
+                    double angle = controller.getCurrentState().getAgentPosition(agentIndex).getAngleBetweenVector(soundOrigin.origin());
                     double angleNormalDistributed = addNoiseToSound(angle);
-                    sounds.add(new Sound(angleNormalDistributed >= 360 ? angleNormalDistributed-360 : angleNormalDistributed, (footstepMaxHearingDistance -distance) / footstepMaxHearingDistance));
+                    double maxThreshold = Math.max(footstepMaxHearingDistance, rotatingMaxHearingDistance); // Divide by maximum to have a normalised loudness
+                    sounds.add(new Sound(angleNormalDistributed >= 360 ? angleNormalDistributed - 360 : angleNormalDistributed, (maxThreshold - distance) / maxThreshold));
                 }
             }
         }
@@ -46,14 +53,20 @@ public class SoundController {
                 double distance = currentPos.dist(guardYell.origin());
                 if (distance <= yellMaxHearingDistance) {
                     double angleWithNoise = addNoiseToSound(currentPos.getAngleBetweenVector(guardYell.origin()));
-                    anglesOfGuardYell.add(new Sound(angleWithNoise >= 360 ? angleWithNoise - 360 : angleWithNoise, (yellMaxHearingDistance -distance) / yellMaxHearingDistance));
+                    anglesOfGuardYell.add(new Sound(angleWithNoise >= 360 ? angleWithNoise - 360 : angleWithNoise, (yellMaxHearingDistance-distance) / yellMaxHearingDistance));
                 }
             }
         }
         return anglesOfGuardYell;
     }
 
-    public void guardYell(int agentIndex) {
+    public void generateWalkSound(int agentIndex) {
+        controller.nextState.addSoundOrigin(new SoundOrigin(controller.currentState.getAgentPosition(agentIndex), SoundType.WALKING, agentIndex));
+    }
+    public void generateTurnSound(int agentIndex) {
+        controller.nextState.addSoundOrigin(new SoundOrigin(controller.currentState.getAgentPosition(agentIndex), SoundType.ROTATING, agentIndex));
+    }
+    public void generateGuardYell(int agentIndex) {
         controller.nextState.addGuardYell(new GuardYell(controller.getCurrentState().getAgentPosition(agentIndex), agentIndex));
     }
 

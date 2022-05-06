@@ -152,6 +152,9 @@ public class MapBuilder {
                     case "footstepMaxHearingDistance":
                         map.setFootstepMaxHearingDistance(Double.parseDouble(value));
                         break;
+                    case "rotatingMaxHearingDistance":
+                        map.setRotatingMaxHearingDistance(Double.parseDouble(value));
+                        break;
                     case "yellMaxHearingDistance":
                         map.setYellMaxHearingDistance(Double.parseDouble(value));
                         break;

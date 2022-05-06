@@ -54,7 +54,6 @@ public class GameScreen extends Application implements TransitionInterface {
         MainGUI.setupScene(this, scene, stage);
         stage.setScene(scene);
         loadSceneTransition(scene.getRoot().getChildrenUnmodifiable());
-        System.out.println(scenarioMap.getNumGuards() + ", " + scenarioMap.getNumIntruders());
     }
 
     private Scene loadGameScreen(ScenarioMap scenarioMap) {

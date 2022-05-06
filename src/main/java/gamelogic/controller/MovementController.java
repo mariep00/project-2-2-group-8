@@ -32,9 +32,11 @@ public class MovementController {
     protected void updateAgentPosition(int agentIndex, Vector2D pos) {
         controller.nextState.setAgentPosition(agentIndex, pos);
         controller.agents[agentIndex].updatePosition(controller.convertAbsoluteToRelativeSpawn(pos, agentIndex));
+        controller.soundController.generateWalkSound(agentIndex);
     }
     protected void updateAgentOrientation(int agentIndex, double orientationToAdd) {
         controller.agents[agentIndex].updateOrientation(orientationToAdd);
+        controller.soundController.generateTurnSound(agentIndex);
     }
 
     private Vector2D agentMoveForward(int agentIndex) {
