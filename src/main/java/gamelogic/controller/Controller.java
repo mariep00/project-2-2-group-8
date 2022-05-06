@@ -8,6 +8,7 @@ import gamelogic.datacarriers.Vision;
 import gamelogic.maps.ScenarioMap;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -48,7 +49,7 @@ public abstract class Controller {
         initializeAgents();
 
         Vector2D[] initialPositions = spawnAgents();
-        currentState = new State(initialPositions, new ArrayList[numberOfGuards + numberOfIntruders], null, null);
+        currentState = new State(initialPositions, new ArrayList[numberOfGuards + numberOfIntruders], null, null, null);
 
         List<Vector2D>[] visions = new ArrayList[numberOfGuards + numberOfIntruders];
         for (int i = 0; i < visions.length; i++) {
@@ -57,7 +58,7 @@ public abstract class Controller {
         }
 
         currentState = new State(initialPositions, visions, markerController.init(initialPositions),
-                new AgentsSeen[numberOfGuards + numberOfIntruders]);
+                new AgentsSeen[numberOfGuards + numberOfIntruders][numberOfGuards + numberOfIntruders]);
 
         for (int i = 0; i < numberOfGuards+numberOfIntruders; i++) {
             currentState.setAgentsSeen(i, getAgentPositionsInVision(i, currentState));
@@ -84,10 +85,11 @@ public abstract class Controller {
         for (int i = 0; i < agents.length; i++) {
             int movementTask = agents[i].tick(getVisions(i),
                     markerController.getPheromoneMarkersDirection(i, currentState.getAgentPosition(i)),
-                    soundController.getSoundDirections(i), currentState.getAgentsSeen(i));
+                    soundController.getSoundDirections(i));
 
             movementController.moveAgent(i, movementTask);
             nextState.setAgentVision(i, calculateFOVAbsolute(i, nextState.getAgentPosition(i), nextState));
+            System.out.println("");
             nextState.setAgentsSeen(i, getAgentPositionsInVision(i, nextState));
         }
     }
@@ -123,34 +125,32 @@ public abstract class Controller {
         return visions;
     }
 
-    public AgentsSeen getAgentPositionsInVision(int agentIndex, State state) {
-        Vector2D[] otherAgentsSeen;
-        int[] nrTimeStepsAgo;
+    public AgentsSeen[] getAgentPositionsInVision(int agentIndex, State state) {
+        AgentsSeen[] otherAgentsSeen;
         if (state.getAgentsSeen(agentIndex) != null) {
-            otherAgentsSeen = state.getAgentsSeen(agentIndex).getPositions();
-            nrTimeStepsAgo = state.getAgentsSeen(agentIndex).getNrTimeStepsAgo();
+            otherAgentsSeen = state.getAgentsSeen(agentIndex);
         }
         else {
             // This would only happen when called from init()
-            otherAgentsSeen = new Vector2D[numberOfGuards + numberOfIntruders];
-            nrTimeStepsAgo = new int[numberOfGuards + numberOfIntruders];
+            otherAgentsSeen = new AgentsSeen[numberOfGuards + numberOfIntruders];
         }
+        System.out.println("BEFORE IT WAS " + Arrays.toString(otherAgentsSeen));
 
         for (int i=0; i < otherAgentsSeen.length; i++) {
             outer:
             if (i != agentIndex) {
                 for (Vector2D pos : state.getVision(agentIndex)) {
                     if (pos.equals(state.getAgentPosition(i))) {
-                        otherAgentsSeen[i] = convertAbsolutePosToRelativeToCurrentPos(pos, agentIndex, state);
-                        nrTimeStepsAgo[i] = 0;
+                        System.out.println("Agent " + agentIndex + " sees other agent at " + pos);
+                        otherAgentsSeen[i] = new AgentsSeen(convertAbsolutePosToRelativeToCurrentPos(pos, agentIndex, state), 0);
                         break outer;
                     }
                 }
-                if (state != currentState) nrTimeStepsAgo[i]++;
+                if (otherAgentsSeen[i] != null) otherAgentsSeen[i].incrementNrTimeStepsAgo();
             }
-            else otherAgentsSeen[i] = null;
         }
-        return new AgentsSeen(otherAgentsSeen, nrTimeStepsAgo, numberOfGuards);
+        System.out.println("AFTER AKA RETURNING " + Arrays.toString(otherAgentsSeen));
+        return otherAgentsSeen;
     }
 
     protected Vector2D[] spawnAgents() {
