@@ -1,5 +1,6 @@
 package gui.gamescreen.controller;
 
+import gamelogic.agent.tasks.TaskContainer;
 import gamelogic.controller.endingconditions.EndingSurveillance;
 import gamelogic.controller.gamemodecontrollers.ControllerSurveillance;
 import gamelogic.maps.ScenarioMap;
@@ -11,8 +12,8 @@ public class ControllerSurveillanceGUI extends ControllerSurveillance implements
     private final GameScreen gameScreen;
     private final ControllerGUI controllerGUI;
 
-    public ControllerSurveillanceGUI(ScenarioMap scenarioMap, EndingSurveillance endingCondition, GameScreen gameScreen) {
-        super(scenarioMap, endingCondition);
+    public ControllerSurveillanceGUI(ScenarioMap scenarioMap, EndingSurveillance endingCondition, GameScreen gameScreen, TaskContainer taskContainer) {
+        super(scenarioMap, endingCondition, taskContainer);
         this.gameScreen = gameScreen;
         this.controllerGUI = new ControllerGUI(this, gameScreen);
     }

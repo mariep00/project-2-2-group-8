@@ -4,6 +4,7 @@ import datastructures.Vector2D;
 import gamelogic.agent.brains.BrainInterface;
 import gamelogic.datacarriers.Sound;
 import gamelogic.datacarriers.Vision;
+import gamelogic.datacarriers.VisionMemory;
 import gamelogic.maps.Tile;
 import gamelogic.maps.Tile.Type;
 import gamelogic.maps.graph.ExplorationGraph;
@@ -34,7 +35,7 @@ public class Agent {
         explorationGraph = new ExplorationGraph();
     }
 
-    public int tick(Vision[] inVision, double pheromoneMarkerDirection, List<Sound> sounds) {
+    public int tick(Vision[] inVision, double pheromoneMarkerDirection, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen) {
         updateGraph(inVision);
         return brain.makeDecision(explorationGraph, orientation, pheromoneMarkerDirection, sounds);
     }

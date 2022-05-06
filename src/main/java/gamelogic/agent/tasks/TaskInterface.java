@@ -7,6 +7,7 @@ import java.util.Stack;
 
 public interface TaskInterface {
     
-    public Stack<Integer> performTask (ExplorationGraph graph, double orientation, double pheromoneMarkerDirection);
-    public TaskType getType();
+    Stack<Integer> performTask (ExplorationGraph graph, double orientation, double pheromoneMarkerDirection);
+    TaskType getType();
+    TaskInterface newInstance();
 }

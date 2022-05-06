@@ -102,4 +102,8 @@ public class Node {
         return COORDINATES.toString() + " " + getNumberOfEdges();
     }
 
+    public Vector2D getCOORDINATES() {
+        return this.COORDINATES;
+    }
+
 }

@@ -6,10 +6,7 @@ import gamelogic.maps.MarkerInterface;
 import gamelogic.maps.PheromoneMarker;
 import gamelogic.maps.Tile;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 // Might split this controller into a controller for each marker separately. Depends on what markers we want to implement
 public class MarkerController {
@@ -26,7 +23,7 @@ public class MarkerController {
             Agent agent = controller.getAgent(i);
 
             tilesWithMarker.add(controller.scenarioMap.getTile(pos));
-            controller.scenarioMap.getTile(pos).addMarker(new PheromoneMarker(agent, pos, controller.scenarioMap.getSmellingDistance()));
+            controller.scenarioMap.getTile(pos).addMarker(new PheromoneMarker(agent, pos, controller.scenarioMap.getPheromoneMaxSmellingDistance(), controller.scenarioMap.getPheromoneReduction()));
         }
         return tilesWithMarker;
     }
@@ -49,7 +46,7 @@ public class MarkerController {
         // Add the new pheromone markers
         for (int i = 0; i < controller.agents.length; i++) {
             addMarker(controller.nextState.getAgentPosition(i), new PheromoneMarker(controller.agents[i],
-                    controller.nextState.getAgentPosition(i), controller.scenarioMap.getSmellingDistance()));
+                    controller.nextState.getAgentPosition(i), controller.scenarioMap.getPheromoneMaxSmellingDistance(), controller.scenarioMap.getPheromoneReduction()));
         }
     }
 

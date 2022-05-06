@@ -1,6 +1,8 @@
 package gui.gamescreen;
 
 import datastructures.Vector2D;
+import gamelogic.agent.tasks.ExplorationTaskFrontier;
+import gamelogic.agent.tasks.TaskContainer;
 import gamelogic.controller.endingconditions.EndingExploration;
 import gamelogic.maps.ScenarioMap;
 import gui.gamescreen.controller.ControllerExplorationGUI;
@@ -16,7 +18,7 @@ public class GameScreenExploration extends GameScreen {
 
     public GameScreenExploration(ScenarioMap scenarioMap) {
         super(scenarioMap);
-        this.controllerExplorationGUI = new ControllerExplorationGUI(scenarioMap, new EndingExploration(scenarioMap), this);
+        this.controllerExplorationGUI = new ControllerExplorationGUI(scenarioMap, new EndingExploration(scenarioMap), this, new TaskContainer(new ExplorationTaskFrontier()));
     }
 
     @Override

@@ -1,5 +1,7 @@
 package gui.gamescreen;
 
+import gamelogic.agent.tasks.ExplorationTaskFrontier;
+import gamelogic.agent.tasks.TaskContainer;
 import gamelogic.controller.endingconditions.EndingSurveillance;
 import gamelogic.maps.ScenarioMap;
 import gui.gamescreen.controller.ControllerSurveillanceGUI;
@@ -10,7 +12,7 @@ public class GameScreenSurveillance extends GameScreen {
 
     public GameScreenSurveillance(ScenarioMap scenarioMap) {
         super(scenarioMap);
-        this.controllerSurveillanceGUI = new ControllerSurveillanceGUI(scenarioMap, new EndingSurveillance(), this);
+        this.controllerSurveillanceGUI = new ControllerSurveillanceGUI(scenarioMap, new EndingSurveillance(), this, new TaskContainer(new ExplorationTaskFrontier()));
     }
 
     @Override

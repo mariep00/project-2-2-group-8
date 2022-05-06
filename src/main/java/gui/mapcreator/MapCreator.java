@@ -229,6 +229,7 @@ public class MapCreator extends Application implements TransitionInterface {
             }
             scenarioMap.setNumGuards(isStringNumeric(numGuards.getText()) ? Integer.parseInt(numGuards.getText()) : 0);
             scenarioMap.setNumIntruders(isStringNumeric(numIntruders.getText()) ? Integer.parseInt(numIntruders.getText()) : 0);
+            scenarioMap.setMapName("Map created in the map creator");
             quitSceneTransition(() -> new ScenarioMenu(scenarioMap).start(stage), vbox, scrollPane, hbox);
         });
     }

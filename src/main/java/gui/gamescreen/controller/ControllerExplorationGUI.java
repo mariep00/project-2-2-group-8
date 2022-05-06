@@ -1,6 +1,7 @@
 package gui.gamescreen.controller;
 
 import datastructures.Vector2D;
+import gamelogic.agent.tasks.TaskContainer;
 import gamelogic.controller.endingconditions.EndingExploration;
 import gamelogic.controller.gamemodecontrollers.ControllerExploration;
 import gamelogic.maps.ScenarioMap;
@@ -13,8 +14,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class ControllerExplorationGUI extends ControllerExploration implements ControllerGUIInterface {
     private final GameScreen gameScreen;
     private final ControllerGUI controllerGUI;
-    public ControllerExplorationGUI(ScenarioMap scenarioMap, EndingExploration endingCondition, GameScreen gameScreen) {
-        super(scenarioMap, endingCondition);
+    public ControllerExplorationGUI(ScenarioMap scenarioMap, EndingExploration endingCondition, GameScreen gameScreen, TaskContainer taskContainer) {
+        super(scenarioMap, endingCondition, taskContainer);
         this.gameScreen = gameScreen;
         this.controllerGUI = new ControllerGUI(this, gameScreen);
     }
