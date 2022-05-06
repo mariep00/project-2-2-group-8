@@ -84,14 +84,22 @@ public abstract class Controller {
         end();
     }
 
+    public void tick() { tick(true); }
     public void tick(boolean checkEndingCondition) {
-        if (checkEndingCondition && !endingCondition.gameFinished()) {
-            tickAgents();
-            updateAgentsSeen(); // Has to be after all agents moved / ticked
-            markerController.tick();
-            updateProgress();
-            switchToNextState();
-        } else end();
+        if (checkEndingCondition) {
+            if (!endingCondition.gameFinished()) {
+                tickMethods();
+            } else end();
+        }
+        else tickMethods();
+    }
+
+    public void tickMethods() {
+        tickAgents();
+        updateAgentsSeen(); // Has to be after all agents moved / ticked
+        markerController.tick();
+        updateProgress();
+        switchToNextState();
     }
 
     protected void tickAgents() {
@@ -133,7 +141,7 @@ public abstract class Controller {
         int hours = (int) time / 3600;
         int minutes = ((int)time % 3600) / 60;
         double seconds = time % 60;
-        threadPool.shutdown();
+        if (threadPool != null) threadPool.shutdown();
         System.out.println("Everything is explored. It took " + hours + " hour(s) " + minutes + " minutes " + seconds + " seconds.");
     }
 
@@ -179,6 +187,7 @@ public abstract class Controller {
                         break outer;
                     }
                 }
+                // When reaching this the agent is not in vision
                 if (otherAgentsSeen[i] != null) {
                     // Position is updated s.t. it stays relative to the current position of the agent
                     // Seconds ago is incremented with the timestep
