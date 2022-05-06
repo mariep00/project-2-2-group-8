@@ -186,7 +186,7 @@ public class VisionController {
         return Math.max(Math.abs(dx), Math.abs(dy));
     }
 
-    private static Vector2D calculatePoint (Vector2D center, double distance, double angle) {
+    public static Vector2D calculatePoint (Vector2D center, double distance, double angle) {
         double angleRad = Math.toRadians(angle);
         int x = (int)Math.round(center.x+(distance*Math.cos(angleRad)));
         int y = (int)Math.round(center.y+(distance*Math.sin(angleRad)));

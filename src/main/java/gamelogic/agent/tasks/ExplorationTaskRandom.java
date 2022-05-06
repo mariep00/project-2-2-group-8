@@ -1,8 +1,11 @@
 package gamelogic.agent.tasks;
 
 import gamelogic.agent.tasks.TaskContainer.TaskType;
+import gamelogic.datacarriers.Sound;
+import gamelogic.datacarriers.VisionMemory;
 import gamelogic.maps.graph.ExplorationGraph;
 
+import java.util.List;
 import java.util.Stack;
 
 public class ExplorationTaskRandom implements TaskInterface {
@@ -20,7 +23,7 @@ public class ExplorationTaskRandom implements TaskInterface {
     }
 
     @Override
-    public Stack<Integer> performTask(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection) {
+    public Stack<Integer> performTask() {
         
         int r = (int)(Math.random()*(max-min+1)+min);
         if(r<=w0){
@@ -60,6 +63,17 @@ public class ExplorationTaskRandom implements TaskInterface {
 
     @Override
     public TaskInterface newInstance() { return new ExplorationTaskRandom(); }
+
+    @Override
+    public Stack<Integer> performTask(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection) throws UnsupportedOperationException{
+        return null;
+    }
+
+    @Override
+    public Stack<Integer> performTask(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection,
+            List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen) throws UnsupportedOperationException{
+        return null;
+    }
 
 }
 

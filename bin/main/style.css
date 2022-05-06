@@ -64,7 +64,18 @@
 .progress-bar .track {
     -fx-background-radius: 7px;
 }
-.scenarioMenuTitle {
+.scenarioMenuMapName {
     -fx-background-color: transparent;
-    -fx-font-size: 30;
+    -fx-font-size: 34;
+}
+.scenarioMenuFileName {
+    -fx-background-color: transparent;
+    -fx-font-size: 26;
+}
+#scenarioMenuText {
+    -fx-font-size: 18;
+}
+#scenarioMenuTextField {
+    -fx-font-size: 18;
+    -fx-background-radius: 7px;
 }

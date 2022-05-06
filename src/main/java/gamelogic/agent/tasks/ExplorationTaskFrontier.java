@@ -6,6 +6,8 @@ import datastructures.quicksort.SortObject;
 import gamelogic.agent.AStar;
 import gamelogic.agent.tasks.TaskContainer.TaskType;
 import gamelogic.controller.MovementController;
+import gamelogic.datacarriers.Sound;
+import gamelogic.datacarriers.VisionMemory;
 import gamelogic.maps.Tile;
 import gamelogic.maps.graph.ExplorationGraph;
 import gamelogic.maps.graph.Node;
@@ -13,6 +15,7 @@ import gamelogic.maps.graph.Node;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Stack;
 
 public class ExplorationTaskFrontier implements TaskInterface {
@@ -165,6 +168,17 @@ public class ExplorationTaskFrontier implements TaskInterface {
 
     @Override
     public TaskInterface newInstance() { return new ExplorationTaskFrontier(); }
+
+    @Override
+    public Stack<Integer> performTask() throws UnsupportedOperationException{
+        return null;
+    }
+
+    @Override
+    public Stack<Integer> performTask(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection,
+            List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen) throws UnsupportedOperationException {
+        return null;
+    }
 
 
 

@@ -183,7 +183,7 @@ public abstract class Controller {
             if (i != agentIndex) {
                 for (Vector2D pos : state.getVision(agentIndex)) {
                     if (pos.equals(state.getAgentPosition(i))) {
-                        otherAgentsSeen[i] = new VisionMemory(convertAbsolutePosToRelativeToCurrentPos(pos, agentIndex, state), 0);
+                        otherAgentsSeen[i] = new VisionMemory(convertAbsolutePosToRelativeToCurrentPos(pos, agentIndex, state), 0, agents[i].getOrientation());
                         break outer;
                     }
                 }
@@ -192,7 +192,7 @@ public abstract class Controller {
                     // Position is updated s.t. it stays relative to the current position of the agent
                     // Seconds ago is incremented with the timestep
                     otherAgentsSeen[i] = new VisionMemory(otherAgentsSeen[i].position().subtract((nextState.getAgentPosition(agentIndex).subtract(currentState.getAgentPosition(agentIndex)))),
-                            otherAgentsSeen[i].secondsAgo()+timestep);
+                            otherAgentsSeen[i].secondsAgo()+timestep, otherAgentsSeen[i].orientation());
                 }
             }
         }
