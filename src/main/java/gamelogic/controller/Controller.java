@@ -5,10 +5,15 @@ import gamelogic.agent.Agent;
 import gamelogic.agent.tasks.TaskContainer;
 import gamelogic.controller.endingconditions.EndingConditionInterface;
 import gamelogic.datacarriers.Vision;
+import gamelogic.datacarriers.VisionMemory;
 import gamelogic.maps.ScenarioMap;
 
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 
 // Abstract because you should not instantiate a Controller class, but either a ControllerExploration or ControllerSurveillance class
 public abstract class Controller {
@@ -54,14 +59,21 @@ public abstract class Controller {
         initializeAgents();
 
         Vector2D[] initialPositions = spawnAgents();
-        currentState = new State(initialPositions, null, null);
+        currentState = new State(initialPositions, new ArrayList[numberOfGuards + numberOfIntruders], null, null, null);
 
         List<Vector2D>[] visions = new ArrayList[numberOfGuards + numberOfIntruders];
         for (int i = 0; i < visions.length; i++) {
             visions[i] = calculateFOVAbsolute(i, initialPositions[i], currentState);
+            currentState.setAgentVision(i, visions[i]);
         }
 
-        currentState = new State(initialPositions, visions, markerController.init(initialPositions));
+        currentState = new State(initialPositions, visions, markerController.init(initialPositions),
+                new VisionMemory[numberOfGuards + numberOfIntruders][numberOfGuards + numberOfIntruders]);
+
+        for (int i = 0; i < numberOfGuards+numberOfIntruders; i++) {
+            currentState.setAgentsSeen(i, updateAgentVisionMemory(i, currentState));
+        }
+
         nextState = currentState.copyOf();
     }
 
@@ -75,11 +87,11 @@ public abstract class Controller {
     public void tick(boolean checkEndingCondition) {
         if (checkEndingCondition && !endingCondition.gameFinished()) {
             tickAgents();
+            updateAgentsSeen(); // Has to be after all agents moved / ticked
             markerController.tick();
             updateProgress();
             switchToNextState();
-        }
-        else end();
+        } else end();
     }
 
     protected void tickAgents() {
@@ -103,7 +115,8 @@ public abstract class Controller {
     private void tickAgent(int agentIndex) {
         int movementTask = agents[agentIndex].tick(getVisions(agentIndex),
                 markerController.getPheromoneMarkersDirection(agentIndex, currentState.getAgentPosition(agentIndex)),
-                soundController.getSoundDirections(agentIndex));
+                soundController.getSoundDirections(agentIndex), Arrays.copyOfRange(currentState.getAgentsSeen(agentIndex), 0, numberOfGuards),
+                Arrays.copyOfRange(currentState.getAgentsSeen(agentIndex), numberOfGuards, numberOfGuards+numberOfIntruders));
 
         movementController.moveAgent(agentIndex, movementTask);
         nextState.setAgentVision(agentIndex, calculateFOVAbsolute(agentIndex, nextState.getAgentPosition(agentIndex), nextState));
@@ -124,6 +137,12 @@ public abstract class Controller {
         System.out.println("Everything is explored. It took " + hours + " hour(s) " + minutes + " minutes " + seconds + " seconds.");
     }
 
+    private void updateAgentsSeen() {
+        for (int i = 0; i < agents.length; i++) {
+            nextState.setAgentsSeen(i, updateAgentVisionMemory(i, nextState));
+        }
+    }
+
     protected List<Vector2D> calculateFOV(int agentIndex, Vector2D agentPosition) {
         return VisionController.calculateVision(agents[agentIndex].getView_angle(), agents[agentIndex].getView_range(), scenarioMap.createAreaMap(agentPosition, agents[agentIndex].getView_range()), agents[agentIndex].getOrientation()).getInVision();
     }
@@ -139,6 +158,36 @@ public abstract class Controller {
             visions[i] = new Vision(scenarioMap.getTile(pos), convertAbsoluteToRelativeSpawn(pos, agentIndex));
         }
         return visions;
+    }
+
+    public VisionMemory[] updateAgentVisionMemory(int agentIndex, State state) {
+        VisionMemory[] otherAgentsSeen;
+        if (state.getAgentsSeen(agentIndex) != null) {
+            otherAgentsSeen = state.getAgentsSeen(agentIndex);
+        }
+        else {
+            // This would only happen when called from init()
+            otherAgentsSeen = new VisionMemory[numberOfGuards + numberOfIntruders];
+        }
+
+        for (int i=0; i < otherAgentsSeen.length; i++) {
+            outer:
+            if (i != agentIndex) {
+                for (Vector2D pos : state.getVision(agentIndex)) {
+                    if (pos.equals(state.getAgentPosition(i))) {
+                        otherAgentsSeen[i] = new VisionMemory(convertAbsolutePosToRelativeToCurrentPos(pos, agentIndex, state), 0);
+                        break outer;
+                    }
+                }
+                if (otherAgentsSeen[i] != null) {
+                    // Position is updated s.t. it stays relative to the current position of the agent
+                    // Seconds ago is incremented with the timestep
+                    otherAgentsSeen[i] = new VisionMemory(otherAgentsSeen[i].position().subtract((nextState.getAgentPosition(agentIndex).subtract(currentState.getAgentPosition(agentIndex)))),
+                            otherAgentsSeen[i].secondsAgo()+timestep);
+                }
+            }
+        }
+        return otherAgentsSeen;
     }
 
     protected Vector2D[] spawnAgents() {
@@ -203,6 +252,10 @@ public abstract class Controller {
             absPos.add(convertRelativeCurrentPosToRelativeToSpawn(vector2D, agentId, state));
         }
         return absPos;
+    }
+
+    public Vector2D convertAbsolutePosToRelativeToCurrentPos(Vector2D absPos, int agentId, State state) {
+        return new Vector2D(absPos.x-state.getAgentPosition(agentId).x, absPos.y-state.getAgentPosition(agentId).y);
     }
 
     protected void updateGui() {}

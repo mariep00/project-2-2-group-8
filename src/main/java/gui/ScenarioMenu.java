@@ -1,5 +1,7 @@
 package gui;
 
+import gamelogic.agent.tasks.ExplorationTaskFrontier;
+import gamelogic.agent.tasks.ExplorationTaskRandom;
 import gamelogic.maps.ScenarioMap;
 import gui.gamescreen.GameScreenExploration;
 import gui.gamescreen.GameScreenSurveillance;
@@ -66,6 +68,7 @@ public class ScenarioMenu extends Application implements TransitionInterface {
         ScenarioMenuField viewAngleIntruder = new ScenarioMenuField("View angle intruder", scenarioMap.getIntruderViewAngle());
         ScenarioMenuField viewRangeGuard = new ScenarioMenuField("View range guard", scenarioMap.getGuardViewRange());
         ScenarioMenuField viewRangeIntruder = new ScenarioMenuField("View range intruder", scenarioMap.getIntruderViewRange());
+        ScenarioMenuDropdown explorationTask = new ScenarioMenuDropdown("Exploration task", new ExplorationTaskRandom(), new ExplorationTaskFrontier());
 
         ScenarioMenuField shadedReduction = new ScenarioMenuField("Shaded vision reduction in %", scenarioMap.getShadedReduction()*100);
         ScenarioMenuField footstepMaxDistance = new ScenarioMenuField("Footstep maximum hearing distance", scenarioMap.getFootstepMaxHearingDistance());
