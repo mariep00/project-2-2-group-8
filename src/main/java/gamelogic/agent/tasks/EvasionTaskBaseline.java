@@ -1,10 +1,13 @@
 package gamelogic.agent.tasks;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
 
 import datastructures.Vector2D;
+import gamelogic.agent.AStar;
 import gamelogic.agent.tasks.TaskContainer.TaskType;
+import gamelogic.controller.MovementController;
 import gamelogic.controller.VisionController;
 import gamelogic.datacarriers.Sound;
 import gamelogic.datacarriers.VisionMemory;
@@ -23,7 +26,9 @@ public class EvasionTaskBaseline implements TaskInterface{
         double angle = 360.0-Math.atan2(closestGuard.position().y, closestGuard.position().x);
         angle = angle-180.0;
         Vector2D goal = findGoal(angle);
-        return null;
+        LinkedList<Vector2D> nodesToGoal = AStar.calculate(graph, graph.getCurrentPosition(), graph.getNode(goal));
+        
+        return MovementController.convertPath(graph, orientation, nodesToGoal, 3);
     }
 
     private Vector2D findGoal(double angle) {
@@ -44,10 +49,8 @@ public class EvasionTaskBaseline implements TaskInterface{
             } else { 
                 goal = VisionController.calculatePoint(curPos, distance, angle); 
             }
-    
         }
-        
-        return null;
+        return goal;
     }
 
     private VisionMemory getClosestGuard(VisionMemory[] guardsSeen) {
@@ -72,12 +75,12 @@ public class EvasionTaskBaseline implements TaskInterface{
 
     @Override
     public Stack<Integer> performTask() throws UnsupportedOperationException{
-        return null;
+        throw new UnsupportedOperationException("This method is not supported for this class");
     }
 
     @Override
     public Stack<Integer> performTask(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection) throws UnsupportedOperationException{
-        return null;
+        throw new UnsupportedOperationException("This method is not supported for this class");
     }
     
 }

@@ -13,7 +13,6 @@ import gamelogic.maps.graph.ExplorationGraph;
 import gamelogic.maps.graph.Node;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
@@ -171,13 +170,12 @@ public class ExplorationTaskFrontier implements TaskInterface {
 
     @Override
     public Stack<Integer> performTask() throws UnsupportedOperationException{
-        return null;
+        throw new UnsupportedOperationException("This method is not supported for this class");
     }
 
     @Override
-    public Stack<Integer> performTask(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection,
-            List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen) throws UnsupportedOperationException {
-        return null;
+    public Stack<Integer> performTask(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen) throws UnsupportedOperationException {
+        throw new UnsupportedOperationException("This method is not supported for this class");
     }
 
 

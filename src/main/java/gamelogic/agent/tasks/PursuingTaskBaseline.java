@@ -69,11 +69,11 @@ public class PursuingTaskBaseline implements TaskInterface {
 
     @Override
     public Stack<Integer> performTask() throws UnsupportedOperationException{
-        return null;
+        throw new UnsupportedOperationException("This method is not supported for this class");
     }
 
     @Override
     public Stack<Integer> performTask(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection) throws UnsupportedOperationException{
-        return null;
+        throw new UnsupportedOperationException("This method is not supported for this class");
     }
 }

@@ -66,13 +66,12 @@ public class ExplorationTaskRandom implements TaskInterface {
 
     @Override
     public Stack<Integer> performTask(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection) throws UnsupportedOperationException{
-        return null;
+        throw new UnsupportedOperationException("This method is not supported for this class");
     }
 
     @Override
-    public Stack<Integer> performTask(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection,
-            List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen) throws UnsupportedOperationException{
-        return null;
+    public Stack<Integer> performTask(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen) throws UnsupportedOperationException{
+        throw new UnsupportedOperationException("This method is not supported for this class");
     }
 
 }
