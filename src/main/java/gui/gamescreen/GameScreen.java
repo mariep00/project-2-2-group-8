@@ -345,6 +345,7 @@ public class GameScreen extends Application implements TransitionInterface {
 
 
     public void endScreen(){
+
         EndingScreen endingScreen = new EndingScreen(this, stage.getScene(), stage);
         System.out.println("was here");
     }

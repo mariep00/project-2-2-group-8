@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class ControllerGUI implements ControllerGUIInterface {
     private final Controller controller;
     private final GameScreen gameScreen;
-    private final ConcurrentLinkedQueue<Runnable> guiTasksQueue = new ConcurrentLinkedQueue<>();
+    public final ConcurrentLinkedQueue<Runnable> guiTasksQueue = new ConcurrentLinkedQueue<>();
     private final AtomicBoolean executeNextGuiTask = new AtomicBoolean(true);
     private final AtomicBoolean performControllerTick = new AtomicBoolean(true);
     private final AtomicBoolean gamePaused = new AtomicBoolean(false);
@@ -24,19 +24,21 @@ public class ControllerGUI implements ControllerGUIInterface {
     private final AtomicInteger simulationDelay = new AtomicInteger();
     private Thread updateGameLogicThread;
 
-    private AtomicBoolean threadsKilled; // set to true when end method is called
+    private AtomicBoolean logicThreadKilled; // set to true when end method is called
+    private AtomicBoolean guiThreadKilled;
 
     public ControllerGUI(Controller controller, GameScreen gameScreen) {
         this.controller = controller;
         this.gameScreen = gameScreen;
-        this.threadsKilled = new AtomicBoolean(false);
+        this.logicThreadKilled = new AtomicBoolean(false);
+        this.guiThreadKilled = new AtomicBoolean(false);
     }
 
     public void init() {
         Thread.UncaughtExceptionHandler h = (th, ex) -> System.out.println("Uncaught exception: " + ex);
 
         final Thread updateGuiThread = new Thread(() -> {
-            while (!threadsKilled.get()) {
+            while (!guiThreadKilled.get()) {
                 if (executeNextGuiTask.get() && !guiTasksQueue.isEmpty() && !gamePaused.get()) {
                     executeNextGuiTask.set(false);
                     guiTasksQueue.remove().run();
@@ -49,7 +51,7 @@ public class ControllerGUI implements ControllerGUIInterface {
         updateGuiThread.start();
 
         updateGameLogicThread = new Thread(() -> {
-            while (!threadsKilled.get()) {
+            while (!logicThreadKilled.get()) {
                 if (runSimulation.get() && performControllerTick.get() && !gamePaused.get()) {
                     performControllerTick.set(false);
                     try {
@@ -139,6 +141,6 @@ public class ControllerGUI implements ControllerGUIInterface {
     public AtomicBoolean getRunSimulation() { return runSimulation; }
     public AtomicBoolean getExecuteNextGuiTask() { return executeNextGuiTask; }
     public void addGuiRunnableToQueue(Runnable runnable) { guiTasksQueue.add(() -> Platform.runLater(runnable)); }
-    public void killThreads(){threadsKilled.set(true);}
-
+    public void killLogicThread(){ logicThreadKilled.set(true); }
+    public void killGuiThread(){ guiThreadKilled.set(true); }
 }

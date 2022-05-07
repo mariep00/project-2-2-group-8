@@ -7,6 +7,7 @@ import gamelogic.controller.gamemodecontrollers.ControllerExploration;
 import gamelogic.maps.ScenarioMap;
 import gui.gamescreen.GameScreen;
 import gui.gamescreen.GameScreenExploration;
+import javafx.application.Platform;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -28,9 +29,12 @@ public class ControllerExplorationGUI extends ControllerExploration implements C
     }
 
     @Override
-    public void end(){
-        controllerGUI.killThreads();
-        gameScreen.endScreen();
+    public void end() {
+        controllerGUI.killLogicThread();
+        controllerGUI.guiTasksQueue.add(() -> {
+            controllerGUI.killGuiThread();
+            Platform.runLater(gameScreen::endScreen);
+        });
     }
     @Override
     public void init() {
