@@ -188,6 +188,8 @@ public abstract class Controller {
                 for (Vector2D pos : state.getVision(agentIndex)) {
                     if (pos.equals(state.getAgentPosition(i))) {
                         otherAgentsSeen[i] = new VisionMemory(convertAbsolutePosToRelativeToCurrentPos(pos, agentIndex, state), 0, agents[i].getOrientation());
+                        // Check if agent we're updating is a guard and agent we're seeing is an intruder, then yell
+                        if (agentIndex < numberOfGuards && i >= numberOfGuards) soundController.generateGuardYell(agentIndex);
                         break outer;
                     }
                 }
