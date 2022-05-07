@@ -20,6 +20,8 @@ public class Vector2D {
     }
     public Vector2D add (Vector2D other) { return new Vector2D(x+other.x, y+other.y); }
 
+    public Vector2D multiply(int scalar) { return new Vector2D(x*scalar, y*scalar); }
+
     @Override
     public boolean equals(Object other){
         if (other == null) return false;

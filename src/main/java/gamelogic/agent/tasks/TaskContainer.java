@@ -45,7 +45,7 @@ public class TaskContainer {
     public enum TaskType {
         EXPLORATION,
         PURSUIT,
-        ESCAPE,
+        EVASION,
         COVER,
         STANDBY;
     }

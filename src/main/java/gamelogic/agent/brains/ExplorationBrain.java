@@ -4,6 +4,7 @@ import gamelogic.agent.tasks.TaskContainer;
 import gamelogic.agent.tasks.TaskContainer.TaskType;
 import gamelogic.agent.tasks.TaskInterface;
 import gamelogic.datacarriers.Sound;
+import gamelogic.datacarriers.VisionMemory;
 import gamelogic.maps.graph.ExplorationGraph;
 
 import java.util.List;
@@ -21,7 +22,7 @@ public class ExplorationBrain implements BrainInterface {
     }
 
     @Override
-    public int makeDecision(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection, List<Sound> sounds) {
+    public int makeDecision(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen) {
         if (futureMoves.isEmpty()) {
             futureMoves = currentTask.performTask(graph, orientation, pheromoneMarkerDirection);
             return futureMoves.pop();
