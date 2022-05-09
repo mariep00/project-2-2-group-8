@@ -6,11 +6,9 @@ import gamelogic.datacarriers.VisionMemory;
 import gamelogic.maps.graph.ExplorationGraph;
 
 import java.util.List;
-import java.util.Stack;
 
 public class ExplorationTaskRandom implements TaskInterface {
 
-    private Stack<Integer> decision;
     private TaskType type = TaskType.EXPLORATION;
     int min = 0;
     int max = 100;
@@ -18,42 +16,36 @@ public class ExplorationTaskRandom implements TaskInterface {
     int w1 = 50;
     int w2 = 75;
 
-    public ExplorationTaskRandom () {
-        decision = new Stack<>();
-    }
-
     @Override
-    public Stack<Integer> performTask() {
+    public int performTask() {
         
         int r = (int)(Math.random()*(max-min+1)+min);
         if(r<=w0){
             w0 = 60;
             w1 = 73;
             w2 = 86;
-            decision.push(0);
+            return 0;
         } else if (r>w0 && w1<=r) {
             w0 = 70;
             w1 = 80;
             w2 = 90;
-            decision.push(1);
+            return 1;
         }
 
+        // TODO Not sure, but I think we said turning 180 deg is not allowed. Also for presentation / report, this baseline is called a random walk
         else if(r>w1 && w2<=r){
             w0 = 70;
             w1 = 80;
             w2 = 90;
-            decision.push(2);
+            return 2;
         }
 
         else {
             w0 = 70;
             w1 = 80;
             w2 = 90;
-            decision.push(3);
+            return 3;
         }
-
-        return decision;
-
     }
 
     @Override
@@ -65,12 +57,12 @@ public class ExplorationTaskRandom implements TaskInterface {
     public TaskInterface newInstance() { return new ExplorationTaskRandom(); }
 
     @Override
-    public Stack<Integer> performTask(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection) throws UnsupportedOperationException{
+    public int performTask(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection) throws UnsupportedOperationException{
         throw new UnsupportedOperationException("This method is not supported for this class");
     }
 
     @Override
-    public Stack<Integer> performTask(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen) throws UnsupportedOperationException{
+    public int performTask(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen) throws UnsupportedOperationException{
         throw new UnsupportedOperationException("This method is not supported for this class");
     }
 

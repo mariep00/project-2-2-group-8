@@ -1,9 +1,5 @@
 package gamelogic.agent.tasks;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Stack;
-
 import datastructures.Vector2D;
 import gamelogic.agent.AStar;
 import gamelogic.agent.tasks.TaskContainer.TaskType;
@@ -12,20 +8,28 @@ import gamelogic.datacarriers.Sound;
 import gamelogic.datacarriers.VisionMemory;
 import gamelogic.maps.graph.ExplorationGraph;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Stack;
+
 public class PursuingTaskBaseline implements TaskInterface {
 
     private ExplorationGraph graph;
-    private TaskType type = TaskType.PURSUIT;
+    private TaskType type = TaskType.GUARD_PURSUIT;
+    private Stack<Integer> futureMoves;
 
     @Override
-    public Stack<Integer> performTask(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen) {
-        this.graph = graph;
-        VisionMemory closestIntruder = getActiveIntruder(intrudersSeen);
-       
-        Vector2D placeToGo = findGoal(closestIntruder.position(), closestIntruder.orientation());
-        LinkedList<Vector2D> nodesToGoal = AStar.calculate(graph, graph.getCurrentPosition(), graph.getNode(placeToGo));
-        
-        return MovementController.convertPath(graph, orientation, nodesToGoal, 3);
+    public int performTask(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen) {
+        if (futureMoves.isEmpty()) {
+            this.graph = graph;
+            VisionMemory closestIntruder = getActiveIntruder(intrudersSeen);
+
+            Vector2D placeToGo = findGoal(closestIntruder.position(), closestIntruder.orientation());
+            LinkedList<Vector2D> nodesToGoal = AStar.calculate(graph, graph.getCurrentPosition(), graph.getNode(placeToGo));
+
+            this.futureMoves = MovementController.convertPath(graph, orientation, nodesToGoal, 3);
+        }
+        return futureMoves.pop();
     }
 
     private Vector2D findGoal (Vector2D pos, double orien) {
@@ -68,12 +72,12 @@ public class PursuingTaskBaseline implements TaskInterface {
     }
 
     @Override
-    public Stack<Integer> performTask() throws UnsupportedOperationException{
+    public int performTask() throws UnsupportedOperationException{
         throw new UnsupportedOperationException("This method is not supported for this class");
     }
 
     @Override
-    public Stack<Integer> performTask(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection) throws UnsupportedOperationException{
+    public int performTask(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection) throws UnsupportedOperationException{
         throw new UnsupportedOperationException("This method is not supported for this class");
     }
 }

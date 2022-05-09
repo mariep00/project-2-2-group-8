@@ -81,6 +81,12 @@ public class Vector2D {
         return neighbours;
     }
 
+    public double angle() {
+        double theta = Math.atan2(this.x, this.y);
+        double thetaWithEastToRight = theta-(Math.PI/2);
+        return thetaWithEastToRight < 0 ? Math.toDegrees(thetaWithEastToRight)+360 : Math.toDegrees(thetaWithEastToRight);
+    }
+
 
     @Override
     public int hashCode() {

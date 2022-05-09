@@ -6,7 +6,6 @@ import gamelogic.datacarriers.VisionMemory;
 import gamelogic.maps.graph.ExplorationGraph;
 
 import java.util.List;
-import java.util.Stack;
 
 public interface TaskInterface {
 
@@ -14,7 +13,7 @@ public interface TaskInterface {
      * Peform Task for a random task
      * @return Stack of type int which are certain movement tasks
      */
-    Stack<Integer> performTask ();
+    int performTask ();
 
     /**
      * Perform task for a frontier based exploration task
@@ -23,7 +22,7 @@ public interface TaskInterface {
      * @param pheromoneMarkerDirection Direction of pheromones
      * @return Stack of type int which are certain movement tasks
      */
-    Stack<Integer> performTask (ExplorationGraph graph, double orientation, double pheromoneMarkerDirection);
+    int performTask (ExplorationGraph graph, double orientation, double pheromoneMarkerDirection);
 
     /**
      * Perform task for other decisions
@@ -35,7 +34,7 @@ public interface TaskInterface {
      * @param intrudersSeen All intruders seen
      * @return Stack of type int which are certain movement tasks
      */
-    Stack<Integer> performTask (ExplorationGraph graph, double orientation, double pheromoneMarkerDirection, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen);
+    int performTask (ExplorationGraph graph, double orientation, double pheromoneMarkerDirection, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen);
 
     TaskType getType();
     TaskInterface newInstance();
