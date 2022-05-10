@@ -19,7 +19,7 @@ public class ExplorationBrain implements BrainInterface {
     }
 
     @Override
-    public int makeDecision(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen) {
+    public int makeDecision(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen, List<Sound> guardYells) {
         return currentTask.performTask(graph, orientation, pheromoneMarkerDirection);
     }
 }

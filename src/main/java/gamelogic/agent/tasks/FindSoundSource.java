@@ -10,9 +10,9 @@ import gamelogic.maps.graph.ExplorationGraph;
 import java.util.LinkedList;
 import java.util.Stack;
 
-public class CheckSoundSource implements TaskInterface {
-    private int distanceToCheck = 10;
-    private Sound soundToCheck;
+public class FindSoundSource implements TaskInterface {
+    private int distanceToSearch = 10;
+    private Sound soundToFind;
     private Stack<Integer> futureMoves;
     private ExplorationGraph explorationGraph;
     private Vector2D goal;
@@ -27,10 +27,10 @@ public class CheckSoundSource implements TaskInterface {
         if (futureMoves.isEmpty()) {
             // Create a double vector in the direction of the sound
             // Start at the maximum distance we want to check, move closer if we can't reach (or don't know yet) that position
-            double xDir = Math.cos(Math.toRadians(soundToCheck.angle()));
-            double yDir = Math.sin(Math.toRadians(soundToCheck.angle()));
+            double xDir = Math.cos(Math.toRadians(soundToFind.angle()));
+            double yDir = Math.sin(Math.toRadians(soundToFind.angle()));
             Vector2DDouble goalDouble = new Vector2DDouble(xDir, yDir);
-            for (int i = distanceToCheck; i >= 2; i--) {
+            for (int i = distanceToSearch; i >= 2; i--) {
                 Vector2D pos = goalDouble.withLength(i).round();
                 if (graph.getNode(pos) != null) {
                     goal = pos;
@@ -50,7 +50,7 @@ public class CheckSoundSource implements TaskInterface {
                 int[][] directionRanges = {{315, 45, 0}, {45, 135, 90}, {135, 225, 180}, {225, 315, 270}};
                 int direction = -1;
                 for (int[] directionRange : directionRanges) {
-                    if (soundToCheck.angle() >= directionRange[0] && soundToCheck.angle() <= directionRange[1]) {
+                    if (soundToFind.angle() >= directionRange[0] && soundToFind.angle() <= directionRange[1]) {
                         direction = directionRange[2];
                     }
                 }
@@ -78,7 +78,7 @@ public class CheckSoundSource implements TaskInterface {
     public boolean isFinished() { return explorationGraph.getCurrentPosition().COORDINATES.equals(goal); }
 
     @Override
-    public void setTarget(Sound target) { this.soundToCheck = target; }
+    public void setTarget(Sound target) { this.soundToFind = target; }
 
     @Override
     public int getTickCount() { return tickCount; }
@@ -87,14 +87,14 @@ public class CheckSoundSource implements TaskInterface {
     public boolean equals(Object other) {
         if (other == null) return false;
         if (other.getClass() == this.getClass()) {
-            return ((CheckSoundSource) other).getTarget().equals(this.soundToCheck);
+            return ((FindSoundSource) other).getTarget().equals(this.soundToFind);
         }
         return false;
     }
 
     @Override
-    public TaskContainer.TaskType getType() { return TaskContainer.TaskType.CHECK_SOUND_SOURCE; }
+    public TaskContainer.TaskType getType() { return TaskContainer.TaskType.FIND_SOUND_SOURCE; }
 
     @Override
-    public TaskInterface newInstance() { return new CheckSoundSource(); }
+    public TaskInterface newInstance() { return new FindSoundSource(); }
 }

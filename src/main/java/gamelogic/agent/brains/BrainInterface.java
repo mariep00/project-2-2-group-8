@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface BrainInterface {
 
-    int makeDecision (ExplorationGraph graph, double orientation, double pheromoneMarkersDirection, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen);
+    int makeDecision (ExplorationGraph graph, double orientation, double pheromoneMarkersDirection, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen, List<Sound> guardYells);
 }

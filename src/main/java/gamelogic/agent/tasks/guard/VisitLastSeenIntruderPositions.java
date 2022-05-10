@@ -19,7 +19,7 @@ public class VisitLastSeenIntruderPositions implements TaskInterface {
     @Override
     public int performTask(ExplorationGraph graph, double orientation, VisionMemory[] intrudersSeen) {
         // TODO If only 1 intruder is left, and the last position it was seen is reached the guard will get stuck if no other input is being detected
-        if (target.equals(graph.getCurrentPosition().COORDINATES)) {
+        if (target == null || target.equals(graph.getCurrentPosition().COORDINATES)) {
             currentIndex++;
             if (currentIndex >= intrudersSeen.length) currentIndex = 0;
             while (intrudersSeen[currentIndex] == null) {

@@ -22,7 +22,7 @@ public class IntruderBrain implements BrainInterface {
 
     //TODO: Add logic for when to switch between different tasks in the container
     @Override
-    public int makeDecision(ExplorationGraph graph, double orientation, double pheromoneMarker, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen) {
+    public int makeDecision(ExplorationGraph graph, double orientation, double pheromoneMarker, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen, List<Sound> guardYells) {
         return -1;
     }
 }

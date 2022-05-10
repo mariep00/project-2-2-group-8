@@ -1,8 +1,9 @@
 package gamelogic.agent.tasks.deciders;
 
-import gamelogic.agent.tasks.CheckSoundSource;
+import gamelogic.agent.tasks.FindSoundSource;
 import gamelogic.agent.tasks.TaskContainer;
 import gamelogic.agent.tasks.TaskInterface;
+import gamelogic.agent.tasks.guard.FindGuardYellSource;
 import gamelogic.datacarriers.Sound;
 import gamelogic.datacarriers.VisionMemory;
 import gamelogic.maps.graph.ExplorationGraph;
@@ -21,7 +22,7 @@ public class TaskDeciderGuard implements TaskDeciderInterface {
     }
 
     @Override
-    public TaskInterface getTaskToPerform(ExplorationGraph graph, double pheromoneMarkerDirection, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen, TaskInterface currentTask) {
+    public TaskInterface getTaskToPerform(ExplorationGraph graph, double pheromoneMarkerDirection, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen, List<Sound> guardYells, TaskInterface currentTask) {
         // We're going to check on what task to perform based on the priority of a task
         // For example, starting the pursuit when the guard sees an intruder is the most important, thus has the highest priority,
         // thus we will start by checking this.
@@ -36,19 +37,29 @@ public class TaskDeciderGuard implements TaskDeciderInterface {
             return pursuitTask;
         }
 
+        // 2. Check if there is a guard yell
+        Sound guardYell = getGuardYell(guardYells);
+        // TODO Right now a guard yell is more important than checking sound input from footsteps. I.e. it will never check for the source of footsteps if it is finding the source of a guard yell. Is that okay? Otherwise we need to store the guard yell same as we do with the VisionMemory.
+        if (guardYell != null && (currentTask.getPriority() <= TaskContainer.TaskType.FIND_GUARD_YELL_SOURCE.priority) || currentTask.isFinished()) {
+            // There was a guard yell, try to find it
+            TaskInterface findGuardYellSource = new FindGuardYellSource();
+            findGuardYellSource.setTarget(guardYell);
+            return findGuardYellSource;
+        }
+
         // TODO Smth that might be an issue; For example guard is already searching for sound source, it should only switch if a different unmatched sound is closer (maybe also take time ago into account)
         // Right now when there is a new unmatched sound it will always switch to this newest one
-        // TODO Add check for guard yell and the corresponding task
-        // 2. Check if there is an unmatched sound (i.e. is there a sound we cannot link to a guard we've previously seen)
+
+        // 3. Check if there is an unmatched sound (i.e. is there a sound we cannot link to a guard we've previously seen)
         Sound closestUnmatchedSound = getUnmatchedSound(sounds, guardsSeen);
-        if (closestUnmatchedSound != null && (currentTask.getPriority() <= TaskContainer.TaskType.CHECK_SOUND_SOURCE.priority || currentTask.isFinished())) {
+        if (closestUnmatchedSound != null && (currentTask.getPriority() <= TaskContainer.TaskType.FIND_SOUND_SOURCE.priority || currentTask.isFinished())) {
             // There is a sound we cannot match with another guard
             // This means we should check if it's a guard or an intruder
-            CheckSoundSource checkSoundSource = (CheckSoundSource) tasks.getTask(TaskContainer.TaskType.CHECK_SOUND_SOURCE);
-            checkSoundSource.setTarget(closestUnmatchedSound);
-            return checkSoundSource;
+            FindSoundSource findSoundSource = (FindSoundSource) tasks.getTask(TaskContainer.TaskType.FIND_SOUND_SOURCE);
+            findSoundSource.setTarget(closestUnmatchedSound);
+            return findSoundSource;
         }
-        // Nothing special to do, so just explore
+        // 4. Nothing special to do, so just explore
         if (currentTask.getPriority() <= TaskContainer.TaskType.EXPLORATION.priority || currentTask.isFinished()) {
             if (!graph.frontiers.isEmpty()) {
                 return tasks.getTask(TaskContainer.TaskType.EXPLORATION);
@@ -59,6 +70,16 @@ public class TaskDeciderGuard implements TaskDeciderInterface {
         }
 
         return currentTask;
+    }
+
+    private Sound getGuardYell(List<Sound> guardYells) {
+        Sound loudestYell = null;
+        for (Sound sound : guardYells) {
+            if (loudestYell == null || sound.loudness() > loudestYell.loudness()) {
+                loudestYell = sound;
+            }
+        }
+        return loudestYell;
     }
 
     private Sound getUnmatchedSound(List<Sound> sounds, VisionMemory[] guardsSeen) {
