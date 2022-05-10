@@ -17,7 +17,6 @@ public class IntruderBrain implements BrainInterface {
     public IntruderBrain (TaskContainer taskContainer) {
         this.tasks = taskContainer;
         currentTask = tasks.getTask(TaskType.EXPLORATION);
-        //TODO: implement other tasks than exploration for intruders and add them to the container
     }
 
     //TODO: Add logic for when to switch between different tasks in the container
