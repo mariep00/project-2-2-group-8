@@ -2,6 +2,7 @@ package gamelogic.agent.brains;
 
 import gamelogic.agent.tasks.TaskContainer;
 import gamelogic.agent.tasks.TaskContainer.TaskType;
+import gamelogic.agent.tasks.deciders.TaskDeciderInterface;
 import gamelogic.agent.tasks.TaskInterface;
 import gamelogic.datacarriers.Sound;
 import gamelogic.datacarriers.VisionMemory;
@@ -13,15 +14,19 @@ public class IntruderBrain implements BrainInterface {
 
     private final TaskContainer tasks;
     private TaskInterface currentTask;
+    private TaskDeciderInterface taskDecider;
 
     public IntruderBrain (TaskContainer taskContainer) {
         this.tasks = taskContainer;
-        currentTask = tasks.getTask(TaskType.EXPLORATION);
+        this.currentTask = tasks.getTask(TaskType.EXPLORATION_DIRECTION);
+        this.taskDecider = tasks.getTaskDeciderGuard();
     }
 
-    //TODO: Add logic for when to switch between different tasks in the container
     @Override
     public int makeDecision(ExplorationGraph graph, double orientation, double pheromoneMarker, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen) {
-        return -1;
+        TaskInterface taskToPerform = taskDecider.getTaskToPerform(graph, pheromoneMarker, sounds, guardsSeen, intrudersSeen, currentTask);
+        if (!taskToPerform.equals(currentTask)) currentTask = taskToPerform;
+
+        return currentTask.performTask();
     }
 }
