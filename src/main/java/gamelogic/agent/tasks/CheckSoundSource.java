@@ -40,7 +40,7 @@ public class CheckSoundSource implements TaskInterface {
 
             if (goal != null) {
                 LinkedList<Vector2D> nodesToGoal = AStar.calculate(graph, graph.getCurrentPosition(), graph.getNode(goal));
-                this.futureMoves = MovementController.convertPath(graph, orientation, nodesToGoal, 3);
+                this.futureMoves = MovementController.convertPath(graph, orientation, nodesToGoal, -1);
             }
             // There is no goal, i.e. the direction of the sound is not explored yet
             // Create futureMoves s.t. the agent rotates towards the direction of the sound
@@ -82,6 +82,15 @@ public class CheckSoundSource implements TaskInterface {
 
     @Override
     public int getTickCount() { return tickCount; }
+
+    @Override
+    public boolean equals(Object other) {
+        if (other == null) return false;
+        if (other.getClass() == this.getClass()) {
+            return ((CheckSoundSource) other).getTarget().equals(this.soundToCheck);
+        }
+        return false;
+    }
 
     @Override
     public TaskContainer.TaskType getType() { return TaskContainer.TaskType.CHECK_SOUND_SOURCE; }

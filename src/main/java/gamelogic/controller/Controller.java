@@ -205,6 +205,14 @@ public abstract class Controller {
         return otherAgentsSeen;
     }
 
+    public boolean isWallInBetween(Vector2D begin, Vector2D end) {
+        Vector2D[] positions = VisionController.calculateLine(begin, end);
+        for (Vector2D pos : positions) {
+            if (scenarioMap.getTile(pos).isWall()) return true;
+        }
+        return false;
+    }
+
     protected Vector2D[] spawnAgents() {
         ArrayList<Integer> indicesUsed = new ArrayList<>();
         ArrayList<Vector2D> spawnAreaGuards = scenarioMap.getSpawnAreaGuards();

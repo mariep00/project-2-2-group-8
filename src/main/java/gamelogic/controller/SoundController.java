@@ -33,12 +33,10 @@ public class SoundController {
                 if (soundOrigin.soundType() == SoundType.WALKING) threshold = footstepMaxHearingDistance;
                 else threshold = rotatingMaxHearingDistance;
 
-                // TODO check if there is a wall in between
-                if (distance <= threshold) {
+                if (distance <= threshold && controller.isWallInBetween(controller.currentState.getAgentPosition(agentIndex), soundOrigin.origin())) {
                     double angle = controller.getCurrentState().getAgentPosition(agentIndex).getAngleBetweenVector(soundOrigin.origin());
                     double angleNormalDistributed = addNoiseToSound(angle);
                     double maxThreshold = Math.max(footstepMaxHearingDistance, rotatingMaxHearingDistance); // Divide by maximum to have a normalised loudness
-                    System.out.println("AGENT " + agentIndex + " at pos " + controller.currentState.getAgentPosition(agentIndex) + " hears other agent at angle " + angle);
                     sounds.add(new Sound(angleNormalDistributed >= 360 ? angleNormalDistributed - 360 : angleNormalDistributed, (maxThreshold - distance) / maxThreshold));
                 }
             }

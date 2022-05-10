@@ -10,17 +10,19 @@ public class TaskContainer {
     // Index 1 --> check sound source task
     // Index 2 --> guard pursuit task
     // Index 3 --> intruder evasion task
+    // Index 4 --> guard visits last seen intruder positions task
     private final TaskInterface[] tasks;
     private final TaskDeciderInterface taskDeciderGuard;
     private final TaskDeciderInterface taskDeciderIntruder;
 
     public TaskContainer(TaskInterface explorationTask, TaskInterface checkSoundSourceTask, TaskInterface guardPursuitTask,
-                         TaskInterface intruderEvasionTask) {
+                         TaskInterface intruderEvasionTask, TaskInterface guardVisitLastSeenIntruderPositions) {
         tasks = new TaskInterface[4];
         tasks[0] = explorationTask;
         tasks[1] = checkSoundSourceTask;
         tasks[2] = guardPursuitTask;
         tasks[3] = intruderEvasionTask;
+        tasks[4] = guardVisitLastSeenIntruderPositions;
 
         taskDeciderGuard = new TaskDeciderGuard(this);
         // TODO: Pass the right angle upon creation
@@ -40,6 +42,7 @@ public class TaskContainer {
         else if (type == TaskType.CHECK_SOUND_SOURCE) return tasks[1].newInstance();
         else if (type == TaskType.GUARD_PURSUIT) return tasks[2].newInstance();
         else if (type == TaskType.INTRUDER_EVASION) return tasks[3].newInstance();
+        else if (type == TaskType.VISIT_LAST_SEEN_INTRUDER_POSITIONS) return tasks[4].newInstance();
         else return null;
     }
 
@@ -54,7 +57,8 @@ public class TaskContainer {
         PATHFINDING(2),
         COVER(-1),
         STANDBY(-1),
-        CHECK_SOUND_SOURCE(4);
+        CHECK_SOUND_SOURCE(4),
+        VISIT_LAST_SEEN_INTRUDER_POSITIONS(1);
 
         public final int priority;
 

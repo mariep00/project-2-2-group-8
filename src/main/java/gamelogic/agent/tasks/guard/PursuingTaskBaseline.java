@@ -1,8 +1,9 @@
-package gamelogic.agent.tasks;
+package gamelogic.agent.tasks.guard;
 
 import datastructures.Vector2D;
 import gamelogic.agent.AStar;
 import gamelogic.agent.tasks.TaskContainer.TaskType;
+import gamelogic.agent.tasks.TaskInterface;
 import gamelogic.controller.MovementController;
 import gamelogic.datacarriers.Sound;
 import gamelogic.datacarriers.VisionMemory;
@@ -24,7 +25,6 @@ public class PursuingTaskBaseline implements TaskInterface {
         if (futureMoves.isEmpty()) {
             this.graph = graph;
             //VisionMemory closestIntruder = getActiveIntruder(intrudersSeen);
-            
             Vector2D placeToGo = findGoal(target.position().add(graph.getCurrentPosition().COORDINATES), target.orientation());
             LinkedList<Vector2D> nodesToGoal = AStar.calculate(graph, graph.getCurrentPosition(), graph.getNode(placeToGo));
 
@@ -66,6 +66,18 @@ public class PursuingTaskBaseline implements TaskInterface {
     public void setTarget(VisionMemory target) {
         this.target = target;
     }
+
+    @Override
+    public boolean equals(Object other) {
+        if (other == null) return false;
+        if (other.getClass() == this.getClass()) {
+            return ((PursuingTaskBaseline) other).getTarget().equals(this.target);
+        }
+        return false;
+    }
+
+    @Override
+    public Object getTarget() { return target;}
 
     @Override
     public TaskType getType() {

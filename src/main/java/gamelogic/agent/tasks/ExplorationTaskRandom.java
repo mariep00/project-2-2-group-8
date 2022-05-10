@@ -27,7 +27,7 @@ public class ExplorationTaskRandom implements TaskInterface {
             return 1;
         }
 
-        // TODO Shouldn't turning 180 degrees be removed here? Also for presentation / report, this baseline is called a random walk
+        // TODO Shouldn't turning 180 degrees be removed here? Also for presentation / report, what this baseline does is called a random walk
         else if(r>w1 && w2<=r){
             w0 = 70;
             w1 = 80;
