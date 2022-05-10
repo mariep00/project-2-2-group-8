@@ -2,6 +2,7 @@ package gamelogic.agent.tasks;
 
 import gamelogic.agent.tasks.deciders.TaskDeciderGuard;
 import gamelogic.agent.tasks.deciders.TaskDeciderInterface;
+import gamelogic.agent.tasks.deciders.TaskDeciderIntruder;
 
 public class TaskContainer {
 
@@ -11,6 +12,7 @@ public class TaskContainer {
     // Index 3 --> intruder evasion task
     private final TaskInterface[] tasks;
     private final TaskDeciderInterface taskDeciderGuard;
+    private final TaskDeciderInterface taskDeciderIntruder;
 
     public TaskContainer(TaskInterface explorationTask, TaskInterface checkSoundSourceTask, TaskInterface guardPursuitTask,
                          TaskInterface intruderEvasionTask) {
@@ -21,6 +23,8 @@ public class TaskContainer {
         tasks[3] = intruderEvasionTask;
 
         taskDeciderGuard = new TaskDeciderGuard(this);
+        // TODO: Pass the right angle upon creation
+        taskDeciderIntruder = new TaskDeciderIntruder(this, 0.0);
     }
 
     public TaskContainer(TaskInterface explorationTask) {
@@ -28,6 +32,7 @@ public class TaskContainer {
         tasks[0] = explorationTask;
 
         taskDeciderGuard = null;
+        taskDeciderIntruder = null;
     }
 
     public TaskInterface getTask(TaskType type) {
@@ -39,11 +44,14 @@ public class TaskContainer {
     }
 
     public TaskDeciderInterface getTaskDeciderGuard() { return taskDeciderGuard; }
+    public TaskDeciderInterface getTaskDeciderIntruder() { return taskDeciderIntruder; }
 
     public enum TaskType {
         EXPLORATION(1),
+        EXPLORATION_DIRECTION(1),
         GUARD_PURSUIT(5),
         INTRUDER_EVASION(4),
+        PATHFINDING(2),
         COVER(-1),
         STANDBY(-1),
         CHECK_SOUND_SOURCE(4);

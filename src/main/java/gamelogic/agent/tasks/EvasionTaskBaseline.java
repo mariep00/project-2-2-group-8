@@ -18,22 +18,31 @@ public class EvasionTaskBaseline implements TaskInterface{
     private ExplorationGraph graph;
     private TaskType type = TaskType.INTRUDER_EVASION;
     private Stack<Integer> futureMoves;
+    private VisionMemory visionTarget;
+    private Sound soundTarget;
+    private double targetAngle;
 
     @Override
     public int performTask(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen) {
-        if (futureMoves.isEmpty()) {
+        if (futureMoves.isEmpty() || futureMoves == null) {
             this.graph = graph;
-            // TODO use the setTarget method from the interface, while this guard will already be known in the taskDecider for the intruder
-            VisionMemory closestGuard = getClosestGuard(guardsSeen);
+            futureMoves = new Stack<>();
 
-            double angle = 360.0 - Math.atan2(closestGuard.position().y, closestGuard.position().x);
-            angle = angle - 180.0;
+            double angle = targetAngle - 180.0;
             Vector2D goal = findGoal(angle);
             LinkedList<Vector2D> nodesToGoal = AStar.calculate(graph, graph.getCurrentPosition(), graph.getNode(goal));
 
             this.futureMoves = MovementController.convertPath(graph, orientation, nodesToGoal, 3);
         }
         return futureMoves.pop();
+    }
+
+    private double getTargetAngle() {
+        if (visionTarget != null) {
+            return 360.0 - Math.atan2(visionTarget.position().y, visionTarget.position().x);
+        } else {
+            return soundTarget.angle();
+        }
     }
 
     private Vector2D findGoal(double angle) {
@@ -58,16 +67,6 @@ public class EvasionTaskBaseline implements TaskInterface{
         return goal;
     }
 
-    private VisionMemory getClosestGuard(VisionMemory[] guardsSeen) {
-        VisionMemory closestGuard = new VisionMemory(null, Double.MAX_VALUE, 0.0);
-        for (int i=0; i<guardsSeen.length; i++) {
-            if (guardsSeen[i].secondsAgo() < closestGuard.secondsAgo()) {
-                closestGuard = guardsSeen[i];
-            }
-        }
-        return closestGuard;
-    }
-
     @Override
     public boolean isFinished() {
         return false; // TODO Add a task finished requirement here
@@ -81,5 +80,10 @@ public class EvasionTaskBaseline implements TaskInterface{
     @Override
     public TaskInterface newInstance() {
         return new EvasionTaskBaseline();
+    }
+
+    @Override
+    public void setTarget(double target) {
+        this.targetAngle = target;
     }
 }

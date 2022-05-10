@@ -7,6 +7,8 @@ import gamelogic.maps.graph.ExplorationGraph;
 
 import java.util.List;
 
+import datastructures.Vector2D;
+
 public interface TaskInterface {
 
     /**
@@ -46,6 +48,12 @@ public interface TaskInterface {
         throw new UnsupportedOperationException("This method is not supported for this class");
     }
     default void setTarget(VisionMemory target) {
+        throw new UnsupportedOperationException("This method is not supported for this class");
+    }
+    default void setTarget(Vector2D target) {
+        throw new UnsupportedOperationException("This method is not supported for this class");
+    }
+    default void setTarget(double angle) {
         throw new UnsupportedOperationException("This method is not supported for this class");
     }
     default boolean isFinished() {

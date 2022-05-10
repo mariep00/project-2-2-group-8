@@ -24,9 +24,8 @@ public class PursuingTaskBaseline implements TaskInterface {
         if (futureMoves.isEmpty()) {
             this.graph = graph;
             //VisionMemory closestIntruder = getActiveIntruder(intrudersSeen);
-
-            // TODO Position should be relative to spawn, now it is relative to current position i.e. add current position
-            Vector2D placeToGo = findGoal(target.position(), target.orientation());
+            
+            Vector2D placeToGo = findGoal(target.position().add(graph.getCurrentPosition().COORDINATES), target.orientation());
             LinkedList<Vector2D> nodesToGoal = AStar.calculate(graph, graph.getCurrentPosition(), graph.getNode(placeToGo));
 
             this.futureMoves = MovementController.convertPath(graph, orientation, nodesToGoal, 3);

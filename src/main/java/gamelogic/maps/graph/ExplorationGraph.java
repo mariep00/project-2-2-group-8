@@ -13,6 +13,8 @@ public class ExplorationGraph {
     private final Node origin;
     private Node currentPosition;
     private final LinkedList<Node> seenTeleports;
+    private final LinkedList<Node> seenTargetArea;
+    private boolean sawTargetArea;
     private final Random random;
 
     private final HashMap<Vector2D, Node> nodes; //all nodes
@@ -22,6 +24,8 @@ public class ExplorationGraph {
         this.nodes = new HashMap<>(4000);
         this.frontiers = new HashMap<>(1000);
         this.seenTeleports = new LinkedList<>();
+        this.seenTargetArea = new LinkedList<>();
+        sawTargetArea = false;
         random = new Random();
         Tile t = new Tile();
         this.origin = new Node(new Vector2D(0, 0), t);
@@ -52,6 +56,10 @@ public class ExplorationGraph {
             checkEdges(node);
             if(type.getType()==Type.TELEPORT_ENTRANCE) {
                 seenTeleports.add(node);
+            }
+            if(type.getType()==Type.TARGET_AREA) {
+                seenTargetArea.add(node);
+                sawTargetArea = true;
             }
             return node;
         }
@@ -206,6 +214,14 @@ public class ExplorationGraph {
     public Node getTeleport() {
         int i = random.nextInt(seenTeleports.size());
         return seenTeleports.get(i);
+    }
+
+    public LinkedList<Node> getTargetArea() {
+        if (sawTargetArea) {
+            return seenTargetArea;
+        } else {
+            return null;
+        }
     }
 
     public int getNumberOfNodes() {

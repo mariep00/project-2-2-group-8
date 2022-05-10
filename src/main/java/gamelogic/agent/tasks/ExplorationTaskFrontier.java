@@ -31,6 +31,7 @@ public class ExplorationTaskFrontier implements TaskInterface {
         goalNode = new Node(new Vector2D(-20000, -20000), new Tile());
     }
 
+    @Override
     public int performTask(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection){
         if (futureMoves == null || futureMoves.isEmpty()) {
             futureMoves = new Stack<>();
@@ -75,7 +76,7 @@ public class ExplorationTaskFrontier implements TaskInterface {
     }
 
 
-    private Node getNextFrontier(int index, double pheromoneMarkerDirection) {
+    protected Node getNextFrontier(int index, double pheromoneMarkerDirection) {
         LinkedList<Node> nodes = graph.frontiers.getAllNodes();
         if (nodes.isEmpty()) return null;
         SortObject<Node>[] sortObjects = new SortObject[nodes.size()];
