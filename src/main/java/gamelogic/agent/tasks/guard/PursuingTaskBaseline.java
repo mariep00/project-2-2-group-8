@@ -52,16 +52,6 @@ public class PursuingTaskBaseline implements TaskInterface {
         return graph.isVisited(pos);
     }
 
-    private VisionMemory getActiveIntruder(VisionMemory[] intrudersSeen) {
-        VisionMemory closestIntruder = new VisionMemory(null, Double.MAX_VALUE, 0.0);
-        for (int i=0; i<intrudersSeen.length; i++) {
-            if (intrudersSeen[i].secondsAgo() < closestIntruder.secondsAgo()) {
-                closestIntruder = intrudersSeen[i];
-            }
-        }
-        return closestIntruder;
-    }
-
     @Override
     public void setTarget(VisionMemory target) {
         this.target = target;

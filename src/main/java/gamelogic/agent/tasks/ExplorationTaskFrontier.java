@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Stack;
 
+@SuppressWarnings("unchecked")
+
 public class ExplorationTaskFrontier implements TaskInterface {
     private Node goalNode;
     private Node lastNode;

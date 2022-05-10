@@ -11,6 +11,8 @@ import gamelogic.maps.ScenarioMap;
 import java.util.*;
 import java.util.concurrent.*;
 
+@SuppressWarnings("unchecked")
+
 // Abstract because you should not instantiate a Controller class, but either a ControllerExploration or ControllerSurveillance class
 public abstract class Controller {
     private static final boolean MULTITHREAD_CONTROLLER = false; // Change this to enable or disable multithreading in the controller. Currently, only ticking agents will be multithreaded.

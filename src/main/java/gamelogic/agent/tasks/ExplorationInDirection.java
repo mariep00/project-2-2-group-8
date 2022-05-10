@@ -2,7 +2,6 @@ package gamelogic.agent.tasks;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.Stack;
 
 import datastructures.Vector2D;
 import datastructures.quicksort.QuickSort;
@@ -10,6 +9,8 @@ import datastructures.quicksort.SortObject;
 import gamelogic.agent.tasks.TaskContainer.TaskType;
 import gamelogic.maps.graph.ExplorationGraph;
 import gamelogic.maps.graph.Node;
+
+@SuppressWarnings("unchecked")
 
 public class ExplorationInDirection extends ExplorationTaskFrontier{
     

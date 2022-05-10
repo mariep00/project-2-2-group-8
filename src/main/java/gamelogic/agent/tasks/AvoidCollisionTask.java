@@ -3,7 +3,6 @@ package gamelogic.agent.tasks;
 import java.util.List;
 import java.util.Stack;
 
-import datastructures.Vector2D;
 import gamelogic.agent.tasks.TaskContainer.TaskType;
 import gamelogic.datacarriers.Sound;
 import gamelogic.datacarriers.VisionMemory;
@@ -13,7 +12,6 @@ public class AvoidCollisionTask implements TaskInterface{
 
     private TaskType type = TaskType.AVOID_COLLISION;
     private Stack<Integer> futureMoves;
-    private Vector2D target;
     private boolean finished = false;
 
     @Override
@@ -35,11 +33,6 @@ public class AvoidCollisionTask implements TaskInterface{
     @Override
     public TaskInterface newInstance() {
         return new AvoidCollisionTask();
-    }
-
-    @Override
-    public void setTarget(Vector2D target) {
-        this.target = target;
     }
 
     @Override

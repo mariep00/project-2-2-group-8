@@ -11,6 +11,8 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
+@SuppressWarnings("unchecked")
+
 public class State {
     private final Vector2D[] agentPositions;
     private final List<Vector2D>[] visions;

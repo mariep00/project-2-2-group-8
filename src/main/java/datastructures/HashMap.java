@@ -5,6 +5,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.LinkedList;
 import java.util.List;
 
+@SuppressWarnings("unchecked")
+
 public class HashMap<K, V> {
     private int capacity;
     private Bucket<K, V>[] buckets;
@@ -24,9 +26,9 @@ public class HashMap<K, V> {
         int hash = hashCode(key);
         if (buckets[hash] == null) {
             size++;
-            buckets[hash] = new Bucket();
+            buckets[hash] = new Bucket<>();
         }
-        buckets[hash].addEntry(new Entry(key, value));
+        buckets[hash].addEntry(new Entry<>(key, value));
         if (shouldExpand()) expand();
     }
 
@@ -78,7 +80,7 @@ public class HashMap<K, V> {
             if (oldBucket != null) {
                 for (Entry<K, V> entry : oldBucket.getEntries()) {
                     int hash = hashCode(entry.key);
-                    if (buckets[hash] == null) buckets[hash] = new Bucket();
+                    if (buckets[hash] == null) buckets[hash] = new Bucket<>();
                     buckets[hash].addEntry(entry);
                 }
             }
