@@ -43,15 +43,6 @@ public class AvoidCollisionTask implements TaskInterface{
     }
 
     @Override
-    public boolean equals(Object other) {
-        if (other == null) return false;
-        if (other.getClass() == this.getClass()) {
-            return ((AvoidCollisionTask) other).getTarget().equals(this.target);
-        }
-        return false;
-    }
-
-    @Override
     public boolean isFinished() {
         return finished;
     }
