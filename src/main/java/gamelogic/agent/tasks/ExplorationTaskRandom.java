@@ -1,11 +1,6 @@
 package gamelogic.agent.tasks;
 
 import gamelogic.agent.tasks.TaskContainer.TaskType;
-import gamelogic.datacarriers.Sound;
-import gamelogic.datacarriers.VisionMemory;
-import gamelogic.maps.graph.ExplorationGraph;
-
-import java.util.List;
 
 public class ExplorationTaskRandom implements TaskInterface {
 
@@ -32,7 +27,7 @@ public class ExplorationTaskRandom implements TaskInterface {
             return 1;
         }
 
-        // TODO Not sure, but I think we said turning 180 deg is not allowed. Also for presentation / report, this baseline is called a random walk
+        // TODO Shouldn't turning 180 degrees be removed here? Also for presentation / report, this baseline is called a random walk
         else if(r>w1 && w2<=r){
             w0 = 70;
             w1 = 80;
@@ -55,17 +50,6 @@ public class ExplorationTaskRandom implements TaskInterface {
 
     @Override
     public TaskInterface newInstance() { return new ExplorationTaskRandom(); }
-
-    @Override
-    public int performTask(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection) throws UnsupportedOperationException{
-        throw new UnsupportedOperationException("This method is not supported for this class");
-    }
-
-    @Override
-    public int performTask(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen) throws UnsupportedOperationException{
-        throw new UnsupportedOperationException("This method is not supported for this class");
-    }
-
 }
 
 

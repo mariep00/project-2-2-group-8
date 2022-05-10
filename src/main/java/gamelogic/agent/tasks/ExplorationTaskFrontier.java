@@ -6,15 +6,12 @@ import datastructures.quicksort.SortObject;
 import gamelogic.agent.AStar;
 import gamelogic.agent.tasks.TaskContainer.TaskType;
 import gamelogic.controller.MovementController;
-import gamelogic.datacarriers.Sound;
-import gamelogic.datacarriers.VisionMemory;
 import gamelogic.maps.Tile;
 import gamelogic.maps.graph.ExplorationGraph;
 import gamelogic.maps.graph.Node;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Stack;
 
 public class ExplorationTaskFrontier implements TaskInterface {
@@ -171,16 +168,9 @@ public class ExplorationTaskFrontier implements TaskInterface {
     public TaskInterface newInstance() { return new ExplorationTaskFrontier(); }
 
     @Override
-    public int performTask() throws UnsupportedOperationException{
-        throw new UnsupportedOperationException("This method is not supported for this class");
+    public boolean isFinished() {
+        return graph.frontiers.isEmpty();
     }
-
-    @Override
-    public int performTask(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen) throws UnsupportedOperationException {
-        throw new UnsupportedOperationException("This method is not supported for this class");
-    }
-
-
 
 
     /* nextNode Vector2D - Coordinates Vector 2D

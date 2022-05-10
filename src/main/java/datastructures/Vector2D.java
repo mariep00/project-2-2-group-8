@@ -51,7 +51,10 @@ public class Vector2D {
         }
         return null;
     }
-    
+
+    public double magnitude() {
+        return Math.sqrt((x*x)+(y*y));
+    }
 
     /**
      * Euclidean distance

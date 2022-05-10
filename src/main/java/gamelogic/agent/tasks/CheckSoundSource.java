@@ -5,37 +5,31 @@ import datastructures.Vector2DDouble;
 import gamelogic.agent.AStar;
 import gamelogic.controller.MovementController;
 import gamelogic.datacarriers.Sound;
-import gamelogic.datacarriers.VisionMemory;
 import gamelogic.maps.graph.ExplorationGraph;
 
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Stack;
 
 public class CheckSoundSource implements TaskInterface {
     private int distanceToCheck = 10;
     private Sound soundToCheck;
     private Stack<Integer> futureMoves;
+    private ExplorationGraph explorationGraph;
+    private Vector2D goal;
 
-    @Override
-    public int performTask() {
-        throw new UnsupportedOperationException("This method is not supported for this class");
-    }
-
-    public void setSoundToCheck(Sound soundToCheck) {
-        this.soundToCheck = soundToCheck;
-    }
+    private int tickCount = 0;
 
     @Override
     public int performTask(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection) {
+        this.explorationGraph = graph;
         // Keep in mind this will most of the times be called once, while if there's is no unmatched sound i.e. source is found agent will perform different task,
         // and if sound is still unmatched a new tasks with angle will be created. Tho, could be that source is never found.
-        // TODO Need a finishing condition if source was not found
         if (futureMoves.isEmpty()) {
+            // Create a double vector in the direction of the sound
+            // Start at the maximum distance we want to check, move closer if we can't reach (or don't know yet) that position
             double xDir = Math.cos(Math.toRadians(soundToCheck.angle()));
             double yDir = Math.sin(Math.toRadians(soundToCheck.angle()));
             Vector2DDouble goalDouble = new Vector2DDouble(xDir, yDir);
-            Vector2D goal = null;
             for (int i = distanceToCheck; i >= 2; i--) {
                 Vector2D pos = goalDouble.withLength(i).round();
                 if (graph.getNode(pos) != null) {
@@ -51,24 +45,47 @@ public class CheckSoundSource implements TaskInterface {
             // There is no goal, i.e. the direction of the sound is not explored yet
             // Create futureMoves s.t. the agent rotates towards the direction of the sound
             else {
-                // TODO Create futureMoves s.t. the agent rotates towards the direction of the sound
+                // First value is the angle lower bound, second the angle upper bound, third the corresponding discrete angle
+                // I.e. an angle between 315 and 45 degrees has a corresponding discrete angle of 0 degrees
+                int[][] directionRanges = {{315, 45, 0}, {45, 135, 90}, {135, 225, 180}, {225, 315, 270}};
+                int direction = -1;
+                for (int[] directionRange : directionRanges) {
+                    if (soundToCheck.angle() >= directionRange[0] && soundToCheck.angle() <= directionRange[1]) {
+                        direction = directionRange[2];
+                    }
+                }
+
+                if (direction != -1) {
+                    int degreesToTurn = direction - (int) orientation;
+                    if (degreesToTurn == 90) {
+                        futureMoves.push(1);
+                    }
+                    else if (degreesToTurn == -90) {
+                        futureMoves.push(3);
+                    }
+                    else if (degreesToTurn == 180 || degreesToTurn == -180) {
+                        futureMoves.push(1);
+                        futureMoves.push(1);
+                    }
+                }
             }
         }
+        tickCount++;
         return futureMoves.pop();
     }
 
     @Override
-    public int performTask(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen) {
-        throw new UnsupportedOperationException("This method is not supported for this class");
-    }
+    public boolean isFinished() { return explorationGraph.getCurrentPosition().COORDINATES.equals(goal); }
 
     @Override
-    public TaskContainer.TaskType getType() {
-        return TaskContainer.TaskType.CHECK_SOUND_SOURCE;
-    }
+    public void setTarget(Sound target) { this.soundToCheck = target; }
 
     @Override
-    public TaskInterface newInstance() {
-        return new CheckSoundSource();
-    }
+    public int getTickCount() { return tickCount; }
+
+    @Override
+    public TaskContainer.TaskType getType() { return TaskContainer.TaskType.CHECK_SOUND_SOURCE; }
+
+    @Override
+    public TaskInterface newInstance() { return new CheckSoundSource(); }
 }

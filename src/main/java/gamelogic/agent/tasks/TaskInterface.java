@@ -13,7 +13,9 @@ public interface TaskInterface {
      * Peform Task for a random task
      * @return Stack of type int which are certain movement tasks
      */
-    int performTask ();
+    default int performTask() {
+        throw new UnsupportedOperationException("This method is not supported for this class");
+    }
 
     /**
      * Perform task for a frontier based exploration task
@@ -22,7 +24,9 @@ public interface TaskInterface {
      * @param pheromoneMarkerDirection Direction of pheromones
      * @return Stack of type int which are certain movement tasks
      */
-    int performTask (ExplorationGraph graph, double orientation, double pheromoneMarkerDirection);
+    default int performTask (ExplorationGraph graph, double orientation, double pheromoneMarkerDirection) {
+        throw new UnsupportedOperationException("This method is not supported for this class");
+    }
 
     /**
      * Perform task for other decisions
@@ -34,8 +38,23 @@ public interface TaskInterface {
      * @param intrudersSeen All intruders seen
      * @return Stack of type int which are certain movement tasks
      */
-    int performTask (ExplorationGraph graph, double orientation, double pheromoneMarkerDirection, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen);
+    default int performTask (ExplorationGraph graph, double orientation, double pheromoneMarkerDirection, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen) {
+        throw new UnsupportedOperationException("This method is not supported for this class");
+    }
 
+    default void setTarget(Sound target) {
+        throw new UnsupportedOperationException("This method is not supported for this class");
+    }
+    default void setTarget(VisionMemory target) {
+        throw new UnsupportedOperationException("This method is not supported for this class");
+    }
+    default boolean isFinished() {
+        return true;
+    }
+    default int getTickCount() {
+        throw new UnsupportedOperationException("This method is not supported for this class");
+    }
+    default int getPriority() { return getType().priority; }
     TaskType getType();
     TaskInterface newInstance();
 }

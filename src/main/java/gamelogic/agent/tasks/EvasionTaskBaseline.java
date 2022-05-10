@@ -23,6 +23,7 @@ public class EvasionTaskBaseline implements TaskInterface{
     public int performTask(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen) {
         if (futureMoves.isEmpty()) {
             this.graph = graph;
+            // TODO use the setTarget method from the interface, while this guard will already be known in the taskDecider for the intruder
             VisionMemory closestGuard = getClosestGuard(guardsSeen);
 
             double angle = 360.0 - Math.atan2(closestGuard.position().y, closestGuard.position().x);
@@ -58,7 +59,6 @@ public class EvasionTaskBaseline implements TaskInterface{
     }
 
     private VisionMemory getClosestGuard(VisionMemory[] guardsSeen) {
-        // TODO Change this to closestGuard = null?
         VisionMemory closestGuard = new VisionMemory(null, Double.MAX_VALUE, 0.0);
         for (int i=0; i<guardsSeen.length; i++) {
             if (guardsSeen[i].secondsAgo() < closestGuard.secondsAgo()) {
@@ -66,6 +66,11 @@ public class EvasionTaskBaseline implements TaskInterface{
             }
         }
         return closestGuard;
+    }
+
+    @Override
+    public boolean isFinished() {
+        return false; // TODO Add a task finished requirement here
     }
 
     @Override
@@ -77,15 +82,4 @@ public class EvasionTaskBaseline implements TaskInterface{
     public TaskInterface newInstance() {
         return new EvasionTaskBaseline();
     }
-
-    @Override
-    public int performTask() throws UnsupportedOperationException{
-        throw new UnsupportedOperationException("This method is not supported for this class");
-    }
-
-    @Override
-    public int performTask(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection) throws UnsupportedOperationException{
-        throw new UnsupportedOperationException("This method is not supported for this class");
-    }
-    
 }

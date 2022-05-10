@@ -1,5 +1,8 @@
 package gamelogic.agent.tasks;
 
+import gamelogic.agent.tasks.deciders.TaskDeciderGuard;
+import gamelogic.agent.tasks.deciders.TaskDeciderInterface;
+
 public class TaskContainer {
 
     // Index 0 --> exploration task
@@ -37,14 +40,18 @@ public class TaskContainer {
 
     public TaskDeciderInterface getTaskDeciderGuard() { return taskDeciderGuard; }
 
-
-    //TODO: Task types can be changed just wrote some tasks that I could think of
     public enum TaskType {
-        EXPLORATION,
-        GUARD_PURSUIT,
-        INTRUDER_EVASION,
-        COVER,
-        STANDBY,
-        CHECK_SOUND_SOURCE
+        EXPLORATION(1),
+        GUARD_PURSUIT(5),
+        INTRUDER_EVASION(4),
+        COVER(-1),
+        STANDBY(-1),
+        CHECK_SOUND_SOURCE(4);
+
+        public final int priority;
+
+        TaskType(int priority) {
+            this.priority = priority;
+        }
     }
 }
