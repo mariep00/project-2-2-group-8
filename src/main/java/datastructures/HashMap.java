@@ -65,6 +65,8 @@ public class HashMap<K, V> {
         return allNodes;
     }
 
+    public boolean isEmpty() { return getAllNodes().isEmpty(); }
+
     private boolean shouldExpand() { return ((double) size / capacity >= loadFactor); }
 
     private void expand() {

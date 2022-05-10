@@ -1,9 +1,5 @@
 package gamelogic.agent.tasks;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Stack;
-
 import datastructures.Vector2D;
 import gamelogic.agent.AStar;
 import gamelogic.agent.tasks.TaskContainer.TaskType;
@@ -12,23 +8,33 @@ import gamelogic.datacarriers.Sound;
 import gamelogic.datacarriers.VisionMemory;
 import gamelogic.maps.graph.ExplorationGraph;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Stack;
+
 public class PursuingTaskBaseline implements TaskInterface {
 
     private ExplorationGraph graph;
-    private TaskType type = TaskType.PURSUIT;
+    private TaskType type = TaskType.GUARD_PURSUIT;
+    private Stack<Integer> futureMoves;
+    private VisionMemory target;
 
     @Override
-    public Stack<Integer> performTask(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen) {
-        this.graph = graph;
-        VisionMemory closestIntruder = getActiveIntruder(intrudersSeen);
-       
-        Vector2D placeToGo = findGoal(closestIntruder.position(), closestIntruder.orientation());
-        LinkedList<Vector2D> nodesToGoal = AStar.calculate(graph, graph.getCurrentPosition(), graph.getNode(placeToGo));
-        
-        return MovementController.convertPath(graph, orientation, nodesToGoal, 3);
+    public int performTask(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen) {
+        if (futureMoves.isEmpty()) {
+            this.graph = graph;
+            //VisionMemory closestIntruder = getActiveIntruder(intrudersSeen);
+
+            // TODO Position should be relative to spawn, now it is relative to current position i.e. add current position
+            Vector2D placeToGo = findGoal(target.position(), target.orientation());
+            LinkedList<Vector2D> nodesToGoal = AStar.calculate(graph, graph.getCurrentPosition(), graph.getNode(placeToGo));
+
+            this.futureMoves = MovementController.convertPath(graph, orientation, nodesToGoal, 3);
+        }
+        return futureMoves.pop();
     }
 
-    private Vector2D findGoal (Vector2D pos, double orien) {
+    private Vector2D findGoal(Vector2D pos, double orien) {
         Vector2D unitDir;
         if (orien == 0.0) { unitDir = new Vector2D(1, 0);
         } else if (orien == 90.0) { unitDir = new Vector2D(0, 1);
@@ -58,6 +64,11 @@ public class PursuingTaskBaseline implements TaskInterface {
     }
 
     @Override
+    public void setTarget(VisionMemory target) {
+        this.target = target;
+    }
+
+    @Override
     public TaskType getType() {
         return type;
     }
@@ -65,15 +76,5 @@ public class PursuingTaskBaseline implements TaskInterface {
     @Override
     public TaskInterface newInstance() {
         return new PursuingTaskBaseline();
-    }
-
-    @Override
-    public Stack<Integer> performTask() throws UnsupportedOperationException{
-        throw new UnsupportedOperationException("This method is not supported for this class");
-    }
-
-    @Override
-    public Stack<Integer> performTask(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection) throws UnsupportedOperationException{
-        throw new UnsupportedOperationException("This method is not supported for this class");
     }
 }

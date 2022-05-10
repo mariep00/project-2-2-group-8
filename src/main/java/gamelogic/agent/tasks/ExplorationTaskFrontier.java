@@ -6,15 +6,12 @@ import datastructures.quicksort.SortObject;
 import gamelogic.agent.AStar;
 import gamelogic.agent.tasks.TaskContainer.TaskType;
 import gamelogic.controller.MovementController;
-import gamelogic.datacarriers.Sound;
-import gamelogic.datacarriers.VisionMemory;
 import gamelogic.maps.Tile;
 import gamelogic.maps.graph.ExplorationGraph;
 import gamelogic.maps.graph.Node;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Stack;
 
 public class ExplorationTaskFrontier implements TaskInterface {
@@ -34,36 +31,38 @@ public class ExplorationTaskFrontier implements TaskInterface {
         goalNode = new Node(new Vector2D(-20000, -20000), new Tile());
     }
 
-    public Stack<Integer> performTask(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection){
-        futureMoves = new Stack<>();
-        this.orientation = orientation;
-        this.graph = graph;
-        int frontierIndexToGoTo = 0;
-        
-        updateGoal(frontierIndexToGoTo, pheromoneMarkerDirection);
-        boolean foundReachableNode = false;
-        while (!foundReachableNode) {
-            if (goalNode == lastNode) { 
-                whenStuck();
-            }
-            foundReachableNode = moveTo();
-            if (!foundReachableNode) {
-                frontierIndexToGoTo++;
-                if (goalNode == lastNode) { whenStuck(); }
+    public int performTask(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection){
+        if (futureMoves == null || futureMoves.isEmpty()) {
+            futureMoves = new Stack<>();
+            this.orientation = orientation;
+            this.graph = graph;
+            int frontierIndexToGoTo = 0;
 
-                if (sortedArray != null && frontierIndexToGoTo == sortedArray.length) {
-                    markerThreshold++;
-                    frontierIndexToGoTo = 0;
+            updateGoal(frontierIndexToGoTo, pheromoneMarkerDirection);
+            boolean foundReachableNode = false;
+            while (!foundReachableNode) {
+                if (goalNode == lastNode) {
+                    whenStuck();
                 }
-                updateGoal(frontierIndexToGoTo, pheromoneMarkerDirection);
+                foundReachableNode = moveTo();
+                if (!foundReachableNode) {
+                    frontierIndexToGoTo++;
+                    if (goalNode == lastNode) {whenStuck();}
+
+                    if (sortedArray != null && frontierIndexToGoTo == sortedArray.length) {
+                        markerThreshold++;
+                        frontierIndexToGoTo = 0;
+                    }
+                    updateGoal(frontierIndexToGoTo, pheromoneMarkerDirection);
+                }
             }
+
+            markerThreshold = 0;
+            markerIndex = 0;
+            sortedArray = null;
+            sortedArrayPheromoneAngle = null;
         }
-        
-        markerThreshold = 0;
-        markerIndex = 0;
-        sortedArray = null;
-        sortedArrayPheromoneAngle = null;
-        return futureMoves;
+        return futureMoves.pop();
     }
 
     public void updateGoal(int frontierIndexToGoTo, double pheromoneMarkerDirection) {
@@ -169,16 +168,9 @@ public class ExplorationTaskFrontier implements TaskInterface {
     public TaskInterface newInstance() { return new ExplorationTaskFrontier(); }
 
     @Override
-    public Stack<Integer> performTask() throws UnsupportedOperationException{
-        throw new UnsupportedOperationException("This method is not supported for this class");
+    public boolean isFinished() {
+        return graph.frontiers.isEmpty();
     }
-
-    @Override
-    public Stack<Integer> performTask(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen) throws UnsupportedOperationException {
-        throw new UnsupportedOperationException("This method is not supported for this class");
-    }
-
-
 
 
     /* nextNode Vector2D - Coordinates Vector 2D
