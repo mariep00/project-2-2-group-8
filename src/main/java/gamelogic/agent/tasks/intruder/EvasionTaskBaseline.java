@@ -19,9 +19,8 @@ public class EvasionTaskBaseline implements TaskInterface {
     private ExplorationGraph graph;
     private TaskType type = TaskType.INTRUDER_EVASION;
     private Stack<Integer> futureMoves;
-    private VisionMemory visionTarget;
-    private Sound soundTarget;
     private double targetAngle;
+    private boolean finished = false;
 
     @Override
     public int performTask(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen) {
@@ -35,15 +34,8 @@ public class EvasionTaskBaseline implements TaskInterface {
 
             this.futureMoves = MovementController.convertPath(graph, orientation, nodesToGoal, 3);
         }
+        if (futureMoves.size()==1) finished=true;
         return futureMoves.pop();
-    }
-
-    private double getTargetAngle() {
-        if (visionTarget != null) {
-            return 360.0 - Math.atan2(visionTarget.position().y, visionTarget.position().x);
-        } else {
-            return soundTarget.angle();
-        }
     }
 
     private Vector2D findGoal(double angle) {
@@ -70,7 +62,7 @@ public class EvasionTaskBaseline implements TaskInterface {
 
     @Override
     public boolean isFinished() {
-        return false; // TODO Add a task finished requirement here
+        return finished;
     }
 
     @Override
@@ -89,6 +81,9 @@ public class EvasionTaskBaseline implements TaskInterface {
     }
     public boolean equals(Object other) {
         if (other == null) return false;
-        return other.getClass() == this.getClass();
+        if (other.getClass() == this.getClass()) {
+            return ((EvasionTaskBaseline) other).getTarget().equals(this.targetAngle);
+        }
+        return false;
     }
 }

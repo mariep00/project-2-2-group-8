@@ -26,6 +26,7 @@ public class ExplorationTaskFrontier implements TaskInterface {
     private int markerIndex = 0;
     private SortObject<Node>[] sortedArray;
     private SortObject<Node>[] sortedArrayPheromoneAngle;
+    private boolean finished = false;
 
     public ExplorationTaskFrontier() {
         goalNode = new Node(new Vector2D(-20000, -20000), new Tile());
@@ -63,6 +64,7 @@ public class ExplorationTaskFrontier implements TaskInterface {
             sortedArray = null;
             sortedArrayPheromoneAngle = null;
         }
+        if (futureMoves.size()==1) finished=true;
         return futureMoves.pop();
     }
 
@@ -176,7 +178,7 @@ public class ExplorationTaskFrontier implements TaskInterface {
 
     @Override
     public boolean isFinished() {
-        return graph.frontiers.isEmpty();
+        return finished;
     }
 
 

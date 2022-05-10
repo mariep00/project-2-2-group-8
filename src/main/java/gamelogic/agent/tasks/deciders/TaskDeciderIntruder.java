@@ -34,35 +34,53 @@ public class TaskDeciderIntruder implements TaskDeciderInterface{
 
     @Override
     public TaskInterface getTaskToPerform(ExplorationGraph graph, double pheromoneMarkerDirection, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen, TaskInterface currentTask) {
+        
         VisionMemory closestGuard = isGuardInVision(guardsSeen);
-        if (closestGuard != null) {
+        if (closestGuard != null && (currentTask.getPriority()<=TaskContainer.TaskType.INTRUDER_EVASION.priority || currentTask.isFinished())) {
             TaskInterface evasionTask = tasks.getTask(TaskType.INTRUDER_EVASION);
             evasionTask.setTarget(getTargetAngle(360.0 - Math.atan2(closestGuard.position().y, closestGuard.position().x)));
             return evasionTask;
         }
 
         Sound soundToAvoid = checkForSound(sounds, intrudersSeen);
-        if (soundToAvoid != null) {
+        if (soundToAvoid != null && (currentTask.getPriority()<=TaskContainer.TaskType.INTRUDER_EVASION.priority || currentTask.isFinished())) {
             TaskInterface evasionTask = tasks.getTask(TaskType.INTRUDER_EVASION);
             evasionTask.setTarget(getTargetAngle(soundToAvoid.angle()));
             return evasionTask;
         }
+
+        VisionMemory agentInFront = checkAgentInFront(intrudersSeen);
+        if (agentInFront != null && (currentTask.getPriority()<=TaskContainer.TaskType.AVOID_COLLISION.priority || currentTask.isFinished())) {
+            TaskInterface avoidCollTask = tasks.getTask(TaskType.AVOID_COLLISION);
+            return avoidCollTask;
+        }
         
         lastEvasionAngle = -1.0;
-
-        LinkedList<Node> targetArea = graph.getTargetArea();
-        if (targetArea != null) {
-            Vector2D goal = targetArea.get(0).COORDINATES;
-            TaskInterface pathfindingTask = tasks.getTask(TaskType.PATHFINDING);
-            pathfindingTask.setTarget(goal);
-            return pathfindingTask;
-        } else {
-            Vector2D anticipatedGoal = getAnticipatedGoal();
-            TaskInterface explorationTask = tasks.getTask(TaskType.EXPLORATION_DIRECTION);
-            explorationTask.setTarget(anticipatedGoal);
-            return explorationTask;
+        
+        if(currentTask.getPriority()<=TaskContainer.TaskType.PATHFINDING.priority || currentTask.isFinished()) {
+            LinkedList<Node> targetArea = graph.getTargetArea();
+            if (targetArea != null) {
+                Vector2D goal = targetArea.get(0).COORDINATES;
+                TaskInterface pathfindingTask = tasks.getTask(TaskType.PATHFINDING);
+                pathfindingTask.setTarget(goal);
+                return pathfindingTask;
+            } else {
+                Vector2D anticipatedGoal = getAnticipatedGoal(graph);
+                TaskInterface explorationTask = tasks.getTask(TaskType.EXPLORATION_DIRECTION);
+                explorationTask.setTarget(anticipatedGoal);
+                return explorationTask;
+            }
         }
+        return null;
+    }
 
+    private VisionMemory checkAgentInFront(VisionMemory[] intrudersSeen) {
+        for(VisionMemory memory : intrudersSeen) {
+            if (memory.secondsAgo() == 0 && memory.position().magnitude()==1.0) {
+                return memory;
+            }
+        }
+        return null;
     }
 
     private VisionMemory isGuardInVision(VisionMemory[] guardsSeen) {
@@ -104,9 +122,10 @@ public class TaskDeciderIntruder implements TaskDeciderInterface{
         return false;
     }
 
-    private Vector2D getAnticipatedGoal() {
+    private Vector2D getAnticipatedGoal(ExplorationGraph graph) {
+        
         Vector2D potentialGoal = VisionController.calculatePoint(new Vector2D(0, 0), currentAnticipatedDistance, angleSpawnToGoal);
-        currentAnticipatedDistance = currentAnticipatedDistance + 10.0;
+        if(graph.isVisited(potentialGoal)) currentAnticipatedDistance = currentAnticipatedDistance + 10.0;
         return potentialGoal;
     }
 

@@ -87,4 +87,16 @@ public class ExplorationInDirection extends ExplorationTaskFrontier{
     public void setTarget(Vector2D target) {
         this.target = target;
     }
+    @Override
+    public boolean equals(Object other) {
+        if (other == null) return false;
+        if (other.getClass() == this.getClass()) {
+            return ((ExplorationInDirection) other).getTarget().equals(this.target);
+        }
+        return false;
+    }
+    @Override
+    public Object getTarget() {
+        return target;
+    }
 }

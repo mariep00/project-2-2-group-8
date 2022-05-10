@@ -55,6 +55,7 @@ public class TaskContainer {
         GUARD_PURSUIT(5),
         INTRUDER_EVASION(4),
         PATHFINDING(2),
+        AVOID_COLLISION(5),
         COVER(-1),
         STANDBY(-1),
         CHECK_SOUND_SOURCE(4),
