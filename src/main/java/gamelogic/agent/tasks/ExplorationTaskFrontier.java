@@ -160,6 +160,12 @@ public class ExplorationTaskFrontier implements TaskInterface {
     }
 
     @Override
+    public boolean equals(Object other) {
+        if (other == null) return false;
+        return other.getClass() == this.getClass();
+    }
+
+    @Override
     public TaskType getType() {
         return type;
     }

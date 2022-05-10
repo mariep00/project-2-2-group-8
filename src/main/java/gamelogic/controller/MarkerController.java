@@ -11,9 +11,13 @@ import java.util.*;
 // Might split this controller into a controller for each marker separately. Depends on what markers we want to implement
 public class MarkerController {
     private final Controller controller;
+    private final double pheromoneMaxSmellingDistance;
+    private final double pheromoneReduction;
 
     public MarkerController(Controller controller) {
         this.controller = controller;
+        this.pheromoneMaxSmellingDistance = controller.scenarioMap.getPheromoneMaxSmellingDistance();
+        this.pheromoneReduction = controller.scenarioMap.getPheromoneReduction();
     }
 
     public LinkedList<Tile> init(Vector2D[] startingAgentPositions) {
@@ -23,7 +27,7 @@ public class MarkerController {
             Agent agent = controller.getAgent(i);
 
             tilesWithMarker.add(controller.scenarioMap.getTile(pos));
-            controller.scenarioMap.getTile(pos).addMarker(new PheromoneMarker(agent, pos, controller.scenarioMap.getPheromoneMaxSmellingDistance(), controller.scenarioMap.getPheromoneReduction()));
+            controller.scenarioMap.getTile(pos).addMarker(new PheromoneMarker(agent, pos, pheromoneMaxSmellingDistance, pheromoneReduction));
         }
         return tilesWithMarker;
     }
@@ -46,7 +50,7 @@ public class MarkerController {
         // Add the new pheromone markers
         for (int i = 0; i < controller.agents.length; i++) {
             addMarker(controller.nextState.getAgentPosition(i), new PheromoneMarker(controller.agents[i],
-                    controller.nextState.getAgentPosition(i), controller.scenarioMap.getPheromoneMaxSmellingDistance(), controller.scenarioMap.getPheromoneReduction()));
+                    controller.nextState.getAgentPosition(i), pheromoneMaxSmellingDistance, pheromoneReduction));
         }
     }
 
@@ -69,7 +73,7 @@ public class MarkerController {
         for (Tile tile : controller.currentState.getTilesWithMarker()) {
             if (tile.getPheromoneMarker().getAgent() != controller.agents[agentIndex]
                     && controller.currentState.getAgentPosition(agentIndex).dist(tile.getPheromoneMarker().getPosition()) <= tile.getPheromoneMarker().getDistance()
-                    && !isWallInBetween(controller.currentState.getAgentPosition(agentIndex), tile.getPheromoneMarker().getPosition())) {
+                    && !controller.isWallInBetween(controller.currentState.getAgentPosition(agentIndex), tile.getPheromoneMarker().getPosition())) {
                 markersCloseEnough.add(tile.getPheromoneMarker());
             }
         }
@@ -87,13 +91,5 @@ public class MarkerController {
             angleSum += agentPosition.getAngleBetweenVector(pheromoneMarker.getPosition()) * pheromoneMarker.getStrength();
         }
         return angleSum/divider;
-    }
-
-    private boolean isWallInBetween(Vector2D begin, Vector2D end) {
-        Vector2D[] positions = VisionController.calculateLine(begin, end);
-        for (Vector2D pos : positions) {
-            if (controller.scenarioMap.getTile(pos).isWall()) return true;
-        }
-        return false;
     }
 }

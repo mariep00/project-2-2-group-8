@@ -42,10 +42,17 @@ public interface TaskInterface {
         throw new UnsupportedOperationException("This method is not supported for this class");
     }
 
+    default int performTask(ExplorationGraph graph, double orientation, VisionMemory[] intrudersSeen) {
+        throw new UnsupportedOperationException("This method is not supported for this class");
+    }
+
     default void setTarget(Sound target) {
         throw new UnsupportedOperationException("This method is not supported for this class");
     }
     default void setTarget(VisionMemory target) {
+        throw new UnsupportedOperationException("This method is not supported for this class");
+    }
+    default Object getTarget() {
         throw new UnsupportedOperationException("This method is not supported for this class");
     }
     default boolean isFinished() {

@@ -27,7 +27,7 @@ public class TaskDeciderGuard implements TaskDeciderInterface {
         // thus we will start by checking this.
 
         // 1. Check if intruder is in vision
-        VisionMemory intruderToPursuit = isIntruderInVision(intrudersSeen);
+        VisionMemory intruderToPursuit = getIntruderInVision(intrudersSeen);
         if (intruderToPursuit != null) {
             // There is an intruder in vision
             // We should start the pursuit task
@@ -38,10 +38,10 @@ public class TaskDeciderGuard implements TaskDeciderInterface {
 
         // TODO Smth that might be an issue; For example guard is already searching for sound source, it should only switch if a different unmatched sound is closer (maybe also take time ago into account)
         // Right now when there is a new unmatched sound it will always switch to this newest one
-
+        // TODO Add check for guard yell and the corresponding task
         // 2. Check if there is an unmatched sound (i.e. is there a sound we cannot link to a guard we've previously seen)
-        Sound closestUnmatchedSound = isThereUnmatchedSound(sounds, guardsSeen);
-        if (closestUnmatchedSound != null && currentTask.getPriority() <= TaskContainer.TaskType.CHECK_SOUND_SOURCE.priority) {
+        Sound closestUnmatchedSound = getUnmatchedSound(sounds, guardsSeen);
+        if (closestUnmatchedSound != null && (currentTask.getPriority() <= TaskContainer.TaskType.CHECK_SOUND_SOURCE.priority || currentTask.isFinished())) {
             // There is a sound we cannot match with another guard
             // This means we should check if it's a guard or an intruder
             CheckSoundSource checkSoundSource = (CheckSoundSource) tasks.getTask(TaskContainer.TaskType.CHECK_SOUND_SOURCE);
@@ -53,11 +53,15 @@ public class TaskDeciderGuard implements TaskDeciderInterface {
             if (!graph.frontiers.isEmpty()) {
                 return tasks.getTask(TaskContainer.TaskType.EXPLORATION);
             }
+            else {
+                return tasks.getTask(TaskContainer.TaskType.VISIT_LAST_SEEN_INTRUDER_POSITIONS);
+            }
         }
-        return null; // TODO Need to create a task that "searches" for an intruder when agent explored whole map i.e. no frontiers left
+
+        return currentTask;
     }
 
-    private Sound isThereUnmatchedSound(List<Sound> sounds, VisionMemory[] guardsSeen) {
+    private Sound getUnmatchedSound(List<Sound> sounds, VisionMemory[] guardsSeen) {
         if (!sounds.isEmpty()) {
             // There are sounds, so we should check if we need to act on this
             List<Double> guardsSeenAngles = anglesOfGuardsSeen(guardsSeen);
@@ -81,7 +85,7 @@ public class TaskDeciderGuard implements TaskDeciderInterface {
         return null;
     }
 
-    private VisionMemory isIntruderInVision(VisionMemory[] intrudersSeen) {
+    private VisionMemory getIntruderInVision(VisionMemory[] intrudersSeen) {
         VisionMemory intruderToPursuit = null;
         // Check if there's an intruder in vision, if so take the one that's the closest to pursuit
         for (VisionMemory visionMemory : intrudersSeen) {

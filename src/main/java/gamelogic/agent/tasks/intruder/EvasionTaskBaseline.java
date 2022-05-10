@@ -1,8 +1,9 @@
-package gamelogic.agent.tasks;
+package gamelogic.agent.tasks.intruder;
 
 import datastructures.Vector2D;
 import gamelogic.agent.AStar;
 import gamelogic.agent.tasks.TaskContainer.TaskType;
+import gamelogic.agent.tasks.TaskInterface;
 import gamelogic.controller.MovementController;
 import gamelogic.controller.VisionController;
 import gamelogic.datacarriers.Sound;
@@ -13,7 +14,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
 
-public class EvasionTaskBaseline implements TaskInterface{
+public class EvasionTaskBaseline implements TaskInterface {
 
     private ExplorationGraph graph;
     private TaskType type = TaskType.INTRUDER_EVASION;
@@ -81,5 +82,11 @@ public class EvasionTaskBaseline implements TaskInterface{
     @Override
     public TaskInterface newInstance() {
         return new EvasionTaskBaseline();
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (other == null) return false;
+        return other.getClass() == this.getClass();
     }
 }

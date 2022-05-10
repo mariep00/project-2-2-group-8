@@ -233,7 +233,6 @@ public class VisionController {
         return tmp.getInVisionAbsolute();
     }
 
-    //TODO Could be a generally helpful method (maybe create collection of those)
     private static ArrayList<Vector2D> addArrayToList (ArrayList<Vector2D> list, Vector2D[] array) {
         for (int i=0; i < array.length; i++) {
             list.add(array[i]);

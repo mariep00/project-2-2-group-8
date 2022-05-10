@@ -24,8 +24,7 @@ public class GuardBrain implements BrainInterface {
     @Override
     public int makeDecision(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen) {
         TaskInterface taskToPerform = taskDecider.getTaskToPerform(graph, pheromoneMarkerDirection, sounds, guardsSeen, intrudersSeen, currentTask);
-        // TODO make a .equals here for the task itself, while it could return same task type (checking sound), but checking a different sound
-        if (taskToPerform.getType() != currentTask.getType()) currentTask = taskToPerform;
+        if (!taskToPerform.equals(currentTask)) currentTask = taskToPerform;
 
         return currentTask.performTask();
     }

@@ -1,23 +1,25 @@
 package gamelogic.controller;
 
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Stack;
-
 import datastructures.Vector2D;
 import gamelogic.maps.TeleportEntrance;
 import gamelogic.maps.Tile;
 import gamelogic.maps.graph.ExplorationGraph;
+
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Stack;
 
 public class MovementController {
     private final Controller controller;
 
     public MovementController(Controller controller) { this.controller = controller; }
     public void moveAgent(int agentIndex, int movementTask) {
+        // TODO Remove turning 180 degrees?
         //0 - move forward
         //1 - turn 90deg
         //2 - turn 180deg
         //3 - turn 270deg
+        //4 - idle
 
         switch (movementTask) {
             case 0:
@@ -31,6 +33,8 @@ public class MovementController {
                 break;
             case 3:
                 updateAgentOrientation(agentIndex,270);
+                break;
+            case 4:
                 break;
         }
     }
