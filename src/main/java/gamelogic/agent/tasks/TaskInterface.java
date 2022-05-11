@@ -44,7 +44,24 @@ public interface TaskInterface {
         throw new UnsupportedOperationException("This method is not supported for this class");
     }
 
+    /**
+     * Perform task for other decisions
+     * @param graph Current map of the agent
+     * @param orientation Orientation in which agent is facing
+     * @param intrudersSeen All intruders seen
+     * @return Stack of type int which are certain movement tasks
+     */
     default int performTask(ExplorationGraph graph, double orientation, VisionMemory[] intrudersSeen) {
+        throw new UnsupportedOperationException("This method is not supported for this class");
+    }
+
+    /**
+     * Perform task for other decisions
+     * @param graph Current map of the agent
+     * @param orientation Orientation in which agent is facing
+     * @return Stack of type int which are certain movement tasks
+     */
+    default int performTask(ExplorationGraph graph, double orientation) {
         throw new UnsupportedOperationException("This method is not supported for this class");
     }
 

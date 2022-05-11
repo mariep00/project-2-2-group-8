@@ -27,7 +27,7 @@ public class ControllerExploration extends Controller {
         int[] orientations = {0, 90, 180, 270};
 
         for (int i = 0; i < numberOfGuards; i++) {
-            agents[i] = new Agent(scenarioMap.getBaseSpeedGuard(), 0.0, scenarioMap.getGuardViewAngle(),scenarioMap.getGuardViewRange(), orientations[rand.nextInt(orientations.length)], new ExplorationBrain(taskContainer));
+            agents[i] = new Agent(scenarioMap.getBaseSpeedGuard(), scenarioMap.getGuardViewAngle(),scenarioMap.getGuardViewRange(), orientations[rand.nextInt(orientations.length)], new ExplorationBrain(taskContainer));
         }
     }
 

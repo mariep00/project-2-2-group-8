@@ -51,10 +51,10 @@ public class ControllerSurveillance extends Controller {
         int[] orientations = {0, 90, 180, 270};
 
         for (int i = 0; i < numberOfGuards; i++) {
-            agents[i] = new Agent(scenarioMap.getBaseSpeedGuard(), 0.0, scenarioMap.getGuardViewAngle(),scenarioMap.getGuardViewRange(), orientations[rand.nextInt(orientations.length)], new GuardBrain(taskContainer));
+            agents[i] = new Agent(scenarioMap.getBaseSpeedGuard(), scenarioMap.getGuardViewAngle(),scenarioMap.getGuardViewRange(), orientations[rand.nextInt(orientations.length)], new GuardBrain(taskContainer));
         }
         for (int i = numberOfGuards; i < numberOfIntruders; i++) {
-            agents[i] = new Agent(scenarioMap.getBaseSpeedIntruder(), scenarioMap.getSprintSpeedIntruder(), scenarioMap.getIntruderViewAngle(), scenarioMap.getIntruderViewRange(), orientations[rand.nextInt(orientations.length)], new IntruderBrain(taskContainer));
+            agents[i] = new Agent(scenarioMap.getBaseSpeedIntruder(), scenarioMap.getIntruderViewAngle(), scenarioMap.getIntruderViewRange(), orientations[rand.nextInt(orientations.length)], new IntruderBrain(taskContainer));
         }
     }
 

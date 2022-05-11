@@ -46,9 +46,10 @@ public class SoundController {
 
     public List<Sound> getGuardYellDirections(int agentIndex) {
         Vector2D currentPos = controller.getCurrentState().getAgentPosition(agentIndex);
-        List<GuardYell> guardGuardYells = controller.getCurrentState().getGuardYells();
+        List<GuardYell> guardYells = controller.getCurrentState().getGuardYells();
         ArrayList<Sound> anglesOfGuardYell = new ArrayList<>();
-        for (GuardYell guardYell : guardGuardYells) {
+        // TODO If a wall is in between the guard and the yell (the line between them) it doesn't make sense to not hear it while the distance for yelling is big compared to for example footsteps. So we need AStar, but AStar can only be applied to a graph..
+        for (GuardYell guardYell : guardYells) {
             if (guardYell.agentIndex() != agentIndex ) {
                 double distance = currentPos.dist(guardYell.origin());
                 if (distance <= yellMaxHearingDistance) {
