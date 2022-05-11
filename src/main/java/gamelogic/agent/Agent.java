@@ -78,6 +78,10 @@ public class Agent {
     }
     public double getOrientation() { return orientation; }
     public double getBase_speed() { return base_speed; }
+    public BrainInterface getBrain(){
+        return this.brain;
+    }
+
     public void createTeleportDestinationNode(Vector2D entrance, Vector2D destination, Tile entranceTile, Tile destinationTile) {
         Node destinationNode = explorationGraph.getNode(destination);
         if (destinationNode == null) destinationNode = explorationGraph.createNode(destination, destinationTile);

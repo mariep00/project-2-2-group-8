@@ -62,8 +62,14 @@ public class MarkerController {
 
         // Add the new pheromone markers
         for (int i = 0; i < controller.agents.length; i++) {
-            addMarker(controller.nextState.getAgentPosition(i), new PheromoneMarker(controller.agents[i],
-                    controller.nextState.getAgentPosition(i), pheromoneMaxSmellingDistance, pheromoneReduction));
+            if(controller.getAgent(i).getBrain().isPursuing()) {
+                addPursuitMarker(controller.nextState.getAgentPosition(i), new PheromoneMarker(controller.agents[i],
+                        controller.nextState.getAgentPosition(i), pheromoneMaxSmellingDistance, pheromoneReduction));
+            }
+            else {
+                addMarker(controller.nextState.getAgentPosition(i), new PheromoneMarker(controller.agents[i],
+                        controller.nextState.getAgentPosition(i), pheromoneMaxSmellingDistance, pheromoneReduction));
+            }
         }
     }
 
@@ -79,6 +85,20 @@ public class MarkerController {
             }
         }
         controller.nextState.addTileWithMarker(controller.scenarioMap.getTile(position));
+    }
+
+    private void addPursuitMarker(Vector2D position, MarkerInterface marker) {
+        controller.scenarioMap.getTile(position).addMarker(marker);
+        Iterator<Tile> iterator = controller.nextState.getTilesWithPursuitMarker().iterator();
+        while (iterator.hasNext()) {
+            Tile tile = iterator.next();
+            // Remove the old marker, in case the agent didn't move
+            if (tile.getPheromoneMarker().getPosition().equals(position)) {
+                iterator.remove();
+                break;
+            }
+        }
+        controller.nextState.addTileWithPursuitMarker(controller.scenarioMap.getTile(position));
     }
 
     private List<PheromoneMarker> getPheromoneMarkersCloseEnough(int agentIndex) {
