@@ -8,7 +8,7 @@ import gamelogic.maps.Tile;
 
 import java.util.*;
 
-// Might split this controller into a controller for each marker separately. Depends on what markers we want to implement
+// Might split this controller into a controller for each marker separately (depends on what markers we want to implement)
 public class MarkerController {
     private final Controller controller;
     private final double pheromoneMaxSmellingDistance;
