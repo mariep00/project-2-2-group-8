@@ -9,15 +9,27 @@ import gamelogic.controller.Controller;
 import gamelogic.controller.endingconditions.EndingSurveillance;
 import gamelogic.datacarriers.GuardYell;
 import gamelogic.maps.ScenarioMap;
+import gamelogic.maps.graph.ExplorationGraph;
+import gamelogic.maps.Tile;
+import gamelogic.maps.Tile.Type;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ControllerSurveillance extends Controller {
     private final EndingSurveillance endingSurveillance;
+    private final ExplorationGraph mapGraph;
 
     public ControllerSurveillance(ScenarioMap scenarioMap, EndingSurveillance endingCondition, TaskContainer taskContainer) {
         super(scenarioMap, endingCondition, taskContainer);
         this.endingSurveillance = endingCondition;
+        mapGraph = new ExplorationGraph();
+    }
+
+    @Override
+    public void init() {
+        super.init();
+        createGraph();
     }
 
     @Override
@@ -73,5 +85,25 @@ public class ControllerSurveillance extends Controller {
     @Override
     protected void updateProgress() {
         endingSurveillance.updateState(currentState);
+    }
+
+    private void createGraph() {
+        Tile[][] map = scenarioMap.getMapGrid();
+        List<Vector2D> walls = new ArrayList<Vector2D>();
+        for(int y=0; y<map.length; y++) {
+            for(int x=0; x<map[0].length; x++) {
+                if (map[y][x].getType() == Type.WALL) {
+                    walls.add(new Vector2D(x, y));
+                } else {
+                    mapGraph.createNode(new Vector2D(x, y), map[y][x]);
+                }
+            }
+        }
+        for(Vector2D vector : walls) {
+            Vector2D[] neighbours = vector.getNeighbours();
+            for (int j=0; j<neighbours.length; j++) {
+                mapGraph.addWall(neighbours[j], j);
+            }
+        }
     }
 }

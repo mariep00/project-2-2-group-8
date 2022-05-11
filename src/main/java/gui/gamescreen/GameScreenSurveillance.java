@@ -12,7 +12,7 @@ public class GameScreenSurveillance extends GameScreen {
 
     public GameScreenSurveillance(ScenarioMap scenarioMap) {
         super(scenarioMap);
-        this.controllerSurveillanceGUI = new ControllerSurveillanceGUI(scenarioMap, new EndingSurveillance(), this, new TaskContainer(new ExplorationTaskFrontier()));
+        this.controllerSurveillanceGUI = new ControllerSurveillanceGUI(scenarioMap, new EndingSurveillance(scenarioMap), this, new TaskContainer(new ExplorationTaskFrontier()));
     }
 
     @Override
