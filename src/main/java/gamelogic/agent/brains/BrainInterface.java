@@ -8,5 +8,11 @@ import java.util.List;
 
 public interface BrainInterface {
 
-    int makeDecision (ExplorationGraph graph, double orientation, double pheromoneMarkersDirection, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen, List<Sound> guardYells);
+    default int makeDecision (ExplorationGraph graph, double orientation, double pheromoneMarkersDirection, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen, List<Sound> guardYells) {
+        throw new UnsupportedOperationException("This method is not supported for this class");
+    }
+
+    default int makeDecision (ExplorationGraph graph, double orientation, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen) {
+        throw new UnsupportedOperationException("This method is not supported for this class");
+    }
 }

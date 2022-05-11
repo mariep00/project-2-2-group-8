@@ -1,18 +1,18 @@
 package gamelogic.agent.tasks.deciders;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-
 import datastructures.Vector2D;
 import gamelogic.agent.tasks.TaskContainer;
-import gamelogic.agent.tasks.TaskInterface;
 import gamelogic.agent.tasks.TaskContainer.TaskType;
+import gamelogic.agent.tasks.TaskInterface;
 import gamelogic.controller.VisionController;
 import gamelogic.datacarriers.Sound;
 import gamelogic.datacarriers.VisionMemory;
 import gamelogic.maps.graph.ExplorationGraph;
 import gamelogic.maps.graph.Node;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 public class TaskDeciderIntruder implements TaskDeciderInterface{
 
@@ -33,7 +33,7 @@ public class TaskDeciderIntruder implements TaskDeciderInterface{
     }
 
     @Override
-    public TaskInterface getTaskToPerform(ExplorationGraph graph, double pheromoneMarkerDirection, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen, List<Sound> guardYells, TaskInterface currentTask) {
+    public TaskInterface getTaskToPerform(ExplorationGraph graph, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen, TaskInterface currentTask) {
         // First check if there is a guard in vision
         VisionMemory closestGuard = isGuardInVision(guardsSeen);
         // if there is a guard in vision and the priority of the current task is less than the one of this task, then we should switch to the evasion task

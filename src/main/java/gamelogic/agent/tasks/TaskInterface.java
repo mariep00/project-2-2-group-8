@@ -1,13 +1,13 @@
 package gamelogic.agent.tasks;
 
+import datastructures.Vector2D;
 import gamelogic.agent.tasks.TaskContainer.TaskType;
 import gamelogic.datacarriers.Sound;
 import gamelogic.datacarriers.VisionMemory;
 import gamelogic.maps.graph.ExplorationGraph;
 
+import java.util.LinkedList;
 import java.util.List;
-
-import datastructures.Vector2D;
 
 public interface TaskInterface {
 
@@ -65,6 +65,11 @@ public interface TaskInterface {
         throw new UnsupportedOperationException("This method is not supported for this class");
     }
 
+    default int performTask(ExplorationGraph graph, double orientation, LinkedList<Vector2D> path) {
+        throw new UnsupportedOperationException("This method is not supported for this class");
+    }
+
+
     default void setTarget(Sound target) {
         throw new UnsupportedOperationException("This method is not supported for this class");
     }
@@ -75,6 +80,9 @@ public interface TaskInterface {
         throw new UnsupportedOperationException("This method is not supported for this class");
     }
     default void setTarget(double angle) {
+        throw new UnsupportedOperationException("This method is not supported for this class");
+    }
+    default void setTarget(ExplorationGraph graph, double orientation, LinkedList<Vector2D> path) {
         throw new UnsupportedOperationException("This method is not supported for this class");
     }
     default Object getTarget() {

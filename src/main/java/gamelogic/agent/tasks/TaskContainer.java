@@ -12,20 +12,24 @@ public class TaskContainer {
     // Index 3 --> intruder evasion task
     // Index 4 --> guard visits last seen intruder positions task
     // Index 5 --> guard searches for guard yell source task
+    // Index 6 --> pathfinding task
+    // Index 7 --> exploration into direction task
     private final TaskInterface[] tasks;
     private final TaskDeciderInterface taskDeciderGuard;
     private final TaskDeciderInterface taskDeciderIntruder;
 
     public TaskContainer(TaskInterface explorationTask, TaskInterface findSoundSourceTask, TaskInterface guardPursuitTask,
                          TaskInterface intruderEvasionTask, TaskInterface guardVisitLastSeenIntruderPositions,
-                         TaskInterface findGuardYellSourceTask) {
-        tasks = new TaskInterface[6];
+                         TaskInterface findGuardYellSourceTask, TaskInterface pathfindingTask, TaskInterface explorationInDirection) {
+        tasks = new TaskInterface[8];
         tasks[0] = explorationTask;
         tasks[1] = findSoundSourceTask;
         tasks[2] = guardPursuitTask;
         tasks[3] = intruderEvasionTask;
         tasks[4] = guardVisitLastSeenIntruderPositions;
         tasks[5] = findGuardYellSourceTask;
+        tasks[6] = pathfindingTask;
+        tasks[7] = explorationInDirection;
 
         taskDeciderGuard = new TaskDeciderGuard(this);
         // TODO: Pass the right angle upon creation
@@ -47,6 +51,8 @@ public class TaskContainer {
         else if (type == TaskType.INTRUDER_EVASION) return tasks[3].newInstance();
         else if (type == TaskType.VISIT_LAST_SEEN_INTRUDER_POSITIONS) return tasks[4].newInstance();
         else if (type == TaskType.FIND_GUARD_YELL_SOURCE) return tasks[5].newInstance();
+        else if (type == TaskType.PATHFINDING) return tasks[6].newInstance();
+        else if (type == TaskType.EXPLORATION_DIRECTION) return tasks[7].newInstance();
         else return null;
     }
 
@@ -60,8 +66,6 @@ public class TaskContainer {
         INTRUDER_EVASION(4),
         PATHFINDING(2),
         AVOID_COLLISION(5),
-        COVER(-1),
-        STANDBY(-1),
         FIND_SOUND_SOURCE(3),
         VISIT_LAST_SEEN_INTRUDER_POSITIONS(1),
         FIND_GUARD_YELL_SOURCE(4);

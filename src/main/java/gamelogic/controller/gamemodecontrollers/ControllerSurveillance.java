@@ -88,6 +88,10 @@ public class ControllerSurveillance extends Controller {
                 if (currentState.getVision(i).contains(currentState.getAgentPosition(j))) {
                     currentState.addGuardYell(new GuardYell(currentState.getAgentPosition(i), i));
                 }
+                // TODO I assume an intruder can also be caught when it's 1 square away diagonally?
+                if (currentState.getAgentPosition(i).dist(currentState.getAgentPosition(j)) <= Math.sqrt(2)) {
+                    removeAgent(j);
+                }
             }
         }
     }
@@ -161,6 +165,12 @@ public class ControllerSurveillance extends Controller {
                 mapGraph.addWall(neighbours[j], j);
             }
         }
+    }
+
+    private void removeAgent(int agentIndex) {
+        agents[agentIndex] = null;
+        currentState.setAgentVision(agentIndex, null);
+        currentState.setAgentPosition(agentIndex, null);
     }
 
     public ExplorationGraph getMapGraph() { return mapGraph; }

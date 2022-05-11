@@ -1,15 +1,14 @@
 package gamelogic.agent.tasks.general;
 
-import java.util.LinkedList;
-import java.util.Stack;
-
 import datastructures.Vector2D;
 import gamelogic.agent.AStar;
-import gamelogic.agent.tasks.TaskContainer;
-import gamelogic.agent.tasks.TaskInterface;
 import gamelogic.agent.tasks.TaskContainer.TaskType;
+import gamelogic.agent.tasks.TaskInterface;
 import gamelogic.controller.MovementController;
 import gamelogic.maps.graph.ExplorationGraph;
+
+import java.util.LinkedList;
+import java.util.Stack;
 
 public class PathfindingTask implements TaskInterface {
 
@@ -19,8 +18,8 @@ public class PathfindingTask implements TaskInterface {
     private boolean finished = false;
 
     @Override
-    public int performTask(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection){
-        if (futureMoves.isEmpty() || futureMoves == null) {
+    public int performTask(ExplorationGraph graph, double orientation){
+        if (futureMoves == null || futureMoves.isEmpty()) {
             futureMoves = new Stack<>();
             LinkedList<Vector2D> nodesToGoal = AStar.calculate(graph, graph.getCurrentPosition(), graph.getNode(target));
        
@@ -30,6 +29,9 @@ public class PathfindingTask implements TaskInterface {
         return futureMoves.pop();
     }
 
+    public void setPath(ExplorationGraph graph, double orientation, LinkedList<Vector2D> path) {
+        this.futureMoves = MovementController.convertPath(graph, orientation, path, -1);
+    }
     @Override
     public TaskType getType() {
         return type;
