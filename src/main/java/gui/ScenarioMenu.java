@@ -169,10 +169,10 @@ public class ScenarioMenu extends Application implements TransitionInterface {
         scenarioMap.setGuardViewRange(Double.parseDouble(fields[6].getText()));
         scenarioMap.setIntruderViewRange(Double.parseDouble(fields[7].getText()));
         scenarioMap.setShadedReduction(Double.parseDouble(fields[8].getText())/100);
-        scenarioMap.setFootstepMaxHearingDistance(Double.parseDouble(fields[9].getText()));
-        scenarioMap.setYellMaxHearingDistance(Double.parseDouble(fields[10].getText()));
+        scenarioMap.setFootstepMaxHearingDistance(Integer.parseInt(fields[9].getText()));
+        scenarioMap.setYellMaxHearingDistance(Integer.parseInt(fields[10].getText()));
         scenarioMap.setSoundStandardDeviation(Double.parseDouble(fields[11].getText()));
-        scenarioMap.setPheromoneMaxSmellingDistance(Double.parseDouble(fields[12].getText()));
+        scenarioMap.setPheromoneMaxSmellingDistance(Integer.parseInt(fields[12].getText()));
         scenarioMap.setPheromoneReduction(Double.parseDouble(fields[13].getText()));
     }
 

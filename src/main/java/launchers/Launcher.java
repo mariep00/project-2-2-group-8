@@ -4,10 +4,8 @@ import gamelogic.agent.tasks.TaskContainer;
 import gamelogic.agent.tasks.general.ExplorationTaskFrontier;
 import gamelogic.controller.Controller;
 import gamelogic.controller.endingconditions.EndingExploration;
-import gamelogic.controller.endingconditions.EndingSurveillance;
 import gamelogic.controller.gamemodecontrollers.ControllerExploration;
 import gamelogic.maps.MapBuilder;
-import gamelogic.controller.gamemodecontrollers.ControllerSurveillance;
 import gamelogic.maps.ScenarioMap;
 
 import java.net.URISyntaxException;

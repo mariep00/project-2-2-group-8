@@ -6,12 +6,15 @@ import gamelogic.maps.MarkerInterface;
 import gamelogic.maps.PheromoneMarker;
 import gamelogic.maps.Tile;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 // Might split this controller into a controller for each marker separately. Depends on what markers we want to implement
 public class MarkerController {
     private final Controller controller;
-    private final double pheromoneMaxSmellingDistance;
+    private final int pheromoneMaxSmellingDistance;
     private final double pheromoneReduction;
 
     public MarkerController(Controller controller) {
@@ -73,7 +76,7 @@ public class MarkerController {
         for (Tile tile : controller.currentState.getTilesWithMarker()) {
             if (tile.getPheromoneMarker().getAgent() != controller.agents[agentIndex]
                     && controller.currentState.getAgentPosition(agentIndex).dist(tile.getPheromoneMarker().getPosition()) <= tile.getPheromoneMarker().getDistance()
-                    && !controller.isWallInBetween(controller.currentState.getAgentPosition(agentIndex), tile.getPheromoneMarker().getPosition())) {
+                    && !isWallInBetween(controller.currentState.getAgentPosition(agentIndex), tile.getPheromoneMarker().getPosition())) {
                 markersCloseEnough.add(tile.getPheromoneMarker());
             }
         }
@@ -91,5 +94,13 @@ public class MarkerController {
             angleSum += agentPosition.getAngleBetweenVector(pheromoneMarker.getPosition()) * pheromoneMarker.getStrength();
         }
         return angleSum/divider;
+    }
+
+    public boolean isWallInBetween(Vector2D begin, Vector2D end) {
+        Vector2D[] positions = VisionController.calculateLine(begin, end);
+        for (Vector2D pos : positions) {
+            if (controller.scenarioMap.getTile(pos).isWall()) return true;
+        }
+        return false;
     }
 }

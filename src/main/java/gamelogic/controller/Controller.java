@@ -21,7 +21,6 @@ public abstract class Controller {
     public final TaskContainer taskContainer;
     public final MovementController movementController;
     public final MarkerController markerController;
-    public final SoundController soundController;
     protected final ScenarioMap scenarioMap;
     protected final EndingConditionInterface endingCondition;
     protected final int numberOfGuards;
@@ -47,7 +46,6 @@ public abstract class Controller {
         this.timestep = scenarioMap.getTimestep();
         this.movementController = new MovementController(this);
         this.markerController = new MarkerController(this);
-        this.soundController = new SoundController(this);
         this.endingCondition = endingCondition;
         if (MULTITHREAD_CONTROLLER) threadPool = new ThreadPoolExecutor(Runtime.getRuntime().availableProcessors()/2, 50, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
         else threadPool = null;
@@ -67,9 +65,6 @@ public abstract class Controller {
         currentState = new State(initialPositions, visions, markerController.init(initialPositions),
                 new VisionMemory[numberOfGuards + numberOfIntruders][numberOfGuards + numberOfIntruders]);
 
-        for (int i = 0; i < numberOfGuards+numberOfIntruders; i++) {
-            currentState.setAgentsSeen(i, updateAgentVisionMemory(i, currentState));
-        }
         nextState = currentState.copyOf();
     }
 
@@ -129,17 +124,6 @@ public abstract class Controller {
         }
     }
 
-    private void tickAgent(int agentIndex) {
-        int movementTask = agents[agentIndex].tick(getVisions(agentIndex),
-                markerController.getPheromoneMarkersDirection(agentIndex, currentState.getAgentPosition(agentIndex)),
-                soundController.getSoundDirections(agentIndex), Arrays.copyOfRange(currentState.getAgentsSeen(agentIndex), 0, numberOfGuards),
-                Arrays.copyOfRange(currentState.getAgentsSeen(agentIndex), numberOfGuards, numberOfGuards+numberOfIntruders),
-                soundController.getGuardYellDirections(agentIndex));
-
-        movementController.moveAgent(agentIndex, movementTask);
-        nextState.setAgentVision(agentIndex, calculateFOVAbsolute(agentIndex, nextState.getAgentPosition(agentIndex), nextState));
-    }
-
     protected void switchToNextState() {
         updateGui();
         currentState = nextState;
@@ -155,12 +139,6 @@ public abstract class Controller {
         System.out.println("Everything is explored. It took " + hours + " hour(s) " + minutes + " minutes " + seconds + " seconds.");
     }
 
-    private void updateAgentsSeen() {
-        for (int i = 0; i < agents.length; i++) {
-            nextState.setAgentsSeen(i, updateAgentVisionMemory(i, nextState));
-        }
-    }
-
     protected List<Vector2D> calculateFOV(int agentIndex, Vector2D agentPosition) {
         return VisionController.calculateVision(agents[agentIndex].getView_angle(), agents[agentIndex].getView_range(), scenarioMap.createAreaMap(agentPosition, agents[agentIndex].getView_range()), agents[agentIndex].getOrientation()).getInVision();
     }
@@ -168,7 +146,7 @@ public abstract class Controller {
         return convertRelativeCurrentPosToAbsolute(calculateFOV(agentIndex, agentPosition), agentIndex, state);
     }
 
-    private Vision[] getVisions(int agentIndex) {
+    protected Vision[] getVisions(int agentIndex) {
         List<Vector2D> positionsInVision = currentState.getVision(agentIndex);
         Vision[] visions = new Vision[positionsInVision.size()];
         for (int i = 0; i < visions.length; i++) {
@@ -176,42 +154,6 @@ public abstract class Controller {
             visions[i] = new Vision(scenarioMap.getTile(pos), convertAbsoluteToRelativeSpawn(pos, agentIndex));
         }
         return visions;
-    }
-
-    public VisionMemory[] updateAgentVisionMemory(int agentIndex, State state) {
-        VisionMemory[] otherAgentsSeen;
-        if (state.getAgentsSeen(agentIndex) != null) otherAgentsSeen = state.getAgentsSeen(agentIndex);
-        else otherAgentsSeen = new VisionMemory[numberOfGuards + numberOfIntruders]; // This would only happen when called from init()
-
-        for (int i=0; i < otherAgentsSeen.length; i++) {
-            outer:
-            if (i != agentIndex) {
-                for (Vector2D pos : state.getVision(agentIndex)) {
-                    if (pos.equals(state.getAgentPosition(i))) {
-                        otherAgentsSeen[i] = new VisionMemory(convertAbsolutePosToRelativeToCurrentPos(pos, agentIndex, state), 0, agents[i].getOrientation());
-                        // Check if agent we're updating is a guard and agent we're seeing is an intruder, then yell
-                        if (agentIndex < numberOfGuards && i >= numberOfGuards) soundController.generateGuardYell(agentIndex);
-                        break outer;
-                    }
-                }
-                // When reaching this the agent is not in vision
-                if (otherAgentsSeen[i] != null) {
-                    // Position is updated s.t. it stays relative to the current position of the agent
-                    // Seconds ago is incremented with the timestep
-                    otherAgentsSeen[i] = new VisionMemory(otherAgentsSeen[i].position().subtract((nextState.getAgentPosition(agentIndex).subtract(currentState.getAgentPosition(agentIndex)))),
-                            otherAgentsSeen[i].secondsAgo()+timestep, otherAgentsSeen[i].orientation());
-                }
-            }
-        }
-        return otherAgentsSeen;
-    }
-
-    public boolean isWallInBetween(Vector2D begin, Vector2D end) {
-        Vector2D[] positions = VisionController.calculateLine(begin, end);
-        for (Vector2D pos : positions) {
-            if (scenarioMap.getTile(pos).isWall()) return true;
-        }
-        return false;
     }
 
     protected Vector2D[] spawnAgents() {
@@ -281,6 +223,8 @@ public abstract class Controller {
         return new Vector2D(absPos.x-state.getAgentPosition(agentId).x, absPos.y-state.getAgentPosition(agentId).y);
     }
 
+    protected void updateAgentsSeen() {}
+    protected void tickAgent(int agentIndex) {}
     protected void updateGui() {}
     protected void initializeAgents() {}
     protected void updateProgress() {}

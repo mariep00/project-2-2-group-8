@@ -11,8 +11,6 @@ import gamelogic.maps.graph.Node;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
-import javax.swing.text.html.HTMLDocument.HTMLReader.IsindexAction;
-
 public class AStar {
 
     public static LinkedList<Vector2D> calculate(ExplorationGraph graph, Node startNode, Node goalNode) {
@@ -102,6 +100,10 @@ public class AStar {
             }
         }
         return neighbours;
+    }
+
+    public static boolean pathReachedGoal(LinkedList<Vector2D> path, Vector2D goal) {
+        return path.getLast().equals(goal);
     }
 }
 

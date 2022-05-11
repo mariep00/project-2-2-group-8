@@ -141,7 +141,7 @@ public class MapBuilder {
                         map.setNumberMarkers(Integer.parseInt(value));
                         break;
                     case "pheromoneMaxSmellingDistance":
-                        map.setPheromoneMaxSmellingDistance(Double.parseDouble(value));
+                        map.setPheromoneMaxSmellingDistance(Integer.parseInt(value));
                         break;
                     case "pheromoneReductionPerSecond":
                         map.setPheromoneReduction(Double.parseDouble(value));
@@ -150,13 +150,13 @@ public class MapBuilder {
                         map.setShadedReduction(Double.parseDouble(value));
                         break;
                     case "footstepMaxHearingDistance":
-                        map.setFootstepMaxHearingDistance(Double.parseDouble(value));
+                        map.setFootstepMaxHearingDistance(Integer.parseInt(value));
                         break;
                     case "rotatingMaxHearingDistance":
-                        map.setRotatingMaxHearingDistance(Double.parseDouble(value));
+                        map.setRotatingMaxHearingDistance(Integer.parseInt(value));
                         break;
                     case "yellMaxHearingDistance":
-                        map.setYellMaxHearingDistance(Double.parseDouble(value));
+                        map.setYellMaxHearingDistance(Integer.parseInt(value));
                         break;
                     case "soundStandardDeviation":
                         map.setSoundStandardDeviation(Double.parseDouble(value));

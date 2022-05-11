@@ -6,29 +6,39 @@ import gamelogic.agent.brains.GuardBrain;
 import gamelogic.agent.brains.IntruderBrain;
 import gamelogic.agent.tasks.TaskContainer;
 import gamelogic.controller.Controller;
+import gamelogic.controller.SoundController;
+import gamelogic.controller.State;
 import gamelogic.controller.endingconditions.EndingSurveillance;
 import gamelogic.datacarriers.GuardYell;
+import gamelogic.datacarriers.VisionMemory;
 import gamelogic.maps.ScenarioMap;
 import gamelogic.maps.graph.ExplorationGraph;
 import gamelogic.maps.Tile;
 import gamelogic.maps.Tile.Type;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ControllerSurveillance extends Controller {
     private final EndingSurveillance endingSurveillance;
     private final ExplorationGraph mapGraph;
+    public final SoundController soundController;
 
     public ControllerSurveillance(ScenarioMap scenarioMap, EndingSurveillance endingCondition, TaskContainer taskContainer) {
         super(scenarioMap, endingCondition, taskContainer);
         this.endingSurveillance = endingCondition;
         mapGraph = new ExplorationGraph();
+        this.soundController = new SoundController(this);
     }
 
     @Override
     public void init() {
         super.init();
+        for (int i = 0; i < numberOfGuards+numberOfIntruders; i++) {
+            currentState.setAgentsSeen(i, updateAgentVisionMemory(i, currentState));
+            nextState.setAgentsSeen(i, updateAgentVisionMemory(i, currentState));
+        }
         createGraph();
     }
 
@@ -83,8 +93,54 @@ public class ControllerSurveillance extends Controller {
     }
 
     @Override
+    protected void tickAgent(int agentIndex) {
+        int movementTask = agents[agentIndex].tick(getVisions(agentIndex),
+                markerController.getPheromoneMarkersDirection(agentIndex, currentState.getAgentPosition(agentIndex)),
+                soundController.getSoundDirections(agentIndex), Arrays.copyOfRange(currentState.getAgentsSeen(agentIndex), 0, numberOfGuards),
+                Arrays.copyOfRange(currentState.getAgentsSeen(agentIndex), numberOfGuards, numberOfGuards+numberOfIntruders),
+                soundController.getGuardYellDirections(agentIndex));
+
+        movementController.moveAgent(agentIndex, movementTask);
+        nextState.setAgentVision(agentIndex, calculateFOVAbsolute(agentIndex, nextState.getAgentPosition(agentIndex), nextState));
+    }
+
+    @Override
     protected void updateProgress() {
         endingSurveillance.updateState(currentState);
+    }
+
+    @Override
+    protected void updateAgentsSeen() {
+        for (int i = 0; i < agents.length; i++) {
+            nextState.setAgentsSeen(i, updateAgentVisionMemory(i, nextState));
+        }
+    }
+    private VisionMemory[] updateAgentVisionMemory(int agentIndex, State state) {
+        VisionMemory[] otherAgentsSeen;
+        if (state.getAgentsSeen(agentIndex) != null) otherAgentsSeen = state.getAgentsSeen(agentIndex);
+        else otherAgentsSeen = new VisionMemory[numberOfGuards + numberOfIntruders]; // This would only happen when called from init()
+
+        for (int i=0; i < otherAgentsSeen.length; i++) {
+            outer:
+            if (i != agentIndex) {
+                for (Vector2D pos : state.getVision(agentIndex)) {
+                    if (pos.equals(state.getAgentPosition(i))) {
+                        otherAgentsSeen[i] = new VisionMemory(convertAbsolutePosToRelativeToCurrentPos(pos, agentIndex, state), 0, agents[i].getOrientation());
+                        // Check if agent we're updating is a guard and agent we're seeing is an intruder, then yell
+                        if (agentIndex < numberOfGuards && i >= numberOfGuards) soundController.generateGuardYell(agentIndex);
+                        break outer;
+                    }
+                }
+                // When reaching this the agent is not in vision
+                if (otherAgentsSeen[i] != null) {
+                    // Position is updated s.t. it stays relative to the current position of the agent
+                    // Seconds ago is incremented with the timestep
+                    otherAgentsSeen[i] = new VisionMemory(otherAgentsSeen[i].position().subtract((nextState.getAgentPosition(agentIndex).subtract(currentState.getAgentPosition(agentIndex)))),
+                            otherAgentsSeen[i].secondsAgo()+timestep, otherAgentsSeen[i].orientation());
+                }
+            }
+        }
+        return otherAgentsSeen;
     }
 
     private void createGraph() {
@@ -106,4 +162,6 @@ public class ControllerSurveillance extends Controller {
             }
         }
     }
+
+    public ExplorationGraph getMapGraph() { return mapGraph; }
 }

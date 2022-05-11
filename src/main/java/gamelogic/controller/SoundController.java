@@ -1,19 +1,24 @@
 package gamelogic.controller;
 
 import datastructures.Vector2D;
+import gamelogic.agent.AStar;
+import gamelogic.controller.gamemodecontrollers.ControllerSurveillance;
 import gamelogic.datacarriers.GuardYell;
 import gamelogic.datacarriers.Sound;
 import gamelogic.datacarriers.SoundOrigin;
 import gamelogic.datacarriers.SoundType;
+import gamelogic.maps.graph.ExplorationGraph;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class SoundController {
     private final Controller controller;
-    private final double footstepMaxHearingDistance;
-    private final double rotatingMaxHearingDistance;
-    private final double yellMaxHearingDistance;
+    private final ExplorationGraph mapGraph;
+    private final int footstepMaxHearingDistance;
+    private final int rotatingMaxHearingDistance;
+    private final int yellMaxHearingDistance;
     private final double soundStandardDeviation;
 
     public SoundController(Controller controller) {
@@ -22,22 +27,24 @@ public class SoundController {
         this.rotatingMaxHearingDistance = controller.scenarioMap.getRotatingMaxHearingDistance();
         this.yellMaxHearingDistance = controller.scenarioMap.getYellMaxHearingDistance();
         this.soundStandardDeviation = controller.scenarioMap.getSoundStandardDeviation();
+        this.mapGraph = ((ControllerSurveillance) controller).getMapGraph();
     }
 
     public List<Sound> getSoundDirections(int agentIndex) {
         ArrayList<Sound> sounds = new ArrayList<>();
         for (SoundOrigin soundOrigin : controller.currentState.getSoundOrigins()) {
             if (soundOrigin.agentIndex() != agentIndex) {
-                double distance = controller.getCurrentState().getAgentPosition(agentIndex).dist(soundOrigin.origin());
-                double threshold;
+                int threshold;
                 if (soundOrigin.soundType() == SoundType.WALKING) threshold = footstepMaxHearingDistance;
                 else threshold = rotatingMaxHearingDistance;
 
-                if (distance <= threshold && controller.isWallInBetween(controller.currentState.getAgentPosition(agentIndex), soundOrigin.origin())) {
+                LinkedList<Vector2D> path = AStar.calculate(mapGraph, mapGraph.getNode(controller.currentState.getAgentPosition(agentIndex)), mapGraph.getNode(soundOrigin.origin()), threshold);
+
+                if (path != null && AStar.pathReachedGoal(path, soundOrigin.origin())) {
                     double angle = controller.getCurrentState().getAgentPosition(agentIndex).getAngleBetweenVector(soundOrigin.origin());
                     double angleNormalDistributed = addNoiseToSound(angle);
                     double maxThreshold = Math.max(footstepMaxHearingDistance, rotatingMaxHearingDistance); // Divide by maximum to have a normalised loudness
-                    sounds.add(new Sound(angleNormalDistributed >= 360 ? angleNormalDistributed - 360 : angleNormalDistributed, (maxThreshold - distance) / maxThreshold));
+                    sounds.add(new Sound(angleNormalDistributed >= 360 ? angleNormalDistributed - 360 : angleNormalDistributed, ((float) maxThreshold - path.size()) / maxThreshold));
                 }
             }
         }
@@ -48,13 +55,13 @@ public class SoundController {
         Vector2D currentPos = controller.getCurrentState().getAgentPosition(agentIndex);
         List<GuardYell> guardYells = controller.getCurrentState().getGuardYells();
         ArrayList<Sound> anglesOfGuardYell = new ArrayList<>();
-        // TODO If a wall is in between the guard and the yell (the line between them) it doesn't make sense to not hear it while the distance for yelling is big compared to for example footsteps. So we need AStar, but AStar can only be applied to a graph..
+
         for (GuardYell guardYell : guardYells) {
             if (guardYell.agentIndex() != agentIndex ) {
-                double distance = currentPos.dist(guardYell.origin());
-                if (distance <= yellMaxHearingDistance) {
+                LinkedList<Vector2D> path = AStar.calculate(mapGraph, mapGraph.getNode(controller.currentState.getAgentPosition(agentIndex)), mapGraph.getNode(guardYell.origin()), yellMaxHearingDistance);
+                if (path != null && AStar.pathReachedGoal(path, guardYell.origin())) {
                     double angleWithNoise = addNoiseToSound(currentPos.getAngleBetweenVector(guardYell.origin()));
-                    anglesOfGuardYell.add(new Sound(angleWithNoise >= 360 ? angleWithNoise - 360 : angleWithNoise, (yellMaxHearingDistance-distance) / yellMaxHearingDistance));
+                    anglesOfGuardYell.add(new Sound(angleWithNoise >= 360 ? angleWithNoise - 360 : angleWithNoise, ((float) yellMaxHearingDistance-path.size()) / yellMaxHearingDistance));
                 }
             }
         }

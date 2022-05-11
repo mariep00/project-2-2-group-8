@@ -1,6 +1,7 @@
 package gamelogic.controller;
 
 import datastructures.Vector2D;
+import gamelogic.controller.gamemodecontrollers.ControllerSurveillance;
 import gamelogic.maps.TeleportEntrance;
 import gamelogic.maps.Tile;
 import gamelogic.maps.graph.ExplorationGraph;
@@ -41,11 +42,15 @@ public class MovementController {
     protected void updateAgentPosition(int agentIndex, Vector2D pos) {
         controller.nextState.setAgentPosition(agentIndex, pos);
         controller.agents[agentIndex].updatePosition(controller.convertAbsoluteToRelativeSpawn(pos, agentIndex));
-        controller.soundController.generateWalkSound(agentIndex);
+        if (controller instanceof ControllerSurveillance) {
+            ((ControllerSurveillance) controller).soundController.generateWalkSound(agentIndex);
+        }
     }
     protected void updateAgentOrientation(int agentIndex, double orientationToAdd) {
         controller.agents[agentIndex].updateOrientation(orientationToAdd);
-        controller.soundController.generateTurnSound(agentIndex);
+        if (controller instanceof ControllerSurveillance) {
+            ((ControllerSurveillance) controller).soundController.generateTurnSound(agentIndex);
+        }
     }
 
     private Vector2D agentMoveForward(int agentIndex) {

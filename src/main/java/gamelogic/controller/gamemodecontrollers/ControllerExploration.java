@@ -32,6 +32,16 @@ public class ControllerExploration extends Controller {
     }
 
     @Override
+    protected void tickAgent(int agentIndex) {
+        int movementTask = agents[agentIndex].tick(getVisions(agentIndex),
+                markerController.getPheromoneMarkersDirection(agentIndex, currentState.getAgentPosition(agentIndex)),
+                null, null, null, null);
+
+        movementController.moveAgent(agentIndex, movementTask);
+        nextState.setAgentVision(agentIndex, calculateFOVAbsolute(agentIndex, nextState.getAgentPosition(agentIndex), nextState));
+    }
+
+    @Override
     protected void updateProgress() {
         for (int i = 0; i < numberOfGuards+numberOfIntruders; i++) {
             for (Vector2D vector : nextState.getVision(i)) {
