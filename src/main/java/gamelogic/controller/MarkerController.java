@@ -31,6 +31,19 @@ public class MarkerController {
         }
         return tilesWithMarker;
     }
+
+    public LinkedList<Tile> emptyInit() {
+        LinkedList<Tile> tilesWithPursuitMarker = new LinkedList<>();
+        for (int i = 0; i < controller.numberOfGuards+controller.numberOfIntruders; i++) {
+            Vector2D pos = new Vector2D();
+            Agent agent = controller.getAgent(i);
+
+            tilesWithPursuitMarker.add(controller.scenarioMap.getTile(pos));
+            controller.scenarioMap.getTile(pos).addMarker(new PheromoneMarker(agent, pos, pheromoneMaxSmellingDistance, pheromoneReduction));
+        }
+        return tilesWithPursuitMarker;
+    }
+
     protected void tick() {
         Iterator<Tile> iterator = controller.nextState.getTilesWithMarker().iterator(); // *** This ALSO updates the marker in the currentState, while it's the same reference! ***
         while (iterator.hasNext()) {
