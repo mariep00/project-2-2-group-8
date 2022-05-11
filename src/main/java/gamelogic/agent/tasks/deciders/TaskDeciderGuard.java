@@ -59,6 +59,7 @@ public class TaskDeciderGuard implements TaskDeciderInterface {
             findSoundSource.setTarget(closestUnmatchedSound);
             return findSoundSource;
         }
+
         // 4. Nothing special to do, so just explore
         if (currentTask.getPriority() <= TaskContainer.TaskType.EXPLORATION.priority || currentTask.isFinished()) {
             if (!graph.frontiers.isEmpty()) {

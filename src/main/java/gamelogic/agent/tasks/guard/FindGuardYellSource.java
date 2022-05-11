@@ -21,6 +21,8 @@ public class FindGuardYellSource implements TaskInterface {
             // Idea; give frontier exploration task an angle as input that it prefers (for normal frontier exploration it would be the opposite of the sum of the pheromones), now it's the angle.
             // This angle is computed as follows; Initially it's known together with the loudness, predict some position (how?) where it could be. Every tick update the angle we want to go to, s.t. the angle points from the current
             // position towards the predicted location of the yell. Then just everytime pick the frontier that is the closest towards this predicted direction.
+
+            // Make distinction between known "predicted" paths and yells coming from an unexplored area. I.e. allow to check other sounds when exploring towards a yell, but don't allow it when the path is known.
         }
         return futureMoves.pop();
     }

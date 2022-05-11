@@ -19,13 +19,16 @@ public class PursuingTaskBaseline implements TaskInterface {
     private TaskType type = TaskType.GUARD_PURSUIT;
     private Stack<Integer> futureMoves;
     private VisionMemory target;
+    private Vector2D targetPos;
 
     @Override
     public int performTask(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen) {
         if (futureMoves.isEmpty()) {
             this.graph = graph;
             //VisionMemory closestIntruder = getActiveIntruder(intrudersSeen);
-            Vector2D placeToGo = findGoal(target.position().add(graph.getCurrentPosition().COORDINATES), target.orientation());
+
+            targetPos = target.position().add(graph.getCurrentPosition().COORDINATES);
+            Vector2D placeToGo = findGoal(targetPos, target.orientation());
             LinkedList<Vector2D> nodesToGoal = AStar.calculate(graph, graph.getCurrentPosition(), graph.getNode(placeToGo));
 
             this.futureMoves = MovementController.convertPath(graph, orientation, nodesToGoal, 3);
@@ -65,6 +68,9 @@ public class PursuingTaskBaseline implements TaskInterface {
         }
         return false;
     }
+
+    @Override
+    public boolean isFinished() { return targetPos.equals(graph.getCurrentPosition().COORDINATES); }
 
     @Override
     public Object getTarget() { return target;}
