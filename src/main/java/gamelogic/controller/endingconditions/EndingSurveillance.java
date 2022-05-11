@@ -1,15 +1,18 @@
 package gamelogic.controller.endingconditions;
 
-import gamelogic.controller.Controller;
-import gamelogic.controller.State;
-import gamelogic.controller.gamemodecontrollers.ControllerSurveillance;
 import gamelogic.maps.ScenarioMap;
-import gamelogic.maps.Tile;
-import gamelogic.maps.graph.ExplorationGraph;
 
 //TODO Add the ending conditions for the surveillance gamemode
 public class EndingSurveillance implements EndingConditionInterface {
 
+    public EndingSurveillance(ScenarioMap map){
+
+    }
+    @Override
+    public boolean gameFinished() {
+        return false;
+    }
+    /*
     private static ScenarioMap map;
     private static double timerInsideTarget;
     private static double timerOutsideTarget;
@@ -38,6 +41,7 @@ public class EndingSurveillance implements EndingConditionInterface {
 
                The code inside the for loop will works if we assume agents position will be set to null once they are caught
          */
+    /*
         for(int i= controller.getNumberOfGuards(); i<= controller.getNumberOfGuards() + controller.getNumberOfIntruders(); i++) {
             if (currentState.getAgentPosition(i) == null){
                 if (i == controller.getNumberOfGuards() + controller.getNumberOfIntruders()){
@@ -98,4 +102,5 @@ public class EndingSurveillance implements EndingConditionInterface {
         currentState = state;
 
     }
+    */
 }

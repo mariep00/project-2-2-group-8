@@ -87,7 +87,9 @@ public class MovementController {
 
     private boolean isAgentAtPos(Vector2D pos) {
         for (int i = 0; i < controller.numberOfGuards+controller.numberOfIntruders; i++) {
-            if (controller.currentState.getAgentPosition(i).equals(pos)) return true;
+            if (controller.agents[i] != null) {
+                if (controller.currentState.getAgentPosition(i).equals(pos)) return true;
+            }
         }
         return false;
     }

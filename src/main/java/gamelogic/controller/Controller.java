@@ -111,9 +111,11 @@ public abstract class Controller {
         List<Callable<Void>> taskList = new ArrayList<>();
 
         for (int i = 0; i < agents.length; i++) {
-            int finalI = i;
-            if (MULTITHREAD_CONTROLLER) taskList.add(toCallable(() -> tickAgent(finalI)));
-            else tickAgent(finalI);
+            if (agents[i] != null) {
+                int finalI = i;
+                if (MULTITHREAD_CONTROLLER) taskList.add(toCallable(() -> tickAgent(finalI)));
+                else tickAgent(finalI);
+            }
         }
         if (MULTITHREAD_CONTROLLER) {
             try {

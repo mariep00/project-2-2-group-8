@@ -149,6 +149,7 @@ public class ScenarioMenu extends Application implements TransitionInterface {
 
         buttonPlayExploration.setOnAction(e -> {
             updateScenarioMap(fields, mapName);
+            scenarioMap.setNumIntruders(0);
             quitSceneTransition(() -> new GameScreenExploration(scenarioMap).start(stage), borderPane);
         });
         buttonPlaySurveillance.setOnAction(e -> {

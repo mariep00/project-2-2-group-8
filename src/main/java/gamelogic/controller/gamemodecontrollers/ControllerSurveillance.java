@@ -75,7 +75,7 @@ public class ControllerSurveillance extends Controller {
         for (int i = 0; i < numberOfGuards; i++) {
             agents[i] = new Agent(scenarioMap.getBaseSpeedGuard(), scenarioMap.getGuardViewAngle(),scenarioMap.getGuardViewRange(), orientations[rand.nextInt(orientations.length)], new GuardBrain(taskContainer));
         }
-        for (int i = numberOfGuards; i < numberOfIntruders; i++) {
+        for (int i = numberOfGuards; i < numberOfGuards+numberOfIntruders; i++) {
             agents[i] = new Agent(scenarioMap.getBaseSpeedIntruder(), scenarioMap.getIntruderViewAngle(), scenarioMap.getIntruderViewRange(), orientations[rand.nextInt(orientations.length)], new IntruderBrain(taskContainer));
         }
     }
@@ -85,12 +85,14 @@ public class ControllerSurveillance extends Controller {
         super.tickAgents();
         for (int i = 0; i < numberOfGuards; i++) {
             for (int j = numberOfIntruders; j < numberOfGuards+numberOfIntruders; j++) {
-                if (currentState.getVision(i).contains(currentState.getAgentPosition(j))) {
-                    currentState.addGuardYell(new GuardYell(currentState.getAgentPosition(i), i));
-                }
-                // TODO I assume an intruder can also be caught when it's 1 square away diagonally?
-                if (currentState.getAgentPosition(i).dist(currentState.getAgentPosition(j)) <= Math.sqrt(2)) {
-                    removeAgent(j);
+                if (agents[j] != null) {
+                    if (currentState.getVision(i).contains(currentState.getAgentPosition(j))) {
+                        currentState.addGuardYell(new GuardYell(currentState.getAgentPosition(i), i));
+                    }
+                    // TODO I assume an intruder can also be caught when it's 1 square away diagonally?
+                    if (currentState.getAgentPosition(i).dist(currentState.getAgentPosition(j)) <= Math.sqrt(2)) {
+                        removeAgent(j);
+                    }
                 }
             }
         }
@@ -110,7 +112,7 @@ public class ControllerSurveillance extends Controller {
 
     @Override
     protected void updateProgress() {
-        endingSurveillance.updateState(currentState);
+        //endingSurveillance.updateState(currentState);
     }
 
     @Override
@@ -125,22 +127,25 @@ public class ControllerSurveillance extends Controller {
         else otherAgentsSeen = new VisionMemory[numberOfGuards + numberOfIntruders]; // This would only happen when called from init()
 
         for (int i=0; i < otherAgentsSeen.length; i++) {
-            outer:
-            if (i != agentIndex) {
-                for (Vector2D pos : state.getVision(agentIndex)) {
-                    if (pos.equals(state.getAgentPosition(i))) {
-                        otherAgentsSeen[i] = new VisionMemory(convertAbsolutePosToRelativeToCurrentPos(pos, agentIndex, state), 0, agents[i].getOrientation());
-                        // Check if agent we're updating is a guard and agent we're seeing is an intruder, then yell
-                        if (agentIndex < numberOfGuards && i >= numberOfGuards) soundController.generateGuardYell(agentIndex);
-                        break outer;
+            if (agents[i] != null) {
+                outer:
+                if (i != agentIndex) {
+                    for (Vector2D pos : state.getVision(agentIndex)) {
+                        if (pos.equals(state.getAgentPosition(i))) {
+                            otherAgentsSeen[i] = new VisionMemory(convertAbsolutePosToRelativeToCurrentPos(pos, agentIndex, state), 0, agents[i].getOrientation());
+                            // Check if agent we're updating is a guard and agent we're seeing is an intruder, then yell
+                            if (agentIndex < numberOfGuards && i >= numberOfGuards)
+                                soundController.generateGuardYell(agentIndex);
+                            break outer;
+                        }
                     }
-                }
-                // When reaching this the agent is not in vision
-                if (otherAgentsSeen[i] != null) {
-                    // Position is updated s.t. it stays relative to the current position of the agent
-                    // Seconds ago is incremented with the timestep
-                    otherAgentsSeen[i] = new VisionMemory(otherAgentsSeen[i].position().subtract((nextState.getAgentPosition(agentIndex).subtract(currentState.getAgentPosition(agentIndex)))),
-                            otherAgentsSeen[i].secondsAgo()+timestep, otherAgentsSeen[i].orientation());
+                    // When reaching this the agent is not in vision
+                    if (otherAgentsSeen[i] != null) {
+                        // Position is updated s.t. it stays relative to the current position of the agent
+                        // Seconds ago is incremented with the timestep
+                        otherAgentsSeen[i] = new VisionMemory(otherAgentsSeen[i].position().subtract((nextState.getAgentPosition(agentIndex).subtract(currentState.getAgentPosition(agentIndex)))),
+                                otherAgentsSeen[i].secondsAgo() + timestep, otherAgentsSeen[i].orientation());
+                    }
                 }
             }
         }

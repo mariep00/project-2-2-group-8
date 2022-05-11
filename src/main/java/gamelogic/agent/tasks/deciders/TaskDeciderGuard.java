@@ -153,10 +153,12 @@ public class TaskDeciderGuard implements TaskDeciderInterface {
         VisionMemory intruderToPursuit = null;
         // Check if there's an intruder in vision, if so take the one that's the closest to pursuit
         for (VisionMemory visionMemory : intrudersSeen) {
-            if (visionMemory.secondsAgo() == 0) {
-                // Can take the magnitude of the position, while the position is always relative to the current position
-                if (intruderToPursuit == null || visionMemory.position().magnitude() < intruderToPursuit.position().magnitude()) {
-                    intruderToPursuit = visionMemory;
+            if (visionMemory != null) {
+                if (visionMemory.secondsAgo() == 0) {
+                    // Can take the magnitude of the position, while the position is always relative to the current position
+                    if (intruderToPursuit == null || visionMemory.position().magnitude() < intruderToPursuit.position().magnitude()) {
+                        intruderToPursuit = visionMemory;
+                    }
                 }
             }
         }

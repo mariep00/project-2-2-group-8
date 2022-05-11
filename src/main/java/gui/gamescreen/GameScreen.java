@@ -57,7 +57,7 @@ public class GameScreen extends Application implements TransitionInterface {
     }
 
     private Scene loadGameScreen(ScenarioMap scenarioMap) {
-        showVision = new boolean[scenarioMap.getNumGuards()];
+        showVision = new boolean[scenarioMap.getNumGuards()+scenarioMap.getNumIntruders()];
 
         GridPane gridPane = loadGridPane();
         BorderPane borderPane = new BorderPane();
@@ -219,7 +219,7 @@ public class GameScreen extends Application implements TransitionInterface {
         buttonShowAllVisions.setOnAction(e -> {
             if (!getController().getRunSimulation().get()) {
                 Arrays.fill(showVision, true);
-                for (int i = 0; i < scenarioMap.getNumGuards(); i++) {
+                for (int i = 0; i < scenarioMap.getNumGuards()+scenarioMap.getNumIntruders(); i++) {
                     getController().showVision(i);
                 }
             }
@@ -227,7 +227,7 @@ public class GameScreen extends Application implements TransitionInterface {
         buttonHideAllVisions.setOnAction(e -> {
             if (!getController().getRunSimulation().get()) {
                 Arrays.fill(showVision, false);
-                for (int i = 0; i < scenarioMap.getNumGuards(); i++) {
+                for (int i = 0; i < scenarioMap.getNumGuards()+scenarioMap.getNumIntruders(); i++) {
                     getController().hideVision(i);
                 }
             }

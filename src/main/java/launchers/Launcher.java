@@ -1,7 +1,13 @@
 package launchers;
 
 import gamelogic.agent.tasks.TaskContainer;
+import gamelogic.agent.tasks.general.ExplorationInDirection;
 import gamelogic.agent.tasks.general.ExplorationTaskFrontier;
+import gamelogic.agent.tasks.general.PathfindingTask;
+import gamelogic.agent.tasks.guard.FindSoundSource;
+import gamelogic.agent.tasks.guard.PursuingTaskBaseline;
+import gamelogic.agent.tasks.guard.VisitLastSeenIntruderPositions;
+import gamelogic.agent.tasks.intruder.EvasionTaskBaseline;
 import gamelogic.controller.Controller;
 import gamelogic.controller.endingconditions.EndingExploration;
 import gamelogic.controller.gamemodecontrollers.ControllerExploration;
@@ -20,7 +26,8 @@ public class Launcher {
     private final static boolean MULTITHREAD_LAUNCHER = false; // Change this to enable or disable multithreading in the launcher. I.e. running multiple games in parallel.
     private final static int NUMBER_OF_GAMES = 1000; // Change this to change the number of games to run
     private final static String FILE_NAME = "testmap.txt"; // Change this string to the file name of the map you want to run. Make sure the map is located in resources/maps.
-    private final static TaskContainer TASK_CONTAINER = new TaskContainer(new ExplorationTaskFrontier()); // Change this to change the tasks that can be performed by agents
+    private final static TaskContainer TASK_CONTAINER = new TaskContainer(new ExplorationTaskFrontier(), new FindSoundSource(), new PursuingTaskBaseline(), new EvasionTaskBaseline(),
+            new VisitLastSeenIntruderPositions(), new PathfindingTask(), new ExplorationInDirection()); // Change this to change the tasks that can be performed by agents
 
     /**
      * Launcher without GUI

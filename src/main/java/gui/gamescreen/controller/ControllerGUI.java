@@ -67,7 +67,7 @@ public class ControllerGUI implements ControllerGUIInterface {
         for (int i = 0; i < controller.getNumberOfGuards(); i++) {
             gameScreen.spawnAgent(i, controller.getCurrentState().getAgentPosition(i), AgentType.GUARD);
         }
-        for (int i = 0; i < controller.getNumberOfIntruders(); i++) {
+        for (int i = controller.getNumberOfGuards(); i < controller.getNumberOfGuards()+controller.getNumberOfIntruders(); i++) {
             gameScreen.spawnAgent(i, controller.getCurrentState().getAgentPosition(i), AgentType.INTRUDER);
         }
     }
