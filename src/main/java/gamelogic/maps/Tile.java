@@ -17,6 +17,7 @@ public class Tile {
     public boolean seeThrough;
     private SpecialFeature feature;
     private MarkerInterface[] markers;
+    private MarkerInterface[] pursuitMarkers;
 
     public Tile () {
         this(Type.FLOOR, true);
@@ -26,6 +27,7 @@ public class Tile {
         this.seeThrough = seeThrough;
         shaded = false;
         markers = new MarkerInterface[1];
+        pursuitMarkers = new MarkerInterface[1];
     }
 
     public Type getType() {
@@ -64,17 +66,24 @@ public class Tile {
     public MarkerInterface[] getMarkers() {
         return markers;
     }
+
+    public MarkerInterface[] getPursuitMarkers() {
+        return pursuitMarkers;
+    }
+
     public PheromoneMarker getPheromoneMarker() { return markers[0] != null ? (PheromoneMarker) markers[0] : null; }
 
-    public void removeMarker(MarkerInterface marker) {
-        if (marker instanceof PheromoneMarker) {
+    public void removeMarker(MarkerInterface marker, MarkerInterface pursuitMarker) {
+        if (marker instanceof PheromoneMarker && pursuitMarker instanceof PheromoneMarker) {
             markers[0] = null;
+            pursuitMarkers[0] = null;
         }
     }
 
-    public void addMarker (MarkerInterface marker) {
-        if (marker instanceof PheromoneMarker) {
+    public void addMarker (MarkerInterface marker, MarkerInterface pursuitMarker) {
+        if (marker instanceof PheromoneMarker && pursuitMarker instanceof PheromoneMarker) {
             markers[0] = marker;
+            pursuitMarkers[0] = pursuitMarker;
         }
     }
 

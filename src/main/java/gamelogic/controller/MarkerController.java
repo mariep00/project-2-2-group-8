@@ -27,7 +27,8 @@ public class MarkerController {
             Agent agent = controller.getAgent(i);
 
             tilesWithMarker.add(controller.scenarioMap.getTile(pos));
-            controller.scenarioMap.getTile(pos).addMarker(new PheromoneMarker(agent, pos, pheromoneMaxSmellingDistance, pheromoneReduction));
+            controller.scenarioMap.getTile(pos).addMarker(new PheromoneMarker(agent, pos, pheromoneMaxSmellingDistance, pheromoneReduction),
+                    new PheromoneMarker(agent, pos, pheromoneMaxSmellingDistance, pheromoneReduction));
         }
         return tilesWithMarker;
     }
@@ -39,7 +40,8 @@ public class MarkerController {
             Agent agent = controller.getAgent(i);
 
             tilesWithPursuitMarker.add(controller.scenarioMap.getTile(pos));
-            controller.scenarioMap.getTile(pos).addMarker(new PheromoneMarker(agent, pos, pheromoneMaxSmellingDistance, pheromoneReduction));
+            controller.scenarioMap.getTile(pos).addMarker(new PheromoneMarker(agent, pos, pheromoneMaxSmellingDistance, pheromoneReduction),
+                    new PheromoneMarker(agent, pos, pheromoneMaxSmellingDistance, pheromoneReduction));
         }
         return tilesWithPursuitMarker;
     }
@@ -53,7 +55,7 @@ public class MarkerController {
                 if (marker != null) {
                     marker.updateMarker(controller.getTimestep());
                     if (marker.shouldRemove()) {
-                        tile.removeMarker(marker); // *** This ALSO removes the marker in the Tile of the currentState because same reference! ***
+                        tile.removeMarker(marker, marker); // *** This ALSO removes the marker in the Tile of the currentState because same reference! ***
                         iterator.remove();
                     }
                 }
@@ -74,7 +76,7 @@ public class MarkerController {
     }
 
     private void addMarker(Vector2D position, MarkerInterface marker) {
-        controller.scenarioMap.getTile(position).addMarker(marker);
+        controller.scenarioMap.getTile(position).addMarker(marker, null);
         Iterator<Tile> iterator = controller.nextState.getTilesWithMarker().iterator();
         while (iterator.hasNext()) {
             Tile tile = iterator.next();
@@ -87,8 +89,8 @@ public class MarkerController {
         controller.nextState.addTileWithMarker(controller.scenarioMap.getTile(position));
     }
 
-    private void addPursuitMarker(Vector2D position, MarkerInterface marker) {
-        controller.scenarioMap.getTile(position).addMarker(marker);
+    private void addPursuitMarker(Vector2D position, MarkerInterface pursuitMarker) {
+        controller.scenarioMap.getTile(position).addMarker(null, pursuitMarker);
         Iterator<Tile> iterator = controller.nextState.getTilesWithPursuitMarker().iterator();
         while (iterator.hasNext()) {
             Tile tile = iterator.next();
