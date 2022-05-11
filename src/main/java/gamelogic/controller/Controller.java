@@ -223,6 +223,11 @@ public abstract class Controller {
         return new Vector2D(absPos.x-state.getAgentPosition(agentId).x, absPos.y-state.getAgentPosition(agentId).y);
     }
 
+    public static double addNoise(double initial, double std) {
+        Random random = new Random();
+        return random.nextGaussian()*std+initial; // SD = value from file, mean = initial value
+    }
+
     protected void updateAgentsSeen() {}
     protected void tickAgent(int agentIndex) {}
     protected void updateGui() {}

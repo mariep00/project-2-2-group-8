@@ -23,7 +23,7 @@ public class PursuingTaskBaseline implements TaskInterface {
 
     @Override
     public int performTask(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen) {
-        if (futureMoves.isEmpty()) {
+        if (futureMoves == null || futureMoves.isEmpty()) {
             this.graph = graph;
             //VisionMemory closestIntruder = getActiveIntruder(intrudersSeen);
 

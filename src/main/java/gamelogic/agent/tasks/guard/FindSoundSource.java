@@ -5,7 +5,6 @@ import datastructures.Vector2DDouble;
 import gamelogic.agent.AStar;
 import gamelogic.agent.tasks.TaskContainer;
 import gamelogic.agent.tasks.TaskInterface;
-import gamelogic.agent.tasks.TaskContainer.TaskType;
 import gamelogic.controller.MovementController;
 import gamelogic.datacarriers.Sound;
 import gamelogic.maps.graph.ExplorationGraph;
@@ -27,7 +26,7 @@ public class FindSoundSource implements TaskInterface {
         this.explorationGraph = graph;
         // Keep in mind this will most of the times be called once, while if there's is no unmatched sound i.e. source is found agent will perform different task,
         // and if sound is still unmatched a new tasks with angle will be created. Tho, could be that source is never found.
-        if (futureMoves.isEmpty()) {
+        if (futureMoves == null || futureMoves.isEmpty()) {
             // Create a double vector in the direction of the sound
             // Start at the maximum distance we want to check, move closer if we can't reach (or don't know yet) that position
             double xDir = Math.cos(Math.toRadians(soundToFind.angle()));

@@ -1,30 +1,60 @@
 package gamelogic.agent.tasks.guard;
 
+import datastructures.Vector2D;
+import gamelogic.agent.AStar;
 import gamelogic.agent.tasks.TaskContainer;
 import gamelogic.agent.tasks.TaskInterface;
+import gamelogic.controller.Controller;
+import gamelogic.controller.MovementController;
+import gamelogic.controller.VisionController;
 import gamelogic.datacarriers.Sound;
 import gamelogic.maps.graph.ExplorationGraph;
 
+import java.util.LinkedList;
 import java.util.Stack;
 
 public class FindGuardYellSource implements TaskInterface {
     private Stack<Integer> futureMoves;
     private Sound guardYellToFind;
+    private ExplorationGraph graph;
 
     @Override
     public int performTask(ExplorationGraph graph, double orientation) {
-        if (futureMoves.isEmpty()) {
-            // The sound has an angle, but because the distance, as the crow flies, is 50 (or more?, didn't discuss yet), also taking into account that there is noise added,
-            // the range of where it actually is, is enormous. We have to take into account loudness to determine how far it is, but we are not allowed to use the fact that we know the distance?
-            // Point is; if there are walls in between, and the agent hasn't explored that part of the map, we need to something like explore with the preference of frontiers in the direction of the yell.
+        if (futureMoves == null || futureMoves.isEmpty()) {
+            this.graph = graph;
+            double maxDistance = Controller.addNoise(50*guardYellToFind.loudness(), 8);
+            double minDistance = Controller.addNoise(((float)50/2)*guardYellToFind.loudness(), 8);
+            Vector2D startingPosition = VisionController.calculatePoint(graph.getCurrentPosition().COORDINATES, maxDistance, guardYellToFind.angle());
+            Vector2D possiblePosition = getPossiblePosition(startingPosition, maxDistance, minDistance);
+            if (possiblePosition != null) {
+                while (true) {
+                    LinkedList<Vector2D> path = AStar.calculate(graph, graph.getCurrentPosition(), graph.getNode(startingPosition));
+                    if (path.size() >= minDistance && path.size() <= maxDistance) {
+                        this.futureMoves = MovementController.convertPath(graph, orientation, path, -1);
+                        return futureMoves.pop();
+                    } else {
+                        possiblePosition = getPossiblePosition(possiblePosition, maxDistance, minDistance);
+                        if (possiblePosition == null) break;
+                    }
+                }
+            }
+            // No position was found in direction, so do explorationInDirection
 
-            // Idea; give frontier exploration task an angle as input that it prefers (for normal frontier exploration it would be the opposite of the sum of the pheromones), now it's the angle.
-            // This angle is computed as follows; Initially it's known together with the loudness, predict some position (how?) where it could be. Every tick update the angle we want to go to, s.t. the angle points from the current
-            // position towards the predicted location of the yell. Then just everytime pick the frontier that is the closest towards this predicted direction.
-
-            // Make distinction between known "predicted" paths and yells coming from an unexplored area. I.e. allow to check other sounds when exploring towards a yell, but don't allow it when the path is known.
         }
         return futureMoves.pop();
+    }
+
+    private Vector2D getPossiblePosition(Vector2D startingPosition, double maxDistance, double minDistance) {
+        double currentDistance = maxDistance;
+        Vector2D currentPosition = startingPosition;
+        while (!graph.isVisited(currentPosition)) {
+            if (currentDistance < minDistance) {
+                return null;
+            }
+            currentDistance--;
+            currentPosition = VisionController.calculatePoint(graph.getCurrentPosition().COORDINATES, currentDistance, guardYellToFind.angle());
+        }
+        return currentPosition;
     }
 
     @Override

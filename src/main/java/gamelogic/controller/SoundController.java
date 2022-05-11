@@ -42,7 +42,7 @@ public class SoundController {
 
                 if (path != null && AStar.pathReachedGoal(path, soundOrigin.origin())) {
                     double angle = controller.getCurrentState().getAgentPosition(agentIndex).getAngleBetweenVector(soundOrigin.origin());
-                    double angleNormalDistributed = addNoiseToSound(angle);
+                    double angleNormalDistributed = Controller.addNoise(angle, soundStandardDeviation);
                     double maxThreshold = Math.max(footstepMaxHearingDistance, rotatingMaxHearingDistance); // Divide by maximum to have a normalised loudness
                     sounds.add(new Sound(angleNormalDistributed >= 360 ? angleNormalDistributed - 360 : angleNormalDistributed, ((float) maxThreshold - path.size()) / maxThreshold));
                 }
@@ -60,7 +60,7 @@ public class SoundController {
             if (guardYell.agentIndex() != agentIndex ) {
                 LinkedList<Vector2D> path = AStar.calculate(mapGraph, mapGraph.getNode(controller.currentState.getAgentPosition(agentIndex)), mapGraph.getNode(guardYell.origin()), yellMaxHearingDistance);
                 if (path != null && AStar.pathReachedGoal(path, guardYell.origin())) {
-                    double angleWithNoise = addNoiseToSound(currentPos.getAngleBetweenVector(guardYell.origin()));
+                    double angleWithNoise = Controller.addNoise(currentPos.getAngleBetweenVector(guardYell.origin()), soundStandardDeviation);
                     anglesOfGuardYell.add(new Sound(angleWithNoise >= 360 ? angleWithNoise - 360 : angleWithNoise, ((float) yellMaxHearingDistance-path.size()) / yellMaxHearingDistance));
                 }
             }
@@ -76,9 +76,5 @@ public class SoundController {
     }
     public void generateGuardYell(int agentIndex) {
         controller.nextState.addGuardYell(new GuardYell(controller.getCurrentState().getAgentPosition(agentIndex), agentIndex));
-    }
-
-    private double addNoiseToSound(double angle) {
-        return controller.rand.nextGaussian()*soundStandardDeviation+angle; // SD = value from file, mean = angle found
     }
 }
