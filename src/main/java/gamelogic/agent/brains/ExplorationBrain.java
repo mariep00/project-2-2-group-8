@@ -22,4 +22,9 @@ public class ExplorationBrain implements BrainInterface {
     public int makeDecision(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen, List<Sound> guardYells) {
         return currentTask.performTask(graph, orientation, pheromoneMarkerDirection);
     }
+
+    @Override
+    public boolean isPursuing() {
+        return false;
+    }
 }

@@ -28,4 +28,14 @@ public class GuardBrain implements BrainInterface {
 
         return currentTask.performTask();
     }
+
+    @Override
+    public boolean isPursuing() {
+        if(currentTask.getType() == TaskType.GUARD_PURSUIT) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
 }

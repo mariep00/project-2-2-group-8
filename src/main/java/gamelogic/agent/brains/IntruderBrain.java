@@ -29,4 +29,9 @@ public class IntruderBrain implements BrainInterface {
 
         return currentTask.performTask();
     }
+
+    @Override
+    public boolean isPursuing() {
+        return false;
+    }
 }
