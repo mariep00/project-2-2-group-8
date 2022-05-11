@@ -11,9 +11,15 @@ import gamelogic.maps.graph.Node;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
+import javax.swing.text.html.HTMLDocument.HTMLReader.IsindexAction;
+
 public class AStar {
 
     public static LinkedList<Vector2D> calculate(ExplorationGraph graph, Node startNode, Node goalNode) {
+        return calculate(graph, startNode, goalNode, -1);
+    }
+
+    public static LinkedList<Vector2D> calculate(ExplorationGraph graph, Node startNode, Node goalNode, int upperBound) {
         Heap<ANode> open = new Heap<>(graph.getNumberOfNodes());
         HashMap<Vector2D, ANode> closed = new HashMap<>(3000);
         Vector2D goal = goalNode.COORDINATES; 
@@ -23,10 +29,13 @@ public class AStar {
         start.setG(0);
         start.setH(start.POSITION.manhattanDist(goal));
         open.add(start);
+        ANode lastNode = null;
+        boolean isFinished = false;
         
         while(true) {
 
-            if (open.isEmpty()) return null;
+            if (open.isEmpty() && upperBound == -1) return null;
+            if (isFinished) break;
             ANode current = open.removeFirst();
 
             if(current.POSITION.equals(goal)) {
@@ -45,17 +54,20 @@ public class AStar {
                         x.setG(g);
                         x.setParent(current);
                     }
-                } else {
+                } else if(upperBound == -1 || g <= upperBound) {
                     node.setG(g);
                     node.setH(node.POSITION.manhattanDist(goal));
                     node.setParent(current);
                     open.add(node);
-                }
+                    lastNode = node;
+                } else { isFinished = true; }
             }
         }
 
         LinkedList<Vector2D> path = new LinkedList<>();
         ANode currentParent = goalANode;
+        if (upperBound != -1) { currentParent = lastNode; }
+        
         while (currentParent != null) {
             path.add(currentParent.POSITION);
             ANode oldNode = currentParent;
