@@ -69,4 +69,9 @@ public class ControllerSurveillance extends Controller {
             }
         }
     }
+
+    @Override
+    protected void updateProgress() {
+        endingSurveillance.updateState(currentState);
+    }
 }

@@ -55,7 +55,6 @@ public abstract class Controller {
 
     public void init() {
         initializeAgents();
-
         Vector2D[] initialPositions = spawnAgents();
         currentState = new State(initialPositions, new ArrayList[numberOfGuards + numberOfIntruders], null, null);
 
@@ -71,7 +70,6 @@ public abstract class Controller {
         for (int i = 0; i < numberOfGuards+numberOfIntruders; i++) {
             currentState.setAgentsSeen(i, updateAgentVisionMemory(i, currentState));
         }
-
         nextState = currentState.copyOf();
     }
 
@@ -232,7 +230,6 @@ public abstract class Controller {
                 }
             }
         }
-
         return agentPositions;
     }
 
@@ -293,6 +290,8 @@ public abstract class Controller {
     public State getCurrentState() { return currentState; }
     public State getNextState() { return nextState; }
     public double getTimestep() { return timestep; }
+    public double getTime() {return time;}
+
     public Agent getAgent(int agentIndex) { return agents[agentIndex]; }
 
     private Callable<Void> toCallable(final Runnable runnable) {
