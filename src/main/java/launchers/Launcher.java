@@ -1,7 +1,7 @@
 package launchers;
 
-import gamelogic.agent.tasks.ExplorationTaskFrontier;
 import gamelogic.agent.tasks.TaskContainer;
+import gamelogic.agent.tasks.general.ExplorationTaskFrontier;
 import gamelogic.controller.Controller;
 import gamelogic.controller.endingconditions.EndingExploration;
 import gamelogic.controller.endingconditions.EndingSurveillance;

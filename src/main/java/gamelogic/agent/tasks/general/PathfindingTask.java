@@ -1,10 +1,12 @@
-package gamelogic.agent.tasks;
+package gamelogic.agent.tasks.general;
 
 import java.util.LinkedList;
 import java.util.Stack;
 
 import datastructures.Vector2D;
 import gamelogic.agent.AStar;
+import gamelogic.agent.tasks.TaskContainer;
+import gamelogic.agent.tasks.TaskInterface;
 import gamelogic.agent.tasks.TaskContainer.TaskType;
 import gamelogic.controller.MovementController;
 import gamelogic.maps.graph.ExplorationGraph;

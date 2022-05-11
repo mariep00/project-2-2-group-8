@@ -1,8 +1,8 @@
 package gui.gamescreen;
 
 import datastructures.Vector2D;
-import gamelogic.agent.tasks.ExplorationTaskFrontier;
 import gamelogic.agent.tasks.TaskContainer;
+import gamelogic.agent.tasks.general.ExplorationTaskFrontier;
 import gamelogic.controller.endingconditions.EndingExploration;
 import gamelogic.maps.ScenarioMap;
 import gui.gamescreen.controller.ControllerExplorationGUI;

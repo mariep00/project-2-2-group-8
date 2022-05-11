@@ -1,7 +1,7 @@
 package experiments;
 
-import gamelogic.agent.tasks.ExplorationTaskFrontier;
 import gamelogic.agent.tasks.TaskContainer;
+import gamelogic.agent.tasks.general.ExplorationTaskFrontier;
 import gamelogic.controller.Controller;
 import gamelogic.maps.MapBuilder;
 import gamelogic.controller.endingconditions.EndingExploration;

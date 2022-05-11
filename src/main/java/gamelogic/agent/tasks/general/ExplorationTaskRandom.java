@@ -1,5 +1,7 @@
-package gamelogic.agent.tasks;
+package gamelogic.agent.tasks.general;
 
+import gamelogic.agent.tasks.TaskContainer;
+import gamelogic.agent.tasks.TaskInterface;
 import gamelogic.agent.tasks.TaskContainer.TaskType;
 
 public class ExplorationTaskRandom implements TaskInterface {

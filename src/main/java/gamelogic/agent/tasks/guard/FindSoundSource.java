@@ -1,8 +1,11 @@
-package gamelogic.agent.tasks;
+package gamelogic.agent.tasks.guard;
 
 import datastructures.Vector2D;
 import datastructures.Vector2DDouble;
 import gamelogic.agent.AStar;
+import gamelogic.agent.tasks.TaskContainer;
+import gamelogic.agent.tasks.TaskInterface;
+import gamelogic.agent.tasks.TaskContainer.TaskType;
 import gamelogic.controller.MovementController;
 import gamelogic.datacarriers.Sound;
 import gamelogic.maps.graph.ExplorationGraph;

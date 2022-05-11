@@ -1,9 +1,9 @@
 package gamelogic.agent.tasks.deciders;
 
-import gamelogic.agent.tasks.FindSoundSource;
 import gamelogic.agent.tasks.TaskContainer;
 import gamelogic.agent.tasks.TaskInterface;
 import gamelogic.agent.tasks.guard.FindGuardYellSource;
+import gamelogic.agent.tasks.guard.FindSoundSource;
 import gamelogic.datacarriers.Sound;
 import gamelogic.datacarriers.VisionMemory;
 import gamelogic.maps.graph.ExplorationGraph;

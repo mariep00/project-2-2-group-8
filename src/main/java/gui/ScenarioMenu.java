@@ -1,7 +1,7 @@
 package gui;
 
-import gamelogic.agent.tasks.ExplorationTaskFrontier;
-import gamelogic.agent.tasks.ExplorationTaskRandom;
+import gamelogic.agent.tasks.general.ExplorationTaskFrontier;
+import gamelogic.agent.tasks.general.ExplorationTaskRandom;
 import gamelogic.maps.ScenarioMap;
 import gui.gamescreen.GameScreenExploration;
 import gui.gamescreen.GameScreenSurveillance;

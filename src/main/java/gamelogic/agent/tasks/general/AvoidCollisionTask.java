@@ -1,8 +1,10 @@
-package gamelogic.agent.tasks;
+package gamelogic.agent.tasks.general;
 
 import java.util.List;
 import java.util.Stack;
 
+import gamelogic.agent.tasks.TaskContainer;
+import gamelogic.agent.tasks.TaskInterface;
 import gamelogic.agent.tasks.TaskContainer.TaskType;
 import gamelogic.datacarriers.Sound;
 import gamelogic.datacarriers.VisionMemory;
