@@ -6,7 +6,6 @@ import gamelogic.maps.Tile.Type;
 import java.util.ArrayList;
 
 public class ScenarioMap {
-
     private String fileName = "";
     private String mapName = "";
     private int gameMode = 0;
