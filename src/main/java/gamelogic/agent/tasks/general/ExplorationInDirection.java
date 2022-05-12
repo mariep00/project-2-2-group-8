@@ -15,8 +15,7 @@ import gamelogic.maps.graph.Node;
 @SuppressWarnings("unchecked")
 
 public class ExplorationInDirection extends ExplorationTaskFrontier{
-    
-    private ExplorationGraph graph;
+
     private TaskType type = TaskType.EXPLORATION_DIRECTION;
     private Vector2D target;
     private int markerThreshold = 0;

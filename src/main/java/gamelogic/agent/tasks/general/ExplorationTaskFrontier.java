@@ -4,16 +4,18 @@ import datastructures.Vector2D;
 import datastructures.quicksort.QuickSort;
 import datastructures.quicksort.SortObject;
 import gamelogic.agent.AStar;
-import gamelogic.agent.tasks.TaskContainer;
-import gamelogic.agent.tasks.TaskInterface;
 import gamelogic.agent.tasks.TaskContainer.TaskType;
+import gamelogic.agent.tasks.TaskInterface;
 import gamelogic.controller.MovementController;
+import gamelogic.datacarriers.Sound;
+import gamelogic.datacarriers.VisionMemory;
 import gamelogic.maps.Tile;
 import gamelogic.maps.graph.ExplorationGraph;
 import gamelogic.maps.graph.Node;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Stack;
 
 @SuppressWarnings("unchecked")
@@ -23,7 +25,7 @@ public class ExplorationTaskFrontier implements TaskInterface {
     private Node lastNode;
     private Stack<Integer> futureMoves;
     private double orientation;
-    private ExplorationGraph graph;
+    protected ExplorationGraph graph;
 
     private TaskType type = TaskType.EXPLORATION;
     private int markerThreshold = 0;
@@ -37,7 +39,8 @@ public class ExplorationTaskFrontier implements TaskInterface {
     }
 
     @Override
-    public int performTask(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection){
+    public int performTask(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen) {
+
         if (futureMoves == null || futureMoves.isEmpty()) {
             futureMoves = new Stack<>();
             this.orientation = orientation;

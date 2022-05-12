@@ -7,9 +7,11 @@ import gamelogic.agent.tasks.TaskContainer;
 import gamelogic.agent.tasks.TaskInterface;
 import gamelogic.controller.MovementController;
 import gamelogic.datacarriers.Sound;
+import gamelogic.datacarriers.VisionMemory;
 import gamelogic.maps.graph.ExplorationGraph;
 
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Stack;
 
 public class FindSoundSource implements TaskInterface {
@@ -22,7 +24,7 @@ public class FindSoundSource implements TaskInterface {
     private int tickCount = 0;
 
     @Override
-    public int performTask(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection) {
+    public int performTask(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen) {
         this.explorationGraph = graph;
         // Keep in mind this will most of the times be called once, while if there's is no unmatched sound i.e. source is found agent will perform different task,
         // and if sound is still unmatched a new tasks with angle will be created. Tho, could be that source is never found.
