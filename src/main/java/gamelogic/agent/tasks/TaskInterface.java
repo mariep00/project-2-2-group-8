@@ -65,11 +65,6 @@ public interface TaskInterface {
         throw new UnsupportedOperationException("This method is not supported for this class");
     }
 
-    default int performTask(ExplorationGraph graph, double orientation, LinkedList<Vector2D> path) {
-        throw new UnsupportedOperationException("This method is not supported for this class");
-    }
-
-
     default void setTarget(Sound target) {
         throw new UnsupportedOperationException("This method is not supported for this class");
     }

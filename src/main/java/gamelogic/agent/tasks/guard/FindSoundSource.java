@@ -56,7 +56,7 @@ public class FindSoundSource implements TaskInterface {
                         direction = directionRange[2];
                     }
                 }
-
+                futureMoves = new Stack<>();
                 if (direction != -1) {
                     int degreesToTurn = direction - (int) orientation;
                     if (degreesToTurn == 90) {

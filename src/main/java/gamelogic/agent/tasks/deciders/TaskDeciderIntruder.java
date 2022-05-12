@@ -81,7 +81,7 @@ public class TaskDeciderIntruder implements TaskDeciderInterface{
                 return explorationTask;
             }
         }
-        return null;
+        return currentTask;
     }
 
     private VisionMemory checkAgentInFront(VisionMemory[] intrudersSeen) {
