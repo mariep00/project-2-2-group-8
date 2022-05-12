@@ -46,6 +46,7 @@ public class PursuingTaskBaseline implements TaskInterface {
 
         while (true) {
             if (exists(goal)) { break; }
+            System.out.println(goal);
             goal = goal.add(unitDir.multiply(-1));
         }
         return goal;

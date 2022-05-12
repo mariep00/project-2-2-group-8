@@ -112,7 +112,7 @@ public class ControllerSurveillance extends Controller {
 
     @Override
     protected void updateProgress() {
-        endingSurveillance.updateState(currentState, timestep);
+        endingSurveillance.updateState(this);
     }
 
     @Override

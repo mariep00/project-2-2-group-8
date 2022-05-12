@@ -1,6 +1,6 @@
 package gamelogic.controller.endingconditions;
 
-import gamelogic.controller.State;
+import gamelogic.controller.Controller;
 import gamelogic.maps.ScenarioMap;
 import gamelogic.maps.Tile;
 
@@ -28,9 +28,9 @@ public class EndingSurveillance implements EndingConditionInterface {
         return false;
     }
 
-    public void updateState (State currentState, double timeStep){
-        for (int i = map.getNumGuards(); i<= map.getNumGuards() + map.getNumIntruders(); i++) {
-            if (currentState.getAgentPosition(i) == null){
+    public void updateState (Controller controller){
+        for (int i = 0; i<= map.getNumGuards(); i++) {
+            if (controller.getCurrentState().getAgentPosition(i) == null){
                 if (i == map.getNumGuards() + map.getNumIntruders()){
                     guardsWin = true;
                     return;
@@ -38,14 +38,15 @@ public class EndingSurveillance implements EndingConditionInterface {
             } else break;
         }
         for (int i = 0; i < timeInTargetArea.length; i++) {
-            int agentIndex = i+map.getNumGuards();
-            if (map.getTile(currentState.getAgentPosition(agentIndex)).getType() == Tile.Type.TARGET_AREA) {
-                if (timeInTargetArea[i] == 0) {
-                    timeInTargetArea[i] += timeStep;
+            if (controller.getAgent(i) != null) {
+                int agentIndex = i + map.getNumGuards();
+                if (map.getTile(controller.getCurrentState().getAgentPosition(agentIndex)).getType() == Tile.Type.TARGET_AREA) {
+                    if (timeInTargetArea[i] == 0) {
+                        timeInTargetArea[i] += controller.getTimestep();
+                    }
+                } else {
+                    timeInTargetArea[i] = 0;
                 }
-            }
-            else {
-                timeInTargetArea[i] = 0;
             }
         }
     }
