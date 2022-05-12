@@ -44,7 +44,7 @@ public class FindSoundSource implements TaskInterface {
 
             if (goal != null) {
                 LinkedList<Vector2D> nodesToGoal = AStar.calculate(graph, graph.getCurrentPosition(), graph.getNode(goal));
-                this.futureMoves = MovementController.convertPath(graph, orientation, nodesToGoal, -1);
+                this.futureMoves = MovementController.convertPath(graph, orientation, nodesToGoal, true);
             }
             // There is no goal, i.e. the direction of the sound is not explored yet
             // Create futureMoves s.t. the agent rotates towards the direction of the sound

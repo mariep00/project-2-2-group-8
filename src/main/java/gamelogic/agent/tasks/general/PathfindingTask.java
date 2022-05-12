@@ -26,14 +26,14 @@ public class PathfindingTask implements TaskInterface {
             futureMoves = new Stack<>();
             LinkedList<Vector2D> nodesToGoal = AStar.calculate(graph, graph.getCurrentPosition(), graph.getNode(target));
        
-            futureMoves = MovementController.convertPath(graph, orientation, nodesToGoal, -1);
+            futureMoves = MovementController.convertPath(graph, orientation, nodesToGoal, false);
         }
         if(futureMoves.size()==1) finished=true;
         return futureMoves.pop();
     }
 
     public void setPath(ExplorationGraph graph, double orientation, LinkedList<Vector2D> path) {
-        this.futureMoves = MovementController.convertPath(graph, orientation, path, -1);
+        this.futureMoves = MovementController.convertPath(graph, orientation, path, false);
     }
     @Override
     public TaskType getType() {

@@ -118,7 +118,9 @@ public class ControllerSurveillance extends Controller {
     @Override
     protected void updateAgentsSeen() {
         for (int i = 0; i < agents.length; i++) {
-            nextState.setAgentsSeen(i, updateAgentVisionMemory(i, nextState));
+            if (agents[i] != null) {
+                nextState.setAgentsSeen(i, updateAgentVisionMemory(i, nextState));
+            }
         }
     }
     private VisionMemory[] updateAgentVisionMemory(int agentIndex, State state) {

@@ -154,7 +154,7 @@ public class ExplorationTaskFrontier implements TaskInterface {
         LinkedList<Vector2D> nodesToGoal = AStar.calculate(graph, graph.getCurrentPosition(), goalNode);
         if (nodesToGoal == null) return false;
 
-        futureMoves = MovementController.convertPath(graph, orientation, nodesToGoal, -1);
+        futureMoves = MovementController.convertPath(graph, orientation, nodesToGoal, true);
         return true;
         //For every node in nodes to Goal
         //Check agent's positon

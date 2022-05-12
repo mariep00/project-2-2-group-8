@@ -33,7 +33,7 @@ public class VisitLastSeenIntruderPositions implements TaskInterface {
             target = intrudersSeen[currentIndex].position().add(graph.getCurrentPosition().COORDINATES);
             LinkedList<Vector2D> nodesToGoal = AStar.calculate(graph, graph.getCurrentPosition(), graph.getNode(target));
 
-            this.futureMoves = MovementController.convertPath(graph, orientation, nodesToGoal, -1);
+            this.futureMoves = MovementController.convertPath(graph, orientation, nodesToGoal, true);
         }
         return futureMoves.pop();
     }

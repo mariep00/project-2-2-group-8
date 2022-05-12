@@ -29,9 +29,9 @@ public class PursuingTaskBaseline implements TaskInterface {
 
             targetPos = target.position().add(graph.getCurrentPosition().COORDINATES);
             Vector2D placeToGo = findGoal(targetPos, target.orientation());
-            LinkedList<Vector2D> nodesToGoal = AStar.calculate(graph, graph.getCurrentPosition(), graph.getNode(placeToGo));
+            LinkedList<Vector2D> nodesToGoal = AStar.calculate(graph, graph.getCurrentPosition(), graph.getNode(placeToGo), 3);
 
-            this.futureMoves = MovementController.convertPath(graph, orientation, nodesToGoal, 3);
+            this.futureMoves = MovementController.convertPath(graph, orientation, nodesToGoal, false);
         }
         return futureMoves.pop();
     }
