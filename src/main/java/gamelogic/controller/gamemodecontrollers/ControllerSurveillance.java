@@ -89,7 +89,7 @@ public class ControllerSurveillance extends Controller {
                     if (currentState.getVision(i).contains(currentState.getAgentPosition(j))) {
                         currentState.addGuardYell(new GuardYell(currentState.getAgentPosition(i), i));
                     }
-                    // TODO I assume an intruder can also be caught when it's 1 square away diagonally?
+                    System.out.println("Distance to intruder " + currentState.getAgentPosition(i).dist(currentState.getAgentPosition(j)));
                     if (currentState.getAgentPosition(i).dist(currentState.getAgentPosition(j)) <= Math.sqrt(2)) {
                         removeAgent(j);
                     }
@@ -142,6 +142,7 @@ public class ControllerSurveillance extends Controller {
                         if (pos.equals(state.getAgentPosition(i))) {
                             otherAgentsSeen[i] = new VisionMemory(convertAbsolutePosToRelativeToCurrentPos(pos, agentIndex, state), 0, agents[i].getOrientation());
                             // Check if agent we're updating is a guard and agent we're seeing is an intruder, then yell
+                            if (otherAgentsSeen[i].position().equals(new Vector2D(0, 0))) System.out.println("EQUALS TO 0,0");
                             if (agentIndex < numberOfGuards && i >= numberOfGuards)
                                 soundController.generateGuardYell(agentIndex);
                             break outer;
@@ -182,8 +183,8 @@ public class ControllerSurveillance extends Controller {
 
     private void removeAgent(int agentIndex) {
         agents[agentIndex] = null;
-        currentState.setAgentVision(agentIndex, null);
-        currentState.setAgentPosition(agentIndex, null);
+        nextState.setAgentVision(agentIndex, null);
+        nextState.setAgentPosition(agentIndex, null);
     }
 
     public ExplorationGraph getMapGraph() { return mapGraph; }

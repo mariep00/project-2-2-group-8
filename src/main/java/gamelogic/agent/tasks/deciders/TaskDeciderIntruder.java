@@ -19,7 +19,7 @@ public class TaskDeciderIntruder implements TaskDeciderInterface{
     private final TaskContainer tasks;
     // TODO: Adjust thresholds
     private final double angleSpawnToGoal;
-    private final double soundThreshold = 5.0;
+    private final double soundThreshold = 0.5;
     private final double secondsAgoThreshold = 7.0;
     private final double angleThreshold = 10.0;
 
@@ -125,7 +125,7 @@ public class TaskDeciderIntruder implements TaskDeciderInterface{
                 //check if there was an intruder in that direction, if so then the sound should not be considered
                 if (!isSoundMatched(sound, anglesIntruders)) {
                     if (soundToAvoid == null) soundToAvoid = sound;
-                    if (soundToAvoid != null && sound.loudness() > soundToAvoid.loudness()) soundToAvoid = sound;
+                    if (sound.loudness() > soundToAvoid.loudness()) soundToAvoid = sound;
                 }
             }
         }

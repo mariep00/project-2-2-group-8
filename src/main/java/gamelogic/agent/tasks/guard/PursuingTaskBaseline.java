@@ -42,11 +42,11 @@ public class PursuingTaskBaseline implements TaskInterface {
         } else if (orien == 90.0) { unitDir = new Vector2D(0, 1);
         } else if (orien == 180.0) { unitDir = new Vector2D(-1, 0);
         } else { unitDir = new Vector2D(0, -1);}
-        Vector2D goal = pos.add(unitDir.multiply(3));
 
-        while (true) {
-            if (exists(goal)) { break; }
-            System.out.println(goal);
+        double distanceInFrontOfIntruder = target.position().magnitude()*0.3333334;
+
+        Vector2D goal = pos.add(unitDir.multiply((int) Math.round(distanceInFrontOfIntruder)));
+        while (!exists(goal)) {
             goal = goal.add(unitDir.multiply(-1));
         }
         return goal;

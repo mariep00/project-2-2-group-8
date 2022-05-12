@@ -97,7 +97,6 @@ public class MovementController {
      * Method to convert a path of Vector2D's to actions in integers for the controller
      * @param graph the exploration graph of the agent
      * @param path the path calculated by e.g. AStar
-     * @param length how many moves should be returned, -1 if all
      * @return
      */
     public static Stack<Integer> convertPath (ExplorationGraph graph, double orientation, LinkedList<Vector2D> path, boolean exploration) {

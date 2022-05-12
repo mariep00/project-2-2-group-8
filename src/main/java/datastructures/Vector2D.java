@@ -90,7 +90,6 @@ public class Vector2D {
         return thetaWithEastToRight < 0 ? Math.toDegrees(thetaWithEastToRight)+360 : Math.toDegrees(thetaWithEastToRight);
     }
 
-
     @Override
     public int hashCode() {
         int hash = 31+this.x;
