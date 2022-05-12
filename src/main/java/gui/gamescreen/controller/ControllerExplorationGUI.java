@@ -35,7 +35,14 @@ public class ControllerExplorationGUI extends ControllerExploration implements C
             controllerGUI.killGuiThread();
             Platform.runLater(gameScreen::endScreen);
         });
+        int hours = (int) time / 3600;
+        int minutes = ((int)time % 3600) / 60;
+        double seconds = time % 60;
+        int steps = (int) (time/getTimestep());
+        System.out.println("Everything is explored. It took " + hours + " hour(s) " + minutes + " minutes " + seconds + " seconds. Steps taken: " + steps);
+
     }
+
     @Override
     public void init() {
         super.init();
@@ -87,6 +94,14 @@ public class ControllerExplorationGUI extends ControllerExploration implements C
     @Override
     public AtomicBoolean getRunSimulation() {
         return controllerGUI.getRunSimulation();
+    }
+
+    public GameScreen getGameScreen() {
+        return gameScreen;
+    }
+
+    public ControllerGUI getControllerGUI() {
+        return controllerGUI;
     }
 
     // TODO Update the progress of the exploration in the gui

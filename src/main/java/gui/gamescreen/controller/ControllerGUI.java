@@ -143,4 +143,7 @@ public class ControllerGUI implements ControllerGUIInterface {
     public void addGuiRunnableToQueue(Runnable runnable) { guiTasksQueue.add(() -> Platform.runLater(runnable)); }
     public void killLogicThread(){ logicThreadKilled.set(true); }
     public void killGuiThread(){ guiThreadKilled.set(true); }
+    public Controller getMainController() {
+        return controller;
+    }
 }

@@ -119,13 +119,24 @@ public abstract class Controller {
         time += timestep;
     }
 
-    protected void end() {
+    public void end() {
         int hours = (int) time / 3600;
         int minutes = ((int)time % 3600) / 60;
         double seconds = time % 60;
+        int steps = (int) (time/getTimestep());
         threadPool.shutdown();
 
-        System.out.println("Everything is explored. It took " + hours + " hour(s) " + minutes + " minutes " + seconds + " seconds.");
+        System.out.println("Everything is explored. It took " + hours + " hour(s) " + minutes + " minutes " + seconds + " seconds. Steps taken: " + steps);
+    }
+    public int getSteps(){
+        return (int) (time/getTimestep());
+    }
+
+    public String getTotalTime(){
+        int hours = (int) time / 3600;
+        int minutes = ((int)time % 3600) / 60;
+        double seconds = time % 60;
+        return hours +" "+minutes+" "+seconds;
     }
 
     protected List<Vector2D> calculateFOV(int agentIndex, Vector2D agentPosition) {

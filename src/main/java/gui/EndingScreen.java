@@ -1,5 +1,8 @@
 package gui;
 
+import gamelogic.controller.Controller;
+import gui.gamescreen.GameScreenExploration;
+import gui.gamescreen.controller.ControllerGUI;
 import gui.util.MainGUI;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -18,13 +21,28 @@ import javafx.stage.StageStyle;
 public class EndingScreen {
     private Stage endingStage;
 
-    public EndingScreen (Object classObject, Scene scene, Stage stage){
+    public EndingScreen (Object classObject, Scene scene, Stage stage, Controller controller){
         Label finishTitle = new Label("Game finished"); //TODO: change the colour
         finishTitle.setStyle("-fx-font-size: " + 55 + "px;");
+        finishTitle.setTextFill(Color.web("#4c72d0"));
+        int hours = (int) controller.time / 3600;
+        int minutes = ((int)controller.time % 3600) / 60;
+        double seconds = Math.round(controller.time % 60);
+        int steps = (int) (controller.time/controller.getTimestep());
+
+        Label time = new Label("Time taken: " + hours + " hour(s) " + minutes + " minutes " + seconds + " seconds");
+        time.setStyle("-fx-font-size: " + 55 + "px;");
+        time.setTextFill(Color.WHITE);
+
+
+        Label step = new Label("Steps taken: " + steps);
+        step.setStyle("-fx-font-size: " + 55 + "px;");
+        step.setTextFill(Color.WHITE);
+
 
         Button mainMenuButton = new Button("Back to main menu");
         Button desktopButton = new Button("Quit to desktop");
-        VBox vboxButtons = new VBox(30, mainMenuButton, desktopButton);
+        VBox vboxButtons = new VBox(30, time, step, mainMenuButton, desktopButton);
         for (Node node : vboxButtons.getChildren()) {
             if (node instanceof Button) {
                 ((Button) node).setPrefWidth(270);
@@ -76,6 +94,8 @@ public class EndingScreen {
         mainMenuButton.setOnAction(e -> MainGUI.backToMainMenuAlert(stage,() -> closePauseMenu(scene, classObject)));
         desktopButton.setOnAction(e -> MainGUI.quitToDesktopAlert(stage));
     }
+
+
     public void closePauseMenu(Scene scene, Object classObject) {
         scene.getRoot().setEffect(null);
         endingStage.close();

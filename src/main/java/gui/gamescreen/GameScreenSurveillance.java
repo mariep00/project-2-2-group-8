@@ -4,6 +4,7 @@ import gamelogic.agent.tasks.ExplorationTaskFrontier;
 import gamelogic.agent.tasks.TaskContainer;
 import gamelogic.controller.endingconditions.EndingSurveillance;
 import gamelogic.maps.ScenarioMap;
+import gui.EndingScreen;
 import gui.gamescreen.controller.ControllerSurveillanceGUI;
 import javafx.stage.Stage;
 
@@ -29,6 +30,8 @@ public class GameScreenSurveillance extends GameScreen {
 
     @Override
     public void endScreen(){
+        EndingScreen endingScreen = new EndingScreen(this, controllerSurveillanceGUI.getGameScreen().getStage().getScene(), controllerSurveillanceGUI.getGameScreen().getStage(), controllerSurveillanceGUI);
 
+        controllerSurveillanceGUI.getControllerGUI().getMainController().end();
     }
 }
