@@ -24,7 +24,7 @@ public class EvasionTaskBaseline implements TaskInterface {
 
     @Override
     public int performTask(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen) {
-        if (futureMoves.isEmpty() || futureMoves == null) {
+        if (futureMoves == null || futureMoves.isEmpty()) {
             this.graph = graph;
             futureMoves = new Stack<>();
 

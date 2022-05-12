@@ -84,7 +84,7 @@ public class ControllerSurveillance extends Controller {
     protected void tickAgents() {
         super.tickAgents();
         for (int i = 0; i < numberOfGuards; i++) {
-            for (int j = numberOfIntruders; j < numberOfGuards+numberOfIntruders; j++) {
+            for (int j = numberOfGuards; j < numberOfGuards+numberOfIntruders; j++) {
                 if (agents[j] != null) {
                     if (currentState.getVision(i).contains(currentState.getAgentPosition(j))) {
                         currentState.addGuardYell(new GuardYell(currentState.getAgentPosition(i), i));

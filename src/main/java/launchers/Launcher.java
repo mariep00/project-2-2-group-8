@@ -12,6 +12,7 @@ import gamelogic.controller.Controller;
 import gamelogic.controller.endingconditions.EndingExploration;
 import gamelogic.controller.endingconditions.EndingSurveillance;
 import gamelogic.controller.gamemodecontrollers.ControllerExploration;
+import gamelogic.controller.endingconditions.EndingSurveillance;
 import gamelogic.controller.gamemodecontrollers.ControllerSurveillance;
 import gamelogic.maps.MapBuilder;
 import gamelogic.maps.ScenarioMap;

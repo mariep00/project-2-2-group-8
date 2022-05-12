@@ -1,8 +1,12 @@
 package gamelogic.agent.tasks.general;
 
-import gamelogic.agent.tasks.TaskContainer;
-import gamelogic.agent.tasks.TaskInterface;
 import gamelogic.agent.tasks.TaskContainer.TaskType;
+import gamelogic.agent.tasks.TaskInterface;
+import gamelogic.datacarriers.Sound;
+import gamelogic.datacarriers.VisionMemory;
+import gamelogic.maps.graph.ExplorationGraph;
+
+import java.util.List;
 
 public class ExplorationTaskRandom implements TaskInterface {
 
@@ -14,8 +18,8 @@ public class ExplorationTaskRandom implements TaskInterface {
     int w2 = 75;
 
     @Override
-    public int performTask() {
-        
+    public int performTask(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen) {
+
         int r = (int)(Math.random()*(max-min+1)+min);
         if(r<=w0){
             w0 = 60;

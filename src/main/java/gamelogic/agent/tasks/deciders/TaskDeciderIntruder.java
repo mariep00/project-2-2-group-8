@@ -86,9 +86,11 @@ public class TaskDeciderIntruder implements TaskDeciderInterface{
 
     private VisionMemory checkAgentInFront(VisionMemory[] intrudersSeen) {
         for(VisionMemory memory : intrudersSeen) {
-            // check if there is an intruder currently visible and directly in front of own position
-            if (memory.secondsAgo() == 0 && memory.position().magnitude()==1.0) {
-                return memory;
+            if (memory != null) {
+                // check if there is an intruder currently visible and directly in front of own position
+                if (memory.secondsAgo() == 0 && memory.position().magnitude() == 1.0) {
+                    return memory;
+                }
             }
         }
         return null;
@@ -98,10 +100,12 @@ public class TaskDeciderIntruder implements TaskDeciderInterface{
         VisionMemory closestGuard = null;
         // Check if there's a guard currently in vision
         for (VisionMemory memory : guardsSeen) {
-            if (memory.secondsAgo() == 0) {
-                // Keep track of the closest guard
-                if (closestGuard == null || memory.position().magnitude() < closestGuard.position().magnitude()) {
-                    closestGuard = memory;
+            if (memory != null) {
+                if (memory.secondsAgo() == 0) {
+                    // Keep track of the closest guard
+                    if (closestGuard == null || memory.position().magnitude() < closestGuard.position().magnitude()) {
+                        closestGuard = memory;
+                    }
                 }
             }
         }

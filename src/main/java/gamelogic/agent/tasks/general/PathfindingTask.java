@@ -5,9 +5,12 @@ import gamelogic.agent.AStar;
 import gamelogic.agent.tasks.TaskContainer.TaskType;
 import gamelogic.agent.tasks.TaskInterface;
 import gamelogic.controller.MovementController;
+import gamelogic.datacarriers.Sound;
+import gamelogic.datacarriers.VisionMemory;
 import gamelogic.maps.graph.ExplorationGraph;
 
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Stack;
 
 public class PathfindingTask implements TaskInterface {
@@ -18,7 +21,7 @@ public class PathfindingTask implements TaskInterface {
     private boolean finished = false;
 
     @Override
-    public int performTask(ExplorationGraph graph, double orientation){
+    public int performTask(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen) {
         if (futureMoves == null || futureMoves.isEmpty()) {
             futureMoves = new Stack<>();
             LinkedList<Vector2D> nodesToGoal = AStar.calculate(graph, graph.getCurrentPosition(), graph.getNode(target));
