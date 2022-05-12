@@ -15,7 +15,7 @@ import java.util.concurrent.*;
 
 // Abstract because you should not instantiate a Controller class, but either a ControllerExploration or ControllerSurveillance class
 public abstract class Controller {
-    private static final boolean MULTITHREAD_CONTROLLER = false; // Change this to enable or disable multithreading in the controller. Currently, only ticking agents will be multithreaded.
+    protected final boolean multithreadController = false; // Change this to enable or disable multithreading in the controller. Currently, only ticking agents will be multithreaded.
     protected final Random rand = new Random();
 
     public final TaskContainer taskContainer;
@@ -34,7 +34,7 @@ public abstract class Controller {
     protected double timestep;
     public double time;
 
-    private final ThreadPoolExecutor threadPool;
+    protected final ThreadPoolExecutor threadPool;
 
     public Controller(ScenarioMap scenarioMap, EndingConditionInterface endingCondition, TaskContainer taskContainer) {
         this.taskContainer = taskContainer;
@@ -47,7 +47,7 @@ public abstract class Controller {
         this.movementController = new MovementController(this);
         this.markerController = new MarkerController(this);
         this.endingCondition = endingCondition;
-        if (MULTITHREAD_CONTROLLER) threadPool = new ThreadPoolExecutor(Runtime.getRuntime().availableProcessors()/2, 50, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
+        if (multithreadController) threadPool = new ThreadPoolExecutor(Runtime.getRuntime().availableProcessors()/2, 50, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
         else threadPool = null;
     }
 
@@ -90,14 +90,14 @@ public abstract class Controller {
         tickAgents();
 
         List<Callable<Void>> taskList = new ArrayList<>();
-        if (MULTITHREAD_CONTROLLER) taskList.add(toCallable(this::updateAgentsSeen));
+        if (multithreadController) taskList.add(toCallable(this::updateAgentsSeen));
         else updateAgentsSeen();
-        if (MULTITHREAD_CONTROLLER) taskList.add(toCallable(markerController::tick));
+        if (multithreadController) taskList.add(toCallable(markerController::tick));
         else markerController.tick();
-        if (MULTITHREAD_CONTROLLER) taskList.add(toCallable(this::updateProgress));
+        if (multithreadController) taskList.add(toCallable(this::updateProgress));
         else updateProgress();
 
-        if (MULTITHREAD_CONTROLLER) {
+        if (multithreadController) {
             try {
                 threadPool.invokeAll(taskList);
             } catch (InterruptedException e) {
@@ -113,11 +113,11 @@ public abstract class Controller {
         for (int i = 0; i < agents.length; i++) {
             if (agents[i] != null) {
                 int finalI = i;
-                if (MULTITHREAD_CONTROLLER) taskList.add(toCallable(() -> tickAgent(finalI)));
+                if (multithreadController) taskList.add(toCallable(() -> tickAgent(finalI)));
                 else tickAgent(finalI);
             }
         }
-        if (MULTITHREAD_CONTROLLER) {
+        if (multithreadController) {
             try {
                 threadPool.invokeAll(taskList);
             } catch (InterruptedException e) {
@@ -131,14 +131,6 @@ public abstract class Controller {
         currentState = nextState;
         nextState = currentState.copyOf();
         time += timestep;
-    }
-
-    protected void end() {
-        int hours = (int) time / 3600;
-        int minutes = ((int)time % 3600) / 60;
-        double seconds = time % 60;
-        if (threadPool != null) threadPool.shutdown();
-        System.out.println("Everything is explored. It took " + hours + " hour(s) " + minutes + " minutes " + seconds + " seconds.");
     }
 
     protected List<Vector2D> calculateFOV(int agentIndex, Vector2D agentPosition) {
@@ -235,6 +227,7 @@ public abstract class Controller {
     protected void updateGui() {}
     protected void initializeAgents() {}
     protected void updateProgress() {}
+    protected void end() {}
 
     public int getNumberOfGuards() { return numberOfGuards; }
     public int getNumberOfIntruders() { return numberOfIntruders; }
