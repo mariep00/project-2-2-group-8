@@ -3,7 +3,6 @@ package gui.gamescreen;
 import datastructures.Vector2D;
 import gamelogic.controller.Controller;
 import gamelogic.maps.ScenarioMap;
-import gui.EndingScreen;
 import gui.gamescreen.controller.ControllerGUIInterface;
 import gui.util.HelperGUI;
 import gui.util.ImageContainer;
@@ -221,7 +220,7 @@ public class GameScreen extends Application implements TransitionInterface {
             if (!getController().getRunSimulation().get()) {
                 Arrays.fill(showVision, true);
                 for (int i = 0; i < scenarioMap.getNumGuards()+scenarioMap.getNumIntruders(); i++) {
-                    getController().showVision(i);
+                    if (getController().doesAgentExist(i)) getController().showVision(i);
                 }
             }
         });
@@ -229,7 +228,7 @@ public class GameScreen extends Application implements TransitionInterface {
             if (!getController().getRunSimulation().get()) {
                 Arrays.fill(showVision, false);
                 for (int i = 0; i < scenarioMap.getNumGuards()+scenarioMap.getNumIntruders(); i++) {
-                    getController().hideVision(i);
+                    if (getController().doesAgentExist(i)) getController().hideVision(i);
                 }
             }
         });

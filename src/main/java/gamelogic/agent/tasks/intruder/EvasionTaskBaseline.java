@@ -30,7 +30,7 @@ public class EvasionTaskBaseline implements TaskInterface {
 
             double angle = targetAngle - 180.0;
             Vector2D goal = findGoal(angle);
-            System.out.println("new Task created");
+            //System.out.println("new Task created");
             LinkedList<Vector2D> nodesToGoal = AStar.calculate(graph, graph.getCurrentPosition(), graph.getNode(goal), 3);
 
             this.futureMoves = MovementController.convertPath(graph, orientation, nodesToGoal, false);
@@ -46,15 +46,15 @@ public class EvasionTaskBaseline implements TaskInterface {
         double distance = 10.0;
         Vector2D curPos = graph.getCurrentPosition().COORDINATES;
         Vector2D goal = VisionController.calculatePoint(curPos, distance, angle);
-        System.out.println("Current Pos: " + curPos + " Goal: " + goal);
+        //System.out.println("Current Pos: " + curPos + " Goal: " + goal);
         while (true) {
             if (graph.isVisited(goal)) { return goal; }
             distance--;
             if (distance<4.0) {
                 Vector2D leftGoal = findGoalLeft(angle-5.0);
                 Vector2D rightGoal = findGoalRight(angle+5.0);
-                System.out.println("Left Goal Angle " + (angle-5.0));
-                System.out.println("Right Goal Angle " + (angle+5.0));
+                //System.out.println("Left Goal Angle " + (angle-5.0));
+                //System.out.println("Right Goal Angle " + (angle+5.0));
                 if (curPos.dist(leftGoal) < curPos.dist(rightGoal)) {
                     goal = rightGoal;
                 } else { goal = leftGoal; }

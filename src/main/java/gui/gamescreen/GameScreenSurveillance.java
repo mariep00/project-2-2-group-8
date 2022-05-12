@@ -1,5 +1,6 @@
 package gui.gamescreen;
 
+import datastructures.Vector2D;
 import gamelogic.agent.tasks.TaskContainer;
 import gamelogic.agent.tasks.general.ExplorationInDirection;
 import gamelogic.agent.tasks.general.ExplorationTaskFrontier;
@@ -40,5 +41,11 @@ public class GameScreenSurveillance extends GameScreen {
         EndingScreen endingScreen = new EndingScreen(this, controllerSurveillanceGUI.getGameScreen().getStage().getScene(), controllerSurveillanceGUI.getGameScreen().getStage(), controllerSurveillanceGUI);
 
         controllerSurveillanceGUI.getControllerGUI().getMainController().end();
+    }
+
+    public void removeAgent(int agentIndex) {
+        Vector2D agentPos = controllerSurveillanceGUI.getCurrentState().getAgentPosition(agentIndex);
+        tiles[agentPos.y][agentPos.x].resetCharacterImage();
+        removeVision(null, controllerSurveillanceGUI.getCurrentState().getVision(agentIndex));
     }
 }

@@ -29,7 +29,7 @@ public class VisitLastSeenIntruderPositions implements TaskInterface {
                 if (currentIndex >= intrudersSeen.length) currentIndex = 0;
             }
         }
-        if (futureMoves.isEmpty()) {
+        if (futureMoves == null || futureMoves.isEmpty()) {
             target = intrudersSeen[currentIndex].position().add(graph.getCurrentPosition().COORDINATES);
             LinkedList<Vector2D> nodesToGoal = AStar.calculate(graph, graph.getCurrentPosition(), graph.getNode(target));
 

@@ -29,9 +29,9 @@ public class EndingSurveillance implements EndingConditionInterface {
     }
 
     public void updateState (Controller controller){
-        for (int i = 0; i<= map.getNumGuards(); i++) {
-            if (controller.getCurrentState().getAgentPosition(i) == null){
-                if (i == map.getNumGuards() + map.getNumIntruders()){
+        for (int i = map.getNumGuards(); i < map.getNumGuards()+map.getNumIntruders(); i++) {
+            if (controller.getAgent(i) == null) {
+                if (i == (map.getNumGuards() + map.getNumIntruders())-1) {
                     guardsWin = true;
                     return;
                 }

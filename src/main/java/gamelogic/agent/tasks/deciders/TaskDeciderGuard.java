@@ -35,7 +35,6 @@ public class TaskDeciderGuard implements TaskDeciderInterface {
         // 1. Check if intruder is in vision
         VisionMemory intruderToPursuit = getIntruderInVision(intrudersSeen);
         if (intruderToPursuit != null) {
-            System.out.println(intruderToPursuit);
             // There is an intruder in vision
             // We should start the pursuit task
             TaskInterface pursuitTask = tasks.getTask(TaskContainer.TaskType.GUARD_PURSUIT);

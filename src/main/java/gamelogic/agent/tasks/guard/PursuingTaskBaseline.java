@@ -19,19 +19,31 @@ public class PursuingTaskBaseline implements TaskInterface {
     private TaskType type = TaskType.GUARD_PURSUIT;
     private Stack<Integer> futureMoves;
     private VisionMemory target;
-    private Vector2D targetPos;
+
+    private Vector2D placeToGo;
 
     @Override
     public int performTask(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen) {
         if (futureMoves == null || futureMoves.isEmpty()) {
             this.graph = graph;
-            //VisionMemory closestIntruder = getActiveIntruder(intrudersSeen);
 
-            targetPos = target.position().add(graph.getCurrentPosition().COORDINATES);
-            Vector2D placeToGo = findGoal(targetPos, target.orientation());
+            Vector2D targetPos = target.position().add(graph.getCurrentPosition().COORDINATES);
+            if (!graph.isVisited(targetPos)) {
+                try {
+                    throw new Exception("The target in PursuingTaskBaseline is not known in the graph!");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            placeToGo = findGoal(targetPos, target.orientation());
             LinkedList<Vector2D> nodesToGoal = AStar.calculate(graph, graph.getCurrentPosition(), graph.getNode(placeToGo), 3);
-
-            this.futureMoves = MovementController.convertPath(graph, orientation, nodesToGoal, false);
+            try {
+                placeToGo = nodesToGoal.getLast();
+                this.futureMoves = MovementController.convertPath(graph, orientation, nodesToGoal, false);
+            }
+            catch (NullPointerException e) {
+                e.printStackTrace();
+            }
         }
         return futureMoves.pop();
     }
@@ -71,7 +83,7 @@ public class PursuingTaskBaseline implements TaskInterface {
     }
 
     @Override
-    public boolean isFinished() { return targetPos.equals(graph.getCurrentPosition().COORDINATES); }
+    public boolean isFinished() { return placeToGo.equals(graph.getCurrentPosition().COORDINATES); }
 
     @Override
     public Object getTarget() { return target;}

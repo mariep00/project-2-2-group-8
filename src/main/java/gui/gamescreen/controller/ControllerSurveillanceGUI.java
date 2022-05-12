@@ -5,6 +5,7 @@ import gamelogic.controller.endingconditions.EndingSurveillance;
 import gamelogic.controller.gamemodecontrollers.ControllerSurveillance;
 import gamelogic.maps.ScenarioMap;
 import gui.gamescreen.GameScreen;
+import gui.gamescreen.GameScreenSurveillance;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -22,6 +23,12 @@ public class ControllerSurveillanceGUI extends ControllerSurveillance implements
     public void init() {
         super.init();
         controllerGUI.init();
+    }
+
+    @Override
+    protected void removeAgent(int agentIndex) {
+        ((GameScreenSurveillance) gameScreen).removeAgent(agentIndex);
+        super.removeAgent(agentIndex);
     }
 
     @Override
@@ -67,6 +74,11 @@ public class ControllerSurveillanceGUI extends ControllerSurveillance implements
     @Override
     public AtomicBoolean getRunSimulation() {
         return controllerGUI.getRunSimulation();
+    }
+
+    @Override
+    public boolean doesAgentExist(int agentIndex) {
+        return controllerGUI.doesAgentExist(agentIndex);
     }
 
     public GameScreen getGameScreen() {

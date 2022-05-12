@@ -76,18 +76,20 @@ public class ControllerGUI implements ControllerGUIInterface {
 
     public void updateGui() {
         for (int i = 0; i < controller.getNumberOfGuards()+controller.getNumberOfIntruders(); i++) {
-            AgentType agentType;
-            if (i < controller.getNumberOfGuards()) agentType = AgentType.GUARD;
-            else agentType = AgentType.INTRUDER;
+            if (controller.getAgent(i) != null) {
+                AgentType agentType;
+                if (i < controller.getNumberOfGuards()) agentType = AgentType.GUARD;
+                else agentType = AgentType.INTRUDER;
 
-            int finalI = i;
-            Vector2D currentPos = controller.getCurrentState().getAgentPosition(finalI);
-            Vector2D nextPos = controller.getNextState().getAgentPosition(finalI);
-            List<Vector2D> currentVision = getVisionToRemove(finalI, controller.getCurrentState().getVision(finalI));
-            List<Vector2D> nextVision = controller.getNextState().getVision(finalI);
+                int finalI = i;
+                Vector2D currentPos = controller.getCurrentState().getAgentPosition(finalI);
+                Vector2D nextPos = controller.getNextState().getAgentPosition(finalI);
+                List<Vector2D> currentVision = getVisionToRemove(finalI, controller.getCurrentState().getVision(finalI));
+                List<Vector2D> nextVision = controller.getNextState().getVision(finalI);
 
-            guiTasksQueue.add(() -> Platform.runLater(() -> gameScreen.moveAgent(executeNextGuiTask, finalI, currentPos, nextPos, agentType)));
-            guiTasksQueue.add(() -> Platform.runLater(() -> gameScreen.updateVision(executeNextGuiTask, finalI, currentVision, nextVision)));
+                guiTasksQueue.add(() -> Platform.runLater(() -> gameScreen.moveAgent(executeNextGuiTask, finalI, currentPos, nextPos, agentType)));
+                guiTasksQueue.add(() -> Platform.runLater(() -> gameScreen.updateVision(executeNextGuiTask, finalI, currentVision, nextVision)));
+            }
         }
     }
 
@@ -97,7 +99,7 @@ public class ControllerGUI implements ControllerGUIInterface {
             boolean remove = true;
             outer:
             for (int i = 0; i < controller.getCurrentState().getVisions().length; i++) {
-                if (i != agentIndex && gameScreen.getShowVision(i)) {
+                if (i != agentIndex && gameScreen.getShowVision(i) && controller.getAgent(i) != null) {
                     List<Vector2D> others = controller.getNextState().getVision(i);
                     for (Vector2D posOther : others) {
                         if (posOther.equals(pos)) {
@@ -139,6 +141,12 @@ public class ControllerGUI implements ControllerGUIInterface {
     public void continueThreads() { gamePaused.set(false); }
     @Override
     public AtomicBoolean getRunSimulation() { return runSimulation; }
+
+    @Override
+    public boolean doesAgentExist(int agentIndex) {
+        return controller.getAgent(agentIndex) != null;
+    }
+
     public AtomicBoolean getExecuteNextGuiTask() { return executeNextGuiTask; }
     public void addGuiRunnableToQueue(Runnable runnable) { guiTasksQueue.add(() -> Platform.runLater(runnable)); }
     public void killLogicThread(){ logicThreadKilled.set(true); }

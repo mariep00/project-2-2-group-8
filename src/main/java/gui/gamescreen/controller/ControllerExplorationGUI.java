@@ -96,6 +96,11 @@ public class ControllerExplorationGUI extends ControllerExploration implements C
         return controllerGUI.getRunSimulation();
     }
 
+    @Override
+    public boolean doesAgentExist(int agentIndex) {
+        return controllerGUI.doesAgentExist(agentIndex);
+    }
+
     public GameScreen getGameScreen() {
         return gameScreen;
     }

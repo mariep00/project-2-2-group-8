@@ -86,11 +86,10 @@ public class ControllerSurveillance extends Controller {
         for (int i = 0; i < numberOfGuards; i++) {
             for (int j = numberOfGuards; j < numberOfGuards+numberOfIntruders; j++) {
                 if (agents[j] != null) {
-                    if (currentState.getVision(i).contains(currentState.getAgentPosition(j))) {
-                        currentState.addGuardYell(new GuardYell(currentState.getAgentPosition(i), i));
+                    if (nextState.getVision(i).contains(nextState.getAgentPosition(j))) {
+                        nextState.addGuardYell(new GuardYell(nextState.getAgentPosition(i), i));
                     }
-                    System.out.println("Distance to intruder " + currentState.getAgentPosition(i).dist(currentState.getAgentPosition(j)));
-                    if (currentState.getAgentPosition(i).dist(currentState.getAgentPosition(j)) <= Math.sqrt(2)) {
+                    if (nextState.getAgentPosition(i).dist(nextState.getAgentPosition(j)) <= Math.sqrt(2)) {
                         removeAgent(j);
                     }
                 }
@@ -126,7 +125,7 @@ public class ControllerSurveillance extends Controller {
 
     @Override
     public void end() {
-        System.out.println("Surveillance ended");
+        System.out.println("----- SURVEILLANCE ENDED -----");
     }
 
     private VisionMemory[] updateAgentVisionMemory(int agentIndex, State state) {
@@ -142,7 +141,13 @@ public class ControllerSurveillance extends Controller {
                         if (pos.equals(state.getAgentPosition(i))) {
                             otherAgentsSeen[i] = new VisionMemory(convertAbsolutePosToRelativeToCurrentPos(pos, agentIndex, state), 0, agents[i].getOrientation());
                             // Check if agent we're updating is a guard and agent we're seeing is an intruder, then yell
-                            if (otherAgentsSeen[i].position().equals(new Vector2D(0, 0))) System.out.println("EQUALS TO 0,0");
+                           if (otherAgentsSeen[i].position().equals(new Vector2D(0, 0))) {
+                               try {
+                                   throw new Exception("Agent sees other agent at own position!");
+                               } catch (Exception e) {
+                                   e.printStackTrace();
+                               }
+                           }
                             if (agentIndex < numberOfGuards && i >= numberOfGuards)
                                 soundController.generateGuardYell(agentIndex);
                             break outer;
@@ -181,7 +186,7 @@ public class ControllerSurveillance extends Controller {
         }
     }
 
-    private void removeAgent(int agentIndex) {
+    protected void removeAgent(int agentIndex) {
         agents[agentIndex] = null;
         nextState.setAgentVision(agentIndex, null);
         nextState.setAgentPosition(agentIndex, null);
