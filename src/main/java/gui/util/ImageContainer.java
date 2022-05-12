@@ -162,10 +162,10 @@ public final class ImageContainer {
             else if (direction == 270) return guardNorth[0];
         }
         else if (agentType == AgentType.INTRUDER) {
-            if (direction == 0) return intruderNorth;
-            else if (direction == 90) return intruderEast;
-            else if (direction == 180) return intruderSouth;
-            else if (direction == 270) return intruderWest;
+            if (direction == 0) return intruderEast;
+            else if (direction == 90) return intruderSouth;
+            else if (direction == 180) return intruderWest;
+            else if (direction == 270) return intruderNorth;
         }
         return null;
     }
