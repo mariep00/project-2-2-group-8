@@ -9,10 +9,6 @@ public class Vector2D {
         this.x = x;
         this.y = y;
     }
-    
-    public Vector2D() {
-
-    }
 
     @Override
     public String toString() {

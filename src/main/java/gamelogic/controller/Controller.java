@@ -56,7 +56,7 @@ public abstract class Controller {
     public void init() {
         initializeAgents();
         Vector2D[] initialPositions = spawnAgents();
-        currentState = new State(initialPositions, new ArrayList[numberOfGuards + numberOfIntruders], null, null, null);
+        currentState = new State(initialPositions, new ArrayList[numberOfGuards + numberOfIntruders], null, new LinkedList<>(), null);
 
         List<Vector2D>[] visions = new ArrayList[numberOfGuards + numberOfIntruders];
         for (int i = 0; i < visions.length; i++) {
@@ -64,7 +64,7 @@ public abstract class Controller {
             currentState.setAgentVision(i, visions[i]);
         }
 
-        currentState = new State(initialPositions, visions, markerController.init(initialPositions), markerController.emptyInit(),
+        currentState = new State(initialPositions, visions, markerController.init(initialPositions), new LinkedList<>(),
                 new VisionMemory[numberOfGuards + numberOfIntruders][numberOfGuards + numberOfIntruders]);
 
         for (int i = 0; i < numberOfGuards+numberOfIntruders; i++) {

@@ -34,7 +34,7 @@ public class State {
     }
 
     public State(Vector2D[] agentPositions, List<Vector2D>[] visions, LinkedList<Tile> tilesWithMarker, LinkedList<Tile> tilesWithPursuitMarker, VisionMemory[][] agentsSeen) {
-        this(agentPositions, visions, tilesWithMarker, tilesWithPursuitMarker, new ArrayList<>(), agentsSeen, new ArrayList<>());
+        this(agentPositions, visions, tilesWithMarker, new LinkedList<>(), new ArrayList<>(), agentsSeen, new ArrayList<>());
     }
 
     public void addTileWithMarker(Tile tile) { tilesWithMarker.add(tile); }
