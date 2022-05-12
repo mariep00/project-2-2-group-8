@@ -64,7 +64,7 @@ public class TaskDeciderGuard implements TaskDeciderInterface {
         }
 
         // 4. Nothing special to do, so just explore
-        if (currentTask.getPriority() <= TaskContainer.TaskType.EXPLORATION.priority || currentTask.isFinished()) {
+        if (currentTask.isFinished()) {
             if (!graph.frontiers.isEmpty()) {
                 return tasks.getTask(TaskContainer.TaskType.EXPLORATION);
             }
