@@ -112,7 +112,7 @@ public class ControllerSurveillance extends Controller {
 
     @Override
     protected void updateProgress() {
-        //endingSurveillance.updateState(currentState);
+        endingSurveillance.updateState(currentState, timestep);
     }
 
     @Override
@@ -121,6 +121,12 @@ public class ControllerSurveillance extends Controller {
             nextState.setAgentsSeen(i, updateAgentVisionMemory(i, nextState));
         }
     }
+
+    @Override
+    protected void end() {
+        System.out.println("Surveillance ended");
+    }
+
     private VisionMemory[] updateAgentVisionMemory(int agentIndex, State state) {
         VisionMemory[] otherAgentsSeen;
         if (state.getAgentsSeen(agentIndex) != null) otherAgentsSeen = state.getAgentsSeen(agentIndex);
