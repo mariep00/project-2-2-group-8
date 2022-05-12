@@ -68,4 +68,12 @@ public class ControllerSurveillanceGUI extends ControllerSurveillance implements
     public AtomicBoolean getRunSimulation() {
         return controllerGUI.getRunSimulation();
     }
+
+    public GameScreen getGameScreen() {
+        return gameScreen;
+    }
+
+    public ControllerGUI getControllerGUI() {
+        return controllerGUI;
+    }
 }

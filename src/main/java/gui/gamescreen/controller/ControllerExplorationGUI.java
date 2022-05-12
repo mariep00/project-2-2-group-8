@@ -7,6 +7,7 @@ import gamelogic.controller.gamemodecontrollers.ControllerExploration;
 import gamelogic.maps.ScenarioMap;
 import gui.gamescreen.GameScreen;
 import gui.gamescreen.GameScreenExploration;
+import javafx.application.Platform;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -25,6 +26,21 @@ public class ControllerExplorationGUI extends ControllerExploration implements C
             controllerGUI.addGuiRunnableToQueue(() -> ((GameScreenExploration) gameScreen).setToExplored(controllerGUI.getExecuteNextGuiTask(), vision));
         }
         controllerGUI.addGuiRunnableToQueue(() -> ((GameScreenExploration) gameScreen).setProgress(controllerGUI.getExecuteNextGuiTask(), ((EndingExploration) endingCondition).getCurrentTilesExplored(), ((EndingExploration) endingCondition).getTotalTilesToExplore()));
+    }
+
+    @Override
+    public void end() {
+        controllerGUI.killLogicThread();
+        controllerGUI.guiTasksQueue.add(() -> {
+            controllerGUI.killGuiThread();
+            Platform.runLater(gameScreen::endScreen);
+        });
+        int hours = (int) time / 3600;
+        int minutes = ((int)time % 3600) / 60;
+        double seconds = time % 60;
+        int steps = (int) (time/getTimestep());
+        System.out.println("Everything is explored. It took " + hours + " hour(s) " + minutes + " minutes " + seconds + " seconds. Steps taken: " + steps);
+
     }
 
     @Override
@@ -78,6 +94,14 @@ public class ControllerExplorationGUI extends ControllerExploration implements C
     @Override
     public AtomicBoolean getRunSimulation() {
         return controllerGUI.getRunSimulation();
+    }
+
+    public GameScreen getGameScreen() {
+        return gameScreen;
+    }
+
+    public ControllerGUI getControllerGUI() {
+        return controllerGUI;
     }
 
     // TODO Update the progress of the exploration in the gui

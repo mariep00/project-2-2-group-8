@@ -133,6 +133,17 @@ public abstract class Controller {
         time += timestep;
     }
 
+    public int getSteps(){
+        return (int) (time/getTimestep());
+    }
+
+    public String getTotalTime(){
+        int hours = (int) time / 3600;
+        int minutes = ((int)time % 3600) / 60;
+        double seconds = time % 60;
+        return hours +" "+minutes+" "+seconds;
+    }
+
     protected List<Vector2D> calculateFOV(int agentIndex, Vector2D agentPosition) {
         return VisionController.calculateVision(agents[agentIndex].getView_angle(), agents[agentIndex].getView_range(), scenarioMap.createAreaMap(agentPosition, agents[agentIndex].getView_range()), agents[agentIndex].getOrientation()).getInVision();
     }
@@ -227,7 +238,7 @@ public abstract class Controller {
     protected void updateGui() {}
     protected void initializeAgents() {}
     protected void updateProgress() {}
-    protected void end() {}
+    public void end() {}
 
     public int getNumberOfGuards() { return numberOfGuards; }
     public int getNumberOfIntruders() { return numberOfIntruders; }

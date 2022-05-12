@@ -125,7 +125,7 @@ public class ControllerSurveillance extends Controller {
     }
 
     @Override
-    protected void end() {
+    public void end() {
         System.out.println("Surveillance ended");
     }
 

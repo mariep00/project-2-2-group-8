@@ -10,6 +10,7 @@ import gamelogic.agent.tasks.guard.VisitLastSeenIntruderPositions;
 import gamelogic.agent.tasks.intruder.EvasionTaskBaseline;
 import gamelogic.controller.endingconditions.EndingSurveillance;
 import gamelogic.maps.ScenarioMap;
+import gui.EndingScreen;
 import gui.gamescreen.controller.ControllerSurveillanceGUI;
 import javafx.stage.Stage;
 
@@ -33,4 +34,11 @@ public class GameScreenSurveillance extends GameScreen {
 
     @Override
     protected ControllerSurveillanceGUI getController() { return controllerSurveillanceGUI; }
+
+    @Override
+    public void endScreen(){
+        EndingScreen endingScreen = new EndingScreen(this, controllerSurveillanceGUI.getGameScreen().getStage().getScene(), controllerSurveillanceGUI.getGameScreen().getStage(), controllerSurveillanceGUI);
+
+        controllerSurveillanceGUI.getControllerGUI().getMainController().end();
+    }
 }

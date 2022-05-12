@@ -51,7 +51,7 @@ public class ControllerExploration extends Controller {
     }
 
     @Override
-    protected void end() {
+    public void end() {
         int hours = (int) time / 3600;
         int minutes = ((int)time % 3600) / 60;
         double seconds = time % 60;
