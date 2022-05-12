@@ -39,6 +39,7 @@ public class EvasionTaskBaseline implements TaskInterface {
     }
 
     private Vector2D findGoal(double angle) {
+        System.out.println("Initial Angle " + angle);
         if (angle<0) {angle = angle+360.0;
         } else if (angle>360) { angle = angle - 360.0; }
         double distance = 7.0;
@@ -50,6 +51,8 @@ public class EvasionTaskBaseline implements TaskInterface {
             if (distance<1.0) {
                 Vector2D leftGoal = findGoal(angle-5.0);
                 Vector2D rightGoal = findGoal(angle+5.0);
+                System.out.println("Left Goal Angle " + (angle-5.0));
+                System.out.println("Right Goal Angle " + (angle+5.0));
                 if (curPos.dist(leftGoal) < curPos.dist(rightGoal)) {
                     goal = rightGoal;
                 } else { goal = leftGoal; }

@@ -95,6 +95,6 @@ public class Vector2D {
     public int hashCode() {
         int hash = 31+this.x;
         hash = (hash*31)+this.y;
-        return hash;
+        return Math.abs(hash);
     }
 }
