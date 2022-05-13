@@ -25,8 +25,8 @@ public class ControllerSurveillance extends Controller {
     private final ExplorationGraph mapGraph;
     public final SoundController soundController;
 
-    public ControllerSurveillance(ScenarioMap scenarioMap, EndingSurveillance endingCondition, TaskContainer taskContainer) {
-        super(scenarioMap, endingCondition, taskContainer);
+    public ControllerSurveillance(ScenarioMap scenarioMap, EndingSurveillance endingCondition, TaskContainer taskContainer, int seed) {
+        super(scenarioMap, endingCondition, taskContainer, seed);
         this.endingSurveillance = endingCondition;
         mapGraph = new ExplorationGraph();
         this.soundController = new SoundController(this);
@@ -134,33 +134,33 @@ public class ControllerSurveillance extends Controller {
         else otherAgentsSeen = new VisionMemory[numberOfGuards + numberOfIntruders]; // This would only happen when called from init()
 
         for (int i=0; i < otherAgentsSeen.length; i++) {
+            outer:
             if (agents[i] != null) {
-                outer:
                 if (i != agentIndex) {
                     for (Vector2D pos : state.getVision(agentIndex)) {
                         if (pos.equals(state.getAgentPosition(i))) {
                             otherAgentsSeen[i] = new VisionMemory(convertAbsolutePosToRelativeToCurrentPos(pos, agentIndex, state), 0, agents[i].getOrientation());
                             // Check if agent we're updating is a guard and agent we're seeing is an intruder, then yell
-                           if (otherAgentsSeen[i].position().equals(new Vector2D(0, 0))) {
+                            if (otherAgentsSeen[i].position().equals(new Vector2D(0, 0))) {
                                try {
                                    throw new Exception("Agent sees other agent at own position!");
                                } catch (Exception e) {
                                    e.printStackTrace();
+                                   System.exit(1);
                                }
-                           }
-                            if (agentIndex < numberOfGuards && i >= numberOfGuards)
-                                soundController.generateGuardYell(agentIndex);
+                            }
+                            if (agentIndex < numberOfGuards && i >= numberOfGuards) soundController.generateGuardYell(agentIndex);
                             break outer;
                         }
                     }
-                    // When reaching this the agent is not in vision
-                    if (otherAgentsSeen[i] != null) {
-                        // Position is updated s.t. it stays relative to the current position of the agent
-                        // Seconds ago is incremented with the timestep
-                        otherAgentsSeen[i] = new VisionMemory(otherAgentsSeen[i].position().subtract((nextState.getAgentPosition(agentIndex).subtract(currentState.getAgentPosition(agentIndex)))),
-                                otherAgentsSeen[i].secondsAgo() + timestep, otherAgentsSeen[i].orientation());
-                    }
                 }
+            }
+            // When reaching this the agent is not in vision
+            if (otherAgentsSeen[i] != null) {
+                // Position is updated s.t. it stays relative to the current position of the agent
+                // Seconds ago is incremented with the timestep
+                otherAgentsSeen[i] = new VisionMemory(otherAgentsSeen[i].position().subtract((nextState.getAgentPosition(agentIndex).subtract(currentState.getAgentPosition(agentIndex)))),
+                        otherAgentsSeen[i].secondsAgo() + timestep, otherAgentsSeen[i].orientation());
             }
         }
         return otherAgentsSeen;

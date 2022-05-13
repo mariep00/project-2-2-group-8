@@ -11,8 +11,8 @@ import gamelogic.maps.ScenarioMap;
 public class ControllerExploration extends Controller {
     private final EndingExploration endingExploration;
 
-    public ControllerExploration(ScenarioMap scenarioMap, EndingExploration endingCondition, TaskContainer taskContainer) {
-        super(scenarioMap, endingCondition, taskContainer);
+    public ControllerExploration(ScenarioMap scenarioMap, EndingExploration endingCondition, TaskContainer taskContainer, int seed) {
+        super(scenarioMap, endingCondition, taskContainer, seed);
         this.endingExploration = endingCondition;
     }
 

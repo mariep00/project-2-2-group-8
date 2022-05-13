@@ -24,8 +24,7 @@ public class GuardBrain implements BrainInterface {
     @Override
     public int makeDecision(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen, List<Sound> guardYells) {
         currentTask = taskDecider.getTaskToPerform(graph, pheromoneMarkerDirection, sounds, guardsSeen, intrudersSeen, guardYells, currentTask, orientation);
-        //System.out.println("GUARD " + graph.getCurrentPosition().COORDINATES + ", " + orientation + ", PERFORMS TASK " + currentTask.getType());
-        //System.out.println("PERFORM TASK WITH VISION " + intrudersSeen[0]);
+        System.out.println("GUARD " + graph.getCurrentPosition().COORDINATES + ", " + orientation + ", PERFORMS TASK " + currentTask.getType());
         return currentTask.performTask(graph, orientation, pheromoneMarkerDirection, sounds, guardsSeen, intrudersSeen);
     }
 }

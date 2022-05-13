@@ -25,6 +25,8 @@ public class PursuingTaskBaseline implements TaskInterface {
     @Override
     public int performTask(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen) {
         if (futureMoves == null || futureMoves.isEmpty()) {
+            System.out.println("NEW MOVES");
+            System.out.println("Because " + placeToGo + " not equals " + graph.getCurrentPosition().COORDINATES);
             this.graph = graph;
 
             Vector2D targetPos = target.position().add(graph.getCurrentPosition().COORDINATES);
@@ -32,13 +34,18 @@ public class PursuingTaskBaseline implements TaskInterface {
                 try {
                     throw new Exception("The target in PursuingTaskBaseline is not known in the graph!");
                 } catch (Exception e) {
+                    System.out.println("Current pos " + graph.getCurrentPosition().COORDINATES);
+                    System.out.println("Target pos vision " + target.position());
+                    System.out.println("Last seen pos of intruder " + intrudersSeen[0].position());
+                    System.out.println("Target pos for guard " + targetPos);
                     e.printStackTrace();
+                    System.exit(1);
                 }
             }
             placeToGo = findGoal(targetPos, target.orientation());
             LinkedList<Vector2D> nodesToGoal = AStar.calculate(graph, graph.getCurrentPosition(), graph.getNode(placeToGo), 3);
             try {
-                placeToGo = nodesToGoal.getLast();
+                placeToGo = nodesToGoal.getFirst();
                 this.futureMoves = MovementController.convertPath(graph, orientation, nodesToGoal, false);
             }
             catch (NullPointerException e) {

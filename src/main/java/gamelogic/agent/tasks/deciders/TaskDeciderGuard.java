@@ -37,6 +37,7 @@ public class TaskDeciderGuard implements TaskDeciderInterface {
         if (intruderToPursuit != null) {
             // There is an intruder in vision
             // We should start the pursuit task
+            System.out.println("CREATE NEW PURSUIT");
             TaskInterface pursuitTask = tasks.getTask(TaskContainer.TaskType.GUARD_PURSUIT);
             pursuitTask.setTarget(intruderToPursuit);
             return pursuitTask;
@@ -68,6 +69,9 @@ public class TaskDeciderGuard implements TaskDeciderInterface {
             if (!graph.frontiers.isEmpty()) {
                 return tasks.getTask(TaskContainer.TaskType.EXPLORATION);
             }
+            else if (currentTask.getType() == TaskContainer.TaskType.VISIT_LAST_SEEN_INTRUDER_POSITIONS) {
+                // TODO Create some follow up task
+            }
             else {
                 return tasks.getTask(TaskContainer.TaskType.VISIT_LAST_SEEN_INTRUDER_POSITIONS);
             }
@@ -83,7 +87,7 @@ public class TaskDeciderGuard implements TaskDeciderInterface {
         Vector2D possiblePosition = getPossibleOriginGuardYell(graph, startingPosition, maxDistance, minDistance, guardYellToFind);
         if (possiblePosition != null) {
             while (true) {
-                LinkedList<Vector2D> path = AStar.calculate(graph, graph.getCurrentPosition(), graph.getNode(startingPosition));
+                LinkedList<Vector2D> path = AStar.calculate(graph, graph.getCurrentPosition(), graph.getNode(possiblePosition));
                 if (path.size() >= minDistance && path.size() <= maxDistance) {
                     TaskInterface pathfindingTask = tasks.getTask(TaskContainer.TaskType.PATHFINDING);
                     pathfindingTask.setTarget(graph, orientation, path);

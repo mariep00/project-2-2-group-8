@@ -58,7 +58,7 @@ public class Launcher {
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
-        Controller controller = new ControllerSurveillance(scenarioMap, new EndingSurveillance(scenarioMap), TASK_CONTAINER);
+        Controller controller = new ControllerSurveillance(scenarioMap, new EndingSurveillance(scenarioMap), TASK_CONTAINER, i);
         controller.init();
         controller.engine();
     }
