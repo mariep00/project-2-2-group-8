@@ -88,15 +88,6 @@ public class FindSoundSource implements TaskInterface {
     public int getTickCount() { return tickCount; }
 
     @Override
-    public boolean equals(Object other) {
-        if (other == null) return false;
-        if (other.getClass() == this.getClass()) {
-            return ((FindSoundSource) other).getTarget().equals(this.soundToFind);
-        }
-        return false;
-    }
-
-    @Override
     public TaskContainer.TaskType getType() { return TaskContainer.TaskType.FIND_SOUND_SOURCE; }
 
     @Override

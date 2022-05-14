@@ -32,7 +32,8 @@ public class PathfindingTask implements TaskInterface {
         return futureMoves.pop();
     }
 
-    public void setPath(ExplorationGraph graph, double orientation, LinkedList<Vector2D> path) {
+    @Override
+    public void setTarget(ExplorationGraph graph, double orientation, LinkedList<Vector2D> path) {
         this.futureMoves = MovementController.convertPath(graph, orientation, path, false);
     }
     @Override
