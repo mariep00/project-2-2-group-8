@@ -16,7 +16,7 @@ import java.util.concurrent.*;
 // Abstract because you should not instantiate a Controller class, but either a ControllerExploration or ControllerSurveillance class
 public abstract class Controller {
     protected final boolean multithreadController = false; // Change this to enable or disable multithreading in the controller. Currently, only ticking agents will be multithreaded.
-    protected final Random rand = new Random();
+    protected final Random rand;
 
     public final TaskContainer taskContainer;
     public final MovementController movementController;
@@ -36,7 +36,7 @@ public abstract class Controller {
 
     protected final ThreadPoolExecutor threadPool;
 
-    public Controller(ScenarioMap scenarioMap, EndingConditionInterface endingCondition, TaskContainer taskContainer) {
+    public Controller(ScenarioMap scenarioMap, EndingConditionInterface endingCondition, TaskContainer taskContainer, int seed) {
         this.taskContainer = taskContainer;
         this.scenarioMap = scenarioMap;
         this.numberOfGuards = scenarioMap.getNumGuards();
@@ -49,6 +49,7 @@ public abstract class Controller {
         this.endingCondition = endingCondition;
         if (multithreadController) threadPool = new ThreadPoolExecutor(Runtime.getRuntime().availableProcessors()/2, 50, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
         else threadPool = null;
+        this.rand = new Random(seed);
     }
 
     public void init() {
@@ -229,7 +230,7 @@ public abstract class Controller {
     }
 
     public static double addNoise(double initial, double std) {
-        Random random = new Random();
+        Random random = new Random(0);
         return random.nextGaussian()*std+initial; // SD = value from file, mean = initial value
     }
 

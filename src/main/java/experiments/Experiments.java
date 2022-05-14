@@ -40,7 +40,7 @@ public class Experiments {
     // 2 frontier
     public Experiments(String path){
         ScenarioMap scenarioMap = new MapBuilder(new File(path)).getMap();
-        controller = new ControllerExploration(scenarioMap, new EndingExploration(scenarioMap), new TaskContainer(new ExplorationTaskFrontier()));
+        controller = new ControllerExploration(scenarioMap, new EndingExploration(scenarioMap), new TaskContainer(new ExplorationTaskFrontier()), 0);
         controller.engine();
     }
 

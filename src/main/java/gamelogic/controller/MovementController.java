@@ -89,6 +89,7 @@ public class MovementController {
         for (int i = 0; i < controller.numberOfGuards+controller.numberOfIntruders; i++) {
             if (controller.agents[i] != null) {
                 if (controller.currentState.getAgentPosition(i).equals(pos)) return true;
+                if (controller.nextState.getAgentPosition(i).equals(pos)) return true; // TODO I added this statement, because now agents could move to the same tile which crashes the vision. Not sure if this is the best way to do it, while it gives priority to agents that are earlier in the array, also not sure how to do it otherwise
             }
         }
         return false;
