@@ -47,17 +47,25 @@ public class EvasionTaskBaseline implements TaskInterface {
         Vector2D curPos = graph.getCurrentPosition().COORDINATES;
         Vector2D goal = VisionController.calculatePoint(curPos, distance, angle);
         //System.out.println("Current Pos: " + curPos + " Goal: " + goal);
+        //System.out.println("Number of nodes: " + graph.getNumberOfNodes());
+        int counter = 0;
         while (true) {
             if (graph.isVisited(goal)) { return goal; }
+            if (counter > 10) return curPos;
             distance--;
-            if (distance<4.0) {
-                Vector2D leftGoal = findGoalLeft(angle-5.0);
-                Vector2D rightGoal = findGoalRight(angle+5.0);
+            counter++;
+            if (distance<1.0) {
+                angle = angle+10.0;
+                //System.out.println("angle = " + angle);
+                distance=10.0;
+                goal = VisionController.calculatePoint(curPos, distance, angle); 
+                //Vector2D leftGoal = findGoalLeft(angle-5.0);
+                //Vector2D rightGoal = findGoalRight(angle+5.0);
                 //System.out.println("Left Goal Angle " + (angle-5.0));
                 //System.out.println("Right Goal Angle " + (angle+5.0));
-                if (curPos.dist(leftGoal) < curPos.dist(rightGoal)) {
+                /*if (curPos.dist(leftGoal) < curPos.dist(rightGoal)) {
                     goal = rightGoal;
-                } else { goal = leftGoal; }
+                } else { goal = leftGoal; }*/
             } else { 
                 goal = VisionController.calculatePoint(curPos, distance, angle); 
             }

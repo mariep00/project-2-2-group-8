@@ -43,6 +43,7 @@ public class FindSoundSource implements TaskInterface {
             }
 
             if (goal != null) {
+                System.out.println("goal is not null");
                 LinkedList<Vector2D> nodesToGoal = AStar.calculate(graph, graph.getCurrentPosition(), graph.getNode(goal));
                 this.futureMoves = MovementController.convertPath(graph, orientation, nodesToGoal, true);
             }
@@ -55,12 +56,14 @@ public class FindSoundSource implements TaskInterface {
                 int direction = -1;
                 for (int[] directionRange : directionRanges) {
                     if (soundToFind.angle() >= directionRange[0] && soundToFind.angle() <= directionRange[1]) {
+                        System.out.println("direction is not -1 " + directionRange[2]);
                         direction = directionRange[2];
                     }
                 }
                 futureMoves = new Stack<>();
                 if (direction != -1) {
                     int degreesToTurn = direction - (int) orientation;
+                    System.out.println("degreestoturn "+ degreesToTurn);
                     if (degreesToTurn == 90) {
                         futureMoves.push(1);
                     }
@@ -70,6 +73,8 @@ public class FindSoundSource implements TaskInterface {
                     else if (degreesToTurn == 180 || degreesToTurn == -180) {
                         futureMoves.push(1);
                         futureMoves.push(1);
+                    } else if (degreesToTurn == 0) {
+                        futureMoves.push(0);
                     }
                 }
             }

@@ -27,4 +27,9 @@ public class GuardBrain implements BrainInterface {
         System.out.println("GUARD " + graph.getCurrentPosition().COORDINATES + ", " + orientation + ", PERFORMS TASK " + currentTask.getType());
         return currentTask.performTask(graph, orientation, pheromoneMarkerDirection, sounds, guardsSeen, intrudersSeen);
     }
+
+    @Override
+    public String toString() {
+        return "Guard";
+    }
 }

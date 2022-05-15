@@ -35,9 +35,11 @@ public class TaskDeciderIntruder implements TaskDeciderInterface{
     @Override
     public TaskInterface getTaskToPerform(ExplorationGraph graph, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen, TaskInterface currentTask) {
         // First check if there is a guard in vision
+        //System.out.println("Number of nodes " + graph.getNumberOfNodes());
         VisionMemory closestGuard = isGuardInVision(guardsSeen);
         // if there is a guard in vision and the priority of the current task is less than the one of this task, then we should switch to the evasion task
         if (closestGuard != null && (currentTask.getPriority()<=TaskContainer.TaskType.INTRUDER_EVASION.priority || currentTask.isFinished())) {
+            System.out.println("Evasion becasue of Guard seen");
             TaskInterface evasionTask = tasks.getTask(TaskType.INTRUDER_EVASION);
             // set the target to the angle of the guard which is in vision
             evasionTask.setTarget(getTargetAngle(360.0 - Math.atan2(closestGuard.position().y, closestGuard.position().x)));
@@ -48,6 +50,7 @@ public class TaskDeciderIntruder implements TaskDeciderInterface{
         Sound soundToAvoid = checkForSound(sounds, intrudersSeen);
         // if there is a relevant sound and the priority of the current task is less than the one of this task, then we should switch to this task
         if (soundToAvoid != null && (currentTask.getPriority()<=TaskContainer.TaskType.INTRUDER_EVASION.priority || currentTask.isFinished())) {
+            System.out.println("Evasion because of sound");
             TaskInterface evasionTask = tasks.getTask(TaskType.INTRUDER_EVASION);
             evasionTask.setTarget(getTargetAngle(soundToAvoid.angle()));
             return evasionTask;

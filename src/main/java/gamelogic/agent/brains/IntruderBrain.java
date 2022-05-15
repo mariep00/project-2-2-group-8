@@ -29,4 +29,9 @@ public class IntruderBrain implements BrainInterface {
         // TODO Add intruder pheromone markers
         return currentTask.performTask(graph, orientation, 0,sounds, guardsSeen, intrudersSeen);
     }
+
+    @Override
+    public String toString() {
+        return "Intruder";
+    }
 }

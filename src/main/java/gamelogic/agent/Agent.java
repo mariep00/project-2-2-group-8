@@ -35,6 +35,7 @@ public class Agent {
 
     public int tick(Vision[] inVision, double pheromoneMarkerDirection, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen, List<Sound> guardYells) {
         updateGraph(inVision);
+        System.out.println("Number of nodes " + brain.toString() + " " + explorationGraph.getNumberOfNodes());
         return brain.makeDecision(explorationGraph, orientation, pheromoneMarkerDirection, sounds, guardsSeen, intrudersSeen, guardYells);
     }
 

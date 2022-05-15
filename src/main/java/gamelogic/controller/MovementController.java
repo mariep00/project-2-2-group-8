@@ -181,6 +181,9 @@ public class MovementController {
             temporaryStack.push(1);
             temporaryStack.push(1);
         }
+        if (temporaryStack.isEmpty()) {
+            temporaryStack.push(1);
+        }
 
         do{futureMoves.push(temporaryStack.pop());}
         while(!temporaryStack.isEmpty());
