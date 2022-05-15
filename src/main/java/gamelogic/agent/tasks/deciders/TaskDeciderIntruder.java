@@ -18,7 +18,7 @@ public class TaskDeciderIntruder implements TaskDeciderInterface{
 
     private final TaskContainer tasks;
     // TODO: Adjust thresholds
-    private final double angleSpawnToGoal;
+    private double angleSpawnToGoal;
     private final double soundThreshold = 0.5;
     private final double secondsAgoThreshold = 7.0;
     private final double angleThreshold = 10.0;
@@ -174,6 +174,10 @@ public class TaskDeciderIntruder implements TaskDeciderInterface{
         }
         lastEvasionAngle = newAngle;
         return lastEvasionAngle;
+    }
+
+    public void setTargetAngle(double angle) {
+        this.angleSpawnToGoal = angle;
     }
     
 }

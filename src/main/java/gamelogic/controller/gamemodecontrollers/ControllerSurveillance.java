@@ -76,7 +76,7 @@ public class ControllerSurveillance extends Controller {
             agents[i] = new Agent(scenarioMap.getBaseSpeedGuard(), scenarioMap.getGuardViewAngle(),scenarioMap.getGuardViewRange(), orientations[rand.nextInt(orientations.length)], new GuardBrain(taskContainer));
         }
         for (int i = numberOfGuards; i < numberOfGuards+numberOfIntruders; i++) {
-            agents[i] = new Agent(scenarioMap.getBaseSpeedIntruder(), scenarioMap.getIntruderViewAngle(), scenarioMap.getIntruderViewRange(), orientations[rand.nextInt(orientations.length)], new IntruderBrain(taskContainer));
+            agents[i] = new Agent(scenarioMap.getBaseSpeedIntruder(), scenarioMap.getIntruderViewAngle(), scenarioMap.getIntruderViewRange(), orientations[rand.nextInt(orientations.length)], new IntruderBrain(taskContainer, getTargetAngle(i)));
         }
     }
 
@@ -190,6 +190,12 @@ public class ControllerSurveillance extends Controller {
         agents[agentIndex] = null;
         nextState.setAgentVision(agentIndex, null);
         nextState.setAgentPosition(agentIndex, null);
+    }
+
+    private double getTargetAngle(int agentIndex) {
+        Vector2D targetArea = scenarioMap.getTargetArea().get(0);
+        double angle = agentSpawnLocations[agentIndex].getAngleBetweenVector(targetArea);
+        return addNoise(angle, 5);
     }
 
     public ExplorationGraph getMapGraph() { return mapGraph; }
