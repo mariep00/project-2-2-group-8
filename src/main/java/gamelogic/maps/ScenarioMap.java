@@ -290,14 +290,14 @@ public class ScenarioMap {
         spawnAreaIntruders.add(new Vector2D(x+1, y+1));
     }
 
-    public void inserttargetArea(int x1, int y1, int x2, int y2) {
+    public void insertTargetArea(int x1, int y1, int x2, int y2) {
         for (int i = x1; i <= x2; i++) {
             for (int j = y1; j <= y2; j++) {
                 targetArea.add(new Vector2D(i+1, j+1));
             }
         }
     }
-    public void inserttargetArea(int x, int y) {
+    public void insertTargetArea(int x, int y) {
         targetArea.add(new Vector2D(x+1, y+1));
     }
 

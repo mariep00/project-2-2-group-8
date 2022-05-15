@@ -53,8 +53,9 @@ public abstract class Controller {
     }
 
     public void init() {
-        initializeAgents();
         Vector2D[] initialPositions = spawnAgents();
+        initializeAgents();
+        
         currentState = new State(initialPositions, new ArrayList[numberOfGuards + numberOfIntruders], null, null);
 
         List<Vector2D>[] visions = new ArrayList[numberOfGuards + numberOfIntruders];
