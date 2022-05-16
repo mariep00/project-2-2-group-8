@@ -11,6 +11,7 @@ import gamelogic.maps.graph.ExplorationGraph;
 import gamelogic.maps.graph.Node;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -39,7 +40,6 @@ public class TaskDeciderIntruder implements TaskDeciderInterface{
         VisionMemory closestGuard = isGuardInVision(guardsSeen);
         // if there is a guard in vision and the priority of the current task is less than the one of this task, then we should switch to the evasion task
         if (closestGuard != null && (currentTask.getPriority()<=TaskContainer.TaskType.INTRUDER_EVASION.priority || currentTask.isFinished())) {
-            
             TaskInterface evasionTask = tasks.getTask(TaskType.INTRUDER_EVASION);
             // set the target to the angle of the guard which is in vision
             evasionTask.setTarget(getTargetAngle(360.0 - Math.atan2(closestGuard.position().y, closestGuard.position().x)));
@@ -50,7 +50,6 @@ public class TaskDeciderIntruder implements TaskDeciderInterface{
         Sound soundToAvoid = checkForSound(sounds, intrudersSeen);
         // if there is a relevant sound and the priority of the current task is less than the one of this task, then we should switch to this task
         if (soundToAvoid != null && (currentTask.getPriority()<=TaskContainer.TaskType.INTRUDER_EVASION.priority || currentTask.isFinished())) {
-            
             TaskInterface evasionTask = tasks.getTask(TaskType.INTRUDER_EVASION);
             evasionTask.setTarget(getTargetAngle(soundToAvoid.angle()));
             return evasionTask;
@@ -127,6 +126,7 @@ public class TaskDeciderIntruder implements TaskDeciderInterface{
             if (sound.loudness() > soundThreshold) {
                 //check if there was an intruder in that direction, if so then the sound should not be considered
                 if (!isSoundMatched(sound, anglesIntruders)) {
+                    System.out.println("sound angle " + sound + ", " + Arrays.toString(anglesIntruders.toArray()));
                     if (soundToAvoid == null) soundToAvoid = sound;
                     if (sound.loudness() > soundToAvoid.loudness()) soundToAvoid = sound;
                 }
@@ -137,7 +137,8 @@ public class TaskDeciderIntruder implements TaskDeciderInterface{
 
     private boolean isSoundMatched(Sound sound, List<Double> anglesIntruders) {
         for (Double angle : anglesIntruders) {
-            if (Math.abs(sound.angle() - angle) <= angleThreshold) {
+            double diff = Math.abs(sound.angle() - angle);
+            if ((diff > 180 ? 360 - diff : diff) <= angleThreshold) {
                 return true;
             }
         }
@@ -147,7 +148,7 @@ public class TaskDeciderIntruder implements TaskDeciderInterface{
     private Vector2D getAnticipatedGoal(ExplorationGraph graph) {
         
         Vector2D potentialGoal = VisionController.calculatePoint(new Vector2D(0, 0), currentAnticipatedDistance, angleSpawnToGoal);
-        System.out.println("        Potential Goal for Exploration Direction: " + potentialGoal);
+        //System.out.println("        Potential Goal for Exploration Direction: " + potentialGoal);
         Vector2D[] potentialArea = potentialGoal.getArea();
         int counter = 0;
         for(Vector2D vector : potentialArea) {

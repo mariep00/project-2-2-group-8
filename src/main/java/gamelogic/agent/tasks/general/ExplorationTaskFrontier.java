@@ -13,15 +13,12 @@ import gamelogic.maps.Tile;
 import gamelogic.maps.graph.ExplorationGraph;
 import gamelogic.maps.graph.Node;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
 
 @SuppressWarnings("unchecked")
 
 public class ExplorationTaskFrontier implements TaskInterface {
-    private Node goalNode;
+    public Node goalNode;
     private Node lastNode;
     private Stack<Integer> futureMoves;
     private double orientation;
@@ -40,7 +37,6 @@ public class ExplorationTaskFrontier implements TaskInterface {
 
     @Override
     public int performTask(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen) {
-
         if (futureMoves == null || futureMoves.isEmpty()) {
             finished = false;
             futureMoves = new Stack<>();
@@ -66,14 +62,14 @@ public class ExplorationTaskFrontier implements TaskInterface {
                     updateGoal(frontierIndexToGoTo, pheromoneMarkerDirection);
                 }
             }
-            System.out.println("        " + futureMoves.toString());
+            //System.out.println("        " + futureMoves.toString());
             markerThreshold = 0;
             markerIndex = 0;
             sortedArray = null;
             sortedArrayPheromoneAngle = null;
         }
-        System.out.println("        CurrentPos: " + graph.getCurrentPosition().COORDINATES + " " + orientation);
-        System.out.println("        " + futureMoves.peek());
+        //System.out.println("        CurrentPos: " + graph.getCurrentPosition().COORDINATES + " " + orientation);
+        //System.out.println("        " + futureMoves.peek());
         if (futureMoves.size()==1) finished=true;
         return futureMoves.pop();
     }
@@ -156,7 +152,7 @@ public class ExplorationTaskFrontier implements TaskInterface {
         
         LinkedList<Vector2D> nodesToGoal = AStar.calculate(graph, graph.getCurrentPosition(), goalNode);
         if (nodesToGoal == null) return false;
-        System.out.println("        " + nodesToGoal.toString());
+        //System.out.println("        " + nodesToGoal.toString());
 
         futureMoves = MovementController.convertPath(graph, orientation, nodesToGoal, true);
         return true;

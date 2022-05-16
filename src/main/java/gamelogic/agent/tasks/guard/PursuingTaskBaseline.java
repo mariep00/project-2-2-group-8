@@ -25,8 +25,6 @@ public class PursuingTaskBaseline implements TaskInterface {
     @Override
     public int performTask(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen) {
         if (futureMoves == null || futureMoves.isEmpty()) {
-            System.out.println("NEW MOVES");
-            System.out.println("Because " + placeToGo + " not equals " + graph.getCurrentPosition().COORDINATES);
             this.graph = graph;
 
             Vector2D targetPos = target.position().add(graph.getCurrentPosition().COORDINATES);

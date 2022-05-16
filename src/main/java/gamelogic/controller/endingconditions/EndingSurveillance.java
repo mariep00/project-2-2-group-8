@@ -41,9 +41,7 @@ public class EndingSurveillance implements EndingConditionInterface {
             int agentIndex = i + map.getNumGuards();
             if (controller.getAgent(agentIndex) != null) {
                 if (map.getTile(controller.getCurrentState().getAgentPosition(agentIndex)).getType() == Tile.Type.TARGET_AREA) {
-                    if (timeInTargetArea[i] == 0) {
-                        timeInTargetArea[i] += controller.getTimestep();
-                    }
+                    timeInTargetArea[i] += controller.getTimestep();
                 } else {
                     timeInTargetArea[i] = 0;
                 }

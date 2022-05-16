@@ -1,17 +1,14 @@
 package gamelogic.agent.tasks.general;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Vector;
-
 import datastructures.Vector2D;
 import datastructures.quicksort.QuickSort;
 import datastructures.quicksort.SortObject;
-import gamelogic.agent.tasks.TaskContainer;
-import gamelogic.agent.tasks.TaskInterface;
 import gamelogic.agent.tasks.TaskContainer.TaskType;
-import gamelogic.maps.graph.ExplorationGraph;
+import gamelogic.agent.tasks.TaskInterface;
 import gamelogic.maps.graph.Node;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
 
 @SuppressWarnings("unchecked")
 
@@ -72,9 +69,11 @@ public class ExplorationInDirection extends ExplorationTaskFrontier{
                 sortedArray = quickSort.sort(sortObjects, 0, sortObjects.length - 1);
             }
         }
-        System.out.println("        Goal Frontier: " + sortedArray[index].object);
+        //System.out.println("        Goal Frontier: " + sortedArray[index].object);
         return sortedArray[index].object;
     }
+    @Override
+    public boolean isFinished() { return graph.getCurrentPosition().COORDINATES.equals(targetCenter); }
     @Override
     public TaskType getType() {
         return type;

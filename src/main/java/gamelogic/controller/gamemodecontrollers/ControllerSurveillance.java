@@ -134,7 +134,7 @@ public class ControllerSurveillance extends Controller {
         else otherAgentsSeen = new VisionMemory[numberOfGuards + numberOfIntruders]; // This would only happen when called from init()
 
         for (int i=0; i < otherAgentsSeen.length; i++) {
-            outer:
+            boolean newlySeenIntruder = false;
             if (agents[i] != null) {
                 if (i != agentIndex) {
                     for (Vector2D pos : state.getVision(agentIndex)) {
@@ -150,13 +150,14 @@ public class ControllerSurveillance extends Controller {
                                }
                             }
                             if (agentIndex < numberOfGuards && i >= numberOfGuards) soundController.generateGuardYell(agentIndex);
-                            break outer;
+                            newlySeenIntruder = true;
+                            break;
                         }
                     }
                 }
             }
             // When reaching this the agent is not in vision
-            if (otherAgentsSeen[i] != null) {
+            if (otherAgentsSeen[i] != null && !newlySeenIntruder) {
                 // Position is updated s.t. it stays relative to the current position of the agent
                 // Seconds ago is incremented with the timestep
                 otherAgentsSeen[i] = new VisionMemory(otherAgentsSeen[i].position().subtract((nextState.getAgentPosition(agentIndex).subtract(currentState.getAgentPosition(agentIndex)))),
