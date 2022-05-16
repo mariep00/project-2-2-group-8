@@ -187,7 +187,7 @@ public class MovementController {
 
         do{futureMoves.push(temporaryStack.pop());}
         while(!temporaryStack.isEmpty());
-
+        
         return futureMoves;
     }
 }

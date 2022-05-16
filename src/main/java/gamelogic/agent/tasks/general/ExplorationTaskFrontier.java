@@ -28,11 +28,11 @@ public class ExplorationTaskFrontier implements TaskInterface {
     protected ExplorationGraph graph;
 
     private TaskType type = TaskType.EXPLORATION;
-    private int markerThreshold = 0;
-    private int markerIndex = 0;
-    private SortObject<Node>[] sortedArray;
-    private SortObject<Node>[] sortedArrayPheromoneAngle;
-    private boolean finished = false;
+    protected int markerThreshold = 0;
+    protected int markerIndex = 0;
+    protected SortObject<Node>[] sortedArray;
+    protected SortObject<Node>[] sortedArrayPheromoneAngle;
+    protected boolean finished = false;
 
     public ExplorationTaskFrontier() {
         goalNode = new Node(new Vector2D(-20000, -20000), new Tile());
@@ -42,6 +42,7 @@ public class ExplorationTaskFrontier implements TaskInterface {
     public int performTask(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen) {
 
         if (futureMoves == null || futureMoves.isEmpty()) {
+            finished = false;
             futureMoves = new Stack<>();
             this.orientation = orientation;
             this.graph = graph;
@@ -51,7 +52,7 @@ public class ExplorationTaskFrontier implements TaskInterface {
             boolean foundReachableNode = false;
             while (!foundReachableNode) {
                 if (goalNode == lastNode) {
-                    whenStuck();
+                    //whenStuck();
                 }
                 foundReachableNode = moveTo();
                 if (!foundReachableNode) {
@@ -65,12 +66,14 @@ public class ExplorationTaskFrontier implements TaskInterface {
                     updateGoal(frontierIndexToGoTo, pheromoneMarkerDirection);
                 }
             }
-
+            System.out.println("        " + futureMoves.toString());
             markerThreshold = 0;
             markerIndex = 0;
             sortedArray = null;
             sortedArrayPheromoneAngle = null;
         }
+        System.out.println("        CurrentPos: " + graph.getCurrentPosition().COORDINATES + " " + orientation);
+        System.out.println("        " + futureMoves.peek());
         if (futureMoves.size()==1) finished=true;
         return futureMoves.pop();
     }
@@ -153,6 +156,7 @@ public class ExplorationTaskFrontier implements TaskInterface {
         
         LinkedList<Vector2D> nodesToGoal = AStar.calculate(graph, graph.getCurrentPosition(), goalNode);
         if (nodesToGoal == null) return false;
+        System.out.println("        " + nodesToGoal.toString());
 
         futureMoves = MovementController.convertPath(graph, orientation, nodesToGoal, true);
         return true;

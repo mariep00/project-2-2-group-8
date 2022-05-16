@@ -2,6 +2,7 @@ package gamelogic.agent.tasks.general;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.Vector;
 
 import datastructures.Vector2D;
 import datastructures.quicksort.QuickSort;
@@ -17,11 +18,8 @@ import gamelogic.maps.graph.Node;
 public class ExplorationInDirection extends ExplorationTaskFrontier{
 
     private TaskType type = TaskType.EXPLORATION_DIRECTION;
-    private Vector2D target;
-    private int markerThreshold = 0;
-    private int markerIndex = 0;
-    private SortObject<Node>[] sortedArray;
-    private SortObject<Node>[] sortedArrayPheromoneAngle;
+    private Vector2D targetCenter;
+    private Vector2D[] targetArea;
 
     @Override
     protected Node getNextFrontier(int index, double pheromoneMarkerDirection) {
@@ -63,18 +61,18 @@ public class ExplorationInDirection extends ExplorationTaskFrontier{
 
                 sortObjects = new SortObject[candidates.size()];
                 for (int i = 0; i < candidates.size(); i++) {
-                    sortObjects[i] = new SortObject<>(candidates.get(i), candidates.get(i).COORDINATES.dist(target));
+                    sortObjects[i] = new SortObject<>(candidates.get(i), candidates.get(i).COORDINATES.dist(targetCenter));
                 }
 
                 sortedArray = quickSort.sort(sortObjects, 0, sortObjects.length - 1);
             } else {
                 for (int i = 0; i < nodes.size(); i++) {
-                    sortObjects[i] = new SortObject<>(nodes.get(i), nodes.get(i).COORDINATES.dist(target));
+                    sortObjects[i] = new SortObject<>(nodes.get(i), nodes.get(i).COORDINATES.dist(targetCenter));
                 }
                 sortedArray = quickSort.sort(sortObjects, 0, sortObjects.length - 1);
             }
         }
-
+        System.out.println("        Goal Frontier: " + sortedArray[index].object);
         return sortedArray[index].object;
     }
     @Override
@@ -87,18 +85,19 @@ public class ExplorationInDirection extends ExplorationTaskFrontier{
     }
     @Override
     public void setTarget(Vector2D target) {
-        this.target = target;
+        this.targetCenter = target;
+        targetArea = targetCenter.getArea();
     }
     @Override
     public boolean equals(Object other) {
         if (other == null) return false;
         if (other.getClass() == this.getClass()) {
-            return ((ExplorationInDirection) other).getTarget().equals(this.target);
+            return ((ExplorationInDirection) other).getTarget().equals(this.targetCenter);
         }
         return false;
     }
     @Override
     public Object getTarget() {
-        return target;
+        return targetCenter;
     }
 }
