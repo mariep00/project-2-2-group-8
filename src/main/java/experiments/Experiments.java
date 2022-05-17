@@ -19,7 +19,8 @@ import java.io.PrintWriter;
 
 public class Experiments {
 
-    public static final int ITERATIONS = 10;
+    public static final int ITERATIONS = 2000;
+    public static final int RUNS = 4;
     private static int gameCounter =0;
     private static double totalTime =0;
     private static PrintWriter out;
@@ -29,9 +30,10 @@ public class Experiments {
     private static final boolean DEBUG = true;
     private static final boolean saveResults = true;
 
-    private static String path1 = "/Users/Johan/Documents/GitHub/project-2-2-group-8/src/main/resources/maps/testmap.txt";
-    private static String path2 = "/Users/Johan/Documents/GitHub/project-2-2-group-8/src/main/resources/maps/testmap.txt";
-    private static String path3 = "/Users/Johan/Documents/GitHub/project-2-2-group-8/src/main/resources/maps/testmap.txt";
+    private static String path1 = "C://Users//giaco//Downloads//map1.txt";
+    //private static String path1 = "testmap.txt";
+    //private static String path2 = "/Users/Johan/Documents/GitHub/project-2-2-group-8/src/main/resources/maps/testmap.txt";
+    //private static String path3 = "/Users/Johan/Documents/GitHub/project-2-2-group-8/src/main/resources/maps/testmap.txt";
 
 
     private static int currentBrain = 1;
@@ -41,6 +43,7 @@ public class Experiments {
     public Experiments(String path){
         ScenarioMap scenarioMap = new MapBuilder(new File(path)).getMap();
         controller = new ControllerExploration(scenarioMap, new EndingExploration(scenarioMap), new TaskContainer(new ExplorationTaskFrontier()));
+        controller.init();
         controller.engine();
     }
 
@@ -51,66 +54,23 @@ public class Experiments {
         }
 
 
-        //random 90D, map Giacomo
-
-        out.println("\n ######################");
-        out.println("random 90D");
-        totalTime = 0;
         currentBrain = 1;
-        for (int i=0; i < ITERATIONS; i++) {
+        for (int a=1; a<=RUNS; a++) {
+            totalTime = 0;
+            gameCounter = 0;
+            for (int i = 0; i < ITERATIONS; i++) {
 
-            Experiments experiments = new Experiments(path1);
-
-            gameCounter ++;
-
-            out.println(gameCounter + ".    Time taken: "+ controller.time);
-            totalTime = totalTime + controller.time;
+                Experiments experiments = new Experiments(path1);
+                gameCounter++;
+                System.out.println(gameCounter + ".    Time taken: " + controller.time);
+                totalTime = totalTime + controller.time;
+            }
+            out.println("RUN:" + a);
+            out.println(" ---- AVG TIME: " + (totalTime / gameCounter));
         }
-        out.println("Iterations: " + gameCounter);
-        out.println(" <<<< TOTAL time: " + totalTime);
-        out.println(" ---- AVG TIME: " + (totalTime/gameCounter));
-
-        //random 135D
-        currentBrain = 1;
-
-        out.println("\n ######################" );
-        out.println("random 135D");
-        totalTime = 0;
-        gameCounter = 0;
-        for (int i=0; i < ITERATIONS; i++) {
-
-
-            Experiments experiments = new Experiments(path2);
-
-            gameCounter ++;
-
-            out.println(gameCounter + ".    Time taken: "+ controller.time);
-            totalTime = totalTime + controller.time;
-        }
-        out.println("Iterations: " + gameCounter);
-        out.println(" <<<< TOTAL time: " + totalTime);
-        out.println(" ---- AVG TIME: " + (totalTime/gameCounter));
-
-
-        //random 180D, map Giacomo
-        currentBrain = 1;
-
-        out.println("\n ######################");
-        out.println("random 180D");
-        totalTime = 0;
-        gameCounter = 0;
-        for (int i=0; i < ITERATIONS; i++) {
-            Experiments experiments = new Experiments(path3);
-
-            gameCounter ++;
-
-            out.println(gameCounter + ".    Time taken: "+ controller.time);
-            totalTime = totalTime + controller.time;
-        }
-        out.println("Iterations: " + gameCounter);
-        out.println(" <<<< TOTAL time: " + totalTime);
-        out.println(" ---- AVG TIME: " + (totalTime/gameCounter));
         out.close();
+
+
     }
 
     public static PrintWriter createFile(){
@@ -124,7 +84,7 @@ public class Experiments {
         }
         return null;
     }
-    
+
 
     }
 

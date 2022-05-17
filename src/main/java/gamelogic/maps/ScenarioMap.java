@@ -27,7 +27,7 @@ public class ScenarioMap {
     private int rotatingMaxHearingDistance = 9;
     private int yellMaxHearingDistance = 50;
     private double soundStandardDeviation = 10;
-    private int pheromoneMaxSmellingDistance = 20;
+    private int pheromoneMaxSmellingDistance = 10;
     private double pheromoneReduction = 0.1;
 
     private Tile[][] mapGrid;

@@ -138,7 +138,7 @@ public abstract class Controller {
         int minutes = ((int)time % 3600) / 60;
         double seconds = time % 60;
         if (threadPool != null) threadPool.shutdown();
-        System.out.println("Everything is explored. It took " + hours + " hour(s) " + minutes + " minutes " + seconds + " seconds.");
+        //System.out.println("Everything is explored. It took " + hours + " hour(s) " + minutes + " minutes " + seconds + " seconds.");
     }
 
     protected List<Vector2D> calculateFOV(int agentIndex, Vector2D agentPosition) {

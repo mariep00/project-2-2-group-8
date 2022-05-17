@@ -12,11 +12,11 @@ public class SimulationSpeedSlider extends VBox {
         super();
 
         slider = new Slider();
-        slider.setMax(800);
+        slider.setMax(2500);
         slider.setMin(5);
-        slider.setMajorTickUnit(266.67);
+        slider.setMajorTickUnit(600);
         slider.setShowTickMarks(true);
-        slider.setValue(400);
+        slider.setValue(1250);
         slider.setPrefWidth(260);
         slider.setPrefHeight(35);
         Text title = new Text("Simulation speed");
