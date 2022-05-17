@@ -9,12 +9,11 @@ import gamelogic.controller.Controller;
 import gamelogic.controller.SoundController;
 import gamelogic.controller.State;
 import gamelogic.controller.endingconditions.EndingSurveillance;
-import gamelogic.datacarriers.GuardYell;
 import gamelogic.datacarriers.VisionMemory;
 import gamelogic.maps.ScenarioMap;
-import gamelogic.maps.graph.ExplorationGraph;
 import gamelogic.maps.Tile;
 import gamelogic.maps.Tile.Type;
+import gamelogic.maps.graph.ExplorationGraph;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,12 +23,16 @@ public class ControllerSurveillance extends Controller {
     private final EndingSurveillance endingSurveillance;
     private final ExplorationGraph mapGraph;
     public final SoundController soundController;
+    private final double[] yellCooldowns;
+    private final double yellCooldown = 1;
 
     public ControllerSurveillance(ScenarioMap scenarioMap, EndingSurveillance endingCondition, TaskContainer taskContainer, int seed) {
         super(scenarioMap, endingCondition, taskContainer, seed);
         this.endingSurveillance = endingCondition;
-        mapGraph = new ExplorationGraph();
+        this.mapGraph = new ExplorationGraph();
         this.soundController = new SoundController(this);
+        this.yellCooldowns = new double[scenarioMap.getNumGuards()];
+        Arrays.fill(this.yellCooldowns, yellCooldown);
     }
 
     @Override
@@ -85,9 +88,6 @@ public class ControllerSurveillance extends Controller {
         for (int i = 0; i < numberOfGuards; i++) {
             for (int j = numberOfGuards; j < numberOfGuards+numberOfIntruders; j++) {
                 if (agents[j] != null) {
-                    if (nextState.getVision(i).contains(nextState.getAgentPosition(j))) {
-                        nextState.addGuardYell(new GuardYell(nextState.getAgentPosition(i), i));
-                    }
                     if (nextState.getAgentPosition(i).dist(nextState.getAgentPosition(j)) <= Math.sqrt(2)) {
                         removeAgent(j);
                     }
@@ -148,7 +148,10 @@ public class ControllerSurveillance extends Controller {
                                    System.exit(1);
                                }
                             }
-                            if (agentIndex < numberOfGuards && i >= numberOfGuards) soundController.generateGuardYell(agentIndex);
+                            if (agentIndex < numberOfGuards && i >= numberOfGuards && isZero(yellCooldowns[agentIndex])) {
+                                soundController.generateGuardYell(agentIndex);
+                                yellCooldowns[agentIndex] = yellCooldown;
+                            }
                             newlySeenIntruder = true;
                             break;
                         }
@@ -163,7 +166,14 @@ public class ControllerSurveillance extends Controller {
                         otherAgentsSeen[i].secondsAgo() + timestep, otherAgentsSeen[i].orientation());
             }
         }
+        if (agentIndex < numberOfGuards && !isZero(yellCooldowns[agentIndex])) {
+            yellCooldowns[agentIndex] -= timestep;
+        }
         return otherAgentsSeen;
+    }
+
+    private boolean isZero(double value) {
+        return value >= -10e-12 && value <= 10e-12;
     }
 
     private void createGraph() {

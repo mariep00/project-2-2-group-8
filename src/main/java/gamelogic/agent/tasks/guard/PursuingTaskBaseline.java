@@ -5,6 +5,7 @@ import gamelogic.agent.AStar;
 import gamelogic.agent.tasks.TaskContainer.TaskType;
 import gamelogic.agent.tasks.TaskInterface;
 import gamelogic.controller.MovementController;
+import gamelogic.controller.VisionController;
 import gamelogic.datacarriers.Sound;
 import gamelogic.datacarriers.VisionMemory;
 import gamelogic.maps.graph.ExplorationGraph;
@@ -40,11 +41,13 @@ public class PursuingTaskBaseline implements TaskInterface {
                     System.exit(1);
                 }
             }
-            placeToGo = findGoal(targetPos, target.orientation());
-            LinkedList<Vector2D> nodesToGoal = AStar.calculate(graph, graph.getCurrentPosition(), graph.getNode(placeToGo), 3);
+
+            double distanceInFrontOfIntruder = target.position().magnitude()*0.3333334;
+            placeToGo = findGoalInFrontOfIntruder(targetPos, target.orientation(), distanceInFrontOfIntruder);
+            LinkedList<Vector2D> path = getPursuitTaskToGoal(placeToGo, distanceInFrontOfIntruder);
             try {
-                placeToGo = nodesToGoal.getFirst();
-                this.futureMoves = MovementController.convertPath(graph, orientation, nodesToGoal, false);
+                placeToGo = path.getFirst();
+                this.futureMoves = MovementController.convertPath(graph, orientation, path, false);
             }
             catch (NullPointerException e) {
                 e.printStackTrace();
@@ -53,14 +56,20 @@ public class PursuingTaskBaseline implements TaskInterface {
         return futureMoves.pop();
     }
 
-    private Vector2D findGoal(Vector2D pos, double orien) {
-        Vector2D unitDir;
-        if (orien == 0.0) { unitDir = new Vector2D(1, 0);
-        } else if (orien == 90.0) { unitDir = new Vector2D(0, 1);
-        } else if (orien == 180.0) { unitDir = new Vector2D(-1, 0);
-        } else { unitDir = new Vector2D(0, -1);}
+    private LinkedList<Vector2D> getPursuitTaskToGoal(Vector2D goalInFrontOfIntruder, double distanceInFrontOfIntruder) {
+        Vector2D firstGoal = VisionController.calculatePoint(graph.getCurrentPosition().COORDINATES, (target.position().magnitude()-distanceInFrontOfIntruder), target.position().angle());
+        LinkedList<Vector2D> pathFromFirstToSecondGoal = AStar.calculate(graph, graph.getNode(firstGoal), graph.getNode(goalInFrontOfIntruder));
+        LinkedList<Vector2D> pathFromCurrentPosToFirstGoal = AStar.calculate(graph, graph.getCurrentPosition(), graph.getNode(firstGoal));
+        pathFromFirstToSecondGoal.addAll(pathFromCurrentPosToFirstGoal);
+        return pathFromFirstToSecondGoal;
+    }
 
-        double distanceInFrontOfIntruder = target.position().magnitude()*0.3333334;
+    private Vector2D findGoalInFrontOfIntruder(Vector2D pos, double intruderOrientation, double distanceInFrontOfIntruder) {
+        Vector2D unitDir;
+        if (intruderOrientation == 0.0) { unitDir = new Vector2D(1, 0);
+        } else if (intruderOrientation == 90.0) { unitDir = new Vector2D(0, 1);
+        } else if (intruderOrientation == 180.0) { unitDir = new Vector2D(-1, 0);
+        } else { unitDir = new Vector2D(0, -1);}
 
         Vector2D goal = pos.add(unitDir.multiply((int) Math.round(distanceInFrontOfIntruder)));
         while (!exists(goal)) {

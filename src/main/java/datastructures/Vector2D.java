@@ -98,7 +98,7 @@ public class Vector2D {
     }
 
     public double angle() {
-        double theta = Math.atan2(this.x, this.y);
+        double theta = Math.atan2(this.x, -this.y); // -1 because in our coordinate system y is inverted
         double thetaWithEastToRight = theta-(Math.PI/2);
         return thetaWithEastToRight < 0 ? Math.toDegrees(thetaWithEastToRight)+360 : Math.toDegrees(thetaWithEastToRight);
     }
