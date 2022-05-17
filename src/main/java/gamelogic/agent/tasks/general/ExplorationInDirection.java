@@ -16,7 +16,6 @@ public class ExplorationInDirection extends ExplorationTaskFrontier{
 
     private TaskType type = TaskType.EXPLORATION_DIRECTION;
     private Vector2D targetCenter;
-    private Vector2D[] targetArea;
 
     @Override
     protected Node getNextFrontier(int index, double pheromoneMarkerDirection) {
@@ -73,7 +72,7 @@ public class ExplorationInDirection extends ExplorationTaskFrontier{
         return sortedArray[index].object;
     }
     @Override
-    public boolean isFinished() { return graph.getCurrentPosition().COORDINATES.equals(targetCenter); }
+    public boolean isFinished() { return graph.getCurrentPosition().COORDINATES.dist(targetCenter) <= 5; }
     @Override
     public TaskType getType() {
         return type;
@@ -83,10 +82,7 @@ public class ExplorationInDirection extends ExplorationTaskFrontier{
         return new ExplorationInDirection();
     }
     @Override
-    public void setTarget(Vector2D target) {
-        this.targetCenter = target;
-        targetArea = targetCenter.getArea();
-    }
+    public void setTarget(Vector2D target) { this.targetCenter = target; }
     @Override
     public boolean equals(Object other) {
         if (other == null) return false;

@@ -11,7 +11,6 @@ import gamelogic.maps.graph.ExplorationGraph;
 import gamelogic.maps.graph.Node;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -126,7 +125,7 @@ public class TaskDeciderIntruder implements TaskDeciderInterface{
             if (sound.loudness() > soundThreshold) {
                 //check if there was an intruder in that direction, if so then the sound should not be considered
                 if (!isSoundMatched(sound, anglesIntruders)) {
-                    System.out.println("sound angle " + sound + ", " + Arrays.toString(anglesIntruders.toArray()));
+                    //System.out.println("sound angle " + sound + ", " + Arrays.toString(anglesIntruders.toArray()));
                     if (soundToAvoid == null) soundToAvoid = sound;
                     if (sound.loudness() > soundToAvoid.loudness()) soundToAvoid = sound;
                 }
