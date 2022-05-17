@@ -2,6 +2,7 @@ package gui.gamescreen;
 
 import datastructures.Vector2D;
 import gamelogic.agent.tasks.TaskContainer;
+import gamelogic.agent.tasks.general.AvoidCollisionTask;
 import gamelogic.agent.tasks.general.ExplorationInDirection;
 import gamelogic.agent.tasks.general.ExplorationTaskFrontier;
 import gamelogic.agent.tasks.general.PathfindingTask;
@@ -21,7 +22,7 @@ public class GameScreenSurveillance extends GameScreen {
     public GameScreenSurveillance(ScenarioMap scenarioMap) {
         super(scenarioMap);
         this.controllerSurveillanceGUI = new ControllerSurveillanceGUI(scenarioMap, new EndingSurveillance(scenarioMap), this, new TaskContainer(new ExplorationTaskFrontier(), new FindSoundSource(), new PursuingTaskBaseline(), new EvasionTaskBaseline(),
-                new VisitLastSeenIntruderPositions(), new PathfindingTask(), new ExplorationInDirection()));
+                new VisitLastSeenIntruderPositions(), new PathfindingTask(), new ExplorationInDirection(), new AvoidCollisionTask()));
     }
 
     @Override

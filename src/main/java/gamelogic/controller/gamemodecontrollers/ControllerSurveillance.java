@@ -64,7 +64,6 @@ public class ControllerSurveillance extends Controller {
                 }
             }
         }
-
         return agentPositions;
     }
 

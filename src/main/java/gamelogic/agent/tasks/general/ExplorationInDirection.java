@@ -68,7 +68,7 @@ public class ExplorationInDirection extends ExplorationTaskFrontier{
                 sortedArray = quickSort.sort(sortObjects, 0, sortObjects.length - 1);
             }
         }
-        //System.out.println("        Goal Frontier: " + sortedArray[index].object);
+        System.out.println("        Goal Frontier: " + sortedArray[index].object);
         return sortedArray[index].object;
     }
     @Override
