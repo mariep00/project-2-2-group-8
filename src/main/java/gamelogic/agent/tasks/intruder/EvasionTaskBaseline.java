@@ -1,6 +1,8 @@
 package gamelogic.agent.tasks.intruder;
 
 import datastructures.Vector2D;
+import datastructures.minheap.Heap;
+import datastructures.minheap.HeapItemInterface;
 import gamelogic.agent.AStar;
 import gamelogic.agent.tasks.TaskContainer.TaskType;
 import gamelogic.agent.tasks.TaskInterface;
@@ -30,7 +32,6 @@ public class EvasionTaskBaseline implements TaskInterface {
 
             double angle = targetAngle - 180.0;
             Vector2D goal = findGoal(angle);
-            //System.out.println("new Task created");
             LinkedList<Vector2D> nodesToGoal = AStar.calculate(graph, graph.getCurrentPosition(), graph.getNode(goal), 3);
 
             this.futureMoves = MovementController.convertPath(graph, orientation, nodesToGoal, false);
@@ -40,72 +41,53 @@ public class EvasionTaskBaseline implements TaskInterface {
     }
 
     private Vector2D findGoal(double angle) {
-        //System.out.println("Initial Angle " + angle);
-        if (angle<0) {angle = angle+360.0;
-        } else if (angle>360) { angle = angle - 360.0; }
+        angle = checkAngle(angle);
+        int threshold = 90;
+        Heap<AngleItem> possibleAngles = new Heap<>(180);
+        for (int i=0; i<=threshold; i=i+5) {
+            AngleItem[] items = calculateAngleItems(angle, (double)i);
+            possibleAngles.add(items[0]);
+            possibleAngles.add(items[1]);
+        }
+        AngleItem bestAngle = possibleAngles.removeFirst();
+        return VisionController.calculatePoint(graph.getCurrentPosition().COORDINATES, bestAngle.distance, bestAngle.angle);
+    }
+
+    private AngleItem[] calculateAngleItems(double angle, double i) {
+        angle = checkAngle(angle);
+        double angle1 = angle + i;
+        double angle2 = angle - i;
+        angle1 = checkAngle(angle1);
+        angle2 = checkAngle(angle2);
+        AngleItem item1 = new AngleItem(angle1, Math.abs(angle-i), findMaxDistance(angle1));
+        AngleItem item2 = new AngleItem(angle2, Math.abs(angle-i), findMaxDistance(angle2));
+        
+        return new AngleItem[] {item1,item2};
+    }
+
+    private double findMaxDistance(double angle) {
         double distance = 10.0;
         Vector2D curPos = graph.getCurrentPosition().COORDINATES;
-        Vector2D goal = VisionController.calculatePoint(curPos, distance, angle);
-        //System.out.println("Current Pos: " + curPos + " Goal: " + goal);
-        //System.out.println("Number of nodes: " + graph.getNumberOfNodes());
-        int counter = 0;
-        while (true) {
-            if (graph.isVisited(goal)) { return goal; }
-            if (counter > 10) return curPos;
-            distance--;
-            counter++;
-            if (distance<1.0) {
-                angle = angle+10.0;
-                //System.out.println("angle = " + angle);
-                distance=10.0;
-                goal = VisionController.calculatePoint(curPos, distance, angle); 
-                //Vector2D leftGoal = findGoalLeft(angle-5.0);
-                //Vector2D rightGoal = findGoalRight(angle+5.0);
-                //System.out.println("Left Goal Angle " + (angle-5.0));
-                //System.out.println("Right Goal Angle " + (angle+5.0));
-                /*if (curPos.dist(leftGoal) < curPos.dist(rightGoal)) {
-                    goal = rightGoal;
-                } else { goal = leftGoal; }*/
-            } else { 
-                goal = VisionController.calculatePoint(curPos, distance, angle); 
+        Vector2D point = VisionController.calculatePoint(curPos, distance, angle);
+        while(true) {
+            if (graph.isVisited(point)) return distance;
+            if (distance<0) {
+                try {
+                    throw new Exception("Don't know own position");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    System.exit(1);
+                }
             }
+            distance--;
+            point = VisionController.calculatePoint(curPos, distance, angle);
         }
     }
 
-    private Vector2D findGoalLeft(double angle) {
+    private double checkAngle(double angle) {
         if (angle<0) {angle = angle+360.0;
         } else if (angle>360) { angle = angle - 360.0; }
-        double distance = 10.0;
-        Vector2D curPos = graph.getCurrentPosition().COORDINATES;
-        Vector2D goal = VisionController.calculatePoint(curPos, distance, angle);
-        while (true) {
-            if (graph.isVisited(goal)) { return goal; }
-            distance--;
-            if (distance<4.0) {
-                Vector2D leftGoal = findGoalLeft(angle-5.0);
-                goal = leftGoal;
-            } else { 
-                goal = VisionController.calculatePoint(curPos, distance, angle); 
-            }
-        }
-    }
-
-    private Vector2D findGoalRight(double angle) {
-        if (angle<0) {angle = angle+360.0;
-        } else if (angle>360) { angle = angle - 360.0; }
-        double distance = 10.0;
-        Vector2D curPos = graph.getCurrentPosition().COORDINATES;
-        Vector2D goal = VisionController.calculatePoint(curPos, distance, angle);
-        while (true) {
-            if (graph.isVisited(goal)) { return goal; }
-            distance--;
-            if (distance<4.0) {
-                Vector2D leftGoal = findGoalRight(angle+5.0);
-                goal = leftGoal;
-            } else { 
-                goal = VisionController.calculatePoint(curPos, distance, angle); 
-            }
-        }
+        return angle;
     }
 
     @Override
@@ -127,11 +109,55 @@ public class EvasionTaskBaseline implements TaskInterface {
     public void setTarget(double target) {
         this.targetAngle = target;
     }
+
+    @Override
     public boolean equals(Object other) {
         if (other == null) return false;
         if (other.getClass() == this.getClass()) {
             return ((EvasionTaskBaseline) other).getTarget().equals(this.targetAngle);
         }
         return false;
+    }
+
+    class AngleItem implements HeapItemInterface<AngleItem> {
+
+        public final double angle;
+        public final double difference;
+        public final double distance;
+        private int index;
+
+        public AngleItem (double angle, double difference, double distance) {
+            this.angle = angle;
+            this.difference = difference;
+            this.distance = distance;
+        }
+
+        @Override
+        public void setHeapIndex(int index) {
+            this.index = index;
+        }
+
+        @Override
+        public int getHeapIndex() {
+            return index;
+        }
+
+        @Override
+        public int compareTo(AngleItem o) {
+            if (this.distance < o.distance) {
+                return -1;
+            } else if (this.distance == o.distance) {
+                if (this.difference < o.difference) {
+                    return 1;
+                } else if (this.difference > o.difference) {
+                    return -1;
+                } else {
+                    return 0;
+                }
+            } else {
+                return 1;
+            }
+        }
+
     }
 }

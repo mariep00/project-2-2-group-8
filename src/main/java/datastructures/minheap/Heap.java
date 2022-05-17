@@ -22,7 +22,6 @@ public class Heap<T extends HeapItemInterface<T>> {
     public T removeFirst() {
         T firstItem = items[0];
         itemCount--;
-        //System.out.println("ItemCount" + itemCount);
         swap(0, itemCount);
         items[itemCount] = null;
         sortDown(0);
