@@ -19,6 +19,7 @@ public class FindGuardYellSource implements TaskInterface {
 
     private Sound guardYellToFind;
     private TaskInterface task;
+    private boolean finished = false;
 
     @Override
     public int performTask(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen) {
@@ -27,29 +28,26 @@ public class FindGuardYellSource implements TaskInterface {
             double minDistance = Controller.addNoise(((float) 50 / 2) * guardYellToFind.loudness(), 8);
             Vector2D startingPosition = VisionController.calculatePoint(graph.getCurrentPosition().COORDINATES, maxDistance, guardYellToFind.angle());
             Vector2D possiblePosition = getPossibleOriginGuardYell(graph, startingPosition, maxDistance, minDistance, guardYellToFind);
+            // TODO Add smth that checks if the path length is in between our max and min distance, otherwise the target pos doesn't make sense
             if (possiblePosition != null) {
-                while (true) {
-                    LinkedList<Vector2D> path = AStar.calculate(graph, graph.getCurrentPosition(), graph.getNode(possiblePosition));
-                    if (path.size() >= minDistance && path.size() <= maxDistance) {
-                        task = new PathfindingTask();
-                        task.setTarget(graph, orientation, path);
-
-                    } else {
-                        possiblePosition = getPossibleOriginGuardYell(graph, possiblePosition, maxDistance, minDistance, guardYellToFind);
-                        if (possiblePosition == null) break;
-                    }
-                }
+                LinkedList<Vector2D> path = AStar.calculate(graph, graph.getCurrentPosition(), graph.getNode(possiblePosition));
+                task = new PathfindingTask();
+                task.setTarget(graph, orientation, path);
             }
-            // No position was found in direction, so do explorationInDirection
-            task = new ExplorationInDirection();
-            Vector2D potentialGoal = VisionController.calculatePoint(graph.getCurrentPosition().COORDINATES, maxDistance / 2, guardYellToFind.angle());
-            task.setTarget(potentialGoal);
+            if (task == null) {
+                // No position was found in direction, so do explorationInDirection
+                task = new ExplorationInDirection();
+                Vector2D potentialGoal = VisionController.calculatePoint(graph.getCurrentPosition().COORDINATES, maxDistance, guardYellToFind.angle());
+                task.setTarget(potentialGoal);
+            }
         }
-        return task.performTask(graph, orientation, pheromoneMarkerDirection, sounds, guardsSeen, intrudersSeen);
+        int taskNr = task.performTask(graph, orientation, pheromoneMarkerDirection, sounds, guardsSeen, intrudersSeen);
+        finished = task.isFinished();
+        return taskNr;
     }
 
     private Vector2D getPossibleOriginGuardYell(ExplorationGraph graph, Vector2D startingPosition, double maxDistance, double minDistance, Sound guardYellToFind) {
-        double currentDistance = maxDistance;
+        double currentDistance = graph.getCurrentPosition().COORDINATES.dist(startingPosition);
         Vector2D currentPosition = startingPosition;
         while (!graph.isVisited(currentPosition) || graph.getNode(currentPosition).getTile().isWall()) {
             if (currentDistance < minDistance) {
@@ -60,6 +58,9 @@ public class FindGuardYellSource implements TaskInterface {
         }
         return currentPosition;
     }
+
+    @Override
+    public boolean isFinished() { return finished; }
 
     @Override
     public void setTarget(Sound guardYellToFind) { this.guardYellToFind = guardYellToFind; }
