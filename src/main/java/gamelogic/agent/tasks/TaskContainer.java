@@ -55,8 +55,8 @@ public class TaskContainer {
         else return null;
     }
 
-    public TaskDeciderInterface getTaskDeciderGuard() { return taskDeciderGuard; }
-    public TaskDeciderInterface getTaskDeciderIntruder() { return taskDeciderIntruder; }
+    public TaskDeciderInterface getTaskDeciderGuard() { return taskDeciderGuard.newInstance(); }
+    public TaskDeciderInterface getTaskDeciderIntruder() { return taskDeciderIntruder.newInstance(); }
 
     public enum TaskType {
         EXPLORATION(1),

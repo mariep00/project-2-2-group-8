@@ -14,5 +14,6 @@ public interface TaskDeciderInterface {
     default TaskInterface getTaskToPerform(ExplorationGraph graph, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen, TaskInterface currentTask) {
         throw new UnsupportedOperationException("This method is not supported for this class");
     }
+    TaskDeciderInterface newInstance();
 
 }

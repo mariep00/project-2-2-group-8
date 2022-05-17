@@ -145,7 +145,6 @@ public class TaskDeciderIntruder implements TaskDeciderInterface{
     }
 
     private Vector2D getAnticipatedGoal(ExplorationGraph graph) {
-        
         Vector2D potentialGoal = VisionController.calculatePoint(new Vector2D(0, 0), currentAnticipatedDistance, angleSpawnToGoal);
         //System.out.println("        Potential Goal for Exploration Direction: " + potentialGoal);
         Vector2D[] potentialArea = potentialGoal.getArea();
@@ -188,5 +187,8 @@ public class TaskDeciderIntruder implements TaskDeciderInterface{
     public void setTargetAngle(double angle) {
         this.angleSpawnToGoal = angle;
     }
+
+    @Override
+    public TaskDeciderInterface newInstance() { return new TaskDeciderIntruder(tasks, 0.0); }
     
 }

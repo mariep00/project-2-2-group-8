@@ -76,6 +76,11 @@ public class TaskDeciderGuard implements TaskDeciderInterface {
         return currentTask;
     }
 
+    @Override
+    public TaskDeciderInterface newInstance() {
+        return new TaskDeciderGuard(tasks);
+    }
+
     private Sound getGuardYell(List<Sound> guardYells) {
         Sound loudestYell = null;
         for (Sound sound : guardYells) {

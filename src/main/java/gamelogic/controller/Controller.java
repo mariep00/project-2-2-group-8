@@ -106,7 +106,6 @@ public abstract class Controller {
                 e.printStackTrace();
             }
         }
-        System.out.println(Arrays.toString(currentState.getAgentPositions()));
         switchToNextState();
     }
 

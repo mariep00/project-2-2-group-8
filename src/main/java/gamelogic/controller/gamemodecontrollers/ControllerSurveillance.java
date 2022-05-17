@@ -124,7 +124,7 @@ public class ControllerSurveillance extends Controller {
 
     @Override
     public void end() {
-        System.out.println("----- SURVEILLANCE ENDED -----");
+        System.out.println("----- SURVEILLANCE ENDED, IT TOOK " + time  + " SECONDS -----");
     }
 
     private VisionMemory[] updateAgentVisionMemory(int agentIndex, State state) {
