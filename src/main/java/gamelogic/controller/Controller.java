@@ -248,6 +248,9 @@ public abstract class Controller {
     public State getNextState() { return nextState; }
     public double getTimestep() { return timestep; }
     public double getTime() {return time;}
+    public EndingConditionInterface getEndingCondition(){
+        return endingCondition;
+    }
 
     public Agent getAgent(int agentIndex) { return agents[agentIndex]; }
 
