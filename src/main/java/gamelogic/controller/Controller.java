@@ -182,6 +182,14 @@ public abstract class Controller {
         return agentPositions;
     }
 
+    public boolean isWallInBetween(Vector2D begin, Vector2D end) {
+        Vector2D[] positions = VisionController.calculateLine(begin, end);
+        for (Vector2D pos : positions) {
+            if (scenarioMap.getTile(pos).isWall()) return true;
+        }
+        return false;
+    }
+
     public Vector2D convertRelativeSpawnToAbsolute(Vector2D relPos, int agentId) {
         return relPos.add(agentSpawnLocations[agentId]);
     }

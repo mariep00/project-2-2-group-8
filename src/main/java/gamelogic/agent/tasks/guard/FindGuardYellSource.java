@@ -23,7 +23,7 @@ public class FindGuardYellSource implements TaskInterface {
 
     @Override
     public int performTask(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen) {
-        if (task == null) {
+        if (task == null || graph.frontiers.isEmpty()) {
             double maxDistance = Controller.addNoise(50 * guardYellToFind.loudness(), 8);
             double minDistance = Controller.addNoise(((float) 50 / 2) * guardYellToFind.loudness(), 8);
             Vector2D startingPosition = VisionController.calculatePoint(graph.getCurrentPosition().COORDINATES, maxDistance, guardYellToFind.angle());
@@ -35,6 +35,14 @@ public class FindGuardYellSource implements TaskInterface {
                 task.setTarget(graph, orientation, path);
             }
             if (task == null) {
+                if (graph.frontiers.isEmpty()) {
+                    try {
+                        throw new Exception("Agent wants to do exploration in direction, but it doesn't have any frontiers :(");
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        System.exit(1);
+                    }
+                }
                 // No position was found in direction, so do explorationInDirection
                 task = new ExplorationInDirection();
                 Vector2D potentialGoal = VisionController.calculatePoint(graph.getCurrentPosition().COORDINATES, maxDistance, guardYellToFind.angle());
@@ -49,7 +57,7 @@ public class FindGuardYellSource implements TaskInterface {
     private Vector2D getPossibleOriginGuardYell(ExplorationGraph graph, Vector2D startingPosition, double maxDistance, double minDistance, Sound guardYellToFind) {
         double currentDistance = graph.getCurrentPosition().COORDINATES.dist(startingPosition);
         Vector2D currentPosition = startingPosition;
-        while (!graph.isVisited(currentPosition) || graph.getNode(currentPosition).getTile().isWall()) {
+        while (!graph.isVisited(currentPosition)) {
             if (currentDistance < minDistance) {
                 return null;
             }

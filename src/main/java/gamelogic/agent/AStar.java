@@ -42,6 +42,7 @@ public class AStar {
             }
 
             closed.addEntry(current.POSITION, current);
+            lastNode = current;
 
             ArrayList<ANode> neighbours = getNeighbours(graph, current, closed);
             for (ANode node: neighbours) {
@@ -57,7 +58,6 @@ public class AStar {
                     node.setH(node.POSITION.manhattanDist(goal));
                     node.setParent(current);
                     open.add(node);
-                    lastNode = node;
                 } else { isFinished = true; }
             }
         }

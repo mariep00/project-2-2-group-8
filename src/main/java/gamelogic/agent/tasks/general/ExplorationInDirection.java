@@ -28,7 +28,6 @@ public class ExplorationInDirection extends ExplorationTaskFrontier{
         // Only sort when starting with a new selection of nodes
         if (index == 0) {
             if (pheromoneMarkerDirection != -1) {
-
                 sortObjects = new SortObject[nodes.size()];
                 for (int i = 0; i < nodes.size(); i++) {
                     sortObjects[i] = new SortObject<>(nodes.get(i), nodes.get(i).COORDINATES.dist(targetCenter));
@@ -47,7 +46,6 @@ public class ExplorationInDirection extends ExplorationTaskFrontier{
                     }
                 }
                 if (sortedArrayPheromoneAngle == null) {
-                    // TODO It should first be sorted based on the desired direction, then sorted for pheromones. Otherwise when finding a guard yell it will explore into the wrong direction, because it gets repelled by the pheromones of the agent in pursuit first.
                     double[] frontierAnglesDiffPheromone = new double[candidates.size()];
                     for (int i = 0; i < frontierAnglesDiffPheromone.length; i++) {
                         frontierAnglesDiffPheromone[i] = Math.abs(180 - Math.abs(pheromoneMarkerDirection - graph.getCurrentPosition().COORDINATES.getAngleBetweenVector(candidates.get(i).COORDINATES)));
@@ -59,8 +57,6 @@ public class ExplorationInDirection extends ExplorationTaskFrontier{
 
                     sortedArrayPheromoneAngle = quickSort.sort(sortObjects, 0, sortObjects.length - 1);
                 }
-
-
             } else {
                 for (int i = 0; i < nodes.size(); i++) {
                     sortObjects[i] = new SortObject<>(nodes.get(i), nodes.get(i).COORDINATES.dist(targetCenter));
