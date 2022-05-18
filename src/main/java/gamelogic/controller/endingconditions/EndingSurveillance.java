@@ -28,6 +28,11 @@ public class EndingSurveillance implements EndingConditionInterface {
         return false;
     }
 
+    @Override
+    public boolean mode() {
+        return false;
+    }
+
     public void updateState (Controller controller){
         for (int i = map.getNumGuards(); i < map.getNumGuards()+map.getNumIntruders(); i++) {
             if (controller.getAgent(i) == null) {
