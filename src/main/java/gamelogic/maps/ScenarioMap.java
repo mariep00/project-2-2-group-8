@@ -14,21 +14,22 @@ public class ScenarioMap {
     private double baseSpeedIntruder;
     private double baseSpeedGuard;
     private double sprintSpeedIntruder;
-    private double guardViewAngle = 90;
+    private double guardViewAngle = 10;
     private double guardViewRange = 12;
     private double intruderViewAngle = 90;
     private double intruderViewRange = 12;
     private double timestep;
     private ArrayList<Vector2D> spawnAreaGuards = new ArrayList<>();
     private ArrayList<Vector2D> spawnAreaIntruders = new ArrayList<>();
+    private ArrayList<Vector2D> targetArea = new ArrayList<>();
     private int numberMarkers = 5;
     private double shadedReduction = 0.5;
     private int footstepMaxHearingDistance = 16;
     private int rotatingMaxHearingDistance = 9;
     private int yellMaxHearingDistance = 50;
     private double soundStandardDeviation = 10;
-    private int pheromoneMaxSmellingDistance = 10;
-    private double pheromoneReduction = 0.1;
+    private int pheromoneMaxSmellingDistance = 20;
+    private double pheromoneReduction = 0.35;
 
     private Tile[][] mapGrid;
     private int width;
@@ -153,6 +154,10 @@ public class ScenarioMap {
 
     public ArrayList<Vector2D> getSpawnAreaIntruders() {
         return spawnAreaIntruders;
+    }
+
+    public ArrayList<Vector2D> getTargetArea() {
+        return targetArea;
     }
 
     public double getGuardViewAngle() {
@@ -283,6 +288,17 @@ public class ScenarioMap {
     }
     public void insertSpawnAreaIntruder(int x, int y) {
         spawnAreaIntruders.add(new Vector2D(x+1, y+1));
+    }
+
+    public void insertTargetArea(int x1, int y1, int x2, int y2) {
+        for (int i = x1; i <= x2; i++) {
+            for (int j = y1; j <= y2; j++) {
+                targetArea.add(new Vector2D(i+1, j+1));
+            }
+        }
+    }
+    public void insertTargetArea(int x, int y) {
+        targetArea.add(new Vector2D(x+1, y+1));
     }
 
     public void insertElement(Vector2D[] points, Type type) {
