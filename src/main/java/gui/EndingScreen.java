@@ -40,7 +40,7 @@ public class EndingScreen {
         Button desktopButton = new Button("Quit to desktop");
         VBox vboxButtons;
 
-        if(controller.getEndingCondition().mode()) //mode is surveillance
+        if(!controller.getEndingCondition().mode()) //mode is surveillance default mode (True) is exploration
         {
             Label won = nbintruders==0?new Label("The guards won!!"): new Label("The intruders won");
             won.setStyle("-fx-font-size: " + 55 + "px;");
