@@ -9,12 +9,11 @@ import gamelogic.controller.Controller;
 import gamelogic.controller.SoundController;
 import gamelogic.controller.State;
 import gamelogic.controller.endingconditions.EndingSurveillance;
-import gamelogic.datacarriers.GuardYell;
 import gamelogic.datacarriers.VisionMemory;
 import gamelogic.maps.ScenarioMap;
-import gamelogic.maps.graph.ExplorationGraph;
 import gamelogic.maps.Tile;
 import gamelogic.maps.Tile.Type;
+import gamelogic.maps.graph.ExplorationGraph;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,12 +23,16 @@ public class ControllerSurveillance extends Controller {
     private final EndingSurveillance endingSurveillance;
     private final ExplorationGraph mapGraph;
     public final SoundController soundController;
+    private final double[] yellCooldowns;
+    private final double yellCooldown = 1;
 
-    public ControllerSurveillance(ScenarioMap scenarioMap, EndingSurveillance endingCondition, TaskContainer taskContainer) {
-        super(scenarioMap, endingCondition, taskContainer);
+    public ControllerSurveillance(ScenarioMap scenarioMap, EndingSurveillance endingCondition, TaskContainer taskContainer, int seed) {
+        super(scenarioMap, endingCondition, taskContainer, seed);
         this.endingSurveillance = endingCondition;
-        mapGraph = new ExplorationGraph();
+        this.mapGraph = new ExplorationGraph();
         this.soundController = new SoundController(this);
+        this.yellCooldowns = new double[scenarioMap.getNumGuards()];
+        Arrays.fill(this.yellCooldowns, yellCooldown);
     }
 
     @Override
@@ -64,7 +67,6 @@ public class ControllerSurveillance extends Controller {
                 }
             }
         }
-
         return agentPositions;
     }
 
@@ -76,7 +78,7 @@ public class ControllerSurveillance extends Controller {
             agents[i] = new Agent(scenarioMap.getBaseSpeedGuard(), scenarioMap.getGuardViewAngle(),scenarioMap.getGuardViewRange(), orientations[rand.nextInt(orientations.length)], new GuardBrain(taskContainer));
         }
         for (int i = numberOfGuards; i < numberOfGuards+numberOfIntruders; i++) {
-            agents[i] = new Agent(scenarioMap.getBaseSpeedIntruder(), scenarioMap.getIntruderViewAngle(), scenarioMap.getIntruderViewRange(), orientations[rand.nextInt(orientations.length)], new IntruderBrain(taskContainer));
+            agents[i] = new Agent(scenarioMap.getBaseSpeedIntruder(), scenarioMap.getIntruderViewAngle(), scenarioMap.getIntruderViewRange(), orientations[rand.nextInt(orientations.length)], new IntruderBrain(taskContainer, getTargetAngle(i)));
         }
     }
 
@@ -86,11 +88,7 @@ public class ControllerSurveillance extends Controller {
         for (int i = 0; i < numberOfGuards; i++) {
             for (int j = numberOfGuards; j < numberOfGuards+numberOfIntruders; j++) {
                 if (agents[j] != null) {
-                    if (currentState.getVision(i).contains(currentState.getAgentPosition(j))) {
-                        currentState.addGuardYell(new GuardYell(currentState.getAgentPosition(i), i));
-                    }
-                    // TODO I assume an intruder can also be caught when it's 1 square away diagonally?
-                    if (currentState.getAgentPosition(i).dist(currentState.getAgentPosition(j)) <= Math.sqrt(2)) {
+                    if (nextState.getAgentPosition(i).dist(nextState.getAgentPosition(j)) <= Math.sqrt(2)) {
                         removeAgent(j);
                     }
                 }
@@ -112,44 +110,70 @@ public class ControllerSurveillance extends Controller {
 
     @Override
     protected void updateProgress() {
-        //endingSurveillance.updateState(currentState);
+        endingSurveillance.updateState(this);
     }
 
     @Override
     protected void updateAgentsSeen() {
         for (int i = 0; i < agents.length; i++) {
-            nextState.setAgentsSeen(i, updateAgentVisionMemory(i, nextState));
+            if (agents[i] != null) {
+                nextState.setAgentsSeen(i, updateAgentVisionMemory(i, nextState));
+            }
         }
     }
+
+    @Override
+    public void end() {
+        System.out.println("----- SURVEILLANCE ENDED, IT TOOK " + time  + " SECONDS -----");
+    }
+
     private VisionMemory[] updateAgentVisionMemory(int agentIndex, State state) {
         VisionMemory[] otherAgentsSeen;
         if (state.getAgentsSeen(agentIndex) != null) otherAgentsSeen = state.getAgentsSeen(agentIndex);
         else otherAgentsSeen = new VisionMemory[numberOfGuards + numberOfIntruders]; // This would only happen when called from init()
 
         for (int i=0; i < otherAgentsSeen.length; i++) {
+            boolean newlySeenIntruder = false;
             if (agents[i] != null) {
-                outer:
                 if (i != agentIndex) {
                     for (Vector2D pos : state.getVision(agentIndex)) {
                         if (pos.equals(state.getAgentPosition(i))) {
                             otherAgentsSeen[i] = new VisionMemory(convertAbsolutePosToRelativeToCurrentPos(pos, agentIndex, state), 0, agents[i].getOrientation());
                             // Check if agent we're updating is a guard and agent we're seeing is an intruder, then yell
-                            if (agentIndex < numberOfGuards && i >= numberOfGuards)
+                            if (otherAgentsSeen[i].position().equals(new Vector2D(0, 0))) {
+                               try {
+                                   throw new Exception("Agent sees other agent at own position!");
+                               } catch (Exception e) {
+                                   e.printStackTrace();
+                                   System.exit(1);
+                               }
+                            }
+                            if (agentIndex < numberOfGuards && i >= numberOfGuards && isZero(yellCooldowns[agentIndex])) {
                                 soundController.generateGuardYell(agentIndex);
-                            break outer;
+                                yellCooldowns[agentIndex] = yellCooldown;
+                            }
+                            newlySeenIntruder = true;
+                            break;
                         }
-                    }
-                    // When reaching this the agent is not in vision
-                    if (otherAgentsSeen[i] != null) {
-                        // Position is updated s.t. it stays relative to the current position of the agent
-                        // Seconds ago is incremented with the timestep
-                        otherAgentsSeen[i] = new VisionMemory(otherAgentsSeen[i].position().subtract((nextState.getAgentPosition(agentIndex).subtract(currentState.getAgentPosition(agentIndex)))),
-                                otherAgentsSeen[i].secondsAgo() + timestep, otherAgentsSeen[i].orientation());
                     }
                 }
             }
+            // When reaching this the agent is not in vision
+            if (otherAgentsSeen[i] != null && !newlySeenIntruder) {
+                // Position is updated s.t. it stays relative to the current position of the agent
+                // Seconds ago is incremented with the timestep
+                otherAgentsSeen[i] = new VisionMemory(otherAgentsSeen[i].position().subtract((nextState.getAgentPosition(agentIndex).subtract(currentState.getAgentPosition(agentIndex)))),
+                        otherAgentsSeen[i].secondsAgo() + timestep, otherAgentsSeen[i].orientation());
+            }
+        }
+        if (agentIndex < numberOfGuards && !isZero(yellCooldowns[agentIndex])) {
+            yellCooldowns[agentIndex] -= timestep;
         }
         return otherAgentsSeen;
+    }
+
+    private boolean isZero(double value) {
+        return value >= -10e-12 && value <= 10e-12;
     }
 
     private void createGraph() {
@@ -172,10 +196,16 @@ public class ControllerSurveillance extends Controller {
         }
     }
 
-    private void removeAgent(int agentIndex) {
+    protected void removeAgent(int agentIndex) {
         agents[agentIndex] = null;
-        currentState.setAgentVision(agentIndex, null);
-        currentState.setAgentPosition(agentIndex, null);
+        nextState.setAgentVision(agentIndex, null);
+        nextState.setAgentPosition(agentIndex, null);
+    }
+
+    private double getTargetAngle(int agentIndex) {
+        Vector2D targetArea = scenarioMap.getTargetArea().get(0);
+        double angle = agentSpawnLocations[agentIndex].getAngleBetweenVector(targetArea);
+        return addNoise(angle, 5);
     }
 
     public ExplorationGraph getMapGraph() { return mapGraph; }

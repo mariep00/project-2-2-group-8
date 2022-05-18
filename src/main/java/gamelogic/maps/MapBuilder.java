@@ -103,6 +103,7 @@ public class MapBuilder {
                         break;
                     case "targetArea":
                         map.insertElement(Integer.parseInt(items[0]), Integer.parseInt(items[1]), Integer.parseInt(items[2]), Integer.parseInt(items[3]), Tile.Type.TARGET_AREA);
+                        map.insertTargetArea(Integer.parseInt(items[0]), Integer.parseInt(items[1]), Integer.parseInt(items[2]), Integer.parseInt(items[3]));
                         break;
                     case "spawnAreaIntruders":
                         map.insertSpawnAreaIntruder(Integer.parseInt(items[0]), Integer.parseInt(items[1]), Integer.parseInt(items[2]), Integer.parseInt(items[3]));

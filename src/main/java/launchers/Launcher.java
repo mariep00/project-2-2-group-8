@@ -1,11 +1,12 @@
 package launchers;
 
 import gamelogic.agent.tasks.TaskContainer;
+import gamelogic.agent.tasks.general.AvoidCollisionTask;
 import gamelogic.agent.tasks.general.ExplorationInDirection;
 import gamelogic.agent.tasks.general.ExplorationTaskFrontier;
 import gamelogic.agent.tasks.general.PathfindingTask;
 import gamelogic.agent.tasks.guard.FindSoundSource;
-import gamelogic.agent.tasks.guard.PursuingTaskBaseline;
+import gamelogic.agent.tasks.guard.ClosePursuingTask;
 import gamelogic.agent.tasks.guard.VisitLastSeenIntruderPositions;
 import gamelogic.agent.tasks.intruder.EvasionTaskBaseline;
 import gamelogic.controller.Controller;
@@ -25,9 +26,9 @@ import java.util.concurrent.TimeUnit;
 public class Launcher {
     private final static boolean MULTITHREAD_LAUNCHER = false; // Change this to enable or disable multithreading in the launcher. I.e. running multiple games in parallel.
     private final static int NUMBER_OF_GAMES = 1000; // Change this to change the number of games to run
-    private final static String FILE_NAME = "SimpleTestSurveillance.txt"; // Change this string to the file name of the map you want to run. Make sure the map is located in resources/maps.
-    private final static TaskContainer TASK_CONTAINER = new TaskContainer(new ExplorationTaskFrontier(), new FindSoundSource(), new PursuingTaskBaseline(), new EvasionTaskBaseline(),
-            new VisitLastSeenIntruderPositions(), new PathfindingTask(), new ExplorationInDirection()); // Change this to change the tasks that can be performed by agents
+    private final static String FILE_NAME = "simpleTestSurveillance.txt"; // Change this string to the file name of the map you want to run. Make sure the map is located in resources/maps.
+    private final static TaskContainer TASK_CONTAINER = new TaskContainer(new ExplorationTaskFrontier(), new FindSoundSource(), new ClosePursuingTask(), new EvasionTaskBaseline(),
+            new VisitLastSeenIntruderPositions(), new PathfindingTask(), new ExplorationInDirection(), new AvoidCollisionTask()); // Change this to change the tasks that can be performed by agents
 
     /**
      * Launcher without GUI
@@ -37,7 +38,7 @@ public class Launcher {
         ThreadPoolExecutor threadPool = new ThreadPoolExecutor(Runtime.getRuntime().availableProcessors()/2, 50, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
         if (url != null) {
             long startTime = System.nanoTime();
-            for (int i = 0; i < NUMBER_OF_GAMES; i++) {
+            for (int i = 909; i < NUMBER_OF_GAMES; i++) {
                 int finalI = i;
                 if (MULTITHREAD_LAUNCHER) threadPool.submit(() -> runGame(finalI, url));
                 else runGame(finalI, url);
@@ -58,7 +59,7 @@ public class Launcher {
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
-        Controller controller = new ControllerSurveillance(scenarioMap, new EndingSurveillance(scenarioMap), TASK_CONTAINER);
+        Controller controller = new ControllerSurveillance(scenarioMap, new EndingSurveillance(scenarioMap), TASK_CONTAINER, i);
         controller.init();
         controller.engine();
     }

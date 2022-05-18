@@ -10,6 +10,7 @@ import gamelogic.maps.ScenarioMap;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
+import java.util.Random;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -29,6 +30,8 @@ public class Experiments {
 
     private static final boolean DEBUG = true;
     private static final boolean saveResults = true;
+
+    private static final Random rand = new Random();
 
     //private static String path1 = "C://Users//giaco//Downloads//map1.txt";
     private static String path1 = "/Users/Yannick/Documents/DKE_UM/Year_2/Project_2-2/code/src/main/resources/maps/Map1.txt";
@@ -63,7 +66,7 @@ public class Experiments {
                 int finalA = a;
                 threadPool.submit(() -> {
                     ScenarioMap scenarioMap = new MapBuilder(new File(path1)).getMap();
-                    ControllerExploration controller = new ControllerExploration(scenarioMap, new EndingExploration(scenarioMap), new TaskContainer(new ExplorationTaskFrontier()));
+                    ControllerExploration controller = new ControllerExploration(scenarioMap, new EndingExploration(scenarioMap), new TaskContainer(new ExplorationTaskFrontier()), rand.nextInt());
 
                     Experiments experiments = new Experiments(controller);
                     gameCounter++;

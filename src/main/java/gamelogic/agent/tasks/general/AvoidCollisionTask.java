@@ -1,13 +1,13 @@
 package gamelogic.agent.tasks.general;
 
-import java.util.List;
-import java.util.Stack;
-
-import gamelogic.agent.tasks.TaskInterface;
 import gamelogic.agent.tasks.TaskContainer.TaskType;
+import gamelogic.agent.tasks.TaskInterface;
 import gamelogic.datacarriers.Sound;
 import gamelogic.datacarriers.VisionMemory;
 import gamelogic.maps.graph.ExplorationGraph;
+
+import java.util.List;
+import java.util.Stack;
 
 public class AvoidCollisionTask implements TaskInterface{
 
@@ -17,7 +17,7 @@ public class AvoidCollisionTask implements TaskInterface{
 
     @Override
     public int performTask(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen) {
-        if (futureMoves.isEmpty() || futureMoves == null) {
+        if (futureMoves == null || futureMoves.isEmpty()) {
             futureMoves = new Stack<>();
             futureMoves.push(1);
             futureMoves.push(0);

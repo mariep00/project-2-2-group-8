@@ -18,10 +18,10 @@ public class TaskDeciderIntruder implements TaskDeciderInterface{
 
     private final TaskContainer tasks;
     // TODO: Adjust thresholds
-    private final double angleSpawnToGoal;
-    private final double soundThreshold = 5.0;
-    private final double secondsAgoThreshold = 7.0;
-    private final double angleThreshold = 10.0;
+    private double angleSpawnToGoal;
+    private final double soundThreshold = 0.5;
+    private final double secondsAgoThreshold = 1.0;
+    private final double angleThreshold = 40.0;
 
     private double currentAnticipatedDistance;
     private double lastEvasionAngle; // -1 if last task was not evasion
@@ -35,6 +35,7 @@ public class TaskDeciderIntruder implements TaskDeciderInterface{
     @Override
     public TaskInterface getTaskToPerform(ExplorationGraph graph, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen, TaskInterface currentTask) {
         // First check if there is a guard in vision
+        //System.out.println("Number of nodes " + graph.getNumberOfNodes());
         VisionMemory closestGuard = isGuardInVision(guardsSeen);
         // if there is a guard in vision and the priority of the current task is less than the one of this task, then we should switch to the evasion task
         if (closestGuard != null && (currentTask.getPriority()<=TaskContainer.TaskType.INTRUDER_EVASION.priority || currentTask.isFinished())) {
@@ -124,8 +125,9 @@ public class TaskDeciderIntruder implements TaskDeciderInterface{
             if (sound.loudness() > soundThreshold) {
                 //check if there was an intruder in that direction, if so then the sound should not be considered
                 if (!isSoundMatched(sound, anglesIntruders)) {
+                    //System.out.println("sound angle " + sound + ", " + Arrays.toString(anglesIntruders.toArray()));
                     if (soundToAvoid == null) soundToAvoid = sound;
-                    if (soundToAvoid != null && sound.loudness() > soundToAvoid.loudness()) soundToAvoid = sound;
+                    if (sound.loudness() > soundToAvoid.loudness()) soundToAvoid = sound;
                 }
             }
         }
@@ -134,7 +136,8 @@ public class TaskDeciderIntruder implements TaskDeciderInterface{
 
     private boolean isSoundMatched(Sound sound, List<Double> anglesIntruders) {
         for (Double angle : anglesIntruders) {
-            if (Math.abs(sound.angle() - angle) <= angleThreshold) {
+            double diff = Math.abs(sound.angle() - angle);
+            if ((diff > 180 ? 360 - diff : diff) <= angleThreshold) {
                 return true;
             }
         }
@@ -142,9 +145,17 @@ public class TaskDeciderIntruder implements TaskDeciderInterface{
     }
 
     private Vector2D getAnticipatedGoal(ExplorationGraph graph) {
-        
         Vector2D potentialGoal = VisionController.calculatePoint(new Vector2D(0, 0), currentAnticipatedDistance, angleSpawnToGoal);
-        if(graph.isVisited(potentialGoal)) currentAnticipatedDistance = currentAnticipatedDistance + 10.0;
+        //System.out.println("        Potential Goal for Exploration Direction: " + potentialGoal);
+        Vector2D[] potentialArea = potentialGoal.getArea();
+        int counter = 0;
+        for(Vector2D vector : potentialArea) {
+            if(graph.isVisited(vector)) {
+                counter++;
+            }
+        }
+        if (counter>=3) currentAnticipatedDistance = currentAnticipatedDistance + 10;
+        
         return potentialGoal;
     }
 
@@ -172,5 +183,12 @@ public class TaskDeciderIntruder implements TaskDeciderInterface{
         lastEvasionAngle = newAngle;
         return lastEvasionAngle;
     }
+
+    public void setTargetAngle(double angle) {
+        this.angleSpawnToGoal = angle;
+    }
+
+    @Override
+    public TaskDeciderInterface newInstance() { return new TaskDeciderIntruder(tasks, 0.0); }
     
 }
