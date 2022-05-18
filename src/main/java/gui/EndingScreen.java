@@ -39,18 +39,20 @@ public class EndingScreen {
         Button mainMenuButton = new Button("Back to main menu");
         Button desktopButton = new Button("Quit to desktop");
         VBox vboxButtons;
-        if(!controller.getEndingCondition().mode()) //mode is surveillance
-        {
 
+        if(controller.getEndingCondition().mode()) //mode is surveillance
+        {
             Label won = nbintruders==0?new Label("The guards won!!"): new Label("The intruders won");
             won.setStyle("-fx-font-size: " + 55 + "px;");
             won.setTextFill(Color.WHITE);
+            vboxButtons = new VBox(30, won, time, mainMenuButton, desktopButton);
 
-            Label intrudersnb = new Label("The number of intruders at the end:" + nbintruders); //TODO: might not be necessary if guard won
-            won.setStyle("-fx-font-size: " + 55 + "px;");
-            won.setTextFill(Color.WHITE);
-            vboxButtons = new VBox(30, time, intrudersnb, mainMenuButton, desktopButton);
-
+            if (nbintruders!=0) {
+                Label intrudersnb = new Label("The number of intruders at the end:" + nbintruders);
+                won.setStyle("-fx-font-size: " + 55 + "px;");
+                won.setTextFill(Color.WHITE);
+                vboxButtons = new VBox(30, won, time, intrudersnb, mainMenuButton, desktopButton);
+            }
         }
 
         else{ //mode is exploration
@@ -58,16 +60,7 @@ public class EndingScreen {
             step.setStyle("-fx-font-size: " + 55 + "px;");
             step.setTextFill(Color.WHITE);
             vboxButtons = new VBox(30, time, step, mainMenuButton, desktopButton);
-
         }
-
-        //TODO: surveillance vs exploration
-
-
-
-
-
-
 
         for (Node node : vboxButtons.getChildren()) {
             if (node instanceof Button) {
