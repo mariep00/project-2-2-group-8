@@ -6,6 +6,7 @@ import gamelogic.controller.gamemodecontrollers.ControllerSurveillance;
 import gamelogic.maps.ScenarioMap;
 import gui.gamescreen.GameScreen;
 import gui.gamescreen.GameScreenSurveillance;
+import javafx.application.Platform;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -14,7 +15,7 @@ public class ControllerSurveillanceGUI extends ControllerSurveillance implements
     private final ControllerGUI controllerGUI;
 
     public ControllerSurveillanceGUI(ScenarioMap scenarioMap, EndingSurveillance endingCondition, GameScreen gameScreen, TaskContainer taskContainer) {
-        super(scenarioMap, endingCondition, taskContainer, 909);
+        super(scenarioMap, endingCondition, taskContainer, 0); //909
         this.gameScreen = gameScreen;
         this.controllerGUI = new ControllerGUI(this, gameScreen);
     }
@@ -23,6 +24,15 @@ public class ControllerSurveillanceGUI extends ControllerSurveillance implements
     public void init() {
         super.init();
         controllerGUI.init();
+    }
+
+    @Override
+    public void end() {
+        controllerGUI.killLogicThread();
+        controllerGUI.guiTasksQueue.add(() -> {
+            controllerGUI.killGuiThread();
+            Platform.runLater(gameScreen::endScreen);
+        });
     }
 
     @Override

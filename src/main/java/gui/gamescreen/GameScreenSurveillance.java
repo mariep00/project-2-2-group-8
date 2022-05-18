@@ -39,6 +39,7 @@ public class GameScreenSurveillance extends GameScreen {
 
     @Override
     public void endScreen(){
+        System.out.println("here");
         EndingScreen endingScreen = new EndingScreen(this, controllerSurveillanceGUI.getGameScreen().getStage().getScene(), controllerSurveillanceGUI.getGameScreen().getStage(), controllerSurveillanceGUI);
 
         controllerSurveillanceGUI.getControllerGUI().getMainController().end();

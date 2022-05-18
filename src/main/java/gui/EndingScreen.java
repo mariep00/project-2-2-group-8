@@ -1,8 +1,6 @@
 package gui;
 
 import gamelogic.controller.Controller;
-import gui.gamescreen.GameScreenExploration;
-import gui.gamescreen.controller.ControllerGUI;
 import gui.util.MainGUI;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -11,7 +9,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.effect.GaussianBlur;
-import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -88,8 +85,6 @@ public class EndingScreen {
             endingStage.setY(stage.getY()+windowTitleBarHeight);
             endingStage.setHeight(stage.getHeight()-windowTitleBarHeight);
         });
-
-        //TODO: pause scene appears when game is finished
 
         mainMenuButton.setOnAction(e -> MainGUI.backToMainMenuAlert(stage,() -> closePauseMenu(scene, classObject)));
         desktopButton.setOnAction(e -> MainGUI.quitToDesktopAlert(stage));
