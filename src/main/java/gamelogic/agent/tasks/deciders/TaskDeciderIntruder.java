@@ -20,8 +20,8 @@ public class TaskDeciderIntruder implements TaskDeciderInterface{
     // TODO: Adjust thresholds
     private double angleSpawnToGoal;
     private final double soundThreshold = 0.5;
-    private final double secondsAgoThreshold = 7.0;
-    private final double angleThreshold = 10.0;
+    private final double secondsAgoThreshold = 1.0;
+    private final double angleThreshold = 40.0;
 
     private double currentAnticipatedDistance;
     private double lastEvasionAngle; // -1 if last task was not evasion

@@ -4,6 +4,7 @@ import datastructures.Vector2D;
 import gamelogic.agent.AStar;
 import gamelogic.agent.tasks.TaskContainer.TaskType;
 import gamelogic.agent.tasks.TaskInterface;
+import gamelogic.agent.tasks.general.ExplorationInDirection;
 import gamelogic.controller.MovementController;
 import gamelogic.controller.VisionController;
 import gamelogic.datacarriers.Sound;
@@ -14,10 +15,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
 
-public class PursuingTaskBaseline implements TaskInterface {
+public class ClosePursuingTask implements TaskInterface {
 
     private ExplorationGraph graph;
-    private TaskType type = TaskType.GUARD_PURSUIT;
     private Stack<Integer> futureMoves;
     private VisionMemory target;
 
@@ -45,12 +45,15 @@ public class PursuingTaskBaseline implements TaskInterface {
             double distanceInFrontOfIntruder = target.position().magnitude()*0.3333334;
             placeToGo = findGoalInFrontOfIntruder(targetPos, target.orientation(), distanceInFrontOfIntruder);
             LinkedList<Vector2D> path = getPursuitTaskToGoal(placeToGo, distanceInFrontOfIntruder);
-            try {
+
+            if (path != null) {
                 placeToGo = path.getFirst();
                 this.futureMoves = MovementController.convertPath(graph, orientation, path, false);
             }
-            catch (NullPointerException e) {
-                e.printStackTrace();
+            else {
+                ExplorationInDirection tempTask = new ExplorationInDirection();
+                tempTask.setTarget(placeToGo);
+                return tempTask.performTask(graph, orientation, pheromoneMarkerDirection, sounds, guardsSeen, intrudersSeen);
             }
         }
         return futureMoves.pop();
@@ -60,6 +63,7 @@ public class PursuingTaskBaseline implements TaskInterface {
     // TODO Add step in between, so when the intruder keeps turning left and right w.r.t. the guard, the guard doesn't and just walks forward
     private LinkedList<Vector2D> getPursuitTaskToGoal(Vector2D goalInFrontOfIntruder, double distanceInFrontOfIntruder) {
         Vector2D firstGoal = VisionController.calculatePoint(graph.getCurrentPosition().COORDINATES, (target.position().magnitude()-distanceInFrontOfIntruder), target.position().angle());
+        if (graph.getNode(firstGoal) == null) return null;
         LinkedList<Vector2D> pathFromFirstToSecondGoal = AStar.calculate(graph, graph.getNode(firstGoal), graph.getNode(goalInFrontOfIntruder));
         LinkedList<Vector2D> pathFromCurrentPosToFirstGoal = AStar.calculate(graph, graph.getCurrentPosition(), graph.getNode(firstGoal));
         pathFromFirstToSecondGoal.addAll(pathFromCurrentPosToFirstGoal);
@@ -93,7 +97,7 @@ public class PursuingTaskBaseline implements TaskInterface {
     public boolean equals(Object other) {
         if (other == null) return false;
         if (other.getClass() == this.getClass()) {
-            return ((PursuingTaskBaseline) other).getTarget().equals(this.target);
+            return ((ClosePursuingTask) other).getTarget().equals(this.target);
         }
         return false;
     }
@@ -106,11 +110,11 @@ public class PursuingTaskBaseline implements TaskInterface {
 
     @Override
     public TaskType getType() {
-        return type;
+        return TaskType.GUARD_PURSUIT;
     }
 
     @Override
     public TaskInterface newInstance() {
-        return new PursuingTaskBaseline();
+        return new ClosePursuingTask();
     }
 }
