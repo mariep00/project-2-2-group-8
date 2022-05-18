@@ -52,4 +52,7 @@ public class Tile extends StackPane {
     public void setToExplored() { tileImages[5].resetTileImage(); }
     public void setToInVision(Image inVisionImage) { tileImages[6].setImage(inVisionImage); }
     public void setToOutOfVision() { tileImages[6].resetTileImage(); }
+    public void zoom(double zoomfact){
+        this.resize(this.getWidth()*zoomfact, this.getHeight()*zoomfact);
+    }
 }

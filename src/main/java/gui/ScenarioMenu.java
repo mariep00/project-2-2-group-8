@@ -131,7 +131,6 @@ public class ScenarioMenu extends Application implements TransitionInterface {
         GridPane.setMargin(shadedReduction.fieldDesription, new Insets(40, 0, 0, 0));
 
         gridPane.getColumnConstraints().addAll( new ColumnConstraints(300), new ColumnConstraints(100));
-        gridPane.setGridLinesVisible( true );
 
         borderPane.setCenter(gridPane);
         gridPane.setAlignment(Pos.TOP_CENTER);

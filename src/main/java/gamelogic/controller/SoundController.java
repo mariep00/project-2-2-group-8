@@ -38,7 +38,7 @@ public class SoundController {
                 if (soundOrigin.soundType() == SoundType.WALKING) threshold = footstepMaxHearingDistance;
                 else threshold = rotatingMaxHearingDistance;
 
-                LinkedList<Vector2D> path = AStar.calculate(mapGraph, mapGraph.getNode(controller.currentState.getAgentPosition(agentIndex)), mapGraph.getNode(soundOrigin.origin()), threshold);
+                LinkedList<Vector2D> path = AStar.calculate(mapGraph, mapGraph.getNode(controller.currentState.getAgentPosition(agentIndex)), mapGraph.getNode(soundOrigin.origin()), threshold-1);
 
                 if (path != null && AStar.pathReachedGoal(path, soundOrigin.origin())) {
                     double angle = controller.getCurrentState().getAgentPosition(agentIndex).getAngleBetweenVector(soundOrigin.origin());

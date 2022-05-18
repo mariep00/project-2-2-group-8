@@ -6,6 +6,7 @@
 .DS_Store
 .idea/*
 build/*
+bin/*
 
 
 # Log file

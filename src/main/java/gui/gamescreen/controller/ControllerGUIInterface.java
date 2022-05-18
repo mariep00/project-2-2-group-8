@@ -11,4 +11,5 @@ public interface ControllerGUIInterface {
     void pauseThreads();
     void continueThreads();
     AtomicBoolean getRunSimulation();
+    boolean doesAgentExist(int agentIndex);
 }

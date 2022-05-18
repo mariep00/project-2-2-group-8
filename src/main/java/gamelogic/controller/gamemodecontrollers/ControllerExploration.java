@@ -11,8 +11,8 @@ import gamelogic.maps.ScenarioMap;
 public class ControllerExploration extends Controller {
     private final EndingExploration endingExploration;
 
-    public ControllerExploration(ScenarioMap scenarioMap, EndingExploration endingCondition, TaskContainer taskContainer) {
-        super(scenarioMap, endingCondition, taskContainer);
+    public ControllerExploration(ScenarioMap scenarioMap, EndingExploration endingCondition, TaskContainer taskContainer, int seed) {
+        super(scenarioMap, endingCondition, taskContainer, seed);
         this.endingExploration = endingCondition;
     }
 
@@ -48,5 +48,14 @@ public class ControllerExploration extends Controller {
                 endingExploration.updateExplorationMap(vector);
             }
         }
+    }
+
+    @Override
+    public void end() {
+        int hours = (int) time / 3600;
+        int minutes = ((int)time % 3600) / 60;
+        double seconds = time % 60;
+        if (threadPool != null) threadPool.shutdown();
+        System.out.println("Everything is explored. It took " + hours + " hour(s) " + minutes + " minutes " + seconds + " seconds.");
     }
 }

@@ -1,15 +1,18 @@
 package gui.gamescreen;
 
+import datastructures.Vector2D;
 import gamelogic.agent.tasks.TaskContainer;
+import gamelogic.agent.tasks.general.AvoidCollisionTask;
 import gamelogic.agent.tasks.general.ExplorationInDirection;
 import gamelogic.agent.tasks.general.ExplorationTaskFrontier;
 import gamelogic.agent.tasks.general.PathfindingTask;
 import gamelogic.agent.tasks.guard.FindSoundSource;
-import gamelogic.agent.tasks.guard.PursuingTaskBaseline;
+import gamelogic.agent.tasks.guard.ClosePursuingTask;
 import gamelogic.agent.tasks.guard.VisitLastSeenIntruderPositions;
 import gamelogic.agent.tasks.intruder.EvasionTaskBaseline;
 import gamelogic.controller.endingconditions.EndingSurveillance;
 import gamelogic.maps.ScenarioMap;
+import gui.EndingScreen;
 import gui.gamescreen.controller.ControllerSurveillanceGUI;
 import javafx.stage.Stage;
 
@@ -18,8 +21,8 @@ public class GameScreenSurveillance extends GameScreen {
 
     public GameScreenSurveillance(ScenarioMap scenarioMap) {
         super(scenarioMap);
-        this.controllerSurveillanceGUI = new ControllerSurveillanceGUI(scenarioMap, new EndingSurveillance(scenarioMap), this, new TaskContainer(new ExplorationTaskFrontier(), new FindSoundSource(), new PursuingTaskBaseline(), new EvasionTaskBaseline(),
-                new VisitLastSeenIntruderPositions(), new PathfindingTask(), new ExplorationInDirection()));
+        this.controllerSurveillanceGUI = new ControllerSurveillanceGUI(scenarioMap, new EndingSurveillance(scenarioMap), this, new TaskContainer(new ExplorationTaskFrontier(), new FindSoundSource(), new ClosePursuingTask(), new EvasionTaskBaseline(),
+                new VisitLastSeenIntruderPositions(), new PathfindingTask(), new ExplorationInDirection(), new AvoidCollisionTask()));
     }
 
     @Override
@@ -33,4 +36,18 @@ public class GameScreenSurveillance extends GameScreen {
 
     @Override
     protected ControllerSurveillanceGUI getController() { return controllerSurveillanceGUI; }
+
+    @Override
+    public void endScreen(){
+        System.out.println("here");
+        EndingScreen endingScreen = new EndingScreen(this, controllerSurveillanceGUI.getGameScreen().getStage().getScene(), controllerSurveillanceGUI.getGameScreen().getStage(), controllerSurveillanceGUI);
+
+        controllerSurveillanceGUI.getControllerGUI().getMainController().end();
+    }
+
+    public void removeAgent(int agentIndex) {
+        Vector2D agentPos = controllerSurveillanceGUI.getCurrentState().getAgentPosition(agentIndex);
+        tiles[agentPos.y][agentPos.x].resetCharacterImage();
+        removeVision(null, controllerSurveillanceGUI.getCurrentState().getVision(agentIndex));
+    }
 }

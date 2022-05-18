@@ -103,7 +103,7 @@ public class AStar {
     }
 
     public static boolean pathReachedGoal(LinkedList<Vector2D> path, Vector2D goal) {
-        return path.getLast().equals(goal);
+        return path.getFirst().equals(goal);
     }
 }
 

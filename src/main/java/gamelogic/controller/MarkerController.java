@@ -50,8 +50,8 @@ public class MarkerController {
             }
         }
 
-        // Add the new pheromone markers
-        for (int i = 0; i < controller.agents.length; i++) {
+        // Add the new pheromone markers for the guards
+        for (int i = 0; i < controller.numberOfGuards; i++) {
             addMarker(controller.nextState.getAgentPosition(i), new PheromoneMarker(controller.agents[i],
                     controller.nextState.getAgentPosition(i), pheromoneMaxSmellingDistance, pheromoneReduction));
         }

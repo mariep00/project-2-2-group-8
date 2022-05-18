@@ -17,7 +17,7 @@ public class ExplorationGraph {
     private boolean sawTargetArea;
     private final Random random;
 
-    private final HashMap<Vector2D, Node> nodes; //all nodes
+    public final HashMap<Vector2D, Node> nodes; //all nodes
     public final HashMap<Vector2D, Node> frontiers; //nodes with less than 4 edges;
 
     public ExplorationGraph() {

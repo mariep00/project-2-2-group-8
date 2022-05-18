@@ -220,7 +220,7 @@ public class GameScreen extends Application implements TransitionInterface {
             if (!getController().getRunSimulation().get()) {
                 Arrays.fill(showVision, true);
                 for (int i = 0; i < scenarioMap.getNumGuards()+scenarioMap.getNumIntruders(); i++) {
-                    getController().showVision(i);
+                    if (getController().doesAgentExist(i)) getController().showVision(i);
                 }
             }
         });
@@ -228,7 +228,7 @@ public class GameScreen extends Application implements TransitionInterface {
             if (!getController().getRunSimulation().get()) {
                 Arrays.fill(showVision, false);
                 for (int i = 0; i < scenarioMap.getNumGuards()+scenarioMap.getNumIntruders(); i++) {
-                    getController().hideVision(i);
+                    if (getController().doesAgentExist(i)) getController().hideVision(i);
                 }
             }
         });
@@ -340,4 +340,14 @@ public class GameScreen extends Application implements TransitionInterface {
     public @NotNull List<Transition> getTransitions() {
         return transitions;
     }
+
+
+    public void endScreen(){
+
+    }
+
+    public Stage getStage() {
+        return stage;
+    }
+
 }

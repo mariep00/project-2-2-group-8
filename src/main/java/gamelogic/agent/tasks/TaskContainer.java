@@ -19,15 +19,16 @@ public class TaskContainer {
 
     public TaskContainer(TaskInterface explorationTask, TaskInterface findSoundSourceTask, TaskInterface guardPursuitTask,
                          TaskInterface intruderEvasionTask, TaskInterface guardVisitLastSeenIntruderPositions,
-                         TaskInterface pathfindingTask, TaskInterface explorationInDirection) {
-        tasks = new TaskInterface[7];
+                         TaskInterface pathfindingTask, TaskInterface explorationInDirectionTask, TaskInterface avoidCollisionTask) {
+        tasks = new TaskInterface[8];
         tasks[0] = explorationTask;
         tasks[1] = findSoundSourceTask;
         tasks[2] = guardPursuitTask;
         tasks[3] = intruderEvasionTask;
         tasks[4] = guardVisitLastSeenIntruderPositions;
         tasks[5] = pathfindingTask;
-        tasks[6] = explorationInDirection;
+        tasks[6] = explorationInDirectionTask;
+        tasks[7] = avoidCollisionTask;
 
         taskDeciderGuard = new TaskDeciderGuard(this);
         // TODO: Pass the right angle upon creation
@@ -50,11 +51,12 @@ public class TaskContainer {
         else if (type == TaskType.VISIT_LAST_SEEN_INTRUDER_POSITIONS) return tasks[4].newInstance();
         else if (type == TaskType.PATHFINDING) return tasks[5].newInstance();
         else if (type == TaskType.EXPLORATION_DIRECTION) return tasks[6].newInstance();
+        else if (type == TaskType.AVOID_COLLISION) return tasks[7].newInstance();
         else return null;
     }
 
-    public TaskDeciderInterface getTaskDeciderGuard() { return taskDeciderGuard; }
-    public TaskDeciderInterface getTaskDeciderIntruder() { return taskDeciderIntruder; }
+    public TaskDeciderInterface getTaskDeciderGuard() { return taskDeciderGuard.newInstance(); }
+    public TaskDeciderInterface getTaskDeciderIntruder() { return taskDeciderIntruder.newInstance(); }
 
     public enum TaskType {
         EXPLORATION(1),

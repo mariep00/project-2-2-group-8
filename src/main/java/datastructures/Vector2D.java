@@ -83,13 +83,25 @@ public class Vector2D {
         neighbours[3] = new Vector2D((this.x-1), (this.y));
         return neighbours;
     }
+    public Vector2D[] getArea() {
+        Vector2D[] area = new Vector2D[9];
+        area[0] = new Vector2D(this.x, this.y);
+        area[1] = new Vector2D(this.x, (this.y+1));
+        area[2] = new Vector2D((this.x+1), this.y);
+        area[3] = new Vector2D(this.x, (this.y-1));
+        area[4] = new Vector2D((this.x-1), (this.y));
+        area[5] = new Vector2D(this.x-1, (this.y+1));
+        area[6] = new Vector2D(this.x+1, (this.y+1));
+        area[7] = new Vector2D(this.x-1, (this.y-1));
+        area[8] = new Vector2D(this.x+1, (this.y-1));
+        return area;
+    }
 
     public double angle() {
-        double theta = Math.atan2(this.x, this.y);
+        double theta = Math.atan2(this.x, -this.y); // -1 because in our coordinate system y is inverted
         double thetaWithEastToRight = theta-(Math.PI/2);
         return thetaWithEastToRight < 0 ? Math.toDegrees(thetaWithEastToRight)+360 : Math.toDegrees(thetaWithEastToRight);
     }
-
 
     @Override
     public int hashCode() {

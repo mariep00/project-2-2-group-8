@@ -20,9 +20,7 @@ public interface TaskInterface {
      * @param intrudersSeen All intruders seen
      * @return Stack of type int which are certain movement tasks
      */
-    default int performTask (ExplorationGraph graph, double orientation, double pheromoneMarkerDirection, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen) {
-        throw new UnsupportedOperationException("This method is not supported for this class");
-    }
+    int performTask (ExplorationGraph graph, double orientation, double pheromoneMarkerDirection, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen);
 
     default void setTarget(Sound target) {
         throw new UnsupportedOperationException("This method is not supported for this class");
