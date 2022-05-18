@@ -75,7 +75,7 @@ public class SoundController {
                 distance = path.size();
             }
         }
-        else if (currentPosition.dist(origin) <= yellMaxHearingDistance) {
+        else if (currentPosition.dist(origin) <= threshold) {
             distance = currentPosition.dist(origin);
         }
         return distance;

@@ -35,7 +35,7 @@ public class MarkerController {
         return tilesWithMarker;
     }
     protected void tick() {
-        Iterator<Tile> iterator = controller.nextState.getTilesWithMarker().iterator(); // *** This ALSO updates the marker in the currentState, while it's the same reference! ***
+        Iterator<Tile> iterator = controller.nextState.getTilesWithMarkerGuard().iterator(); // *** This ALSO updates the marker in the currentState, while it's the same reference! ***
         while (iterator.hasNext()) {
             Tile tile = iterator.next();
             MarkerInterface[] markers = tile.getMarkers();
@@ -59,7 +59,7 @@ public class MarkerController {
 
     private void addMarker(Vector2D position, MarkerInterface marker) {
         controller.scenarioMap.getTile(position).addMarker(marker);
-        Iterator<Tile> iterator = controller.nextState.getTilesWithMarker().iterator();
+        Iterator<Tile> iterator = controller.nextState.getTilesWithMarkerGuard().iterator();
         while (iterator.hasNext()) {
             Tile tile = iterator.next();
             // Remove the old marker, in case the agent didn't move
@@ -68,12 +68,12 @@ public class MarkerController {
                 break;
             }
         }
-        controller.nextState.addTileWithMarker(controller.scenarioMap.getTile(position));
+        controller.nextState.addTileWithMarkerGuard(controller.scenarioMap.getTile(position));
     }
 
     private List<PheromoneMarker> getPheromoneMarkersCloseEnough(int agentIndex) {
         ArrayList<PheromoneMarker> markersCloseEnough = new ArrayList<>();
-        for (Tile tile : controller.currentState.getTilesWithMarker()) {
+        for (Tile tile : controller.currentState.getTilesWithMarkerGuard()) {
             if (tile.getPheromoneMarker().getAgent() != controller.agents[agentIndex]
                     && controller.currentState.getAgentPosition(agentIndex).dist(tile.getPheromoneMarker().getPosition()) <= tile.getPheromoneMarker().getDistance()
                     && !controller.isWallInBetween(controller.currentState.getAgentPosition(agentIndex), tile.getPheromoneMarker().getPosition())) {

@@ -1,7 +1,6 @@
 package gamelogic.agent.tasks.guard;
 
 import datastructures.Vector2D;
-import gamelogic.agent.AStar;
 import gamelogic.agent.tasks.TaskContainer;
 import gamelogic.agent.tasks.TaskInterface;
 import gamelogic.agent.tasks.general.ExplorationInDirection;
@@ -12,7 +11,6 @@ import gamelogic.datacarriers.Sound;
 import gamelogic.datacarriers.VisionMemory;
 import gamelogic.maps.graph.ExplorationGraph;
 
-import java.util.LinkedList;
 import java.util.List;
 
 public class FindGuardYellSource implements TaskInterface {
@@ -24,15 +22,15 @@ public class FindGuardYellSource implements TaskInterface {
     @Override
     public int performTask(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen) {
         if (task == null || graph.frontiers.isEmpty()) {
-            double maxDistance = Controller.addNoise(50 * guardYellToFind.loudness(), 8);
-            double minDistance = Controller.addNoise(((float) 50 / 2) * guardYellToFind.loudness(), 8);
+            double maxDistance = Controller.addNoise(50.0 * (1-guardYellToFind.loudness()), (1-guardYellToFind.loudness())*10);
+            double minDistance = Controller.addNoise((50.0 / 2.0) * (1-guardYellToFind.loudness()), (1-guardYellToFind.loudness())*10);
             Vector2D startingPosition = VisionController.calculatePoint(graph.getCurrentPosition().COORDINATES, maxDistance, guardYellToFind.angle());
             Vector2D possiblePosition = getPossibleOriginGuardYell(graph, startingPosition, maxDistance, minDistance, guardYellToFind);
             // TODO Add smth that checks if the path length is in between our max and min distance, otherwise the target pos doesn't make sense
             if (possiblePosition != null) {
-                LinkedList<Vector2D> path = AStar.calculate(graph, graph.getCurrentPosition(), graph.getNode(possiblePosition));
+                //LinkedList<Vector2D> path = AStar.calculate(graph, graph.getCurrentPosition(), graph.getNode(possiblePosition));
                 task = new PathfindingTask();
-                task.setTarget(graph, orientation, path);
+                task.setTarget(possiblePosition);
             }
             if (task == null) {
                 if (graph.frontiers.isEmpty()) {

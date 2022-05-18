@@ -38,8 +38,8 @@ public class FindSoundSource implements TaskInterface {
         this.explorationGraph = graph;
         if (firstTime) {
             positionWhenTaskStarted = graph.getCurrentPosition().COORDINATES;
-            maxDistance = (int) Math.round(Controller.addNoise(16*soundToFind.loudness(), 8));
-            minDistance = (int ) Math.round(Controller.addNoise(((float) 9/2)*soundToFind.loudness(), 8));
+            maxDistance = (int) Math.round(Controller.addNoise(16.0*(1-soundToFind.loudness()), (1-soundToFind.loudness())*4));
+            minDistance = (int ) Math.round(Controller.addNoise((9.0/2.0)*(1-soundToFind.loudness()), (1-soundToFind.loudness())*4));
             firstTime = false;
         }
         // Keep in mind this will most of the times be called once, while if there's is no unmatched sound i.e. source is found agent will perform different task,
@@ -65,8 +65,11 @@ public class FindSoundSource implements TaskInterface {
             }
         }
         tickCount++;
-        finished = explorationGraph.getCurrentPosition().COORDINATES.equals(goal);
-        if (futureMoves != null) return futureMoves.pop();
+
+        if (futureMoves != null) {
+            if (futureMoves.size() == 1) finished = true;
+            return futureMoves.pop();
+        }
         else {
             finished = explorationGraph.getCurrentPosition().COORDINATES.dist(goal) <= minDistance;
             return explorationInDirection.performTask(graph, orientation, pheromoneMarkerDirection, sounds, guardsSeen, intrudersSeen);

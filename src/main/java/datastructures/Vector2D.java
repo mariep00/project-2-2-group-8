@@ -103,6 +103,22 @@ public class Vector2D {
         return thetaWithEastToRight < 0 ? Math.toDegrees(thetaWithEastToRight)+360 : Math.toDegrees(thetaWithEastToRight);
     }
 
+    public static Vector2D getUnitVectorDirection(double direction) {
+        if (direction == 0.0) return new Vector2D(1, 0);
+        else if (direction == 90.0) return new Vector2D(0, 1);
+        else if (direction == 180.0) return new Vector2D(-1, 0);
+        else if (direction == 270.0) return new Vector2D(0, -1);
+        else {
+            try {
+                throw new Exception("Passed an angle that is not discrete; " + direction);
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.exit(1);
+            }
+        }
+        return null;
+    }
+
     @Override
     public int hashCode() {
         int hash = 31+this.x;
