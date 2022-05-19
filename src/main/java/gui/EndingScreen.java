@@ -20,6 +20,7 @@ import javafx.stage.StageStyle;
 
 public class EndingScreen {
     private Stage endingStage;
+    private boolean guardsWin = false;
 
     public EndingScreen (Object classObject, Scene scene, Stage stage, Controller controller){
         Label finishTitle = new Label("Game finished");
@@ -40,9 +41,17 @@ public class EndingScreen {
         Button desktopButton = new Button("Quit to desktop");
         VBox vboxButtons;
 
+        for (int i = controller.getScenarioMap().getNumGuards(); i < controller.getScenarioMap().getNumGuards()+controller.getScenarioMap().getNumIntruders(); i++) {
+            if (controller.getAgent(i) == null) {
+                if (i == (controller.getScenarioMap().getNumGuards() + controller.getScenarioMap().getNumIntruders())-1) {
+                    guardsWin = true;
+                }
+            }
+        }
+
         if(!controller.getEndingCondition().mode()) //mode is surveillance default mode (True) is exploration
         {
-            Label won = nbintruders==0?new Label("The guards won!!"): new Label("The intruders won");
+            Label won = guardsWin?new Label("The guards won!!"): new Label("The intruders won");
             won.setStyle("-fx-font-size: " + 55 + "px;");
             won.setTextFill(Color.WHITE);
             vboxButtons = new VBox(30, won, time, mainMenuButton, desktopButton);

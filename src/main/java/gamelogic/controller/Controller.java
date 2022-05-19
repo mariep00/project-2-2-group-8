@@ -242,6 +242,9 @@ public abstract class Controller {
     protected void updateProgress() {}
     public void end() {}
 
+    public ScenarioMap getScenarioMap() {
+        return scenarioMap;
+    }
     public int getNumberOfGuards() { return numberOfGuards; }
     public int getNumberOfIntruders() { return numberOfIntruders; }
     public State getCurrentState() { return currentState; }
