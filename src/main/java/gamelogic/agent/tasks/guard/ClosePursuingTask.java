@@ -28,7 +28,7 @@ public class ClosePursuingTask implements TaskInterface {
     public int performTask(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen) {
         if (futureMoves == null || futureMoves.isEmpty()) {
             this.graph = graph;
-
+            target = getUpdatedTarget(intrudersSeen);
             Vector2D targetPos = target.position().add(graph.getCurrentPosition().COORDINATES);
             if (!graph.isVisited(targetPos)) {
                 try {
@@ -65,30 +65,33 @@ public class ClosePursuingTask implements TaskInterface {
     // TODO Add step in between, so when the intruder keeps turning left and right w.r.t. the guard, the guard doesn't and just walks forward
     private LinkedList<Vector2D> getPursuitTaskToGoal(Vector2D goalInFrontOfIntruder, double distanceInFrontOfIntruder, double orientation) {
         boolean firstGoForward = false;
-        double[] angles = {0, 90, 180, 270};
-        for (double angle : angles) {
-            if (Math.abs(angle - target.position().angle()) <= 15) {
-                firstGoForward = true;
-                break;
-            }
-        }
-        System.out.println("angle " + target.position().angle());
+        Vector2D intruderPos = target.position().add(graph.getCurrentPosition().COORDINATES);
+        int xDiff = Math.abs(graph.getCurrentPosition().COORDINATES.x-intruderPos.x);
+        int yDiff = Math.abs(graph.getCurrentPosition().COORDINATES.y-intruderPos.y);
+        if (xDiff <= 3 || yDiff <= 3) firstGoForward = true;
+
         Vector2D firstGoal;
         if (firstGoForward) {
-            System.out.println("HERE");
-            firstGoal = VisionController.calculatePoint(graph.getCurrentPosition().COORDINATES.add(Vector2D.getUnitVectorDirection(orientation)), (target.position().magnitude()-distanceInFrontOfIntruder), target.position().angle());
+            firstGoal = VisionController.calculatePoint(graph.getCurrentPosition().COORDINATES.getSide(orientation), (target.position().magnitude()-distanceInFrontOfIntruder), target.position().angle());
         }
         else firstGoal = VisionController.calculatePoint(graph.getCurrentPosition().COORDINATES, (target.position().magnitude()-distanceInFrontOfIntruder), target.position().angle());
+
         if (graph.getNode(firstGoal) == null) return null;
-        System.out.println(graph.getCurrentPosition().COORDINATES + ", " + firstGoal + ", " +goalInFrontOfIntruder);
         LinkedList<Vector2D> pathFromFirstToSecondGoal = AStar.calculate(graph, graph.getNode(firstGoal), graph.getNode(goalInFrontOfIntruder));
+        if (pathFromFirstToSecondGoal == null) return null;
         LinkedList<Vector2D> pathFromCurrentPosToFirstGoal;
-        if (firstGoForward) pathFromCurrentPosToFirstGoal = AStar.calculate(graph, graph.getNode(graph.getCurrentPosition().getCOORDINATES().getSide(orientation)), graph.getNode(firstGoal));
+
+        boolean canGoForward = false;
+        Vector2D positionInFrontOfGuard = null;
+        if (firstGoForward) {
+            positionInFrontOfGuard = graph.getCurrentPosition().getCOORDINATES().getSide(orientation);
+            if (graph.getNode(positionInFrontOfGuard) != null) canGoForward = true;
+        }
+        if (canGoForward) pathFromCurrentPosToFirstGoal = AStar.calculate(graph, graph.getNode(positionInFrontOfGuard), graph.getNode(firstGoal));
         else pathFromCurrentPosToFirstGoal = AStar.calculate(graph, graph.getCurrentPosition(), graph.getNode(firstGoal));
         pathFromFirstToSecondGoal.addAll(pathFromCurrentPosToFirstGoal);
         if (firstGoForward) {
             pathFromCurrentPosToFirstGoal.add(pathFromCurrentPosToFirstGoal.size()-2, graph.getCurrentPosition().getCOORDINATES().getSide(orientation));
-            System.out.println(pathFromCurrentPosToFirstGoal);
         }
         return pathFromFirstToSecondGoal;
     }
@@ -107,6 +110,16 @@ public class ClosePursuingTask implements TaskInterface {
 
     private boolean exists(Vector2D pos) {
         return graph.isVisited(pos);
+    }
+
+    private VisionMemory getUpdatedTarget(VisionMemory[] intrudersSeen) {
+        for (VisionMemory visionMemory : intrudersSeen) {
+            if (visionMemory != null) {
+                double distance = visionMemory.position().dist(target.position());
+                if (distance == 1 || distance == 0) return visionMemory;
+            }
+        }
+        return null;
     }
 
     @Override

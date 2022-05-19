@@ -48,7 +48,7 @@ public class ExplorationInDirection extends ExplorationTaskFrontier{
                 if (sortedArrayPheromoneAngle == null) {
                     double[] frontierAnglesDiffPheromone = new double[candidates.size()];
                     for (int i = 0; i < frontierAnglesDiffPheromone.length; i++) {
-                        frontierAnglesDiffPheromone[i] = Math.abs(180 - Math.abs(pheromoneMarkerDirection - graph.getCurrentPosition().COORDINATES.getAngleBetweenVector(candidates.get(i).COORDINATES)));
+                        frontierAnglesDiffPheromone[i] = Math.abs(180 - Math.abs(pheromoneMarkerDirection - candidates.get(i).COORDINATES.getAngleBetweenVector(graph.getCurrentPosition().COORDINATES)));
                     }
 
                     for (int i = 0; i < candidates.size(); i++) {
@@ -65,7 +65,8 @@ public class ExplorationInDirection extends ExplorationTaskFrontier{
                 sortedArrayPheromoneAngle = quickSort.sort(sortObjects, 0, sortObjects.length - 1);
             }
         }
-        //System.out.println("        Goal Frontier: " + sortedArray[index].object);
+        //System.out.println("Corresponding sorted array " + Arrays.toString(sortedArrayPheromoneAngle));
+        //System.out.println("        Goal Frontier: " + sortedArrayPheromoneAngle[index].object);
         return sortedArrayPheromoneAngle[index].object;
     }
     @Override

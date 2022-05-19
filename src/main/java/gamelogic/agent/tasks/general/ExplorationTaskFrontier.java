@@ -70,6 +70,7 @@ public class ExplorationTaskFrontier implements TaskInterface {
         }
         //System.out.println("        CurrentPos: " + graph.getCurrentPosition().COORDINATES + " " + orientation);
         //System.out.println("        " + futureMoves.peek());
+
         if (futureMoves.size()==1) finished=true;
         return futureMoves.pop();
     }
