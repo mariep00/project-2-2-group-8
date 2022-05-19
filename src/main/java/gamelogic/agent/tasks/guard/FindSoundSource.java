@@ -48,9 +48,10 @@ public class FindSoundSource implements TaskInterface {
             boolean pathFound = false;
             for (int i = maxDistance; i >= minDistance; i--) {
                 Node node = graph.getNode(VisionController.calculatePoint(positionWhenTaskStarted, i, soundToFind.angle()));
-                if (node != null && !node.getTile().isWall()) {
+                if (node != null) {
                     LinkedList<Vector2D> path = AStar.calculate(graph, graph.getCurrentPosition(), node);
-                    if (path.size() <= maxDistance) {
+                    if (path == null) break;
+                    else if (path.size() <= maxDistance) {
                         this.futureMoves = MovementController.convertPath(graph, orientation, path, true);
                         goal = node.COORDINATES;
                         pathFound = true;
