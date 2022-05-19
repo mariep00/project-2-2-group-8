@@ -5,6 +5,8 @@ import gamelogic.controller.endingconditions.EndingSurveillance;
 import gamelogic.controller.gamemodecontrollers.ControllerSurveillance;
 import gamelogic.maps.ScenarioMap;
 import gui.gamescreen.GameScreen;
+import gui.gamescreen.GameScreenSurveillance;
+import javafx.application.Platform;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -13,7 +15,7 @@ public class ControllerSurveillanceGUI extends ControllerSurveillance implements
     private final ControllerGUI controllerGUI;
 
     public ControllerSurveillanceGUI(ScenarioMap scenarioMap, EndingSurveillance endingCondition, GameScreen gameScreen, TaskContainer taskContainer) {
-        super(scenarioMap, endingCondition, taskContainer);
+        super(scenarioMap, endingCondition, taskContainer, 458);
         this.gameScreen = gameScreen;
         this.controllerGUI = new ControllerGUI(this, gameScreen);
     }
@@ -22,6 +24,21 @@ public class ControllerSurveillanceGUI extends ControllerSurveillance implements
     public void init() {
         super.init();
         controllerGUI.init();
+    }
+
+    @Override
+    public void end() {
+        controllerGUI.killLogicThread();
+        controllerGUI.guiTasksQueue.add(() -> {
+            controllerGUI.killGuiThread();
+            Platform.runLater(gameScreen::endScreen);
+        });
+    }
+
+    @Override
+    protected void removeAgent(int agentIndex) {
+        ((GameScreenSurveillance) gameScreen).removeAgent(agentIndex);
+        super.removeAgent(agentIndex);
     }
 
     @Override
@@ -67,5 +84,18 @@ public class ControllerSurveillanceGUI extends ControllerSurveillance implements
     @Override
     public AtomicBoolean getRunSimulation() {
         return controllerGUI.getRunSimulation();
+    }
+
+    @Override
+    public boolean doesAgentExist(int agentIndex) {
+        return controllerGUI.doesAgentExist(agentIndex);
+    }
+
+    public GameScreen getGameScreen() {
+        return gameScreen;
+    }
+
+    public ControllerGUI getControllerGUI() {
+        return controllerGUI;
     }
 }

@@ -1,7 +1,7 @@
 package gui;
 
-import gamelogic.agent.tasks.ExplorationTaskFrontier;
-import gamelogic.agent.tasks.ExplorationTaskRandom;
+import gamelogic.agent.tasks.general.ExplorationTaskFrontier;
+import gamelogic.agent.tasks.general.ExplorationTaskRandom;
 import gamelogic.maps.ScenarioMap;
 import gui.gamescreen.GameScreenExploration;
 import gui.gamescreen.GameScreenSurveillance;
@@ -131,7 +131,6 @@ public class ScenarioMenu extends Application implements TransitionInterface {
         GridPane.setMargin(shadedReduction.fieldDesription, new Insets(40, 0, 0, 0));
 
         gridPane.getColumnConstraints().addAll( new ColumnConstraints(300), new ColumnConstraints(100));
-        gridPane.setGridLinesVisible( true );
 
         borderPane.setCenter(gridPane);
         gridPane.setAlignment(Pos.TOP_CENTER);
@@ -149,6 +148,7 @@ public class ScenarioMenu extends Application implements TransitionInterface {
 
         buttonPlayExploration.setOnAction(e -> {
             updateScenarioMap(fields, mapName);
+            scenarioMap.setNumIntruders(0);
             quitSceneTransition(() -> new GameScreenExploration(scenarioMap).start(stage), borderPane);
         });
         buttonPlaySurveillance.setOnAction(e -> {
@@ -169,10 +169,10 @@ public class ScenarioMenu extends Application implements TransitionInterface {
         scenarioMap.setGuardViewRange(Double.parseDouble(fields[6].getText()));
         scenarioMap.setIntruderViewRange(Double.parseDouble(fields[7].getText()));
         scenarioMap.setShadedReduction(Double.parseDouble(fields[8].getText())/100);
-        scenarioMap.setFootstepMaxHearingDistance(Double.parseDouble(fields[9].getText()));
-        scenarioMap.setYellMaxHearingDistance(Double.parseDouble(fields[10].getText()));
+        scenarioMap.setFootstepMaxHearingDistance(Integer.parseInt(fields[9].getText()));
+        scenarioMap.setYellMaxHearingDistance(Integer.parseInt(fields[10].getText()));
         scenarioMap.setSoundStandardDeviation(Double.parseDouble(fields[11].getText()));
-        scenarioMap.setPheromoneMaxSmellingDistance(Double.parseDouble(fields[12].getText()));
+        scenarioMap.setPheromoneMaxSmellingDistance(Integer.parseInt(fields[12].getText()));
         scenarioMap.setPheromoneReduction(Double.parseDouble(fields[13].getText()));
     }
 

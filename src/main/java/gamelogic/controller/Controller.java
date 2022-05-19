@@ -11,15 +11,16 @@ import gamelogic.maps.ScenarioMap;
 import java.util.*;
 import java.util.concurrent.*;
 
+@SuppressWarnings("unchecked")
+
 // Abstract because you should not instantiate a Controller class, but either a ControllerExploration or ControllerSurveillance class
 public abstract class Controller {
-    private static final boolean MULTITHREAD_CONTROLLER = false; // Change this to enable or disable multithreading in the controller. Currently, only ticking agents will be multithreaded.
-    protected final Random rand = new Random();
+    protected final boolean multithreadController = false; // Change this to enable or disable multithreading in the controller. Currently, only ticking agents will be multithreaded.
+    protected final Random rand;
 
     public final TaskContainer taskContainer;
     public final MovementController movementController;
     public final MarkerController markerController;
-    public final SoundController soundController;
     protected final ScenarioMap scenarioMap;
     protected final EndingConditionInterface endingCondition;
     protected final int numberOfGuards;
@@ -33,9 +34,9 @@ public abstract class Controller {
     protected double timestep;
     public double time;
 
-    private final ThreadPoolExecutor threadPool;
+    protected final ThreadPoolExecutor threadPool;
 
-    public Controller(ScenarioMap scenarioMap, EndingConditionInterface endingCondition, TaskContainer taskContainer) {
+    public Controller(ScenarioMap scenarioMap, EndingConditionInterface endingCondition, TaskContainer taskContainer, int seed) {
         this.taskContainer = taskContainer;
         this.scenarioMap = scenarioMap;
         this.numberOfGuards = scenarioMap.getNumGuards();
@@ -45,16 +46,16 @@ public abstract class Controller {
         this.timestep = scenarioMap.getTimestep();
         this.movementController = new MovementController(this);
         this.markerController = new MarkerController(this);
-        this.soundController = new SoundController(this);
         this.endingCondition = endingCondition;
-        if (MULTITHREAD_CONTROLLER) threadPool = new ThreadPoolExecutor(Runtime.getRuntime().availableProcessors()/2, 50, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
+        if (multithreadController) threadPool = new ThreadPoolExecutor(Runtime.getRuntime().availableProcessors()/2, 50, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
         else threadPool = null;
+        this.rand = new Random(seed);
     }
 
     public void init() {
-        initializeAgents();
-
         Vector2D[] initialPositions = spawnAgents();
+        initializeAgents();
+        
         currentState = new State(initialPositions, new ArrayList[numberOfGuards + numberOfIntruders], null, null);
 
         List<Vector2D>[] visions = new ArrayList[numberOfGuards + numberOfIntruders];
@@ -65,10 +66,6 @@ public abstract class Controller {
 
         currentState = new State(initialPositions, visions, markerController.init(initialPositions),
                 new VisionMemory[numberOfGuards + numberOfIntruders][numberOfGuards + numberOfIntruders]);
-
-        for (int i = 0; i < numberOfGuards+numberOfIntruders; i++) {
-            currentState.setAgentsSeen(i, updateAgentVisionMemory(i, currentState));
-        }
 
         nextState = currentState.copyOf();
     }
@@ -95,14 +92,14 @@ public abstract class Controller {
         tickAgents();
 
         List<Callable<Void>> taskList = new ArrayList<>();
-        if (MULTITHREAD_CONTROLLER) taskList.add(toCallable(this::updateAgentsSeen));
+        if (multithreadController) taskList.add(toCallable(this::updateAgentsSeen));
         else updateAgentsSeen();
-        if (MULTITHREAD_CONTROLLER) taskList.add(toCallable(markerController::tick));
+        if (multithreadController) taskList.add(toCallable(markerController::tick));
         else markerController.tick();
-        if (MULTITHREAD_CONTROLLER) taskList.add(toCallable(this::updateProgress));
+        if (multithreadController) taskList.add(toCallable(this::updateProgress));
         else updateProgress();
 
-        if (MULTITHREAD_CONTROLLER) {
+        if (multithreadController) {
             try {
                 threadPool.invokeAll(taskList);
             } catch (InterruptedException e) {
@@ -116,27 +113,19 @@ public abstract class Controller {
         List<Callable<Void>> taskList = new ArrayList<>();
 
         for (int i = 0; i < agents.length; i++) {
-            int finalI = i;
-            if (MULTITHREAD_CONTROLLER) taskList.add(toCallable(() -> tickAgent(finalI)));
-            else tickAgent(finalI);
+            if (agents[i] != null) {
+                int finalI = i;
+                if (multithreadController) taskList.add(toCallable(() -> tickAgent(finalI)));
+                else tickAgent(finalI);
+            }
         }
-        if (MULTITHREAD_CONTROLLER) {
+        if (multithreadController) {
             try {
                 threadPool.invokeAll(taskList);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
-    }
-
-    private void tickAgent(int agentIndex) {
-        int movementTask = agents[agentIndex].tick(getVisions(agentIndex),
-                markerController.getPheromoneMarkersDirection(agentIndex, currentState.getAgentPosition(agentIndex)),
-                soundController.getSoundDirections(agentIndex), Arrays.copyOfRange(currentState.getAgentsSeen(agentIndex), 0, numberOfGuards),
-                Arrays.copyOfRange(currentState.getAgentsSeen(agentIndex), numberOfGuards, numberOfGuards+numberOfIntruders));
-
-        movementController.moveAgent(agentIndex, movementTask);
-        nextState.setAgentVision(agentIndex, calculateFOVAbsolute(agentIndex, nextState.getAgentPosition(agentIndex), nextState));
     }
 
     protected void switchToNextState() {
@@ -146,18 +135,15 @@ public abstract class Controller {
         time += timestep;
     }
 
-    protected void end() {
+    public int getSteps(){
+        return (int) (time/getTimestep());
+    }
+
+    public String getTotalTime(){
         int hours = (int) time / 3600;
         int minutes = ((int)time % 3600) / 60;
         double seconds = time % 60;
-        if (threadPool != null) threadPool.shutdown();
-        System.out.println("Everything is explored. It took " + hours + " hour(s) " + minutes + " minutes " + seconds + " seconds.");
-    }
-
-    private void updateAgentsSeen() {
-        for (int i = 0; i < agents.length; i++) {
-            nextState.setAgentsSeen(i, updateAgentVisionMemory(i, nextState));
-        }
+        return hours +" "+minutes+" "+seconds;
     }
 
     protected List<Vector2D> calculateFOV(int agentIndex, Vector2D agentPosition) {
@@ -167,7 +153,7 @@ public abstract class Controller {
         return convertRelativeCurrentPosToAbsolute(calculateFOV(agentIndex, agentPosition), agentIndex, state);
     }
 
-    private Vision[] getVisions(int agentIndex) {
+    protected Vision[] getVisions(int agentIndex) {
         List<Vector2D> positionsInVision = currentState.getVision(agentIndex);
         Vision[] visions = new Vision[positionsInVision.size()];
         for (int i = 0; i < visions.length; i++) {
@@ -175,34 +161,6 @@ public abstract class Controller {
             visions[i] = new Vision(scenarioMap.getTile(pos), convertAbsoluteToRelativeSpawn(pos, agentIndex));
         }
         return visions;
-    }
-
-    public VisionMemory[] updateAgentVisionMemory(int agentIndex, State state) {
-        VisionMemory[] otherAgentsSeen;
-        if (state.getAgentsSeen(agentIndex) != null) otherAgentsSeen = state.getAgentsSeen(agentIndex);
-        else otherAgentsSeen = new VisionMemory[numberOfGuards + numberOfIntruders]; // This would only happen when called from init()
-
-        for (int i=0; i < otherAgentsSeen.length; i++) {
-            outer:
-            if (i != agentIndex) {
-                for (Vector2D pos : state.getVision(agentIndex)) {
-                    if (pos.equals(state.getAgentPosition(i))) {
-                        otherAgentsSeen[i] = new VisionMemory(convertAbsolutePosToRelativeToCurrentPos(pos, agentIndex, state), 0, agents[i].getOrientation());
-                        // Check if agent we're updating is a guard and agent we're seeing is an intruder, then yell
-                        if (agentIndex < numberOfGuards && i >= numberOfGuards) soundController.generateGuardYell(agentIndex);
-                        break outer;
-                    }
-                }
-                // When reaching this the agent is not in vision
-                if (otherAgentsSeen[i] != null) {
-                    // Position is updated s.t. it stays relative to the current position of the agent
-                    // Seconds ago is incremented with the timestep
-                    otherAgentsSeen[i] = new VisionMemory(otherAgentsSeen[i].position().subtract((nextState.getAgentPosition(agentIndex).subtract(currentState.getAgentPosition(agentIndex)))),
-                            otherAgentsSeen[i].secondsAgo()+timestep, otherAgentsSeen[i].orientation());
-                }
-            }
-        }
-        return otherAgentsSeen;
     }
 
     protected Vector2D[] spawnAgents() {
@@ -221,8 +179,15 @@ public abstract class Controller {
                 }
             }
         }
-
         return agentPositions;
+    }
+
+    public boolean isWallInBetween(Vector2D begin, Vector2D end) {
+        Vector2D[] positions = VisionController.calculateLine(begin, end);
+        for (Vector2D pos : positions) {
+            if (scenarioMap.getTile(pos).isWall()) return true;
+        }
+        return false;
     }
 
     public Vector2D convertRelativeSpawnToAbsolute(Vector2D relPos, int agentId) {
@@ -273,15 +238,32 @@ public abstract class Controller {
         return new Vector2D(absPos.x-state.getAgentPosition(agentId).x, absPos.y-state.getAgentPosition(agentId).y);
     }
 
+    public static double addNoise(double initial, double std) {
+        Random random = new Random(0);
+        return random.nextGaussian()*std+initial; // SD = value from file, mean = initial value
+    }
+
+    protected void updateAgentsSeen() {}
+    protected void tickAgent(int agentIndex) {}
     protected void updateGui() {}
     protected void initializeAgents() {}
     protected void updateProgress() {}
+    public void end() {}
 
     public int getNumberOfGuards() { return numberOfGuards; }
     public int getNumberOfIntruders() { return numberOfIntruders; }
     public State getCurrentState() { return currentState; }
     public State getNextState() { return nextState; }
     public double getTimestep() { return timestep; }
+    public double getTime() {return time;}
+    public EndingConditionInterface getEndingCondition(){
+        return endingCondition;
+    }
+
+    public ScenarioMap getScenarioMap() {
+        return scenarioMap;
+    }
+
     public Agent getAgent(int agentIndex) { return agents[agentIndex]; }
 
     private Callable<Void> toCallable(final Runnable runnable) {

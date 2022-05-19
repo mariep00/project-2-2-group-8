@@ -38,6 +38,11 @@ public class EndingExploration implements EndingConditionInterface {
         return totalTilesToExplore == currentTilesExplored;
     }
 
+    @Override
+    public boolean mode() {
+        return true;
+    }
+
     public void updateExplorationMap(Vector2D coordinate) {
         if (coordinate.y<explorationMap.length && coordinate.x<explorationMap[0].length && coordinate.y>=0 && coordinate.x>=0) {
             if (explorationMap[coordinate.y][coordinate.x] != 2) {

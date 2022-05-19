@@ -1,30 +1,15 @@
 package gamelogic.agent.tasks;
 
+import datastructures.Vector2D;
 import gamelogic.agent.tasks.TaskContainer.TaskType;
 import gamelogic.datacarriers.Sound;
 import gamelogic.datacarriers.VisionMemory;
 import gamelogic.maps.graph.ExplorationGraph;
 
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Stack;
 
 public interface TaskInterface {
-
-    /**
-     * Peform Task for a random task
-     * @return Stack of type int which are certain movement tasks
-     */
-    Stack<Integer> performTask ();
-
-    /**
-     * Perform task for a frontier based exploration task
-     * @param graph Current map of the agent
-     * @param orientation Orientation in which the agent is facing
-     * @param pheromoneMarkerDirection Direction of pheromones
-     * @return Stack of type int which are certain movement tasks
-     */
-    Stack<Integer> performTask (ExplorationGraph graph, double orientation, double pheromoneMarkerDirection);
-
     /**
      * Perform task for other decisions
      * @param graph Current map of the agent
@@ -35,8 +20,33 @@ public interface TaskInterface {
      * @param intrudersSeen All intruders seen
      * @return Stack of type int which are certain movement tasks
      */
-    Stack<Integer> performTask (ExplorationGraph graph, double orientation, double pheromoneMarkerDirection, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen);
+    int performTask (ExplorationGraph graph, double orientation, double pheromoneMarkerDirection, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen);
 
+    default void setTarget(Sound target) {
+        throw new UnsupportedOperationException("This method is not supported for this class");
+    }
+    default void setTarget(VisionMemory target) {
+        throw new UnsupportedOperationException("This method is not supported for this class");
+    }
+    default void setTarget(Vector2D target) {
+        throw new UnsupportedOperationException("This method is not supported for this class");
+    }
+    default void setTarget(double angle) {
+        throw new UnsupportedOperationException("This method is not supported for this class");
+    }
+    default void setTarget(ExplorationGraph graph, double orientation, LinkedList<Vector2D> path) {
+        throw new UnsupportedOperationException("This method is not supported for this class");
+    }
+    default Object getTarget() {
+        throw new UnsupportedOperationException("This method is not supported for this class");
+    }
+    default boolean isFinished() {
+        return true;
+    }
+    default int getTickCount() {
+        throw new UnsupportedOperationException("This method is not supported for this class");
+    }
+    default int getPriority() { return getType().priority; }
     TaskType getType();
     TaskInterface newInstance();
 }

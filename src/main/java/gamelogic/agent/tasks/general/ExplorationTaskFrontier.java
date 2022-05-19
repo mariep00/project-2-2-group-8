@@ -1,10 +1,11 @@
-package gamelogic.agent.tasks;
+package gamelogic.agent.tasks.general;
 
 import datastructures.Vector2D;
 import datastructures.quicksort.QuickSort;
 import datastructures.quicksort.SortObject;
 import gamelogic.agent.AStar;
 import gamelogic.agent.tasks.TaskContainer.TaskType;
+import gamelogic.agent.tasks.TaskInterface;
 import gamelogic.controller.MovementController;
 import gamelogic.datacarriers.Sound;
 import gamelogic.datacarriers.VisionMemory;
@@ -12,58 +13,66 @@ import gamelogic.maps.Tile;
 import gamelogic.maps.graph.ExplorationGraph;
 import gamelogic.maps.graph.Node;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
+
+@SuppressWarnings("unchecked")
 
 public class ExplorationTaskFrontier implements TaskInterface {
-    private Node goalNode;
+    public Node goalNode;
     private Node lastNode;
     private Stack<Integer> futureMoves;
     private double orientation;
-    private ExplorationGraph graph;
+    protected ExplorationGraph graph;
 
     private TaskType type = TaskType.EXPLORATION;
-    private int markerThreshold = 0;
-    private int markerIndex = 0;
-    private SortObject<Node>[] sortedArray;
-    private SortObject<Node>[] sortedArrayPheromoneAngle;
+    protected int markerThreshold = 0;
+    protected int markerIndex = 0;
+    protected SortObject<Node>[] sortedArray;
+    protected SortObject<Node>[] sortedArrayPheromoneAngle;
+    protected boolean finished = false;
 
     public ExplorationTaskFrontier() {
         goalNode = new Node(new Vector2D(-20000, -20000), new Tile());
     }
 
-    public Stack<Integer> performTask(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection){
-        futureMoves = new Stack<>();
-        this.orientation = orientation;
-        this.graph = graph;
-        int frontierIndexToGoTo = 0;
-        
-        updateGoal(frontierIndexToGoTo, pheromoneMarkerDirection);
-        boolean foundReachableNode = false;
-        while (!foundReachableNode) {
-            if (goalNode == lastNode) { 
-                whenStuck();
-            }
-            foundReachableNode = moveTo();
-            if (!foundReachableNode) {
-                frontierIndexToGoTo++;
-                if (goalNode == lastNode) { whenStuck(); }
+    @Override
+    public int performTask(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen) {
+        if (futureMoves == null || futureMoves.isEmpty()) {
+            finished = false;
+            futureMoves = new Stack<>();
+            this.orientation = orientation;
+            this.graph = graph;
+            int frontierIndexToGoTo = 0;
 
-                if (sortedArray != null && frontierIndexToGoTo == sortedArray.length) {
-                    markerThreshold++;
-                    frontierIndexToGoTo = 0;
+            updateGoal(frontierIndexToGoTo, pheromoneMarkerDirection);
+            boolean foundReachableNode = false;
+            while (!foundReachableNode) {
+                if (goalNode == lastNode) {
+                    //whenStuck();
                 }
-                updateGoal(frontierIndexToGoTo, pheromoneMarkerDirection);
+                foundReachableNode = moveTo();
+                if (!foundReachableNode) {
+                    frontierIndexToGoTo++;
+                    if (goalNode == lastNode) {whenStuck();}
+
+                    if (sortedArray != null && frontierIndexToGoTo == sortedArray.length) {
+                        markerThreshold++;
+                        frontierIndexToGoTo = 0;
+                    }
+                    updateGoal(frontierIndexToGoTo, pheromoneMarkerDirection);
+                }
             }
+            //System.out.println("        " + futureMoves.toString());
+            markerThreshold = 0;
+            markerIndex = 0;
+            sortedArray = null;
+            sortedArrayPheromoneAngle = null;
         }
-        
-        markerThreshold = 0;
-        markerIndex = 0;
-        sortedArray = null;
-        sortedArrayPheromoneAngle = null;
-        return futureMoves;
+        //System.out.println("        CurrentPos: " + graph.getCurrentPosition().COORDINATES + " " + orientation);
+        //System.out.println("        " + futureMoves.peek());
+
+        if (futureMoves.size()==1) finished=true;
+        return futureMoves.pop();
     }
 
     public void updateGoal(int frontierIndexToGoTo, double pheromoneMarkerDirection) {
@@ -76,7 +85,7 @@ public class ExplorationTaskFrontier implements TaskInterface {
     }
 
 
-    private Node getNextFrontier(int index, double pheromoneMarkerDirection) {
+    protected Node getNextFrontier(int index, double pheromoneMarkerDirection) {
         LinkedList<Node> nodes = graph.frontiers.getAllNodes();
         if (nodes.isEmpty()) return null;
         SortObject<Node>[] sortObjects = new SortObject[nodes.size()];
@@ -144,8 +153,9 @@ public class ExplorationTaskFrontier implements TaskInterface {
         
         LinkedList<Vector2D> nodesToGoal = AStar.calculate(graph, graph.getCurrentPosition(), goalNode);
         if (nodesToGoal == null) return false;
+        //System.out.println("        " + nodesToGoal.toString());
 
-        futureMoves = MovementController.convertPath(graph, orientation, nodesToGoal, -1);
+        futureMoves = MovementController.convertPath(graph, orientation, nodesToGoal, true);
         return true;
         //For every node in nodes to Goal
         //Check agent's positon
@@ -161,6 +171,12 @@ public class ExplorationTaskFrontier implements TaskInterface {
     }
 
     @Override
+    public boolean equals(Object other) {
+        if (other == null) return false;
+        return other.getClass() == this.getClass();
+    }
+
+    @Override
     public TaskType getType() {
         return type;
     }
@@ -169,16 +185,9 @@ public class ExplorationTaskFrontier implements TaskInterface {
     public TaskInterface newInstance() { return new ExplorationTaskFrontier(); }
 
     @Override
-    public Stack<Integer> performTask() throws UnsupportedOperationException{
-        throw new UnsupportedOperationException("This method is not supported for this class");
+    public boolean isFinished() {
+        return finished;
     }
-
-    @Override
-    public Stack<Integer> performTask(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen) throws UnsupportedOperationException {
-        throw new UnsupportedOperationException("This method is not supported for this class");
-    }
-
-
 
 
     /* nextNode Vector2D - Coordinates Vector 2D

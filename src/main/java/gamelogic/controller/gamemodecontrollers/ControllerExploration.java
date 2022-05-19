@@ -11,8 +11,8 @@ import gamelogic.maps.ScenarioMap;
 public class ControllerExploration extends Controller {
     private final EndingExploration endingExploration;
 
-    public ControllerExploration(ScenarioMap scenarioMap, EndingExploration endingCondition, TaskContainer taskContainer) {
-        super(scenarioMap, endingCondition, taskContainer);
+    public ControllerExploration(ScenarioMap scenarioMap, EndingExploration endingCondition, TaskContainer taskContainer, int seed) {
+        super(scenarioMap, endingCondition, taskContainer, seed);
         this.endingExploration = endingCondition;
     }
 
@@ -27,8 +27,18 @@ public class ControllerExploration extends Controller {
         int[] orientations = {0, 90, 180, 270};
 
         for (int i = 0; i < numberOfGuards; i++) {
-            agents[i] = new Agent(scenarioMap.getBaseSpeedGuard(), 0.0, scenarioMap.getGuardViewAngle(),scenarioMap.getGuardViewRange(), orientations[rand.nextInt(orientations.length)], new ExplorationBrain(taskContainer));
+            agents[i] = new Agent(scenarioMap.getBaseSpeedGuard(), scenarioMap.getGuardViewAngle(),scenarioMap.getGuardViewRange(), orientations[rand.nextInt(orientations.length)], new ExplorationBrain(taskContainer));
         }
+    }
+
+    @Override
+    protected void tickAgent(int agentIndex) {
+        int movementTask = agents[agentIndex].tick(getVisions(agentIndex),
+                markerController.getPheromoneMarkersDirection(agentIndex, currentState.getAgentPosition(agentIndex)),
+                null, null, null, null);
+
+        movementController.moveAgent(agentIndex, movementTask);
+        nextState.setAgentVision(agentIndex, calculateFOVAbsolute(agentIndex, nextState.getAgentPosition(agentIndex), nextState));
     }
 
     @Override
@@ -38,5 +48,14 @@ public class ControllerExploration extends Controller {
                 endingExploration.updateExplorationMap(vector);
             }
         }
+    }
+
+    @Override
+    public void end() {
+        int hours = (int) time / 3600;
+        int minutes = ((int)time % 3600) / 60;
+        double seconds = time % 60;
+        if (threadPool != null) threadPool.shutdown();
+        System.out.println("Everything is explored. It took " + hours + " hour(s) " + minutes + " minutes " + seconds + " seconds.");
     }
 }

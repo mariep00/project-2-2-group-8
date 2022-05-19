@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class ControllerGUI implements ControllerGUIInterface {
     private final Controller controller;
     private final GameScreen gameScreen;
-    private final ConcurrentLinkedQueue<Runnable> guiTasksQueue = new ConcurrentLinkedQueue<>();
+    public final ConcurrentLinkedQueue<Runnable> guiTasksQueue = new ConcurrentLinkedQueue<>();
     private final AtomicBoolean executeNextGuiTask = new AtomicBoolean(true);
     private final AtomicBoolean performControllerTick = new AtomicBoolean(true);
     private final AtomicBoolean gamePaused = new AtomicBoolean(false);
@@ -24,19 +24,21 @@ public class ControllerGUI implements ControllerGUIInterface {
     private final AtomicInteger simulationDelay = new AtomicInteger();
     private Thread updateGameLogicThread;
 
-    private AtomicBoolean threadsKilled;
+    private AtomicBoolean logicThreadKilled; // set to true when end method is called
+    private AtomicBoolean guiThreadKilled;
 
     public ControllerGUI(Controller controller, GameScreen gameScreen) {
         this.controller = controller;
         this.gameScreen = gameScreen;
-        this.threadsKilled = new AtomicBoolean(false);
+        this.logicThreadKilled = new AtomicBoolean(false);
+        this.guiThreadKilled = new AtomicBoolean(false);
     }
 
     public void init() {
         Thread.UncaughtExceptionHandler h = (th, ex) -> System.out.println("Uncaught exception: " + ex);
 
         final Thread updateGuiThread = new Thread(() -> {
-            while (!threadsKilled.get()) {
+            while (!guiThreadKilled.get()) {
                 if (executeNextGuiTask.get() && !guiTasksQueue.isEmpty() && !gamePaused.get()) {
                     executeNextGuiTask.set(false);
                     guiTasksQueue.remove().run();
@@ -49,7 +51,7 @@ public class ControllerGUI implements ControllerGUIInterface {
         updateGuiThread.start();
 
         updateGameLogicThread = new Thread(() -> {
-            while (!threadsKilled.get()) {
+            while (!logicThreadKilled.get()) {
                 if (runSimulation.get() && performControllerTick.get() && !gamePaused.get()) {
                     performControllerTick.set(false);
                     try {
@@ -67,25 +69,27 @@ public class ControllerGUI implements ControllerGUIInterface {
         for (int i = 0; i < controller.getNumberOfGuards(); i++) {
             gameScreen.spawnAgent(i, controller.getCurrentState().getAgentPosition(i), AgentType.GUARD);
         }
-        for (int i = 0; i < controller.getNumberOfIntruders(); i++) {
+        for (int i = controller.getNumberOfGuards(); i < controller.getNumberOfGuards()+controller.getNumberOfIntruders(); i++) {
             gameScreen.spawnAgent(i, controller.getCurrentState().getAgentPosition(i), AgentType.INTRUDER);
         }
     }
 
     public void updateGui() {
         for (int i = 0; i < controller.getNumberOfGuards()+controller.getNumberOfIntruders(); i++) {
-            AgentType agentType;
-            if (i < controller.getNumberOfGuards()) agentType = AgentType.GUARD;
-            else agentType = AgentType.INTRUDER;
+            if (controller.getAgent(i) != null) {
+                AgentType agentType;
+                if (i < controller.getNumberOfGuards()) agentType = AgentType.GUARD;
+                else agentType = AgentType.INTRUDER;
 
-            int finalI = i;
-            Vector2D currentPos = controller.getCurrentState().getAgentPosition(finalI);
-            Vector2D nextPos = controller.getNextState().getAgentPosition(finalI);
-            List<Vector2D> currentVision = getVisionToRemove(finalI, controller.getCurrentState().getVision(finalI));
-            List<Vector2D> nextVision = controller.getNextState().getVision(finalI);
+                int finalI = i;
+                Vector2D currentPos = controller.getCurrentState().getAgentPosition(finalI);
+                Vector2D nextPos = controller.getNextState().getAgentPosition(finalI);
+                List<Vector2D> currentVision = getVisionToRemove(finalI, controller.getCurrentState().getVision(finalI));
+                List<Vector2D> nextVision = controller.getNextState().getVision(finalI);
 
-            guiTasksQueue.add(() -> Platform.runLater(() -> gameScreen.moveAgent(executeNextGuiTask, finalI, currentPos, nextPos, agentType)));
-            guiTasksQueue.add(() -> Platform.runLater(() -> gameScreen.updateVision(executeNextGuiTask, finalI, currentVision, nextVision)));
+                guiTasksQueue.add(() -> Platform.runLater(() -> gameScreen.moveAgent(executeNextGuiTask, finalI, currentPos, nextPos, agentType)));
+                guiTasksQueue.add(() -> Platform.runLater(() -> gameScreen.updateVision(executeNextGuiTask, finalI, currentVision, nextVision)));
+            }
         }
     }
 
@@ -95,7 +99,7 @@ public class ControllerGUI implements ControllerGUIInterface {
             boolean remove = true;
             outer:
             for (int i = 0; i < controller.getCurrentState().getVisions().length; i++) {
-                if (i != agentIndex && gameScreen.getShowVision(i)) {
+                if (i != agentIndex && gameScreen.getShowVision(i) && controller.getAgent(i) != null) {
                     List<Vector2D> others = controller.getNextState().getVision(i);
                     for (Vector2D posOther : others) {
                         if (posOther.equals(pos)) {
@@ -137,6 +141,17 @@ public class ControllerGUI implements ControllerGUIInterface {
     public void continueThreads() { gamePaused.set(false); }
     @Override
     public AtomicBoolean getRunSimulation() { return runSimulation; }
+
+    @Override
+    public boolean doesAgentExist(int agentIndex) {
+        return controller.getAgent(agentIndex) != null;
+    }
+
     public AtomicBoolean getExecuteNextGuiTask() { return executeNextGuiTask; }
     public void addGuiRunnableToQueue(Runnable runnable) { guiTasksQueue.add(() -> Platform.runLater(runnable)); }
+    public void killLogicThread(){ logicThreadKilled.set(true); }
+    public void killGuiThread(){ guiThreadKilled.set(true); }
+    public Controller getMainController() {
+        return controller;
+    }
 }

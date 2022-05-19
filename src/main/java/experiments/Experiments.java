@@ -1,7 +1,7 @@
 package experiments;
 
-import gamelogic.agent.tasks.ExplorationTaskFrontier;
 import gamelogic.agent.tasks.TaskContainer;
+import gamelogic.agent.tasks.general.ExplorationTaskFrontier;
 import gamelogic.controller.Controller;
 import gamelogic.maps.MapBuilder;
 import gamelogic.controller.endingconditions.EndingExploration;
@@ -40,7 +40,7 @@ public class Experiments {
     // 2 frontier
     public Experiments(String path){
         ScenarioMap scenarioMap = new MapBuilder(new File(path)).getMap();
-        controller = new ControllerExploration(scenarioMap, new EndingExploration(scenarioMap), new TaskContainer(new ExplorationTaskFrontier()));
+        controller = new ControllerExploration(scenarioMap, new EndingExploration(scenarioMap), new TaskContainer(new ExplorationTaskFrontier()), 0);
         controller.engine();
     }
 

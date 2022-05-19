@@ -6,7 +6,6 @@ import gamelogic.maps.Tile.Type;
 import java.util.ArrayList;
 
 public class ScenarioMap {
-
     private String fileName = "";
     private String mapName = "";
     private int gameMode = 0;
@@ -22,13 +21,14 @@ public class ScenarioMap {
     private double timestep;
     private ArrayList<Vector2D> spawnAreaGuards = new ArrayList<>();
     private ArrayList<Vector2D> spawnAreaIntruders = new ArrayList<>();
+    private ArrayList<Vector2D> targetArea = new ArrayList<>();
     private int numberMarkers = 5;
     private double shadedReduction = 0.5;
-    private double footstepMaxHearingDistance = 16;
-    private double rotatingMaxHearingDistance = 9;
-    private double yellMaxHearingDistance = 50;
+    private int footstepMaxHearingDistance = 16;
+    private int rotatingMaxHearingDistance = 9;
+    private int yellMaxHearingDistance = 50;
     private double soundStandardDeviation = 10;
-    private double pheromoneMaxSmellingDistance = 20;
+    private int pheromoneMaxSmellingDistance = 20;
     private double pheromoneReduction = 0.1;
 
     private Tile[][] mapGrid;
@@ -91,31 +91,31 @@ public class ScenarioMap {
 
     public double getShadedReduction() { return shadedReduction; }
 
-    public double getFootstepMaxHearingDistance() { return footstepMaxHearingDistance; }
+    public int getFootstepMaxHearingDistance() { return footstepMaxHearingDistance; }
 
-    public double getYellMaxHearingDistance() { return yellMaxHearingDistance; }
+    public int getYellMaxHearingDistance() { return yellMaxHearingDistance; }
 
     public double getSoundStandardDeviation() { return soundStandardDeviation; }
 
-    public double getPheromoneMaxSmellingDistance() { return pheromoneMaxSmellingDistance; }
+    public int getPheromoneMaxSmellingDistance() { return pheromoneMaxSmellingDistance; }
 
     public double getPheromoneReduction() { return pheromoneReduction; }
 
-    public double getRotatingMaxHearingDistance() { return rotatingMaxHearingDistance; }
+    public int getRotatingMaxHearingDistance() { return rotatingMaxHearingDistance; }
 
     public void setShadedReduction(double shadedReduction) { this.shadedReduction = shadedReduction; }
 
-    public void setFootstepMaxHearingDistance(double footstepMaxHearingDistance) { this.footstepMaxHearingDistance = footstepMaxHearingDistance; }
+    public void setFootstepMaxHearingDistance(int footstepMaxHearingDistance) { this.footstepMaxHearingDistance = footstepMaxHearingDistance; }
 
-    public void setYellMaxHearingDistance(double yellMaxHearingDistance) { this.yellMaxHearingDistance = yellMaxHearingDistance; }
+    public void setYellMaxHearingDistance(int yellMaxHearingDistance) { this.yellMaxHearingDistance = yellMaxHearingDistance; }
 
     public void setSoundStandardDeviation(double soundStandardDeviation) { this.soundStandardDeviation = soundStandardDeviation; }
 
-    public void setPheromoneMaxSmellingDistance(double pheromoneMaxSmellingDistance) { this.pheromoneMaxSmellingDistance = pheromoneMaxSmellingDistance; }
+    public void setPheromoneMaxSmellingDistance(int pheromoneMaxSmellingDistance) { this.pheromoneMaxSmellingDistance = pheromoneMaxSmellingDistance; }
 
     public void setPheromoneReduction(double pheromoneReduction) { this.pheromoneReduction = pheromoneReduction; }
 
-    public void setRotatingMaxHearingDistance(double rotatingMaxHearingDistance) { this.rotatingMaxHearingDistance = rotatingMaxHearingDistance; }
+    public void setRotatingMaxHearingDistance(int rotatingMaxHearingDistance) { this.rotatingMaxHearingDistance = rotatingMaxHearingDistance; }
 
     public String getFileName() { return fileName; }
 
@@ -154,6 +154,10 @@ public class ScenarioMap {
 
     public ArrayList<Vector2D> getSpawnAreaIntruders() {
         return spawnAreaIntruders;
+    }
+
+    public ArrayList<Vector2D> getTargetArea() {
+        return targetArea;
     }
 
     public double getGuardViewAngle() {
@@ -284,6 +288,17 @@ public class ScenarioMap {
     }
     public void insertSpawnAreaIntruder(int x, int y) {
         spawnAreaIntruders.add(new Vector2D(x+1, y+1));
+    }
+
+    public void insertTargetArea(int x1, int y1, int x2, int y2) {
+        for (int i = x1; i <= x2; i++) {
+            for (int j = y1; j <= y2; j++) {
+                targetArea.add(new Vector2D(i+1, j+1));
+            }
+        }
+    }
+    public void insertTargetArea(int x, int y) {
+        targetArea.add(new Vector2D(x+1, y+1));
     }
 
     public void insertElement(Vector2D[] points, Type type) {

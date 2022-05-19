@@ -16,7 +16,6 @@ import java.util.List;
 public class Agent {
 
     private final double base_speed;
-    //private final double sprint_speed;
     private final double view_angle;
     private final double view_range;
     private double orientation;
@@ -25,9 +24,8 @@ public class Agent {
 
     public final ExplorationGraph explorationGraph;
 
-    public Agent (double base_speed, double sprint_speed, double view_angle, double view_range, double orientation, BrainInterface brain) {
+    public Agent (double base_speed, double view_angle, double view_range, double orientation, BrainInterface brain) {
         this.base_speed = base_speed;
-        //this.sprint_speed = sprint_speed;
         this.view_angle = view_angle;
         this.view_range = view_range;
         this.orientation = orientation;
@@ -35,9 +33,9 @@ public class Agent {
         explorationGraph = new ExplorationGraph();
     }
 
-    public int tick(Vision[] inVision, double pheromoneMarkerDirection, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen) {
+    public int tick(Vision[] inVision, double pheromoneMarkersDirectionGuard, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen, List<Sound> guardYells) {
         updateGraph(inVision);
-        return brain.makeDecision(explorationGraph, orientation, pheromoneMarkerDirection, sounds, guardsSeen, intrudersSeen);
+        return brain.makeDecision(explorationGraph, orientation, pheromoneMarkersDirectionGuard, sounds, guardsSeen, intrudersSeen, guardYells);
     }
 
     private void updateGraph(Vision[] inVision) {

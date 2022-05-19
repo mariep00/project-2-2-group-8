@@ -8,26 +8,18 @@ import gamelogic.datacarriers.VisionMemory;
 import gamelogic.maps.graph.ExplorationGraph;
 
 import java.util.List;
-import java.util.Stack;
 
 public class ExplorationBrain implements BrainInterface {
     private final TaskContainer tasks;
     private TaskInterface currentTask;
-    private Stack<Integer> futureMoves;
 
     public ExplorationBrain (TaskContainer taskContainer) {
         this.tasks = taskContainer;
         currentTask = tasks.getTask(TaskType.EXPLORATION);
-        futureMoves = new Stack<>();
     }
 
     @Override
-    public int makeDecision(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen) {
-        if (futureMoves.isEmpty()) {
-            futureMoves = currentTask.performTask(graph, orientation, pheromoneMarkerDirection);
-            return futureMoves.pop();
-        } else {
-            return futureMoves.pop();
-        }
+    public int makeDecision(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen, List<Sound> guardYells) {
+        return currentTask.performTask(graph, orientation, pheromoneMarkerDirection, sounds, guardsSeen, intrudersSeen);
     }
 }

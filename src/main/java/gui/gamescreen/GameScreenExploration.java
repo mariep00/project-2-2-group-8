@@ -1,10 +1,11 @@
 package gui.gamescreen;
 
 import datastructures.Vector2D;
-import gamelogic.agent.tasks.ExplorationTaskFrontier;
 import gamelogic.agent.tasks.TaskContainer;
+import gamelogic.agent.tasks.general.ExplorationTaskFrontier;
 import gamelogic.controller.endingconditions.EndingExploration;
 import gamelogic.maps.ScenarioMap;
+import gui.EndingScreen;
 import gui.gamescreen.controller.ControllerExplorationGUI;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
@@ -57,4 +58,10 @@ public class GameScreenExploration extends GameScreen {
 
     @Override
     protected ControllerExplorationGUI getController() { return controllerExplorationGUI; }
+    @Override
+    public void endScreen(){
+        EndingScreen endingScreen = new EndingScreen(this, controllerExplorationGUI.getGameScreen().getStage().getScene(), controllerExplorationGUI.getGameScreen().getStage(), controllerExplorationGUI);
+        //How many steps and how much time
+        controllerExplorationGUI.getControllerGUI().getMainController().end();
+    }
 }

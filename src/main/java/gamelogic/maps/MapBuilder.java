@@ -103,6 +103,7 @@ public class MapBuilder {
                         break;
                     case "targetArea":
                         map.insertElement(Integer.parseInt(items[0]), Integer.parseInt(items[1]), Integer.parseInt(items[2]), Integer.parseInt(items[3]), Tile.Type.TARGET_AREA);
+                        map.insertTargetArea(Integer.parseInt(items[0]), Integer.parseInt(items[1]), Integer.parseInt(items[2]), Integer.parseInt(items[3]));
                         break;
                     case "spawnAreaIntruders":
                         map.insertSpawnAreaIntruder(Integer.parseInt(items[0]), Integer.parseInt(items[1]), Integer.parseInt(items[2]), Integer.parseInt(items[3]));
@@ -141,7 +142,7 @@ public class MapBuilder {
                         map.setNumberMarkers(Integer.parseInt(value));
                         break;
                     case "pheromoneMaxSmellingDistance":
-                        map.setPheromoneMaxSmellingDistance(Double.parseDouble(value));
+                        map.setPheromoneMaxSmellingDistance(Integer.parseInt(value));
                         break;
                     case "pheromoneReductionPerSecond":
                         map.setPheromoneReduction(Double.parseDouble(value));
@@ -150,13 +151,13 @@ public class MapBuilder {
                         map.setShadedReduction(Double.parseDouble(value));
                         break;
                     case "footstepMaxHearingDistance":
-                        map.setFootstepMaxHearingDistance(Double.parseDouble(value));
+                        map.setFootstepMaxHearingDistance(Integer.parseInt(value));
                         break;
                     case "rotatingMaxHearingDistance":
-                        map.setRotatingMaxHearingDistance(Double.parseDouble(value));
+                        map.setRotatingMaxHearingDistance(Integer.parseInt(value));
                         break;
                     case "yellMaxHearingDistance":
-                        map.setYellMaxHearingDistance(Double.parseDouble(value));
+                        map.setYellMaxHearingDistance(Integer.parseInt(value));
                         break;
                     case "soundStandardDeviation":
                         map.setSoundStandardDeviation(Double.parseDouble(value));
