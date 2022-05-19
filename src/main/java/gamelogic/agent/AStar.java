@@ -31,7 +31,6 @@ public class AStar {
         boolean isFinished = false;
         
         while(true) {
-
             if (open.isEmpty() && upperBound == -1) return null;
             if (isFinished) break;
             ANode current = open.removeFirst();
