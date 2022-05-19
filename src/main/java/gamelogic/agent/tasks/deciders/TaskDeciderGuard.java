@@ -39,6 +39,13 @@ public class TaskDeciderGuard implements TaskDeciderInterface {
             return pursuitTask;
         }
 
+        // check if there is a friendly agent in front
+        VisionMemory agentInFront = checkAgentInFront(guardsSeen);
+        // if there is an agent in front and the priority of the current task is less than the one of this task, then we should switch to this task
+        if (agentInFront != null && (currentTask.getPriority()<TaskContainer.TaskType.AVOID_COLLISION.priority || currentTask.isFinished())) {
+            return tasks.getTask(TaskContainer.TaskType.AVOID_COLLISION);
+        }
+
         // 2. Check if there is a guard yell
         Sound guardYell = getGuardYell(guardYells);
         // TODO Right now a guard yell is more important than checking sound input from footsteps. I.e. it will never check for the source of footsteps if it is finding the source of a guard yell. Is that okay? Otherwise we need to store the guard yell same as we do with the VisionMemory.
@@ -89,6 +96,18 @@ public class TaskDeciderGuard implements TaskDeciderInterface {
             }
         }
         return loudestYell;
+    }
+
+    private VisionMemory checkAgentInFront(VisionMemory[] guardsSeen) {
+        for(VisionMemory memory : guardsSeen) {
+            if (memory != null) {
+                // check if there is a guard currently visible and directly in front of own position
+                if (memory.secondsAgo() == 0 && memory.position().magnitude() == 1.0) {
+                    return memory;
+                }
+            }
+        }
+        return null;
     }
 
     private Sound getUnmatchedSound(List<Sound> sounds, VisionMemory[] guardsSeen, double pheromoneMarkerDirection) {

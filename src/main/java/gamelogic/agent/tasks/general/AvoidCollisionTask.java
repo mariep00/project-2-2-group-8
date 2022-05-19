@@ -19,8 +19,8 @@ public class AvoidCollisionTask implements TaskInterface{
     public int performTask(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen) {
         if (futureMoves == null || futureMoves.isEmpty()) {
             futureMoves = new Stack<>();
-            futureMoves.push(1);
             futureMoves.push(0);
+            futureMoves.push(1);
         }
         if (futureMoves.size()==1) finished=true;
         return futureMoves.pop();
@@ -37,8 +37,5 @@ public class AvoidCollisionTask implements TaskInterface{
     }
 
     @Override
-    public boolean isFinished() {
-        return finished;
-    }
-    
+    public boolean isFinished() { return finished; }
 }

@@ -58,8 +58,7 @@ public class TaskDeciderIntruder implements TaskDeciderInterface{
         VisionMemory agentInFront = checkAgentInFront(intrudersSeen);
         // if there is an agent in front and the priority of the current task is less than the one of this task, then we should switch to this task
         if (agentInFront != null && (currentTask.getPriority()<TaskContainer.TaskType.AVOID_COLLISION.priority || currentTask.isFinished())) {
-            TaskInterface avoidCollTask = tasks.getTask(TaskType.AVOID_COLLISION);
-            return avoidCollTask;
+            return tasks.getTask(TaskType.AVOID_COLLISION);
         }
         
         // set the lastEvasionAngle to -1 because the last task was not evasion

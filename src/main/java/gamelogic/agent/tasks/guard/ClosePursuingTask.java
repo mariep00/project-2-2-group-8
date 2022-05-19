@@ -70,28 +70,36 @@ public class ClosePursuingTask implements TaskInterface {
         int yDiff = Math.abs(graph.getCurrentPosition().COORDINATES.y-intruderPos.y);
         if (xDiff <= 3 || yDiff <= 3) firstGoForward = true;
 
-        Vector2D firstGoal;
-        if (firstGoForward) {
-            firstGoal = VisionController.calculatePoint(graph.getCurrentPosition().COORDINATES.getSide(orientation), (target.position().magnitude()-distanceInFrontOfIntruder), target.position().angle());
+        int[] distanceAdditionsToTry = {0, 1, 2, 3};
+        Vector2D firstGoal = null;
+        int index = 0;
+        while (firstGoal == null || graph.getNode(firstGoal) == null) {
+            if (index == distanceAdditionsToTry.length) break;
+            if (firstGoForward) {
+                firstGoal = VisionController.calculatePoint(graph.getCurrentPosition().COORDINATES.getSide(orientation), (target.position().magnitude() - (distanceInFrontOfIntruder+distanceAdditionsToTry[index])), target.position().angle());
+            } else firstGoal = VisionController.calculatePoint(graph.getCurrentPosition().COORDINATES, (target.position().magnitude() - (distanceInFrontOfIntruder+distanceAdditionsToTry[index])), target.position().angle());
+            index++;
         }
-        else firstGoal = VisionController.calculatePoint(graph.getCurrentPosition().COORDINATES, (target.position().magnitude()-distanceInFrontOfIntruder), target.position().angle());
-
         if (graph.getNode(firstGoal) == null) return null;
         LinkedList<Vector2D> pathFromFirstToSecondGoal = AStar.calculate(graph, graph.getNode(firstGoal), graph.getNode(goalInFrontOfIntruder));
-        if (pathFromFirstToSecondGoal == null) return null;
-        LinkedList<Vector2D> pathFromCurrentPosToFirstGoal;
+        if (pathFromFirstToSecondGoal == null) {
+            return null;
+        }
+        LinkedList<Vector2D> pathFromCurrentPosToFirstGoal = null;
 
-        boolean canGoForward = false;
-        Vector2D positionInFrontOfGuard = null;
+        Vector2D positionInFrontOfGuard;
         if (firstGoForward) {
             positionInFrontOfGuard = graph.getCurrentPosition().getCOORDINATES().getSide(orientation);
-            if (graph.getNode(positionInFrontOfGuard) != null) canGoForward = true;
+            if (graph.getNode(positionInFrontOfGuard) != null) {
+                pathFromCurrentPosToFirstGoal = AStar.calculate(graph, graph.getNode(positionInFrontOfGuard), graph.getNode(firstGoal));
+            }
         }
-        if (canGoForward) pathFromCurrentPosToFirstGoal = AStar.calculate(graph, graph.getNode(positionInFrontOfGuard), graph.getNode(firstGoal));
-        else pathFromCurrentPosToFirstGoal = AStar.calculate(graph, graph.getCurrentPosition(), graph.getNode(firstGoal));
+        if (pathFromCurrentPosToFirstGoal == null) pathFromCurrentPosToFirstGoal = AStar.calculate(graph, graph.getCurrentPosition(), graph.getNode(firstGoal));
+        if (pathFromCurrentPosToFirstGoal == null) return null;
         pathFromFirstToSecondGoal.addAll(pathFromCurrentPosToFirstGoal);
         if (firstGoForward) {
-            pathFromCurrentPosToFirstGoal.add(pathFromCurrentPosToFirstGoal.size()-2, graph.getCurrentPosition().getCOORDINATES().getSide(orientation));
+            int tempIndex = pathFromCurrentPosToFirstGoal.size() == 1 ? 0 : pathFromCurrentPosToFirstGoal.size()-2;
+            pathFromCurrentPosToFirstGoal.add(tempIndex, graph.getCurrentPosition().getCOORDINATES().getSide(orientation));
         }
         return pathFromFirstToSecondGoal;
     }

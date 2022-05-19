@@ -1,6 +1,7 @@
 package gamelogic.agent.tasks.guard;
 
 import datastructures.Vector2D;
+import gamelogic.agent.AStar;
 import gamelogic.agent.tasks.TaskContainer;
 import gamelogic.agent.tasks.TaskInterface;
 import gamelogic.agent.tasks.general.ExplorationInDirection;
@@ -11,6 +12,7 @@ import gamelogic.datacarriers.Sound;
 import gamelogic.datacarriers.VisionMemory;
 import gamelogic.maps.graph.ExplorationGraph;
 
+import java.util.LinkedList;
 import java.util.List;
 
 public class FindGuardYellSource implements TaskInterface {
@@ -28,9 +30,12 @@ public class FindGuardYellSource implements TaskInterface {
             Vector2D possiblePosition = getPossibleOriginGuardYell(graph, startingPosition, maxDistance, minDistance, guardYellToFind);
             // TODO Add smth that checks if the path length is in between our max and min distance, otherwise the target pos doesn't make sense
             if (possiblePosition != null) {
-                //LinkedList<Vector2D> path = AStar.calculate(graph, graph.getCurrentPosition(), graph.getNode(possiblePosition));
-                task = new PathfindingTask();
-                task.setTarget(possiblePosition);
+                LinkedList<Vector2D> path = AStar.calculate(graph, graph.getCurrentPosition(), graph.getNode(possiblePosition));
+                if (path != null) {
+                    task = new PathfindingTask();
+                    task.setTarget(graph, orientation, path);
+                    task.setTarget(possiblePosition);
+                }
             }
             if (task == null) {
                 if (graph.frontiers.isEmpty()) {
