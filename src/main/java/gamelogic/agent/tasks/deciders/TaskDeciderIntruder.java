@@ -120,7 +120,6 @@ public class TaskDeciderIntruder implements TaskDeciderInterface{
         // calculate the angles of the intruders that were last seen a certain time ago, relative to the current position
         List<Double> anglesIntruders = anglesOfIntrudersSeen(intrudersSeen);
         for (Sound sound: sounds) {
-            // TODO: match the threshold to a reasonable number
             // if the sound is above a certain threshold it should be considered
             if (sound.loudness() > soundThreshold) {
                 //check if there was an intruder in that direction, if so then the sound should not be considered
@@ -171,7 +170,8 @@ public class TaskDeciderIntruder implements TaskDeciderInterface{
 
     private double getTargetAngle(double newAngle) {
         if (lastEvasionAngle != -1.0) {
-            double difference = Math.sqrt((newAngle*newAngle)-(lastEvasionAngle*lastEvasionAngle));
+            double difference = Math.abs(lastEvasionAngle - newAngle);
+            difference = (difference > 180 ? 360 - difference : difference);
             if (newAngle > lastEvasionAngle) {
                 lastEvasionAngle = newAngle-(difference/2.0);
                 return lastEvasionAngle;
