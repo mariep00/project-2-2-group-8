@@ -15,7 +15,7 @@ import java.util.concurrent.*;
 
 // Abstract because you should not instantiate a Controller class, but either a ControllerExploration or ControllerSurveillance class
 public abstract class Controller {
-    protected final boolean multithreadController = false; // Change this to enable or disable multithreading in the controller. Currently, only ticking agents will be multithreaded.
+    protected final boolean multithreadController = false; // !!!!!!DO NOT CHANGE THIS TO TRUE!!!!!
     protected final Random rand;
 
     public final TaskContainer taskContainer;
