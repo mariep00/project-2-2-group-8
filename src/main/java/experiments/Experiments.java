@@ -35,8 +35,8 @@ import java.util.concurrent.TimeUnit;
 
 public class Experiments {
 
-    public static final int ITERATIONS = 2000;
-    public static final int RUNS = 4;
+    public static final int ITERATIONS = 4000;
+    public static final int RUNS = 5;
     private static int[] winForTeam = new int[2];
     private static double[] totalTimeForTeam = new double[2];
 
@@ -80,7 +80,6 @@ public class Experiments {
                     Experiments experiments = new Experiments(controller);
                     
                     System.out.println(finalA + ", " + finalI);
-                    //System.out.println(i + ".    Time taken: " + controller.time);
                     int team = controller.getWhoWon();
                     winForTeam[team]++;
                     totalTimeForTeam[team] = totalTimeForTeam[team] + controller.time;
