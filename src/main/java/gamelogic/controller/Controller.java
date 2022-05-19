@@ -260,6 +260,10 @@ public abstract class Controller {
         return endingCondition;
     }
 
+    public ScenarioMap getScenarioMap() {
+        return scenarioMap;
+    }
+
     public Agent getAgent(int agentIndex) { return agents[agentIndex]; }
 
     private Callable<Void> toCallable(final Runnable runnable) {
