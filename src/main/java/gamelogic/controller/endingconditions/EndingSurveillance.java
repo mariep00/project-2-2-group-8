@@ -53,4 +53,8 @@ public class EndingSurveillance implements EndingConditionInterface {
             }
         }
     }
+
+    public boolean getWhoWon() {
+        return guardsWin;
+    }
 }

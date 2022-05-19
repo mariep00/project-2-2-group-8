@@ -98,4 +98,5 @@ public class ControllerSurveillanceGUI extends ControllerSurveillance implements
     public ControllerGUI getControllerGUI() {
         return controllerGUI;
     }
+
 }

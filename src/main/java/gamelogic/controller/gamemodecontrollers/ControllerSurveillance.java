@@ -208,5 +208,12 @@ public class ControllerSurveillance extends Controller {
         return addNoise(angle, 5);
     }
 
+    public int getWhoWon() {
+        boolean guardsWin = endingSurveillance.getWhoWon();
+        if (guardsWin) {
+            return 0;
+        } else return 1;
+    }
+
     public ExplorationGraph getMapGraph() { return mapGraph; }
 }
