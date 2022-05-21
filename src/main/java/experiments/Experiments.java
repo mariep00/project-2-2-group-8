@@ -9,15 +9,11 @@ import gamelogic.agent.tasks.guard.ClosePursuingTask;
 import gamelogic.agent.tasks.guard.FindSoundSource;
 import gamelogic.agent.tasks.guard.VisitLastSeenIntruderPositions;
 import gamelogic.agent.tasks.intruder.EvasionTaskBaseline;
-import gamelogic.controller.Controller;
-import gamelogic.maps.MapBuilder;
-import gamelogic.controller.endingconditions.EndingExploration;
 import gamelogic.controller.endingconditions.EndingSurveillance;
-import gamelogic.controller.gamemodecontrollers.ControllerExploration;
 import gamelogic.controller.gamemodecontrollers.ControllerSurveillance;
+import gamelogic.maps.MapBuilder;
 import gamelogic.maps.ScenarioMap;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.net.URISyntaxException;
@@ -35,19 +31,19 @@ import java.util.concurrent.TimeUnit;
 
 public class Experiments {
 
-    public static final int ITERATIONS = 4000;
-    public static final int RUNS = 5;
+    public static final int ITERATIONS = 100;
+    public static final int RUNS = 1;
     private static int[] winForTeam = new int[2];
     private static double[] totalTimeForTeam = new double[2];
 
     private static PrintWriter out;
 
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
     private static final boolean saveResults = true;
     private static final Random rand = new Random();
 
     // Specify Map name from the maps folder here
-    private final static String FILE_NAME = "AdvancedTestSurveillance.txt";
+    private final static String FILE_NAME = "ExperimentSurveillance1.txt";
 
     public Experiments(ControllerSurveillance controller){
         controller.init();

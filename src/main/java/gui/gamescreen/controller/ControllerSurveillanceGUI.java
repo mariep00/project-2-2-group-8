@@ -15,7 +15,7 @@ public class ControllerSurveillanceGUI extends ControllerSurveillance implements
     private final ControllerGUI controllerGUI;
 
     public ControllerSurveillanceGUI(ScenarioMap scenarioMap, EndingSurveillance endingCondition, GameScreen gameScreen, TaskContainer taskContainer) {
-        super(scenarioMap, endingCondition, taskContainer, 225);
+        super(scenarioMap, endingCondition, taskContainer, 0);
         this.gameScreen = gameScreen;
         this.controllerGUI = new ControllerGUI(this, gameScreen);
     }
