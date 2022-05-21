@@ -29,10 +29,10 @@ import java.util.concurrent.TimeUnit;
  * For example ViewingRange, ViewingAngle etc.
  */
 
-public class Experiments {
+public class ExperimentsSurveillance {
 
-    public static final int ITERATIONS = 100;
-    public static final int RUNS = 1;
+    public static final int ITERATIONS = 2500;
+    public static final int RUNS = 5;
     private static int[] winForTeam = new int[2];
     private static double[] totalTimeForTeam = new double[2];
 
@@ -45,7 +45,7 @@ public class Experiments {
     // Specify Map name from the maps folder here
     private final static String FILE_NAME = "ExperimentSurveillance1.txt";
 
-    public Experiments(ControllerSurveillance controller){
+    public ExperimentsSurveillance(ControllerSurveillance controller){
         controller.init();
         controller.engine();
     }
@@ -55,7 +55,7 @@ public class Experiments {
             createFile();
             if (DEBUG) System.out.println("File created?");
         }
-        URL url = Experiments.class.getClassLoader().getResource("maps/"+FILE_NAME);
+        URL url = ExperimentsSurveillance.class.getClassLoader().getResource("maps/"+FILE_NAME);
 
         for (int a=1; a<=RUNS; a++) {
             totalTimeForTeam = new double[2];
@@ -73,7 +73,7 @@ public class Experiments {
                     }
                     ControllerSurveillance controller = new ControllerSurveillance(scenarioMap, new EndingSurveillance(scenarioMap), new TaskContainer(new ExplorationTaskFrontier(), new FindSoundSource(), new ClosePursuingTask(), new EvasionTaskBaseline(), new VisitLastSeenIntruderPositions(), new PathfindingTask(), new ExplorationInDirection(), new AvoidCollisionTask()), rand.nextInt());
                     
-                    Experiments experiments = new Experiments(controller);
+                    ExperimentsSurveillance experiments = new ExperimentsSurveillance(controller);
                     
                     System.out.println(finalA + ", " + finalI);
                     int team = controller.getWhoWon();
