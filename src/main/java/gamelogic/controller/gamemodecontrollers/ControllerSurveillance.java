@@ -124,7 +124,7 @@ public class ControllerSurveillance extends Controller {
 
     @Override
     public void end() {
-        System.out.println("----- SURVEILLANCE ENDED, IT TOOK " + time  + " SECONDS -----");
+        //System.out.println("----- SURVEILLANCE ENDED, IT TOOK " + time  + " SECONDS -----");
     }
 
     private VisionMemory[] updateAgentVisionMemory(int agentIndex, State state) {
@@ -206,6 +206,13 @@ public class ControllerSurveillance extends Controller {
         Vector2D targetArea = scenarioMap.getTargetArea().get(0);
         double angle = agentSpawnLocations[agentIndex].getAngleBetweenVector(targetArea);
         return addNoise(angle, 5);
+    }
+
+    public int getWhoWon() {
+        boolean guardsWin = endingSurveillance.getWhoWon();
+        if (guardsWin) {
+            return 0;
+        } else return 1;
     }
 
     public ExplorationGraph getMapGraph() { return mapGraph; }

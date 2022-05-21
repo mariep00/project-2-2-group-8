@@ -44,6 +44,7 @@ public class EndingScreen {
                     guardsWin = true;
                 }
             }
+            else break;
         }
 
         if(!controller.getEndingCondition().mode()) //mode is surveillance default mode (True) is exploration

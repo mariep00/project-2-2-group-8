@@ -14,9 +14,9 @@ import java.util.List;
 public class TaskDeciderGuard implements TaskDeciderInterface {
     private final TaskContainer tasks;
 
-    private final double secondsAgoThreshold = 1;
-    private final double angleThreshold = 25;
-    private final double soundAndMarkerThreshold = 30;
+    private final double secondsAgoThreshold = 2.5;
+    private final double angleThreshold = 50;
+    private final double soundAndMarkerThreshold = 50;
 
     public TaskDeciderGuard(TaskContainer taskContainer) {
         this.tasks = taskContainer;
