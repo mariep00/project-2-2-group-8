@@ -31,6 +31,7 @@ import java.util.concurrent.TimeUnit;
 
 public class ExperimentsSurveillance {
 
+    private static final int ROWS = 9;
     public static final int ITERATIONS = 2500;
     public static final int RUNS = 5;
     private static int[] winForTeam = new int[2];
@@ -42,8 +43,17 @@ public class ExperimentsSurveillance {
     private static final boolean saveResults = true;
     private static final Random rand = new Random();
 
+    private static final int[][] numberAgents = {{1,1},{3,1},{4,1},{1,3},{3,3},{4,3},{1,4},{3,4},{4,4}};
+
+    // ONLY CHANGE THESE VALUES:
     // Specify Map name from the maps folder here
     private final static String FILE_NAME = "ExperimentSurveillance1.txt";
+    // Change these values to the ones from the table you want to run
+    private static final int footStepMaxHearingDistance = 8;
+    private static final int rotationMaxHearingDistance = 6;
+    private static final int yellMaxHearingDistance = 30;
+
+
 
     public ExperimentsSurveillance(ControllerSurveillance controller){
         controller.init();
@@ -57,35 +67,47 @@ public class ExperimentsSurveillance {
         }
         URL url = ExperimentsSurveillance.class.getClassLoader().getResource("maps/"+FILE_NAME);
 
-        for (int a=1; a<=RUNS; a++) {
-            totalTimeForTeam = new double[2];
-            winForTeam = new int[2];
-            ThreadPoolExecutor threadPool = new ThreadPoolExecutor(Runtime.getRuntime().availableProcessors(), 50, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
-            for (int i = 1; i <= ITERATIONS; i++) {
-                int finalI = i;
-                int finalA = a;
-                threadPool.submit(() -> {
-                    ScenarioMap scenarioMap = null;
-                    try {
-                        scenarioMap = new MapBuilder(Paths.get(url.toURI()).toFile()).getMap();
-                    } catch (URISyntaxException e) {
-                        e.printStackTrace();
-                    }
-                    ControllerSurveillance controller = new ControllerSurveillance(scenarioMap, new EndingSurveillance(scenarioMap), new TaskContainer(new ExplorationTaskFrontier(), new FindSoundSource(), new ClosePursuingTask(), new EvasionTaskBaseline(), new VisitLastSeenIntruderPositions(), new PathfindingTask(), new ExplorationInDirection(), new AvoidCollisionTask()), rand.nextInt());
-                    
-                    ExperimentsSurveillance experiments = new ExperimentsSurveillance(controller);
-                    
-                    System.out.println(finalA + ", " + finalI);
-                    int team = controller.getWhoWon();
-                    winForTeam[team]++;
-                    totalTimeForTeam[team] = totalTimeForTeam[team] + controller.time;
-                });
+        for (int j=0; j<ROWS; j++) {
+            int finalJ = j;
+            int numGuards = numberAgents[j][0];
+            int numIntruders = numberAgents[j][1];
+            out.println("ROW:" + (j+1) + " - NumberGuards: " + numGuards + ", NumberIntruders: " + numIntruders);
+            for (int a=1; a<=RUNS; a++) {
+                totalTimeForTeam = new double[2];
+                winForTeam = new int[2];
+                ThreadPoolExecutor threadPool = new ThreadPoolExecutor(Runtime.getRuntime().availableProcessors(), 50, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
+                for (int i = 1; i <= ITERATIONS; i++) {
+                    int finalI = i;
+                    int finalA = a;
+                    threadPool.submit(() -> {
+                        ScenarioMap scenarioMap = null;
+                        try {
+                            scenarioMap = new MapBuilder(Paths.get(url.toURI()).toFile()).getMap();
+                        } catch (URISyntaxException e) {
+                            e.printStackTrace();
+                        }
+                        scenarioMap.setNumGuards(numGuards);
+                        scenarioMap.setNumIntruders(numIntruders);
+                        scenarioMap.setRotatingMaxHearingDistance(rotationMaxHearingDistance);
+                        scenarioMap.setYellMaxHearingDistance(yellMaxHearingDistance);
+                        scenarioMap.setFootstepMaxHearingDistance(footStepMaxHearingDistance);
+                        ControllerSurveillance controller = new ControllerSurveillance(scenarioMap, new EndingSurveillance(scenarioMap), new TaskContainer(new ExplorationTaskFrontier(), new FindSoundSource(), new ClosePursuingTask(), new EvasionTaskBaseline(), new VisitLastSeenIntruderPositions(), new PathfindingTask(), new ExplorationInDirection(), new AvoidCollisionTask()), rand.nextInt());
+                        
+                        ExperimentsSurveillance experiments = new ExperimentsSurveillance(controller);
+                        
+                        System.out.println(finalJ + ", " +  finalA + ", " + finalI);
+                        int team = controller.getWhoWon();
+                        winForTeam[team]++;
+                        totalTimeForTeam[team] = totalTimeForTeam[team] + controller.time;
+                    });
+                }
+                threadPool.shutdown();
+                threadPool.awaitTermination(Integer.MAX_VALUE, TimeUnit.SECONDS);
+                out.println(" --- RUN:" + a);
+                out.println(" ------ GUARD WINS COUNT: " + winForTeam[0] + " ---- AVG TIME FOR WIN: " + (totalTimeForTeam[0]/winForTeam[0]));
+                out.println(" ------ INTRUDER WINS COUNT: " + winForTeam[1] + " ---- AVG TIME FOR WIN: " + (totalTimeForTeam[1]/winForTeam[1]));
             }
-            threadPool.shutdown();
-            threadPool.awaitTermination(Integer.MAX_VALUE, TimeUnit.SECONDS);
-            out.println("RUN:" + a);
-            out.println(" ---- GUARD WINS COUNT: " + winForTeam[0] + " ---- AVG TIME FOR WIN: " + (totalTimeForTeam[0]/winForTeam[0]));
-            out.println(" ---- INTRUDER WINS COUNT: " + winForTeam[1] + " ---- AVG TIME FOR WIN: " + (totalTimeForTeam[1]/winForTeam[1]));
+            out.println();
         }
         out.close();
 
