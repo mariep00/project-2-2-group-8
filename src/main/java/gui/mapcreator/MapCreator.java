@@ -222,7 +222,10 @@ public class MapCreator extends Application implements TransitionInterface {
                     if (tiles[y][x].isWall()) scenarioMap.insertElement((x-mapBuildIndices[0]), (y-mapBuildIndices[2]), gamelogic.maps.Tile.Type.WALL);
                     else if (tiles[y][x].isSpawnAreaGuards()) scenarioMap.insertSpawnAreaGuard((x-mapBuildIndices[0]), (y-mapBuildIndices[2]));
                     else if (tiles[y][x].isSpawnAreaIntruders()) scenarioMap.insertSpawnAreaIntruder((x-mapBuildIndices[0]), (y-mapBuildIndices[2]));
-                    else if (tiles[y][x].isTargetArea()) scenarioMap.insertElement((x-mapBuildIndices[0]), (y-mapBuildIndices[2]), gamelogic.maps.Tile.Type.TARGET_AREA);
+                    else if (tiles[y][x].isTargetArea()) {
+                        scenarioMap.insertElement((x-mapBuildIndices[0]), (y-mapBuildIndices[2]), gamelogic.maps.Tile.Type.TARGET_AREA);
+                        scenarioMap.insertTargetArea(x-mapBuildIndices[0], y-mapBuildIndices[2]);
+                    }
                     else if (tiles[y][x].isTeleport()) scenarioMap.setTeleport((x-mapBuildIndices[0]), (y-mapBuildIndices[2]), (x-mapBuildIndices[0]), (y-mapBuildIndices[2]), (x-mapBuildIndices[0])+1, (y-mapBuildIndices[2])+1, 0); // TODO input for custom exit and rotation, can cause errors now
                     if (tiles[y][x].isShaded()) scenarioMap.setShaded((x-mapBuildIndices[0]), (y-mapBuildIndices[2]));
                 }
