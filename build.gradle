@@ -24,3 +24,9 @@ run {
 dependencies {
     implementation 'org.jetbrains:annotations:20.1.0'
 }
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(16))
+    }
+}
