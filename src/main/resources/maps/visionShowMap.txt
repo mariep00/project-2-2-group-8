@@ -1,0 +1,11 @@
+name = test scenario
+gameMode = 0
+height = 30
+width = 30
+numGuards = 1
+numIntruders = 0
+baseSpeedIntruder = 14.0
+sprintSpeedIntruder = 20.0
+baseSpeedGuard = 14.0
+timeStep = 0.1
+spawnAreaGuards = 14 14 14 14
