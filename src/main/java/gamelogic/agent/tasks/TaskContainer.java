@@ -31,8 +31,7 @@ public class TaskContainer {
         tasks[7] = avoidCollisionTask;
 
         taskDeciderGuard = new TaskDeciderGuard(this);
-        // TODO: Pass the right angle upon creation
-        taskDeciderIntruder = new TaskDeciderIntruder(this, 0.0);
+        taskDeciderIntruder = new TaskDeciderIntruder(this);
     }
 
     public TaskContainer(TaskInterface explorationTask) {

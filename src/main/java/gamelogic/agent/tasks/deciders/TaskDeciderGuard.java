@@ -48,7 +48,6 @@ public class TaskDeciderGuard implements TaskDeciderInterface {
 
         // 2. Check if there is a guard yell
         Sound guardYell = getGuardYell(guardYells);
-        // TODO Right now a guard yell is more important than checking sound input from footsteps. I.e. it will never check for the source of footsteps if it is finding the source of a guard yell. Is that okay? Otherwise we need to store the guard yell same as we do with the VisionMemory.
         if (guardYell != null && (currentTask.getPriority() <= TaskContainer.TaskType.FIND_GUARD_YELL_SOURCE.priority || currentTask.isFinished())) {
             // There was a guard yell, try to find it
             TaskInterface findGuardYellSource = new FindGuardYellSource();
@@ -58,7 +57,6 @@ public class TaskDeciderGuard implements TaskDeciderInterface {
 
         // 3. Check if there is an unmatched sound (i.e. is there a sound we cannot link to a guard we've previously seen)
         Sound closestUnmatchedSound = getUnmatchedSound(sounds, guardsSeen, pheromoneMarkerDirection);
-        // TODO Now guard only switches to finding new sound if it finished the previous
         if (closestUnmatchedSound != null && (currentTask.getPriority() < TaskContainer.TaskType.FIND_SOUND_SOURCE.priority || currentTask.isFinished())) {
             // There is a sound we cannot match with another guard
             // This means we should check if it's a guard or an intruder

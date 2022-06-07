@@ -69,14 +69,15 @@ public class SoundController {
 
     private double getDistanceToSound(Vector2D origin, Vector2D currentPosition, int threshold) {
         double distance = -1;
-        if (controller.isWallInBetween(currentPosition, origin)) {
-            LinkedList<Vector2D> path = AStar.calculate(mapGraph, mapGraph.getNode(currentPosition), mapGraph.getNode(origin), threshold);
-            if (path != null && AStar.pathReachedGoal(path, origin)) {
-                distance = path.size();
+        if (origin.dist(currentPosition) <= threshold) {
+            if (controller.isWallInBetween(currentPosition, origin)) {
+                LinkedList<Vector2D> path = AStar.calculate(mapGraph, mapGraph.getNode(currentPosition), mapGraph.getNode(origin), threshold);
+                if (path != null && AStar.pathReachedGoal(path, origin)) {
+                    distance = path.size();
+                }
+            } else if (currentPosition.dist(origin) <= threshold) {
+                distance = currentPosition.dist(origin);
             }
-        }
-        else if (currentPosition.dist(origin) <= threshold) {
-            distance = currentPosition.dist(origin);
         }
         return distance;
     }

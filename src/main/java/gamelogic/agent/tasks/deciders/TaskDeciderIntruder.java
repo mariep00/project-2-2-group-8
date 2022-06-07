@@ -17,7 +17,6 @@ import java.util.List;
 public class TaskDeciderIntruder implements TaskDeciderInterface{
 
     private final TaskContainer tasks;
-    // TODO: Adjust thresholds
     private double angleSpawnToGoal;
     private final double soundThreshold = 0.5;
     private final double secondsAgoThreshold = 1.0;
@@ -26,9 +25,8 @@ public class TaskDeciderIntruder implements TaskDeciderInterface{
     private double currentAnticipatedDistance;
     private double lastEvasionAngle; // -1 if last task was not evasion
 
-    public TaskDeciderIntruder(TaskContainer taskContainer, double angleSpawnToGoal) {
+    public TaskDeciderIntruder(TaskContainer taskContainer) {
         this.tasks = taskContainer;
-        this.angleSpawnToGoal = angleSpawnToGoal;
         currentAnticipatedDistance = 10.0;
     }
 
@@ -188,6 +186,6 @@ public class TaskDeciderIntruder implements TaskDeciderInterface{
     }
 
     @Override
-    public TaskDeciderInterface newInstance() { return new TaskDeciderIntruder(tasks, 0.0); }
+    public TaskDeciderInterface newInstance() { return new TaskDeciderIntruder(tasks); }
     
 }
