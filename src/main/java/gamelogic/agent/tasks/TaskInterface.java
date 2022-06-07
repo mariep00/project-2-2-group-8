@@ -28,6 +28,9 @@ public interface TaskInterface {
     default void setTarget(VisionMemory target) {
         throw new UnsupportedOperationException("This method is not supported for this class");
     }
+    default void setTarget(VisionMemory intruder, VisionMemory guard) {
+        throw new UnsupportedOperationException("This method is not supported for this class");
+    }
     default void setTarget(Vector2D target) {
         throw new UnsupportedOperationException("This method is not supported for this class");
     }

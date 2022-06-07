@@ -92,7 +92,7 @@ public class ExperimentsSurveillance {
                         scenarioMap.setRotatingMaxHearingDistance(rotationMaxHearingDistance);
                         scenarioMap.setYellMaxHearingDistance(yellMaxHearingDistance);
                         scenarioMap.setFootstepMaxHearingDistance(footStepMaxHearingDistance);
-                        ControllerSurveillance controller = new ControllerSurveillance(scenarioMap, new EndingSurveillance(scenarioMap), new TaskContainer(new ExplorationTaskFrontier(), new FindSoundSource(), new ClosePursuingTask(), new EvasionTaskBaseline(), new VisitLastSeenIntruderPositions(), new PathfindingTask(), new ExplorationInDirection(), new AvoidCollisionTask()), rand.nextInt());
+                        ControllerSurveillance controller = new ControllerSurveillance(scenarioMap, new EndingSurveillance(scenarioMap), new TaskContainer(new ExplorationTaskFrontier(), new FindSoundSource(), new ClosePursuingTask(), new FarPursuingTask(), new EvasionTaskBaseline(), new VisitLastSeenIntruderPositions(), new PathfindingTask(), new ExplorationInDirection(), new AvoidCollisionTask()), rand.nextInt());
                         
                         ExperimentsSurveillance experiments = new ExperimentsSurveillance(controller);
                         
