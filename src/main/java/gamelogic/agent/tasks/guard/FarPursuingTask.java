@@ -9,7 +9,9 @@ import gamelogic.controller.VisionController;
 import gamelogic.datacarriers.Sound;
 import gamelogic.datacarriers.VisionMemory;
 import gamelogic.maps.graph.ExplorationGraph;
+import util.MathHelpers;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
@@ -19,8 +21,8 @@ public class FarPursuingTask implements TaskInterface{
     //TODO Adjust the distanceThresholds to make sense
     private final double angleDifference = 30;
     private final double walkingDistanceThreshold = 0.3; // Is multiplied with distance to Intruder
-    private final double distanceThresholdFirstPath = 2.0; //Thresholds are multiplied with how long we want to walk
-    private final double distanceThresholdSecondPath = 1.5;
+    private final double distanceThresholdFirstPath = 50.0; //Thresholds are multiplied with how long we want to walk
+    private final double distanceThresholdSecondPath = 50.5;
     private boolean finished = false;
 
     private VisionMemory intruder;
@@ -34,11 +36,11 @@ public class FarPursuingTask implements TaskInterface{
             this.graph = graph;
             
             Vector2D currentPosition = graph.getCurrentPosition().COORDINATES;
-            double distance = walkingDistanceThreshold * intruder.position().dist(currentPosition);
-            double angleToGuard = guard.position().getAngleBetweenVector(currentPosition);
-            double angleToIntruder = intruder.position().getAngleBetweenVector(currentPosition);
-            double difference = differenceBetweenAngle(angleToGuard, angleToIntruder);
-
+            double distance = walkingDistanceThreshold * intruder.position().magnitude();
+            double angleToGuard = guard.position().angle();
+            double angleToIntruder = intruder.position().angle();
+            double difference = MathHelpers.differenceBetweenAngles(angleToGuard, angleToIntruder);
+            System.out.println("Angle intruder " + angleToIntruder + ", angle guard " + angleToGuard + ", difference angle " + difference);
             boolean toRight = checkDirection(angleToIntruder, angleToGuard, difference);
             if (toRight) {
                 double angle = checkAngle(angleToIntruder-angleDifference);
@@ -57,47 +59,41 @@ public class FarPursuingTask implements TaskInterface{
     private boolean checkDirection(double angleToIntruder, double angleToGuard, double difference) {
         if ((angleToIntruder+difference)>360) {
             double angle = angleToIntruder+difference-360.0;
-            if (angle == angleToGuard) {
-                return true;
-            } else {
-                return false;
-            }          
+            return angle == angleToGuard;
         } else if ((angleToIntruder-difference)<0) {
             double angle = angleToIntruder-difference+360.0;
-            if (angle == angleToGuard) {
-                return false;
-            } else {
-                return true;
-            }
+            return angle != angleToGuard;
         } else {
-            if (angleToGuard>angleToIntruder) {
-                return true;
-            } else {
-                return false;
-            }
+            return angleToGuard > angleToIntruder;
         }
     }
 
     private LinkedList<Vector2D> findPathToLeft(Vector2D curPos, double distance, double angle) {
         Vector2D goal = VisionController.calculatePoint(curPos, distance, angle);
         while (!graph.isVisited(goal)) {
+            System.out.println("0; " + angle);
             angle = checkAngle(angle-10.0);
             goal = VisionController.calculatePoint(curPos, distance, angle);
         }
         while (true) {
-            LinkedList<Vector2D> path1 = AStar.calculate(graph, graph.getCurrentPosition(), graph.getNode(goal), (int)(distanceThresholdFirstPath*distance));
+            System.out.println("1; " + angle);
+            LinkedList<Vector2D> path1 = AStar.calculate(graph, graph.getCurrentPosition(), graph.getNode(goal));
+            System.out.println(goal + ", " + graph.getCurrentPosition() + ", " + (int)(distanceThresholdFirstPath*distance) + ", " + Arrays.toString(path1.toArray()));
             if(path1.getFirst().equals(goal)) {
-                LinkedList<Vector2D> path2 = AStar.calculate(graph, graph.getNode(goal), graph.getNode(intruder.position()), (int)(distanceThresholdSecondPath*goal.dist(intruder.position())));
+                System.out.println("Got here");
+                LinkedList<Vector2D> path2 = AStar.calculate(graph, graph.getNode(goal), graph.getNode(intruder.position().add(graph.getCurrentPosition().COORDINATES)), (int)(distanceThresholdSecondPath*goal.dist(intruder.position().add(graph.getCurrentPosition().COORDINATES))));
                 if (path2.getFirst().equals(intruder.position())) {
                     return path1;
                 }
             }
-            angle = angle - 10.0;
+            angle = checkAngle(angle - 10.0);
             goal = VisionController.calculatePoint(curPos, distance, angle);
             while (!graph.isVisited(goal)) {
                 angle = checkAngle(angle-10.0);
                 goal = VisionController.calculatePoint(curPos, distance, angle);
+                System.out.println("2; " + angle);
             }
+            System.out.println("3; " + angle);
         }
     }
 
@@ -108,9 +104,10 @@ public class FarPursuingTask implements TaskInterface{
             goal = VisionController.calculatePoint(curPos, distance, angle);
         }
         while (true) {
+            //System.out.println("1; " +angle);
             LinkedList<Vector2D> path1 = AStar.calculate(graph, graph.getCurrentPosition(), graph.getNode(goal), (int)(distanceThresholdFirstPath*distance));
             if(path1.getFirst().equals(goal)) {
-                LinkedList<Vector2D> path2 = AStar.calculate(graph, graph.getNode(goal), graph.getNode(intruder.position()), (int)(distanceThresholdSecondPath*goal.dist(intruder.position())));
+                LinkedList<Vector2D> path2 = AStar.calculate(graph, graph.getNode(goal), graph.getNode(intruder.position().add(graph.getCurrentPosition().COORDINATES)), (int)(distanceThresholdSecondPath*goal.dist(intruder.position())));
                 if (path2.getFirst().equals(intruder.position())) {
                     return path1;
                 }
@@ -120,16 +117,9 @@ public class FarPursuingTask implements TaskInterface{
             while (!graph.isVisited(goal)) {
                 angle = checkAngle(angle+10.0);
                 goal = VisionController.calculatePoint(curPos, distance, angle);
+                //System.out.println("temp; " +angle);
             }
-        }
-    }
-
-    private double differenceBetweenAngle(double a, double b) {
-        double difference = Math.abs(a-b);
-        if (difference>180) {
-            return difference-180;
-        } else {
-            return difference;
+            //System.out.println("2; " +angle);
         }
     }
 
