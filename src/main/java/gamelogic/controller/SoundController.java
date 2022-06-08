@@ -44,6 +44,7 @@ public class SoundController {
                     double angleNormalDistributed = Controller.addNoise(angle, soundStandardDeviation);
                     double maxThreshold = Math.max(footstepMaxHearingDistance, rotatingMaxHearingDistance); // Divide by maximum to have a normalised loudness
                     sounds.add(new Sound(angleNormalDistributed >= 360 ? angleNormalDistributed - 360 : angleNormalDistributed, ((float) maxThreshold - distance) / maxThreshold));
+
                 }
             }
         }
