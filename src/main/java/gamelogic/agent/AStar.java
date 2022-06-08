@@ -37,6 +37,7 @@ public class AStar {
 
             if(current.POSITION.equals(goal)) {
                 goalANode = current;
+                lastNode = current;
                 break;
             }
 
@@ -57,7 +58,8 @@ public class AStar {
                     node.setH(node.POSITION.manhattanDist(goal));
                     node.setParent(current);
                     open.add(node);
-                } else { isFinished = true; }
+                } else { 
+                    isFinished = true; }
             }
         }
 
