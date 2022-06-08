@@ -34,15 +34,13 @@ public class TaskDeciderGuard implements TaskDeciderInterface {
         if (intruderToPursuit != null) {
             // There is an intruder in vision
             // We should start the pursuit task
-            TaskInterface pursuitTask = tasks.getTask(TaskContainer.TaskType.GUARD_PURSUIT);
-            pursuitTask.setTarget(intruderToPursuit);
-            return pursuitTask;
+            return getPursuingTask(guardsSeen, intruderToPursuit);
         }
 
         // check if there is a friendly agent in front
         VisionMemory agentInFront = checkAgentInFront(guardsSeen);
         // if there is an agent in front and the priority of the current task is less than the one of this task, then we should switch to this task
-        if (agentInFront != null && (currentTask.getPriority()<TaskContainer.TaskType.AVOID_COLLISION.priority || currentTask.isFinished())) {
+        if (agentInFront != null && (currentTask.getPriority() < TaskContainer.TaskType.AVOID_COLLISION.priority || currentTask.isFinished())) {
             return tasks.getTask(TaskContainer.TaskType.AVOID_COLLISION);
         }
 
@@ -84,6 +82,30 @@ public class TaskDeciderGuard implements TaskDeciderInterface {
     @Override
     public TaskDeciderInterface newInstance() {
         return new TaskDeciderGuard(tasks);
+    }
+
+    private TaskInterface getPursuingTask(VisionMemory[] guardsSeen, VisionMemory intruder) {
+        double closestGuardDistance = Integer.MAX_VALUE;
+        VisionMemory closestGuard = null;
+        for (VisionMemory visionMemory : guardsSeen) {
+            if (visionMemory != null && visionMemory.secondsAgo() == 0) {
+                if (visionMemory.position().dist(intruder.position()) < closestGuardDistance) {
+                    closestGuardDistance = visionMemory.position().dist(intruder.position());
+                    closestGuard = visionMemory;
+                }
+            }
+        }
+        if (closestGuard != null) {
+            if (closestGuardDistance < intruder.position().magnitude()) {
+                TaskInterface taskToRetrun = tasks.getTask(TaskContainer.TaskType.GUARD_PURSUIT_FAR);
+                taskToRetrun.setTarget(intruder, closestGuard);
+                return taskToRetrun;
+            }
+        }
+
+        TaskInterface taskToReturn = tasks.getTask(TaskContainer.TaskType.GUARD_PURSUIT_CLOSE);
+        taskToReturn.setTarget(intruder);
+        return taskToReturn;
     }
 
     private Sound getGuardYell(List<Sound> guardYells) {

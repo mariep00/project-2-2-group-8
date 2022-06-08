@@ -151,7 +151,7 @@ public class ClosePursuingTask implements TaskInterface {
 
     @Override
     public TaskType getType() {
-        return TaskType.GUARD_PURSUIT;
+        return TaskType.GUARD_PURSUIT_CLOSE;
     }
 
     @Override

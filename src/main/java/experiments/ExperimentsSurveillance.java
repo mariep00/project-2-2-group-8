@@ -3,6 +3,7 @@ package experiments;
 import gamelogic.agent.tasks.TaskContainer;
 import gamelogic.agent.tasks.general.*;
 import gamelogic.agent.tasks.guard.ClosePursuingTask;
+import gamelogic.agent.tasks.guard.FarPursuingTask;
 import gamelogic.agent.tasks.guard.FindSoundSource;
 import gamelogic.agent.tasks.guard.VisitLastSeenIntruderPositions;
 import gamelogic.agent.tasks.intruder.EvasionTaskBaseline;
@@ -89,10 +90,10 @@ public class ExperimentsSurveillance {
                         scenarioMap.setRotatingMaxHearingDistance(rotationMaxHearingDistance);
                         scenarioMap.setYellMaxHearingDistance(yellMaxHearingDistance);
                         scenarioMap.setFootstepMaxHearingDistance(footStepMaxHearingDistance);
-                        ControllerSurveillance controller = new ControllerSurveillance(scenarioMap, new EndingSurveillance(scenarioMap), new TaskContainer(new ExplorationTaskFrontier(), new FindSoundSource(), new ClosePursuingTask(), new EvasionTaskBaseline(), new VisitLastSeenIntruderPositions(), new PathfindingTask(), new ExplorationInDirection(), new AvoidCollisionTask(), new CaptureTargetAreaTask()), rand.nextInt());
+                        ControllerSurveillance controller = new ControllerSurveillance(scenarioMap, new EndingSurveillance(scenarioMap), new TaskContainer(new ExplorationTaskFrontier(), new FindSoundSource(), new ClosePursuingTask(), new FarPursuingTask(), new EvasionTaskBaseline(), new VisitLastSeenIntruderPositions(), new PathfindingTask(), new ExplorationInDirection(), new AvoidCollisionTask()), rand.nextInt());
                         
                         ExperimentsSurveillance experiments = new ExperimentsSurveillance(controller);
-                        
+
                         //System.out.println(finalJ + ", " +  finalA + ", " + finalI);
                         int team = controller.getWhoWon();
                         winForTeam[team]++;

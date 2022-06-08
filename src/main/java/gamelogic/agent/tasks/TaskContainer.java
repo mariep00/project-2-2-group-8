@@ -17,19 +17,19 @@ public class TaskContainer {
     private final TaskDeciderInterface taskDeciderGuard;
     private final TaskDeciderInterface taskDeciderIntruder;
 
-    public TaskContainer(TaskInterface explorationTask, TaskInterface findSoundSourceTask, TaskInterface guardPursuitTask,
-                         TaskInterface intruderEvasionTask, TaskInterface guardVisitLastSeenIntruderPositions,
-                         TaskInterface pathfindingTask, TaskInterface explorationInDirectionTask, TaskInterface avoidCollisionTask, TaskInterface captureTargetArea) {
+    public TaskContainer(TaskInterface explorationTask, TaskInterface findSoundSourceTask, TaskInterface guardPursuitTaskClose,
+                         TaskInterface guardPursuitTaskFar, TaskInterface intruderEvasionTask, TaskInterface guardVisitLastSeenIntruderPositions,
+                         TaskInterface pathfindingTask, TaskInterface explorationInDirectionTask, TaskInterface avoidCollisionTask) {
         tasks = new TaskInterface[9];
         tasks[0] = explorationTask;
         tasks[1] = findSoundSourceTask;
-        tasks[2] = guardPursuitTask;
-        tasks[3] = intruderEvasionTask;
-        tasks[4] = guardVisitLastSeenIntruderPositions;
-        tasks[5] = pathfindingTask;
-        tasks[6] = explorationInDirectionTask;
-        tasks[7] = avoidCollisionTask;
-        tasks[8] = captureTargetArea;
+        tasks[2] = guardPursuitTaskClose;
+        tasks[3] = guardPursuitTaskFar;
+        tasks[4] = intruderEvasionTask;
+        tasks[5] = guardVisitLastSeenIntruderPositions;
+        tasks[6] = pathfindingTask;
+        tasks[7] = explorationInDirectionTask;
+        tasks[8] = avoidCollisionTask;
 
         taskDeciderGuard = new TaskDeciderGuard(this);
         taskDeciderIntruder = new TaskDeciderIntruder(this);
@@ -46,13 +46,13 @@ public class TaskContainer {
     public TaskInterface getTask(TaskType type) {
         if (type == TaskType.EXPLORATION) return tasks[0].newInstance();
         else if (type == TaskType.FIND_SOUND_SOURCE) return tasks[1].newInstance();
-        else if (type == TaskType.GUARD_PURSUIT) return tasks[2].newInstance();
-        else if (type == TaskType.INTRUDER_EVASION) return tasks[3].newInstance();
-        else if (type == TaskType.VISIT_LAST_SEEN_INTRUDER_POSITIONS) return tasks[4].newInstance();
-        else if (type == TaskType.PATHFINDING) return tasks[5].newInstance();
-        else if (type == TaskType.EXPLORATION_DIRECTION) return tasks[6].newInstance();
-        else if (type == TaskType.AVOID_COLLISION) return tasks[7].newInstance();
-        else if (type == TaskType.CAPTURE_TARGET_AREA) return tasks[8].newInstance();
+        else if (type == TaskType.GUARD_PURSUIT_CLOSE) return tasks[2].newInstance();
+        else if (type == TaskType.GUARD_PURSUIT_FAR) return tasks[3].newInstance();
+        else if (type == TaskType.INTRUDER_EVASION) return tasks[4].newInstance();
+        else if (type == TaskType.VISIT_LAST_SEEN_INTRUDER_POSITIONS) return tasks[5].newInstance();
+        else if (type == TaskType.PATHFINDING) return tasks[6].newInstance();
+        else if (type == TaskType.EXPLORATION_DIRECTION) return tasks[7].newInstance();
+        else if (type == TaskType.AVOID_COLLISION) return tasks[8].newInstance();
         else return null;
     }
 
@@ -62,7 +62,8 @@ public class TaskContainer {
     public enum TaskType {
         EXPLORATION(1),
         EXPLORATION_DIRECTION(1),
-        GUARD_PURSUIT(5),
+        GUARD_PURSUIT_CLOSE(5),
+        GUARD_PURSUIT_FAR(5),
         INTRUDER_EVASION(4),
         PATHFINDING(2),
         AVOID_COLLISION(5),

@@ -10,6 +10,7 @@ import gamelogic.datacarriers.VisionMemory;
 import gamelogic.maps.Tile;
 import gamelogic.maps.graph.ExplorationGraph;
 import gamelogic.maps.graph.Node;
+import util.MathHelpers;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -140,8 +141,8 @@ public class TaskDeciderIntruder implements TaskDeciderInterface{
 
     private boolean isSoundMatched(Sound sound, List<Double> anglesIntruders) {
         for (Double angle : anglesIntruders) {
-            double diff = Math.abs(sound.angle() - angle);
-            if ((diff > 180 ? 360 - diff : diff) <= angleThreshold) {
+            double diffAngle = MathHelpers.differenceBetweenAngles(sound.angle(), angle);
+            if (diffAngle <= angleThreshold) {
                 return true;
             }
         }
