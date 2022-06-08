@@ -35,29 +35,16 @@ public class MarkerController {
         return tilesWithMarker;
     }
     protected void tick() {
-        Iterator<Tile> guardIterator = controller.nextState.getTilesWithMarkerGuard().iterator(); // *** This ALSO updates the marker in the currentState, while it's the same reference! ***
-        Iterator<Tile> intruderIterator = controller.nextState.getTilesWithMarkerIntruder().iterator();
-        while (guardIterator.hasNext() || intruderIterator.hasNext()) {
-            Tile guardTile = guardIterator.next();
-            Tile intruderTile = intruderIterator.next();
-            MarkerInterface[] guardMarkers = guardTile.getMarkers();
-            MarkerInterface[] intruderMarkers = intruderTile.getMarkers();
-            for (MarkerInterface guardMarker : guardMarkers) {
-                if (guardMarker != null) {
-                    guardMarker.updateMarker(controller.getTimestep());
-                    if (guardMarker.shouldRemove()) {
-                        guardTile.removeMarker(guardMarker); // *** This ALSO removes the marker in the Tile of the currentState because same reference! ***
-                        guardIterator.remove();
-                    }
-                }
-            }
-
-            for (MarkerInterface intruderMarker : intruderMarkers) {
-                if (intruderMarker != null) {
-                    intruderMarker.updateMarker(controller.getTimestep());
-                    if (intruderMarker.shouldRemove()) {
-                        intruderTile.removeMarker(intruderMarker); // *** This ALSO removes the marker in the Tile of the currentState because same reference! ***
-                        intruderIterator.remove();
+        Iterator<Tile> iterator = controller.nextState.getTilesWithMarkerGuard().iterator(); // *** This ALSO updates the marker in the currentState, while it's the same reference! ***
+        while (iterator.hasNext()) {
+            Tile tile = iterator.next();
+            MarkerInterface[] markers = tile.getMarkers();
+            for (MarkerInterface marker : markers) {
+                if (marker != null) {
+                    marker.updateMarker(controller.getTimestep());
+                    if (marker.shouldRemove()) {
+                        tile.removeMarker(marker); // *** This ALSO removes the marker in the Tile of the currentState because same reference! ***
+                        iterator.remove();
                     }
                 }
             }
@@ -65,19 +52,12 @@ public class MarkerController {
 
         // Add the new pheromone markers for the guards
         for (int i = 0; i < controller.numberOfGuards; i++) {
-            addGuardMarker(controller.nextState.getAgentPosition(i), new PheromoneMarker(controller.agents[i],
+            addMarker(controller.nextState.getAgentPosition(i), new PheromoneMarker(controller.agents[i],
                     controller.nextState.getAgentPosition(i), pheromoneMaxSmellingDistance, pheromoneReduction));
         }
-
-        // Add the new pheromone markers for the intruders
-        for (int i = 0; i < controller.numberOfIntruders; i++) {
-            addIntruderMarker(controller.nextState.getAgentPosition(i), new PheromoneMarker(controller.agents[i],
-                    controller.nextState.getAgentPosition(i), pheromoneMaxSmellingDistance, pheromoneReduction));
-        }
-
     }
 
-    private void addGuardMarker(Vector2D position, MarkerInterface marker) {
+    private void addMarker(Vector2D position, MarkerInterface marker) {
         controller.scenarioMap.getTile(position).addMarker(marker);
         Iterator<Tile> iterator = controller.nextState.getTilesWithMarkerGuard().iterator();
         while (iterator.hasNext()) {
@@ -91,21 +71,7 @@ public class MarkerController {
         controller.nextState.addTileWithMarkerGuard(controller.scenarioMap.getTile(position));
     }
 
-    private void addIntruderMarker(Vector2D position, MarkerInterface marker) {
-        controller.scenarioMap.getTile(position).addMarker(marker);
-        Iterator<Tile> iterator = controller.nextState.getTilesWithMarkerIntruder().iterator();
-        while (iterator.hasNext()) {
-            Tile tile = iterator.next();
-            // Remove the old marker, in case the agent didn't move
-            if (tile.getPheromoneMarker().getPosition().equals(position)) {
-                iterator.remove();
-                break;
-            }
-        }
-        controller.nextState.addTileWithMarkerIntruder(controller.scenarioMap.getTile(position));
-    }
-
-    private List<PheromoneMarker> getGuardsPheromoneMarkersCloseEnough(int agentIndex) {
+    private List<PheromoneMarker> getPheromoneMarkersCloseEnough(int agentIndex) {
         ArrayList<PheromoneMarker> markersCloseEnough = new ArrayList<>();
         for (Tile tile : controller.currentState.getTilesWithMarkerGuard()) {
             if (tile.getPheromoneMarker().getAgent() != controller.agents[agentIndex]
@@ -117,33 +83,8 @@ public class MarkerController {
         return markersCloseEnough;
     }
 
-    private List<PheromoneMarker> getIntrudersPheromoneMarkersCloseEnough(int agentIndex) {
-        ArrayList<PheromoneMarker> markersCloseEnough = new ArrayList<>();
-        for (Tile tile : controller.currentState.getTilesWithMarkerIntruder()) {
-            if (tile.getPheromoneMarker().getAgent() != controller.agents[agentIndex]
-                    && controller.currentState.getAgentPosition(agentIndex).dist(tile.getPheromoneMarker().getPosition()) <= tile.getPheromoneMarker().getDistance()
-                    && !controller.isWallInBetween(controller.currentState.getAgentPosition(agentIndex), tile.getPheromoneMarker().getPosition())) {
-                markersCloseEnough.add(tile.getPheromoneMarker());
-            }
-        }
-        return markersCloseEnough;
-    }
-
-    public double getGuardsPheromoneMarkersDirection(int agentIndex, Vector2D agentPosition) {
-        List<PheromoneMarker> pheromoneMarkers = getGuardsPheromoneMarkersCloseEnough(agentIndex);
-        if (pheromoneMarkers.size() == 0) return -1;
-
-        double divider = 0;
-        double angleSum = 0;
-        for (PheromoneMarker pheromoneMarker : pheromoneMarkers) {
-            divider += pheromoneMarker.getStrength();
-            angleSum += agentPosition.getAngleBetweenVector(pheromoneMarker.getPosition()) * pheromoneMarker.getStrength();
-        }
-        return angleSum/divider;
-    }
-
-    public double getIntrudersPheromoneMarkersDirection(int agentIndex, Vector2D agentPosition) {
-        List<PheromoneMarker> pheromoneMarkers = getIntrudersPheromoneMarkersCloseEnough(agentIndex);
+    public double getPheromoneMarkersDirection(int agentIndex, Vector2D agentPosition) {
+        List<PheromoneMarker> pheromoneMarkers = getPheromoneMarkersCloseEnough(agentIndex);
         if (pheromoneMarkers.size() == 0) return -1;
 
         double divider = 0;

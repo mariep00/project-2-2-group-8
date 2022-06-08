@@ -47,9 +47,9 @@ public class ExperimentsSurveillance {
     // Specify Map name from the maps folder here
     private final static String FILE_NAME = "ExperimentSurveillance1.txt";
     // Change these values to the ones from the table you want to run
-    private static final int footStepMaxHearingDistance = 8;
-    private static final int rotationMaxHearingDistance = 6;
-    private static final int yellMaxHearingDistance = 30;
+    private static final int footStepMaxHearingDistance = 16;
+    private static final int rotationMaxHearingDistance = 12;
+    private static final int yellMaxHearingDistance = 50;
 
 
 
@@ -66,17 +66,18 @@ public class ExperimentsSurveillance {
         URL url = ExperimentsSurveillance.class.getClassLoader().getResource("maps/"+FILE_NAME);
 
         for (int j=0; j<ROWS; j++) {
-            int finalJ = j;
+            //int finalJ = j;
             int numGuards = numberAgents[j][0];
             int numIntruders = numberAgents[j][1];
             out.println("ROW:" + (j+1) + " - NumberGuards: " + numGuards + ", NumberIntruders: " + numIntruders);
             for (int a=1; a<=RUNS; a++) {
+                System.out.println(j + ", " + a);
                 totalTimeForTeam = new double[2];
                 winForTeam = new int[2];
                 ThreadPoolExecutor threadPool = new ThreadPoolExecutor(Runtime.getRuntime().availableProcessors(), 50, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
                 for (int i = 1; i <= ITERATIONS; i++) {
-                    int finalI = i;
-                    int finalA = a;
+                    //int finalI = i;
+                    //int finalA = a;
                     threadPool.submit(() -> {
                         ScenarioMap scenarioMap = null;
                         try {
@@ -93,7 +94,7 @@ public class ExperimentsSurveillance {
                         
                         ExperimentsSurveillance experiments = new ExperimentsSurveillance(controller);
 
-                        System.out.println(finalJ + ", " +  finalA + ", " + finalI);
+                        //System.out.println(finalJ + ", " +  finalA + ", " + finalI);
                         int team = controller.getWhoWon();
                         winForTeam[team]++;
                         totalTimeForTeam[team] = totalTimeForTeam[team] + controller.time;
