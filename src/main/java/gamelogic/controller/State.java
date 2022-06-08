@@ -59,7 +59,7 @@ public class State {
     public List<Vector2D>[] getVisions() { return visions; }
     public List<Vector2D> getVision(int agentIndex) { return visions[agentIndex]; }
     public LinkedList<Tile> getTilesWithMarkerGuard() { return tilesWithMarkerGuard; }
-    public LinkedList<Tile> getTilesWithMarkerIntruder() { return tilesWithMarkerGuard; }
+    public LinkedList<Tile> getTilesWithMarkerIntruder() { return tilesWithMarkerIntruder; }
     public List<GuardYell> getGuardYells() { return guardYells; }
     public VisionMemory[] getAgentsSeen(int agentIndex) { return agentsSeen[agentIndex]; }
     public List<SoundOrigin> getSoundOrigins() { return soundOrigins; }
