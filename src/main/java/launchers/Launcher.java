@@ -6,6 +6,7 @@ import gamelogic.agent.tasks.general.ExplorationInDirection;
 import gamelogic.agent.tasks.general.ExplorationTaskFrontier;
 import gamelogic.agent.tasks.general.PathfindingTask;
 import gamelogic.agent.tasks.guard.ClosePursuingTask;
+import gamelogic.agent.tasks.guard.FarPursuingTask;
 import gamelogic.agent.tasks.guard.FindSoundSource;
 import gamelogic.agent.tasks.guard.VisitLastSeenIntruderPositions;
 import gamelogic.agent.tasks.intruder.EvasionTaskBaseline;
@@ -27,7 +28,7 @@ public class Launcher {
     private final static boolean MULTITHREAD_LAUNCHER = false; // Change this to enable or disable multithreading in the launcher. I.e. running multiple games in parallel.
     private final static int NUMBER_OF_GAMES = 200; // Change this to change the number of games to run
     private final static String FILE_NAME = "advancedTestSurveillance.txt"; // Change this string to the file name of the map you want to run. Make sure the map is located in resources/maps.
-    private final static TaskContainer TASK_CONTAINER = new TaskContainer(new ExplorationTaskFrontier(), new FindSoundSource(), new ClosePursuingTask(), new FarPursuigTask(), new EvasionTaskBaseline(),
+    private final static TaskContainer TASK_CONTAINER = new TaskContainer(new ExplorationTaskFrontier(), new FindSoundSource(), new ClosePursuingTask(), new FarPursuingTask(), new EvasionTaskBaseline(),
             new VisitLastSeenIntruderPositions(), new PathfindingTask(), new ExplorationInDirection(), new AvoidCollisionTask()); // Change this to change the tasks that can be performed by agents
 
     /**
@@ -38,7 +39,7 @@ public class Launcher {
         ThreadPoolExecutor threadPool = new ThreadPoolExecutor(Runtime.getRuntime().availableProcessors(), 50, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
         if (url != null) {
             long startTime = System.nanoTime();
-            for (int i = 0; i < NUMBER_OF_GAMES; i++) {
+            for (int i = 3; i < NUMBER_OF_GAMES; i++) {
                 int finalI = i;
                 if (MULTITHREAD_LAUNCHER) threadPool.submit(() -> runGame(finalI, url));
                 else runGame(finalI, url);

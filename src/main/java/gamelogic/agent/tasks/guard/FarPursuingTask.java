@@ -1,18 +1,18 @@
 package gamelogic.agent.tasks.guard;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Stack;
-
 import datastructures.Vector2D;
+import gamelogic.agent.AStar;
 import gamelogic.agent.tasks.TaskContainer.TaskType;
+import gamelogic.agent.tasks.TaskInterface;
 import gamelogic.controller.MovementController;
 import gamelogic.controller.VisionController;
-import gamelogic.agent.AStar;
-import gamelogic.agent.tasks.TaskInterface;
 import gamelogic.datacarriers.Sound;
 import gamelogic.datacarriers.VisionMemory;
 import gamelogic.maps.graph.ExplorationGraph;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Stack;
 
 public class FarPursuingTask implements TaskInterface{
 
@@ -23,7 +23,7 @@ public class FarPursuingTask implements TaskInterface{
     private final double distanceThresholdSecondPath = 1.5;
     private boolean finished = false;
 
-    private VisionMemory intruder; //TODO: setTarget for intruder and guard
+    private VisionMemory intruder;
     private VisionMemory guard;
     private ExplorationGraph graph;
     private Stack<Integer> futureMoves;
@@ -144,13 +144,19 @@ public class FarPursuingTask implements TaskInterface{
     }
 
     @Override
+    public void setTarget(VisionMemory intruder, VisionMemory guard) {
+        this.intruder = intruder;
+        this.guard = guard;
+    }
+
+    @Override
     public boolean isFinished() {
         return finished;
     }
 
     @Override
     public TaskType getType() {
-        return TaskType.GUARD_PURSUIT;
+        return TaskType.GUARD_PURSUIT_FAR;
     }
 
     @Override

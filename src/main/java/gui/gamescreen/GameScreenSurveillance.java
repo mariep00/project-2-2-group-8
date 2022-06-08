@@ -6,6 +6,7 @@ import gamelogic.agent.tasks.general.AvoidCollisionTask;
 import gamelogic.agent.tasks.general.ExplorationInDirection;
 import gamelogic.agent.tasks.general.ExplorationTaskFrontier;
 import gamelogic.agent.tasks.general.PathfindingTask;
+import gamelogic.agent.tasks.guard.FarPursuingTask;
 import gamelogic.agent.tasks.guard.FindSoundSource;
 import gamelogic.agent.tasks.guard.ClosePursuingTask;
 import gamelogic.agent.tasks.guard.VisitLastSeenIntruderPositions;
@@ -21,7 +22,7 @@ public class GameScreenSurveillance extends GameScreen {
 
     public GameScreenSurveillance(ScenarioMap scenarioMap) {
         super(scenarioMap);
-        this.controllerSurveillanceGUI = new ControllerSurveillanceGUI(scenarioMap, new EndingSurveillance(scenarioMap), this, new TaskContainer(new ExplorationTaskFrontier(), new FindSoundSource(), new ClosePursuingTask(), new EvasionTaskBaseline(),
+        this.controllerSurveillanceGUI = new ControllerSurveillanceGUI(scenarioMap, new EndingSurveillance(scenarioMap), this, new TaskContainer(new ExplorationTaskFrontier(), new FindSoundSource(), new ClosePursuingTask(), new FarPursuingTask(), new EvasionTaskBaseline(),
                 new VisitLastSeenIntruderPositions(), new PathfindingTask(), new ExplorationInDirection(), new AvoidCollisionTask()));
     }
 
