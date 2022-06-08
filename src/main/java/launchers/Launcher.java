@@ -1,10 +1,7 @@
 package launchers;
 
 import gamelogic.agent.tasks.TaskContainer;
-import gamelogic.agent.tasks.general.AvoidCollisionTask;
-import gamelogic.agent.tasks.general.ExplorationInDirection;
-import gamelogic.agent.tasks.general.ExplorationTaskFrontier;
-import gamelogic.agent.tasks.general.PathfindingTask;
+import gamelogic.agent.tasks.general.*;
 import gamelogic.agent.tasks.guard.ClosePursuingTask;
 import gamelogic.agent.tasks.guard.FindSoundSource;
 import gamelogic.agent.tasks.guard.VisitLastSeenIntruderPositions;
@@ -28,7 +25,7 @@ public class Launcher {
     private final static int NUMBER_OF_GAMES = 200; // Change this to change the number of games to run
     private final static String FILE_NAME = "advancedTestSurveillance.txt"; // Change this string to the file name of the map you want to run. Make sure the map is located in resources/maps.
     private final static TaskContainer TASK_CONTAINER = new TaskContainer(new ExplorationTaskFrontier(), new FindSoundSource(), new ClosePursuingTask(), new EvasionTaskBaseline(),
-            new VisitLastSeenIntruderPositions(), new PathfindingTask(), new ExplorationInDirection(), new AvoidCollisionTask()); // Change this to change the tasks that can be performed by agents
+            new VisitLastSeenIntruderPositions(), new PathfindingTask(), new ExplorationInDirection(), new AvoidCollisionTask(), new CaptureTargetAreaTask()); // Change this to change the tasks that can be performed by agents
 
     /**
      * Launcher without GUI

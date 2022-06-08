@@ -19,8 +19,8 @@ public class TaskContainer {
 
     public TaskContainer(TaskInterface explorationTask, TaskInterface findSoundSourceTask, TaskInterface guardPursuitTask,
                          TaskInterface intruderEvasionTask, TaskInterface guardVisitLastSeenIntruderPositions,
-                         TaskInterface pathfindingTask, TaskInterface explorationInDirectionTask, TaskInterface avoidCollisionTask) {
-        tasks = new TaskInterface[8];
+                         TaskInterface pathfindingTask, TaskInterface explorationInDirectionTask, TaskInterface avoidCollisionTask, TaskInterface captureTargetArea) {
+        tasks = new TaskInterface[9];
         tasks[0] = explorationTask;
         tasks[1] = findSoundSourceTask;
         tasks[2] = guardPursuitTask;
@@ -29,6 +29,7 @@ public class TaskContainer {
         tasks[5] = pathfindingTask;
         tasks[6] = explorationInDirectionTask;
         tasks[7] = avoidCollisionTask;
+        tasks[8] = captureTargetArea;
 
         taskDeciderGuard = new TaskDeciderGuard(this);
         taskDeciderIntruder = new TaskDeciderIntruder(this);
@@ -51,6 +52,7 @@ public class TaskContainer {
         else if (type == TaskType.PATHFINDING) return tasks[5].newInstance();
         else if (type == TaskType.EXPLORATION_DIRECTION) return tasks[6].newInstance();
         else if (type == TaskType.AVOID_COLLISION) return tasks[7].newInstance();
+        else if (type == TaskType.CAPTURE_TARGET_AREA) return tasks[8].newInstance();
         else return null;
     }
 
@@ -66,7 +68,9 @@ public class TaskContainer {
         AVOID_COLLISION(5),
         FIND_SOUND_SOURCE(3),
         VISIT_LAST_SEEN_INTRUDER_POSITIONS(1),
-        FIND_GUARD_YELL_SOURCE(4);
+        FIND_GUARD_YELL_SOURCE(4),
+
+        CAPTURE_TARGET_AREA(3);
 
         public final int priority;
 

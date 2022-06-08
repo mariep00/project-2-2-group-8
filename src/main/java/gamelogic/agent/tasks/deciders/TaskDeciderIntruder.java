@@ -7,6 +7,7 @@ import gamelogic.agent.tasks.TaskInterface;
 import gamelogic.controller.VisionController;
 import gamelogic.datacarriers.Sound;
 import gamelogic.datacarriers.VisionMemory;
+import gamelogic.maps.Tile;
 import gamelogic.maps.graph.ExplorationGraph;
 import gamelogic.maps.graph.Node;
 
@@ -61,6 +62,12 @@ public class TaskDeciderIntruder implements TaskDeciderInterface{
         
         // set the lastEvasionAngle to -1 because the last task was not evasion
         if (currentTask.getType()!=TaskType.INTRUDER_EVASION) lastEvasionAngle = -1.0;
+
+        if (currentTask.getPriority() < TaskType.CAPTURE_TARGET_AREA.priority || currentTask.isFinished()){
+            if (graph.getCurrentPosition().getTile().getType() == Tile.Type.TARGET_AREA){
+                return  tasks.getTask(TaskType.CAPTURE_TARGET_AREA);
+            }
+        }
         
         // if there is nothing more important than exploring or going to the goal
         if(currentTask.getPriority()<=TaskContainer.TaskType.PATHFINDING.priority || currentTask.isFinished()) {
@@ -68,6 +75,7 @@ public class TaskDeciderIntruder implements TaskDeciderInterface{
             LinkedList<Node> targetArea = graph.getTargetArea();
             // if the target area has been discovered, then perform pathfinding to it
             if (targetArea != null) {
+
                 Vector2D goal = targetArea.get(0).COORDINATES;
                 TaskInterface pathfindingTask = tasks.getTask(TaskType.PATHFINDING);
                 pathfindingTask.setTarget(goal);
