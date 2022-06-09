@@ -8,6 +8,7 @@ import gamelogic.datacarriers.Sound;
 import gamelogic.datacarriers.SoundOrigin;
 import gamelogic.datacarriers.SoundType;
 import gamelogic.maps.graph.ExplorationGraph;
+import machinelearning.datagenerators.SoundDataGenerator;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -41,10 +42,11 @@ public class SoundController {
                 double distance = getDistanceToSound(controller.getCurrentState().getAgentPosition(agentIndex), soundOrigin.origin(), threshold);
                 if (distance != -1) {
                     double angle = controller.getCurrentState().getAgentPosition(agentIndex).getAngleBetweenVector(soundOrigin.origin());
-                    double angleNormalDistributed = Controller.addNoise(angle, soundStandardDeviation);
+                    double angleNormalDistributed = Controller.addNoise(angle, soundStandardDeviation, true);
                     double maxThreshold = Math.max(footstepMaxHearingDistance, rotatingMaxHearingDistance); // Divide by maximum to have a normalised loudness
                     sounds.add(new Sound(angleNormalDistributed >= 360 ? angleNormalDistributed - 360 : angleNormalDistributed, ((float) maxThreshold - distance) / maxThreshold));
 
+                    SoundDataGenerator.generateData(sounds.get(sounds.size()-1), controller.getCurrentState().getAgentsSeen(agentIndex), soundOrigin.agentIndex());
                 }
             }
         }
@@ -60,7 +62,7 @@ public class SoundController {
             if (guardYell.agentIndex() != agentIndex ) {
                 double distance = getDistanceToSound(controller.getCurrentState().getAgentPosition(agentIndex), guardYell.origin(), yellMaxHearingDistance);
                 if (distance != -1) {
-                    double angleWithNoise = Controller.addNoise(currentPos.getAngleBetweenVector(guardYell.origin()), soundStandardDeviation);
+                    double angleWithNoise = Controller.addNoise(currentPos.getAngleBetweenVector(guardYell.origin()), soundStandardDeviation, true);
                     anglesOfGuardYell.add(new Sound(angleWithNoise >= 360 ? angleWithNoise - 360 : angleWithNoise, ((float) yellMaxHearingDistance-distance) / yellMaxHearingDistance));
                 }
             }

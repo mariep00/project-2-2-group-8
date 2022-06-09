@@ -24,8 +24,8 @@ public class FindGuardYellSource implements TaskInterface {
     @Override
     public int performTask(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen) {
         if (task == null || graph.frontiers.isEmpty()) {
-            double maxDistance = Controller.addNoise(50.0 * (1-guardYellToFind.loudness()), (1-guardYellToFind.loudness())*10);
-            double minDistance = Controller.addNoise((50.0 / 2.0) * (1-guardYellToFind.loudness()), (1-guardYellToFind.loudness())*10);
+            double maxDistance = Controller.addNoise(50.0 * (1-guardYellToFind.loudness()), (1-guardYellToFind.loudness())*10, false);
+            double minDistance = Controller.addNoise((50.0 / 2.0) * (1-guardYellToFind.loudness()), (1-guardYellToFind.loudness())*10, false);
             Vector2D startingPosition = VisionController.calculatePoint(graph.getCurrentPosition().COORDINATES, maxDistance, guardYellToFind.angle());
             Vector2D possiblePosition = getPossibleOriginGuardYell(graph, startingPosition, maxDistance, minDistance, guardYellToFind);
             // TODO Add smth that checks if the path length is in between our max and min distance, otherwise the target pos doesn't make sense

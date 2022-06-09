@@ -15,9 +15,11 @@ import gamelogic.controller.gamemodecontrollers.ControllerSurveillance;
 import gamelogic.maps.MapBuilder;
 import gamelogic.maps.ScenarioMap;
 
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Paths;
+import java.util.Random;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -25,15 +27,16 @@ import java.util.concurrent.TimeUnit;
 
 public class Launcher {
     private final static boolean MULTITHREAD_LAUNCHER = false; // Change this to enable or disable multithreading in the launcher. I.e. running multiple games in parallel.
-    private final static int NUMBER_OF_GAMES = 200; // Change this to change the number of games to run
-    private final static String FILE_NAME = "advancedTestSurveillance.txt"; // Change this string to the file name of the map you want to run. Make sure the map is located in resources/maps.
-    private final static TaskContainer TASK_CONTAINER = new TaskContainer(new ExplorationTaskFrontier(), new FindSoundSource(), new ClosePursuingTask(), new FarPursuigTask(), new EvasionTaskBaseline(),
+    private final static int NUMBER_OF_GAMES = 20; // Change this to change the number of games to run
+    private final static String FILE_NAME = "SimpleTestSurveillance.txt"; // Change this string to the file name of the map you want to run. Make sure the map is located in resources/maps.
+    private final static TaskContainer TASK_CONTAINER = new TaskContainer(new ExplorationTaskFrontier(), new FindSoundSource(), new ClosePursuingTask(), new ClosePursuingTask(), new EvasionTaskBaseline(),
             new VisitLastSeenIntruderPositions(), new PathfindingTask(), new ExplorationInDirection(), new AvoidCollisionTask()); // Change this to change the tasks that can be performed by agents
 
+    private final static Random seedGenerator = new Random();
     /**
      * Launcher without GUI
      */
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) throws InterruptedException, URISyntaxException, IOException {
         URL url = Launcher.class.getClassLoader().getResource("maps/"+FILE_NAME);
         ThreadPoolExecutor threadPool = new ThreadPoolExecutor(Runtime.getRuntime().availableProcessors(), 50, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
         if (url != null) {
@@ -59,7 +62,7 @@ public class Launcher {
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
-        Controller controller = new ControllerSurveillance(scenarioMap, new EndingSurveillance(scenarioMap), TASK_CONTAINER, i);
+        Controller controller = new ControllerSurveillance(scenarioMap, new EndingSurveillance(scenarioMap), TASK_CONTAINER, seedGenerator.nextInt());
         controller.init();
         controller.engine();
     }

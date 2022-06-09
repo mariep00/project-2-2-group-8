@@ -38,8 +38,8 @@ public class FindSoundSource implements TaskInterface {
         this.explorationGraph = graph;
         if (firstTime) {
             positionWhenTaskStarted = graph.getCurrentPosition().COORDINATES;
-            maxDistance = (int) Math.round(Controller.addNoise(16.0*(1-soundToFind.loudness()), (1-soundToFind.loudness())*4));
-            minDistance = (int ) Math.round(Controller.addNoise((9.0/2.0)*(1-soundToFind.loudness()), (1-soundToFind.loudness())*4));
+            maxDistance = (int) Math.round(Controller.addNoise(16.0*(1-soundToFind.loudness()), (1-soundToFind.loudness())*4, false));
+            minDistance = (int ) Math.round(Controller.addNoise((9.0/2.0)*(1-soundToFind.loudness()), (1-soundToFind.loudness())*4, false));
             firstTime = false;
         }
         // Keep in mind this will most of the times be called once, while if there's is no unmatched sound i.e. source is found agent will perform different task,

@@ -85,7 +85,7 @@ public class TaskDeciderGuard implements TaskDeciderInterface {
     }
 
     private TaskInterface getPursuingTask(VisionMemory[] guardsSeen, VisionMemory intruder) {
-        double closestGuardDistance = Integer.MAX_VALUE;
+        /*double closestGuardDistance = Integer.MAX_VALUE;
         VisionMemory closestGuard = null;
         for (VisionMemory visionMemory : guardsSeen) {
             if (visionMemory != null && visionMemory.secondsAgo() == 0) {
@@ -102,7 +102,7 @@ public class TaskDeciderGuard implements TaskDeciderInterface {
                 return taskToRetrun;
             }
         }
-
+            */
         TaskInterface taskToReturn = tasks.getTask(TaskContainer.TaskType.GUARD_PURSUIT_CLOSE);
         taskToReturn.setTarget(intruder);
         return taskToReturn;

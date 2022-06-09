@@ -205,7 +205,7 @@ public class ControllerSurveillance extends Controller {
     private double getTargetAngle(int agentIndex) {
         Vector2D targetArea = scenarioMap.getTargetArea().get(0);
         double angle = agentSpawnLocations[agentIndex].getAngleBetweenVector(targetArea);
-        return addNoise(angle, 5);
+        return addNoise(angle, 5, true);
     }
 
     public int getWhoWon() {

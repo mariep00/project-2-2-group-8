@@ -16,7 +16,7 @@ import java.util.concurrent.*;
 // Abstract because you should not instantiate a Controller class, but either a ControllerExploration or ControllerSurveillance class
 public abstract class Controller {
     protected final boolean multithreadController = false; // !!!!!!DO NOT CHANGE THIS TO TRUE!!!!!
-    protected final Random rand;
+    protected static Random rand;
 
     public final TaskContainer taskContainer;
     public final MovementController movementController;
@@ -49,7 +49,7 @@ public abstract class Controller {
         this.endingCondition = endingCondition;
         if (multithreadController) threadPool = new ThreadPoolExecutor(Runtime.getRuntime().availableProcessors()/2, 50, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
         else threadPool = null;
-        this.rand = new Random(seed);
+        Controller.rand = new Random(seed);
     }
 
     public void init() {
@@ -238,9 +238,13 @@ public abstract class Controller {
         return new Vector2D(absPos.x-state.getAgentPosition(agentId).x, absPos.y-state.getAgentPosition(agentId).y);
     }
 
-    public static double addNoise(double initial, double std) {
-        Random random = new Random(0);
-        return random.nextGaussian()*std+initial; // SD = value from file, mean = initial value
+    public static double addNoise(double initial, double std, boolean isAngle) {
+        double temp = rand.nextGaussian()*std+initial; // SD = value from file, mean = initial value
+        if (isAngle) {
+            if (temp >= 360) return temp - 360;
+            else if (temp < 0) return 360 - temp;
+        }
+        return temp;
     }
 
     protected void updateAgentsSeen() {}
