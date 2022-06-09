@@ -92,7 +92,7 @@ public class SoundDecidingLearner {
 
         System.out.println("Learning...");
 
-        final int NUMBER_OF_EPOCHS = 20;
+        final int NUMBER_OF_EPOCHS = 1;
         for (int i = 0; i < NUMBER_OF_EPOCHS; i++) {
             System.out.println("Current epoch: " + (i+1) + "...");
             for (DataSet dataSet : trainingData) {
@@ -106,14 +106,18 @@ public class SoundDecidingLearner {
             Evaluation evalTestData = new Evaluation(2);
             evalTestData.eval(testDataMerged.getLabels(), outputTestData);
 
-            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("src/main/java/machinelearning/data/results/sound_deciding_epoch_vs_accuracy.csv", true));
-            bufferedWriter.write(evalTrainingData.accuracy() + "," + evalTestData.accuracy());
-            bufferedWriter.newLine();
-            bufferedWriter.close();
+            BufferedWriter bufferedWriter1 = new BufferedWriter(new FileWriter("src/main/java/machinelearning/data/results/sound_deciding_epoch_vs_accuracy.csv", true));
+            bufferedWriter1.write(evalTrainingData.accuracy() + "," + evalTestData.accuracy());
+            bufferedWriter1.newLine();
+            bufferedWriter1.close();
+
+            BufferedWriter bufferedWriter2 = new BufferedWriter(new FileWriter("src/main/java/machinelearning/data/results/sound_deciding_epoch_vs_confusion_matrix.csv", true));
+            bufferedWriter2.write(evalTrainingData.falsePositiveRate() + "," + evalTrainingData.falseNegativeRate() + "," + evalTestData.falsePositiveRate() + "," + evalTestData.falseNegativeRate());
+            bufferedWriter2.newLine();
+            bufferedWriter2.close();
         }
 
         System.out.println("Saving the model...");
-        //model.save(new File("src/main/java/machinelearning/data/results/sound_deciding_model"));
         ModelSerializer.writeModel(model, "src/main/java/machinelearning/data/results/sound_deciding_model", true);
 
         INDArray outputTrainingData = model.output(trainingDataMerged.getFeatures());
