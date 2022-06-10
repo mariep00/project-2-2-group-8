@@ -1,14 +1,12 @@
 # Compiled class file
 *.class
 
-.gradle/*
+
 .vscode/*
 .DS_Store
 .idea/*
 build/*
 bin/*
-
-!build.gradle
 
 # Log file
 *.log
