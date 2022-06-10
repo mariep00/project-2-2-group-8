@@ -5,6 +5,7 @@ import gamelogic.datacarriers.SoundOrigin;
 import gamelogic.datacarriers.VisionMemory;
 import gamelogic.datacarriers.GuardYell;
 import gamelogic.maps.Tile;
+import gui.gamescreen.AgentType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,6 +42,14 @@ public class State {
         this(agentPositions, visions, tilesWithMarkerGuard, tilesWithMarkerIntruder, new ArrayList<>(), agentsSeen, new ArrayList<>());
     }
 
+    public void addTileWithMarkerOf(Tile tile, AgentType agentType) {
+        if(agentType == AgentType.GUARD) {
+            tilesWithMarkerGuard.add(tile);
+        }
+        else{
+            addTileWithMarkerIntruder(tile);
+        }
+    }
     public void addTileWithMarkerGuard(Tile tile) { tilesWithMarkerGuard.add(tile); }
     public void addTileWithMarkerIntruder(Tile tile) { tilesWithMarkerIntruder.add(tile); }
     public void setAgentPosition(int agentIndex, Vector2D position) { agentPositions[agentIndex] = position; }
@@ -58,6 +67,16 @@ public class State {
 
     public List<Vector2D>[] getVisions() { return visions; }
     public List<Vector2D> getVision(int agentIndex) { return visions[agentIndex]; }
+
+    public  LinkedList<Tile> getTilesWithMarkerOf(AgentType agentType) {
+        if(agentType == AgentType.GUARD){
+            return tilesWithMarkerGuard;
+        }
+        else {
+            return tilesWithMarkerIntruder;
+        }
+    }
+
     public LinkedList<Tile> getTilesWithMarkerGuard() { return tilesWithMarkerGuard; }
     public LinkedList<Tile> getTilesWithMarkerIntruder() { return tilesWithMarkerIntruder; }
     public List<GuardYell> getGuardYells() { return guardYells; }
