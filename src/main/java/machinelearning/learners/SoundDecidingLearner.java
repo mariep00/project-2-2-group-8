@@ -80,8 +80,7 @@ public class SoundDecidingLearner {
                     .weightInit(WeightInit.XAVIER)
                     .list()
                     .layer(0, new DenseLayer.Builder().nIn(5).nOut(3).build())
-                    .layer(1, new DenseLayer.Builder().nIn(3).nOut(3).build()) // Remove this layer?
-                    .layer(2, new OutputLayer.Builder(
+                    .layer(1, new OutputLayer.Builder(
                             LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
                             .activation(Activation.SOFTMAX)
                             .nIn(3).nOut(2).build())
