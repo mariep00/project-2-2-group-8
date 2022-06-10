@@ -2,6 +2,7 @@ package machinelearning.learners;
 
 import org.datavec.api.records.reader.impl.csv.CSVRecordReader;
 import org.datavec.api.split.FileSplit;
+import org.deeplearning4j.api.storage.StatsStorage;
 import org.deeplearning4j.datasets.datavec.RecordReaderDataSetIterator;
 import org.deeplearning4j.nn.conf.BackpropType;
 import org.deeplearning4j.nn.conf.MultiLayerConfiguration;
@@ -10,6 +11,9 @@ import org.deeplearning4j.nn.conf.layers.DenseLayer;
 import org.deeplearning4j.nn.conf.layers.OutputLayer;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.nn.weights.WeightInit;
+import org.deeplearning4j.ui.api.UIServer;
+import org.deeplearning4j.ui.stats.StatsListener;
+import org.deeplearning4j.ui.storage.FileStatsStorage;
 import org.deeplearning4j.util.ModelSerializer;
 import org.nd4j.evaluation.classification.Evaluation;
 import org.nd4j.linalg.activations.Activation;
@@ -20,18 +24,16 @@ import org.nd4j.linalg.dataset.api.preprocessor.DataNormalization;
 import org.nd4j.linalg.dataset.api.preprocessor.NormalizerMinMaxScaler;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
+
+;
 
 public class SoundDecidingLearner {
-    private static final Random rand = new Random();
-    public static void main(String[] args) throws IOException, InterruptedException {
-        System.out.println("--- Reading the data... ---");
+    public static void main(String[] args) throws Exception {
+        System.out.println("Reading the data...");
         File directoryToLook = new File("src/main/java/machinelearning/data/trainingdata/");
         CSVRecordReader recordReader = new CSVRecordReader(0, ',');
         FileSplit fileSplit = new FileSplit(directoryToLook, new String[]{".csv"});
@@ -78,7 +80,7 @@ public class SoundDecidingLearner {
                     .weightInit(WeightInit.XAVIER)
                     .list()
                     .layer(0, new DenseLayer.Builder().nIn(5).nOut(3).build())
-                    .layer(1, new DenseLayer.Builder().nIn(3).nOut(3).build())
+                    .layer(1, new DenseLayer.Builder().nIn(3).nOut(3).build()) // Remove this layer?
                     .layer(2, new OutputLayer.Builder(
                             LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
                             .activation(Activation.SOFTMAX)
@@ -91,8 +93,18 @@ public class SoundDecidingLearner {
         }
 
         System.out.println("Learning...");
+        UIServer uiServer = UIServer.getInstance();
 
-        final int NUMBER_OF_EPOCHS = 1;
+        //Configure where the network information (gradients, activations, score vs. time etc) is to be stored
+        //Then add the StatsListener to collect this information from the network, as it trains
+        StatsStorage statsStorage = new FileStatsStorage(new File("src/main/java/machinelearning/data/results/sound_deciding_results"));
+        int listenerFrequency = 100;
+        model.setListeners(new StatsListener(statsStorage, listenerFrequency));
+
+        uiServer.attach(statsStorage);
+        //Attach the StatsStorage instance to the UI: this allows the contents of the StatsStorage to be visualized
+
+        final int NUMBER_OF_EPOCHS = 40;
         for (int i = 0; i < NUMBER_OF_EPOCHS; i++) {
             System.out.println("Current epoch: " + (i+1) + "...");
             for (DataSet dataSet : trainingData) {
@@ -106,6 +118,7 @@ public class SoundDecidingLearner {
             Evaluation evalTestData = new Evaluation(2);
             evalTestData.eval(testDataMerged.getLabels(), outputTestData);
 
+            /*
             BufferedWriter bufferedWriter1 = new BufferedWriter(new FileWriter("src/main/java/machinelearning/data/results/sound_deciding_epoch_vs_accuracy.csv", true));
             bufferedWriter1.write(evalTrainingData.accuracy() + "," + evalTestData.accuracy());
             bufferedWriter1.newLine();
@@ -115,6 +128,7 @@ public class SoundDecidingLearner {
             bufferedWriter2.write(evalTrainingData.falsePositiveRate() + "," + evalTrainingData.falseNegativeRate() + "," + evalTestData.falsePositiveRate() + "," + evalTestData.falseNegativeRate());
             bufferedWriter2.newLine();
             bufferedWriter2.close();
+             */
         }
 
         System.out.println("Saving the model...");

@@ -25,6 +25,9 @@ dependencies {
     implementation 'org.jetbrains:annotations:23.0.0'
     implementation 'org.deeplearning4j:deeplearning4j-core:1.0.0-beta6'
     implementation 'org.nd4j:nd4j-native-platform:1.0.0-beta6'
+    implementation 'org.deeplearning4j:deeplearning4j-ui:1.0.0-beta6'
+    implementation 'org.deeplearning4j:deeplearning4j-ui-model:1.0.0-beta6'
+    implementation 'org.deeplearning4j:deeplearning4j-ui-components:1.0.0-beta6'
 }
 
 java {
