@@ -8,7 +8,7 @@
 build/*
 bin/*
 
-!build/*.gradle
+!build/**/*.gradle
 
 # Log file
 *.log
