@@ -32,8 +32,3 @@ dependencies {
     implementation 'org.tensorflow:tensorflow-core-platform:0.4.1'
 }
 
-java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(16))
-    }
-}
