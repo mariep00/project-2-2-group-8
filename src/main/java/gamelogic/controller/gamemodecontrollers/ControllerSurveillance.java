@@ -90,6 +90,8 @@ public class ControllerSurveillance extends Controller {
                 if (agents[j] != null) {
                     if (nextState.getAgentPosition(i).dist(nextState.getAgentPosition(j)) <= Math.sqrt(2)) {
                         removeAgent(j);
+                        //add new guard yell --> generated in soundController
+                        soundController.generateGuardYell2(i);
                     }
                 }
             }

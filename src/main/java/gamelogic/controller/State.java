@@ -49,6 +49,7 @@ public class State {
     public void setAgentPosition(int agentIndex, Vector2D position) { agentPositions[agentIndex] = position; }
     public void setAgentVision(int agentIndex, List<Vector2D> vision) { visions[agentIndex] = vision; }
     public void addGuardYell(GuardYell guardYell) { guardYells.add(guardYell); }
+    
     public void setAgentsSeen(int agentIndex, VisionMemory[] agentsSeen) { this.agentsSeen[agentIndex] = agentsSeen; }
     public void addSoundOrigin(SoundOrigin soundOrigin) { soundOrigins.add(soundOrigin); }
 

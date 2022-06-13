@@ -65,6 +65,8 @@ public class SoundController {
         return anglesOfGuardYell;
     }
 
+
+
     private double getDistanceToSound(Vector2D origin, Vector2D currentPosition, int threshold) {
         double distance = -1;
         if (origin.dist(currentPosition) <= threshold) {
@@ -88,5 +90,12 @@ public class SoundController {
     }
     public void generateGuardYell(int agentIndex) {
         controller.nextState.addGuardYell(new GuardYell(controller.getCurrentState().getAgentPosition(agentIndex), agentIndex));
+    }
+    //create a new guard yell and put a record
+    public void generateGuardYell2(int agentIndex) {
+        controller.nextState.addGuardYell(new GuardYell(controller.getCurrentState().getAgentPosition(agentIndex), agentIndex));
+    }
+    public Controller getController() {
+        return controller;
     }
 }
