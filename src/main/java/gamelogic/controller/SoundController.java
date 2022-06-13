@@ -8,7 +8,7 @@ import gamelogic.datacarriers.Sound;
 import gamelogic.datacarriers.SoundOrigin;
 import gamelogic.datacarriers.SoundType;
 import gamelogic.maps.graph.ExplorationGraph;
-import machinelearning.datagenerators.SoundDataGenerator;
+import machinelearning.datagenerators.SoundDecidingDataGenerator;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -46,7 +46,7 @@ public class SoundController {
                     double maxThreshold = Math.max(footstepMaxHearingDistance, rotatingMaxHearingDistance); // Divide by maximum to have a normalised loudness
                     sounds.add(new Sound(angleNormalDistributed >= 360 ? angleNormalDistributed - 360 : angleNormalDistributed, ((float) maxThreshold - distance) / maxThreshold));
 
-                    SoundDataGenerator.generateData(sounds.get(sounds.size()-1), controller.getCurrentState().getAgentsSeen(agentIndex), soundOrigin.agentIndex());
+                    SoundDecidingDataGenerator.generateData(sounds.get(sounds.size()-1), controller.getCurrentState().getAgentsSeen(agentIndex), soundOrigin.agentIndex());
                 }
             }
         }
