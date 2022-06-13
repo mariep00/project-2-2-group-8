@@ -102,7 +102,8 @@ public class ControllerSurveillance extends Controller {
                 markerController.getPheromoneMarkersDirection(agentIndex, currentState.getAgentPosition(agentIndex)),
                 soundController.getSoundDirections(agentIndex), Arrays.copyOfRange(currentState.getAgentsSeen(agentIndex), 0, numberOfGuards),
                 Arrays.copyOfRange(currentState.getAgentsSeen(agentIndex), numberOfGuards, numberOfGuards+numberOfIntruders),
-                soundController.getGuardYellDirections(agentIndex));
+                soundController.getGuardYellDirections(agentIndex, soundController.getController().getCurrentState().getGuardYells()),
+                soundController.getGuardYellDirections(agentIndex, soundController.getController().getCurrentState().getGuardYellsCaught()));
 
         movementController.moveAgent(agentIndex, movementTask);
         nextState.setAgentVision(agentIndex, calculateFOVAbsolute(agentIndex, nextState.getAgentPosition(agentIndex), nextState));
@@ -166,7 +167,8 @@ public class ControllerSurveillance extends Controller {
                         otherAgentsSeen[i].secondsAgo() + timestep, otherAgentsSeen[i].orientation());
             }
         }
-        if (agentIndex < numberOfGuards && !isZero(yellCooldowns[agentIndex])) {
+        if (agentIndex <
+                numberOfGuards && !isZero(yellCooldowns[agentIndex])) {
             yellCooldowns[agentIndex] -= timestep;
         }
         return otherAgentsSeen;

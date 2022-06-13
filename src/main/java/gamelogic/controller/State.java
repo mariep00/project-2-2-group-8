@@ -19,26 +19,29 @@ public class State {
     private final LinkedList<Tile> tilesWithMarkerGuard;
     private final LinkedList<Tile> tilesWithMarkerIntruder;
     private final ArrayList<GuardYell> guardYells;
+    private final ArrayList<GuardYell> guardYellsCaught;
+
     private final VisionMemory[][] agentsSeen;
     private final ArrayList<SoundOrigin> soundOrigins;
 
     public State(Vector2D[] agentPositions, List<Vector2D>[] visions, LinkedList<Tile> tilesWithMarkerGuard, LinkedList<Tile> tilesWithMarkerIntruder,
-                 ArrayList<GuardYell> guardYells, VisionMemory[][] agentsSeen, ArrayList<SoundOrigin> soundOrigins) {
+                 ArrayList<GuardYell> guardYells,ArrayList<GuardYell> guardYellsCaught, VisionMemory[][] agentsSeen, ArrayList<SoundOrigin> soundOrigins) {
         this.agentPositions = agentPositions;
         this.visions = visions;
         this.tilesWithMarkerGuard = tilesWithMarkerGuard;
         this.tilesWithMarkerIntruder = tilesWithMarkerIntruder;
         this.guardYells = guardYells;
+        this.guardYellsCaught = guardYellsCaught;
         this.agentsSeen = agentsSeen;
         this.soundOrigins = soundOrigins;
     }
 
     public State(Vector2D[] agentPositions, List<Vector2D>[] visions, LinkedList<Tile> tilesWithMarkerGuard, VisionMemory[][] agentsSeen) {
-        this(agentPositions, visions, tilesWithMarkerGuard, null, new ArrayList<>(), agentsSeen, new ArrayList<>());
+        this(agentPositions, visions, tilesWithMarkerGuard, null, new ArrayList<>(),new ArrayList<>(), agentsSeen, new ArrayList<>());
     }
 
     public State(Vector2D[] agentPositions, List<Vector2D>[] visions, LinkedList<Tile> tilesWithMarkerGuard, LinkedList<Tile> tilesWithMarkerIntruder,  VisionMemory[][] agentsSeen) {
-        this(agentPositions, visions, tilesWithMarkerGuard, tilesWithMarkerIntruder, new ArrayList<>(), agentsSeen, new ArrayList<>());
+        this(agentPositions, visions, tilesWithMarkerGuard, tilesWithMarkerIntruder, new ArrayList<>(),new ArrayList<>(), agentsSeen, new ArrayList<>());
     }
 
     public void addTileWithMarkerGuard(Tile tile) { tilesWithMarkerGuard.add(tile); }
@@ -61,6 +64,7 @@ public class State {
     public LinkedList<Tile> getTilesWithMarkerGuard() { return tilesWithMarkerGuard; }
     public LinkedList<Tile> getTilesWithMarkerIntruder() { return tilesWithMarkerGuard; }
     public List<GuardYell> getGuardYells() { return guardYells; }
+    public List<GuardYell> getGuardYellsCaught() { return guardYellsCaught; }
     public VisionMemory[] getAgentsSeen(int agentIndex) { return agentsSeen[agentIndex]; }
     public List<SoundOrigin> getSoundOrigins() { return soundOrigins; }
 

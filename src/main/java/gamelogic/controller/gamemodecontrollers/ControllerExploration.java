@@ -35,7 +35,7 @@ public class ControllerExploration extends Controller {
     protected void tickAgent(int agentIndex) {
         int movementTask = agents[agentIndex].tick(getVisions(agentIndex),
                 markerController.getPheromoneMarkersDirection(agentIndex, currentState.getAgentPosition(agentIndex)),
-                null, null, null, null);
+                null, null, null, null, null);
 
         movementController.moveAgent(agentIndex, movementTask);
         nextState.setAgentVision(agentIndex, calculateFOVAbsolute(agentIndex, nextState.getAgentPosition(agentIndex), nextState));

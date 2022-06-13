@@ -33,9 +33,9 @@ public class Agent {
         explorationGraph = new ExplorationGraph();
     }
 
-    public int tick(Vision[] inVision, double pheromoneMarkersDirectionGuard, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen, List<Sound> guardYells) {
+    public int tick(Vision[] inVision, double pheromoneMarkersDirectionGuard, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen, List<Sound> guardYells, List<Sound> guardYellsCaught) {
         updateGraph(inVision);
-        return brain.makeDecision(explorationGraph, orientation, pheromoneMarkersDirectionGuard, sounds, guardsSeen, intrudersSeen, guardYells);
+        return brain.makeDecision(explorationGraph, orientation, pheromoneMarkersDirectionGuard, sounds, guardsSeen, intrudersSeen, guardYells, guardYellsCaught);
     }
 
     private void updateGraph(Vision[] inVision) {
