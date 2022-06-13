@@ -2,6 +2,7 @@ package gamelogic.agent;
 
 import datastructures.Vector2D;
 import gamelogic.agent.brains.BrainInterface;
+import gamelogic.agent.tasks.TaskContainer;
 import gamelogic.datacarriers.Sound;
 import gamelogic.datacarriers.Vision;
 import gamelogic.datacarriers.VisionMemory;
@@ -89,6 +90,8 @@ public class Agent {
             explorationGraph.addDirectedEdge(entranceNode, destinationNode);
         }
     }
+
+    public TaskContainer.TaskType getCurrentTask() { return brain.getCurrentTask(); }
 
     @Override
     public String toString() {

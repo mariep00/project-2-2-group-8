@@ -29,6 +29,11 @@ public class GuardBrain implements BrainInterface {
     }
 
     @Override
+    public TaskType getCurrentTask() {
+        return currentTask.getType();
+    }
+
+    @Override
     public String toString() {
         return "Guard";
     }

@@ -15,7 +15,6 @@ import java.util.concurrent.*;
 
 // Abstract because you should not instantiate a Controller class, but either a ControllerExploration or ControllerSurveillance class
 public abstract class Controller {
-    protected final boolean multithreadController = false; // !!!!!!DO NOT CHANGE THIS TO TRUE!!!!!
     protected static Random rand;
 
     public final TaskContainer taskContainer;
@@ -47,8 +46,6 @@ public abstract class Controller {
         this.movementController = new MovementController(this);
         this.markerController = new MarkerController(this);
         this.endingCondition = endingCondition;
-        if (multithreadController) threadPool = new ThreadPoolExecutor(Runtime.getRuntime().availableProcessors()/2, 50, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
-        else threadPool = null;
         Controller.rand = new Random(seed);
     }
 
@@ -90,40 +87,17 @@ public abstract class Controller {
     public void tickMethods() {
         // First tick the agents, after that update other stuff
         tickAgents();
+        updateAgentsSeen();
+        markerController.tick();
+        updateProgress();
 
-        List<Callable<Void>> taskList = new ArrayList<>();
-        if (multithreadController) taskList.add(toCallable(this::updateAgentsSeen));
-        else updateAgentsSeen();
-        if (multithreadController) taskList.add(toCallable(markerController::tick));
-        else markerController.tick();
-        if (multithreadController) taskList.add(toCallable(this::updateProgress));
-        else updateProgress();
-
-        if (multithreadController) {
-            try {
-                threadPool.invokeAll(taskList);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
         switchToNextState();
     }
 
     protected void tickAgents() {
-        List<Callable<Void>> taskList = new ArrayList<>();
-
         for (int i = 0; i < agents.length; i++) {
             if (agents[i] != null) {
-                int finalI = i;
-                if (multithreadController) taskList.add(toCallable(() -> tickAgent(finalI)));
-                else tickAgent(finalI);
-            }
-        }
-        if (multithreadController) {
-            try {
-                threadPool.invokeAll(taskList);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+                tickAgent(i);
             }
         }
     }
