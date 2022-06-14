@@ -8,7 +8,7 @@ import gamelogic.datacarriers.Sound;
 import gamelogic.datacarriers.SoundOrigin;
 import gamelogic.datacarriers.SoundType;
 import gamelogic.maps.graph.ExplorationGraph;
-import machinelearning.datagenerators.SoundDataGenerator;
+import machinelearning.sound.datagenerators.SoundDataGenerator;
 
 import java.util.ArrayList;
 import java.util.LinkedList;

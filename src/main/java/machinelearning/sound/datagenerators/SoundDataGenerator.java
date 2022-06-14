@@ -1,4 +1,4 @@
-package machinelearning.datagenerators;
+package machinelearning.sound.datagenerators;
 
 import gamelogic.datacarriers.Sound;
 import gamelogic.datacarriers.VisionMemory;

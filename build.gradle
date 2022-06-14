@@ -28,5 +28,7 @@ dependencies {
     implementation 'org.deeplearning4j:deeplearning4j-ui:1.0.0-beta6'
     implementation 'org.deeplearning4j:deeplearning4j-ui-model:1.0.0-beta6'
     implementation 'org.deeplearning4j:deeplearning4j-ui-components:1.0.0-beta6'
+    implementation 'org.deeplearning4j:rl4j-core:1.0.0-M1.1'
+    implementation 'org.tensorflow:tensorflow-core-platform:0.4.1'
 }
 

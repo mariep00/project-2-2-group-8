@@ -1,4 +1,4 @@
-package machinelearning.learners;
+package machinelearning.sound.learners;
 
 import org.datavec.api.records.reader.impl.csv.CSVRecordReader;
 import org.datavec.api.split.FileSplit;
