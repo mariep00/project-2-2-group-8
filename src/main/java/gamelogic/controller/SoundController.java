@@ -48,7 +48,7 @@ public class SoundController {
     }
 
     public List<Sound> getGuardYellDirections(int agentIndex, List<GuardYell> guardYells) {
-        System.out.println(guardYells);
+        //System.out.println(guardYells);
         Vector2D currentPos = controller.getCurrentState().getAgentPosition(agentIndex);
         //List<GuardYell> guardYells = controller.getCurrentState().getGuardYells();
         ArrayList<Sound> anglesOfGuardYell = new ArrayList<>();

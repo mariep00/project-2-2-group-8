@@ -40,7 +40,7 @@ public class FarPursuingTask implements TaskInterface{
             double angleToGuard = guard.position().angle();
             double angleToIntruder = intruder.position().angle();
             double difference = MathHelpers.differenceBetweenAngles(angleToGuard, angleToIntruder);
-            System.out.println("Angle intruder " + angleToIntruder + ", angle guard " + angleToGuard + ", difference angle " + difference);
+            //System.out.println("Angle intruder " + angleToIntruder + ", angle guard " + angleToGuard + ", difference angle " + difference);
             boolean toRight = checkDirection(angleToIntruder, angleToGuard, difference);
             if (toRight) {
                 double angle = checkAngle(angleToIntruder-angleDifference);
