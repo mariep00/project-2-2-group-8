@@ -1,5 +1,7 @@
 package gamelogic.maps;
 
+import gui.gamescreen.AgentType;
+
 public class Tile {
     
     public enum Type {
@@ -25,7 +27,7 @@ public class Tile {
         this.type = type;
         this.seeThrough = seeThrough;
         shaded = false;
-        markers = new MarkerInterface[1];
+        markers = new MarkerInterface[2];
     }
 
     public Type getType() {
@@ -64,17 +66,33 @@ public class Tile {
     public MarkerInterface[] getMarkers() {
         return markers;
     }
-    public PheromoneMarker getPheromoneMarker() { return markers[0] != null ? (PheromoneMarker) markers[0] : null; }
-
-    public void removeMarker(MarkerInterface marker) {
-        if (marker instanceof PheromoneMarker) {
-            markers[0] = null;
+    public PheromoneMarker getPheromoneMarker(AgentType agentType) {
+        if (agentType == AgentType.GUARD) {
+            return markers[0] != null ? (PheromoneMarker) markers[0] : null;
+        } else {
+            return markers[1] != null ? (PheromoneMarker) markers[1] : null;
         }
     }
 
-    public void addMarker (MarkerInterface marker) {
+    public void removeMarker(MarkerInterface marker, AgentType agentType) {
         if (marker instanceof PheromoneMarker) {
-            markers[0] = marker;
+            if(agentType == AgentType.GUARD) {
+                markers[0] = null;
+            }
+            else{
+                markers[1] = null;
+            }
+        }
+    }
+
+    public void addMarker (MarkerInterface marker, AgentType agentType) {
+        if (marker instanceof PheromoneMarker) {
+            if(agentType == AgentType.GUARD) {
+                markers[0] = marker;
+            }
+            else{
+                markers[1] = marker;
+            }
         }
     }
 

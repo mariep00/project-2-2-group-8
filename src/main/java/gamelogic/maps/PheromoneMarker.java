@@ -2,6 +2,7 @@ package gamelogic.maps;
 
 import datastructures.Vector2D;
 import gamelogic.agent.Agent;
+import gui.gamescreen.AgentType;
 
 public class PheromoneMarker implements MarkerInterface {
     private final double strengthReducePerSecond;
@@ -16,6 +17,7 @@ public class PheromoneMarker implements MarkerInterface {
         this.initialSmellingDistance = initialSmellingDistance;
         this.strength = 1;
         this.strengthReducePerSecond = strengthReducePerSecond;
+
     }
 
     public double getDistance() { return strength*initialSmellingDistance; }

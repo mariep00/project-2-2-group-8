@@ -31,7 +31,7 @@ public class ExperimentsSurveillance {
 
     private static final int ROWS = 9;
     public static final int ITERATIONS = 2500;
-    public static final int RUNS = 5;
+    public static final int RUNS = 1;
     private static int[] winForTeam = new int[2];
     private static double[] totalTimeForTeam = new double[2];
 
