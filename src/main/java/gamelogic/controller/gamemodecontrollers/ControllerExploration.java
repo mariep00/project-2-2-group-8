@@ -34,7 +34,7 @@ public class ControllerExploration extends Controller {
     @Override
     protected void tickAgent(int agentIndex) {
         int movementTask = agents[agentIndex].tick(getVisions(agentIndex),
-                markerController.getPheromoneMarkersDirection(agentIndex, currentState.getAgentPosition(agentIndex)),
+                markerController.getGuardsPheromoneMarkersDirection(agentIndex, currentState.getAgentPosition(agentIndex)),
                 null, null, null, null, null);
 
         movementController.moveAgent(agentIndex, movementTask);
