@@ -31,11 +31,10 @@ public class AStar {
         boolean isFinished = false;
         
         while(true) {
-            System.out.println("Infinite while with true");
             if (open.isEmpty() && upperBound == -1) return null;
             if (isFinished) break;
             ANode current = open.removeFirst();
-
+            //System.out.println(current);
             if(current.POSITION.equals(goal)) {
                 goalANode = current;
                 lastNode = current;
@@ -166,4 +165,9 @@ class ANode implements HeapItemInterface<ANode> {
         ANode other = (ANode) o;
         return POSITION.equals(other.POSITION);
     }   
+
+    @Override
+    public String toString() {
+        return POSITION.toString();
+    }
 }

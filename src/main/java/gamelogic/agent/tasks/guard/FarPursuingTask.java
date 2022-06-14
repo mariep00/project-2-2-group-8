@@ -109,6 +109,7 @@ public class FarPursuingTask implements TaskInterface{
         while (true) {
             System.out.println("1; " +angle);
             LinkedList<Vector2D> path1 = AStar.calculate(graph, graph.getCurrentPosition(), graph.getNode(goal), (int)(distanceThresholdFirstPath*distance));
+            System.out.println("Do we stop calculating?");
             if(path1.getFirst().equals(goal)) {
                 LinkedList<Vector2D> path2 = AStar.calculate(graph, graph.getNode(goal), graph.getNode(intruder.position().add(graph.getCurrentPosition().COORDINATES)), (int)(distanceThresholdSecondPath*goal.dist(intruder.position())));
                 if (path2.getFirst().equals(intruder.position())) {
@@ -116,7 +117,7 @@ public class FarPursuingTask implements TaskInterface{
                     return path1;
                 }
             }
-            angle = angle + 10.0;
+            angle = checkAngle(angle + 10.0);
             goal = VisionController.calculatePoint(curPos, distance, angle);
             while (!graph.isVisited(goal)) {
                 angle = checkAngle(angle+10.0);
