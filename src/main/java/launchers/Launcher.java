@@ -36,7 +36,7 @@ public class Launcher {
         ThreadPoolExecutor threadPool = new ThreadPoolExecutor(Runtime.getRuntime().availableProcessors(), 50, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
         if (url != null) {
             long startTime = System.nanoTime();
-            for (int i = 260; i < NUMBER_OF_GAMES; i++) {
+            for (int i = 0; i < NUMBER_OF_GAMES; i++) {
                 int finalI = i;
                 if (MULTITHREAD_LAUNCHER) threadPool.submit(() -> runGame(finalI, url));
                 else runGame(finalI, url);

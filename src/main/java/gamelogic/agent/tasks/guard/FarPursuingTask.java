@@ -43,7 +43,6 @@ public class FarPursuingTask implements TaskInterface{
             System.out.println("Angle intruder " + angleToIntruder + ", angle guard " + angleToGuard + ", difference angle " + difference);
             boolean toRight = checkDirection(angleToIntruder, angleToGuard, difference);
             if (toRight) {
-                System.out.println("Inside the to right if");
                 double angle = checkAngle(angleToIntruder-angleDifference);
                 LinkedList<Vector2D> path = findPathToRight(currentPosition, distance, angle);
                 futureMoves = MovementController.convertPath(graph, orientation, path, false);
@@ -53,7 +52,6 @@ public class FarPursuingTask implements TaskInterface{
                 futureMoves = MovementController.convertPath(graph, orientation, path, false);
             }
         }
-        System.out.println("size of the future moves:" + futureMoves.size());
         if (futureMoves.size() == 1) finished = true;
         return futureMoves.pop();
     }
@@ -73,19 +71,17 @@ public class FarPursuingTask implements TaskInterface{
     private LinkedList<Vector2D> findPathToLeft(Vector2D curPos, double distance, double angle) {
         Vector2D goal = VisionController.calculatePoint(curPos, distance, angle);
         while (!graph.isVisited(goal)) {
-            System.out.println("0; " + angle);
+            //System.out.println("0; " + angle);
             angle = checkAngle(angle-10.0);
             goal = VisionController.calculatePoint(curPos, distance, angle);
         }
         while (true) {
-            System.out.println("1; " + angle);
+            //System.out.println("1; " + angle);
             LinkedList<Vector2D> path1 = AStar.calculate(graph, graph.getCurrentPosition(), graph.getNode(goal), (int)(distanceThresholdFirstPath*distance));
-            System.out.println("Do we stop calculating?");
-            System.out.println(goal + ", " + graph.getCurrentPosition() + ", " + (int)(distanceThresholdFirstPath*distance) + ", " + Arrays.toString(path1.toArray()));
+            //System.out.println(goal + ", " + graph.getCurrentPosition() + ", " + (int)(distanceThresholdFirstPath*distance) + ", " + Arrays.toString(path1.toArray()));
             if(path1.getFirst().equals(goal)) {
-                System.out.println("Got here");
                 LinkedList<Vector2D> path2 = AStar.calculate(graph, graph.getNode(goal), graph.getNode(intruder.position().add(graph.getCurrentPosition().COORDINATES)), (int)(distanceThresholdSecondPath*goal.dist(intruder.position().add(graph.getCurrentPosition().COORDINATES))));
-                if (path2.getFirst().equals(intruder.position())) {
+                if (path2.getFirst().equals(intruder.position().add(graph.getCurrentPosition().COORDINATES))) {
                     return path1;
                 }
             }
@@ -94,9 +90,9 @@ public class FarPursuingTask implements TaskInterface{
             while (!graph.isVisited(goal)) {
                 angle = checkAngle(angle-10.0);
                 goal = VisionController.calculatePoint(curPos, distance, angle);
-                System.out.println("2; " + angle);
+                //System.out.println("2; " + angle);
             }
-             System.out.println("3; " + angle);
+             //System.out.println("3; " + angle);
         }
     }
 
@@ -107,13 +103,11 @@ public class FarPursuingTask implements TaskInterface{
             goal = VisionController.calculatePoint(curPos, distance, angle);
         }
         while (true) {
-            System.out.println("1; " +angle);
+            //System.out.println("1; " +angle);
             LinkedList<Vector2D> path1 = AStar.calculate(graph, graph.getCurrentPosition(), graph.getNode(goal), (int)(distanceThresholdFirstPath*distance));
-            System.out.println("Do we stop calculating?");
             if(path1.getFirst().equals(goal)) {
                 LinkedList<Vector2D> path2 = AStar.calculate(graph, graph.getNode(goal), graph.getNode(intruder.position().add(graph.getCurrentPosition().COORDINATES)), (int)(distanceThresholdSecondPath*goal.dist(intruder.position())));
-                if (path2.getFirst().equals(intruder.position())) {
-                    //System.out.println("inside if path2.getFirst");
+                if (path2.getFirst().equals(intruder.position().add(graph.getCurrentPosition().COORDINATES))) {
                     return path1;
                 }
             }
