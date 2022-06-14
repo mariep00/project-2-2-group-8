@@ -1,12 +1,10 @@
 package gamelogic.controller;
 
 import datastructures.Vector2D;
+import gamelogic.datacarriers.GuardYell;
 import gamelogic.datacarriers.SoundOrigin;
 import gamelogic.datacarriers.VisionMemory;
-import gamelogic.datacarriers.GuardYell;
 import gamelogic.maps.Tile;
-import org.deeplearning4j.rl4j.space.Encodable;
-import org.nd4j.linalg.api.ndarray.INDArray;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,7 +13,7 @@ import java.util.List;
 
 @SuppressWarnings("unchecked")
 
-public class State implements Encodable {
+public class State {
     private final Vector2D[] agentPositions;
     private final List<Vector2D>[] visions;
     private final LinkedList<Tile> tilesWithMarkerGuard;
@@ -67,24 +65,4 @@ public class State implements Encodable {
     public List<SoundOrigin> getSoundOrigins() { return soundOrigins; }
 
     public String toString() { return "Agent positions: " + Arrays.toString(agentPositions); }
-
-    @Override
-    public double[] toArray() {
-        return new double[0];
-    }
-
-    @Override
-    public boolean isSkipped() {
-        return false;
-    }
-
-    @Override
-    public INDArray getData() {
-        return null;
-    }
-
-    @Override
-    public Encodable dup() {
-        return null;
-    }
 }

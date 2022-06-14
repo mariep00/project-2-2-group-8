@@ -90,6 +90,8 @@ public class EvasionTaskBaseline implements TaskInterface {
         return angle;
     }
 
+    public double getTargetAngle() { return targetAngle; }
+
     @Override
     public boolean isFinished() {
         return finished;

@@ -18,7 +18,6 @@ public class MovementController {
         // TODO Remove turning 180 degrees?
         //0 - move forward
         //1 - turn 90deg
-        //2 - turn 180deg
         //3 - turn 270deg
         //4 - idle
 
@@ -28,9 +27,6 @@ public class MovementController {
                 break;
             case 1:
                 updateAgentOrientation(agentIndex, 90);
-                break;
-            case 2:
-                updateAgentOrientation(agentIndex, 180);
                 break;
             case 3:
                 updateAgentOrientation(agentIndex,270);

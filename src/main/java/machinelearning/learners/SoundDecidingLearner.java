@@ -2,7 +2,6 @@ package machinelearning.learners;
 
 import org.datavec.api.records.reader.impl.csv.CSVRecordReader;
 import org.datavec.api.split.FileSplit;
-import org.deeplearning4j.core.storage.StatsStorage;
 import org.deeplearning4j.datasets.datavec.RecordReaderDataSetIterator;
 import org.deeplearning4j.nn.conf.BackpropType;
 import org.deeplearning4j.nn.conf.MultiLayerConfiguration;
@@ -11,9 +10,6 @@ import org.deeplearning4j.nn.conf.layers.DenseLayer;
 import org.deeplearning4j.nn.conf.layers.OutputLayer;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.nn.weights.WeightInit;
-import org.deeplearning4j.ui.api.UIServer;
-import org.deeplearning4j.ui.model.stats.StatsListener;
-import org.deeplearning4j.ui.model.storage.FileStatsStorage;
 import org.deeplearning4j.util.ModelSerializer;
 import org.nd4j.evaluation.classification.Evaluation;
 import org.nd4j.linalg.activations.Activation;
@@ -51,7 +47,7 @@ public class SoundDecidingLearner {
             System.out.println("creating the model...");
             MultiLayerConfiguration configuration
                     = new NeuralNetConfiguration.Builder()
-                    .updater(new Adam.Builder().epsilon(1e-6).learningRate(1e-3).build())
+                    .updater(new Adam.Builder().epsilon(1e-6).learningRate(5e-4).build())
                     .l2(1e-4)
                     .activation(Activation.TANH)
                     .weightInit(WeightInit.XAVIER)
@@ -70,7 +66,7 @@ public class SoundDecidingLearner {
 
         System.out.println("Learning...");
 
-        UIServer uiServer = UIServer.getInstance();
+        /*UIServer uiServer = UIServer.getInstance();
 
         //Configure where the network information (gradients, activations, score vs. time etc) is to be stored
         //Then add the StatsListener to collect this information from the network, as it trains
@@ -79,8 +75,8 @@ public class SoundDecidingLearner {
         model.setListeners(new StatsListener(statsStorage, listenerFrequency));
 
         uiServer.attach(statsStorage); //Attach the StatsStorage instance to the UI: this allows the contents of the StatsStorage to be visualized
-
-        final int NUMBER_OF_EPOCHS = 1500;
+        */
+        final int NUMBER_OF_EPOCHS = 50000;
         for (int i = 0; i < NUMBER_OF_EPOCHS; i++) {
             System.out.println("Current epoch: " + (i+1) + "...");
 
@@ -104,6 +100,8 @@ public class SoundDecidingLearner {
             bufferedWriter1.close();
 
             ModelSerializer.writeModel(model, "src/main/java/machinelearning/data/results/sound_deciding_model", true);
+
+            if (i % 10 == 0) ModelSerializer.writeModel(model, "src/main/java/machinelearning/data/results/sound_deciding_model_"+(i+654), true);
 
             /*
             BufferedWriter bufferedWriter2 = new BufferedWriter(new FileWriter("src/main/java/machinelearning/data/results/sound_deciding_epoch_vs_confusion_matrix.csv", true));

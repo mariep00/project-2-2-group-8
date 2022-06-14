@@ -32,11 +32,12 @@ public class ControllerExploration extends Controller {
     }
 
     @Override
-    protected void tickAgent(int agentIndex) {
-        int movementTask = agents[agentIndex].tick(getVisions(agentIndex),
-                markerController.getPheromoneMarkersDirection(agentIndex, currentState.getAgentPosition(agentIndex)),
-                null, null, null, null);
-
+    public void tickAgent(int agentIndex, int movementTask) {
+        if (movementTask == -1) {
+            movementTask = agents[agentIndex].tick(getVisions(agentIndex),
+                    markerController.getPheromoneMarkersDirection(agentIndex, currentState.getAgentPosition(agentIndex)),
+                    null, null, null, null);
+        }
         movementController.moveAgent(agentIndex, movementTask);
         nextState.setAgentVision(agentIndex, calculateFOVAbsolute(agentIndex, nextState.getAgentPosition(agentIndex), nextState));
     }
@@ -55,7 +56,6 @@ public class ControllerExploration extends Controller {
         int hours = (int) time / 3600;
         int minutes = ((int)time % 3600) / 60;
         double seconds = time % 60;
-        if (threadPool != null) threadPool.shutdown();
         System.out.println("Everything is explored. It took " + hours + " hour(s) " + minutes + " minutes " + seconds + " seconds.");
     }
 }

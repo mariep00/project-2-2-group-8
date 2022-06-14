@@ -33,8 +33,6 @@ public abstract class Controller {
     protected double timestep;
     public double time;
 
-    protected final ThreadPoolExecutor threadPool;
-
     public Controller(ScenarioMap scenarioMap, EndingConditionInterface endingCondition, TaskContainer taskContainer, int seed) {
         this.taskContainer = taskContainer;
         this.scenarioMap = scenarioMap;
@@ -102,7 +100,7 @@ public abstract class Controller {
         }
     }
 
-    protected void switchToNextState() {
+    public void switchToNextState() {
         updateGui();
         currentState = nextState;
         nextState = currentState.copyOf();
@@ -221,8 +219,10 @@ public abstract class Controller {
         return temp;
     }
 
+    public void tickAgent(int agentIndex) { tickAgent(agentIndex, -1); }
+
     protected void updateAgentsSeen() {}
-    protected void tickAgent(int agentIndex) {}
+    public void tickAgent(int agentIndex, int movementTask) {}
     protected void updateGui() {}
     protected void initializeAgents() {}
     protected void updateProgress() {}

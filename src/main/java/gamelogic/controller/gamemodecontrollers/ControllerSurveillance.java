@@ -97,13 +97,15 @@ public class ControllerSurveillance extends Controller {
     }
 
     @Override
-    protected void tickAgent(int agentIndex) {
-        int movementTask = agents[agentIndex].tick(getVisions(agentIndex),
-                markerController.getPheromoneMarkersDirection(agentIndex, currentState.getAgentPosition(agentIndex)),
-                soundController.getSoundDirections(agentIndex), Arrays.copyOfRange(currentState.getAgentsSeen(agentIndex), 0, numberOfGuards),
-                Arrays.copyOfRange(currentState.getAgentsSeen(agentIndex), numberOfGuards, numberOfGuards+numberOfIntruders),
-                soundController.getGuardYellDirections(agentIndex));
+    public void tickAgent(int agentIndex, int movementTask) {
+        if (movementTask == -1) {
+            movementTask = agents[agentIndex].tick(getVisions(agentIndex),
+                    markerController.getPheromoneMarkersDirection(agentIndex, currentState.getAgentPosition(agentIndex)),
+                    soundController.getSoundDirections(agentIndex), Arrays.copyOfRange(currentState.getAgentsSeen(agentIndex), 0, numberOfGuards),
+                    Arrays.copyOfRange(currentState.getAgentsSeen(agentIndex), numberOfGuards, numberOfGuards + numberOfIntruders),
+                    soundController.getGuardYellDirections(agentIndex));
 
+        }
         movementController.moveAgent(agentIndex, movementTask);
         nextState.setAgentVision(agentIndex, calculateFOVAbsolute(agentIndex, nextState.getAgentPosition(agentIndex), nextState));
     }
