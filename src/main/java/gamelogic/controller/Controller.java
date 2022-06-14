@@ -7,6 +7,7 @@ import gamelogic.controller.endingconditions.EndingConditionInterface;
 import gamelogic.datacarriers.Vision;
 import gamelogic.datacarriers.VisionMemory;
 import gamelogic.maps.ScenarioMap;
+import gamelogic.maps.Tile;
 import gui.gamescreen.AgentType;
 
 import java.util.*;
@@ -64,6 +65,7 @@ public abstract class Controller {
             visions[i] = calculateFOVAbsolute(i, initialPositions[i], currentState);
             currentState.setAgentVision(i, visions[i]);
         }
+
 
         currentState = new State(initialPositions, visions, markerController.init(initialPositions, AgentType.GUARD), markerController.init(initialPositions, AgentType.INTRUDER),
                 new VisionMemory[numberOfGuards + numberOfIntruders][numberOfGuards + numberOfIntruders]);

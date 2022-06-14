@@ -43,6 +43,7 @@ public class FarPursuingTask implements TaskInterface{
             System.out.println("Angle intruder " + angleToIntruder + ", angle guard " + angleToGuard + ", difference angle " + difference);
             boolean toRight = checkDirection(angleToIntruder, angleToGuard, difference);
             if (toRight) {
+                System.out.println("Inside the to right if");
                 double angle = checkAngle(angleToIntruder-angleDifference);
                 LinkedList<Vector2D> path = findPathToRight(currentPosition, distance, angle);
                 futureMoves = MovementController.convertPath(graph, orientation, path, false);
@@ -52,6 +53,7 @@ public class FarPursuingTask implements TaskInterface{
                 futureMoves = MovementController.convertPath(graph, orientation, path, false);
             }
         }
+        System.out.println("size of the future moves:" + futureMoves.size());
         if (futureMoves.size() == 1) finished = true;
         return futureMoves.pop();
     }
@@ -78,6 +80,7 @@ public class FarPursuingTask implements TaskInterface{
         while (true) {
             System.out.println("1; " + angle);
             LinkedList<Vector2D> path1 = AStar.calculate(graph, graph.getCurrentPosition(), graph.getNode(goal), (int)(distanceThresholdFirstPath*distance));
+            System.out.println("Do we stop calculating?");
             System.out.println(goal + ", " + graph.getCurrentPosition() + ", " + (int)(distanceThresholdFirstPath*distance) + ", " + Arrays.toString(path1.toArray()));
             if(path1.getFirst().equals(goal)) {
                 System.out.println("Got here");
@@ -104,11 +107,12 @@ public class FarPursuingTask implements TaskInterface{
             goal = VisionController.calculatePoint(curPos, distance, angle);
         }
         while (true) {
-            //System.out.println("1; " +angle);
+            System.out.println("1; " +angle);
             LinkedList<Vector2D> path1 = AStar.calculate(graph, graph.getCurrentPosition(), graph.getNode(goal), (int)(distanceThresholdFirstPath*distance));
             if(path1.getFirst().equals(goal)) {
                 LinkedList<Vector2D> path2 = AStar.calculate(graph, graph.getNode(goal), graph.getNode(intruder.position().add(graph.getCurrentPosition().COORDINATES)), (int)(distanceThresholdSecondPath*goal.dist(intruder.position())));
                 if (path2.getFirst().equals(intruder.position())) {
+                    //System.out.println("inside if path2.getFirst");
                     return path1;
                 }
             }

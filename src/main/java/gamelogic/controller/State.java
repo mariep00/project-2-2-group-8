@@ -34,10 +34,6 @@ public class State {
         this.soundOrigins = soundOrigins;
     }
 
-    public State(Vector2D[] agentPositions, List<Vector2D>[] visions, LinkedList<Tile> tilesWithMarkerGuard, VisionMemory[][] agentsSeen) {
-        this(agentPositions, visions, tilesWithMarkerGuard, null, new ArrayList<>(), agentsSeen, new ArrayList<>());
-    }
-
     public State(Vector2D[] agentPositions, List<Vector2D>[] visions, LinkedList<Tile> tilesWithMarkerGuard, LinkedList<Tile> tilesWithMarkerIntruder,  VisionMemory[][] agentsSeen) {
         this(agentPositions, visions, tilesWithMarkerGuard, tilesWithMarkerIntruder, new ArrayList<>(), agentsSeen, new ArrayList<>());
     }
@@ -59,7 +55,7 @@ public class State {
     public void addSoundOrigin(SoundOrigin soundOrigin) { soundOrigins.add(soundOrigin); }
 
     public State copyOf() {
-        return new State(agentPositions.clone(), visions.clone(), (LinkedList<Tile>) tilesWithMarkerGuard.clone(), agentsSeen.clone());
+        return new State(agentPositions.clone(), visions.clone(), (LinkedList<Tile>) tilesWithMarkerGuard.clone(), (LinkedList<Tile>) tilesWithMarkerIntruder.clone() ,agentsSeen.clone());
     }
 
     public Vector2D[] getAgentPositions() { return agentPositions; }
