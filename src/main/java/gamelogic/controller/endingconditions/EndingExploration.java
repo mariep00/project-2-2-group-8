@@ -12,8 +12,10 @@ public class EndingExploration implements EndingConditionInterface {
     private int[][] explorationMap;
     private int totalTilesToExplore;
     private int currentTilesExplored = 0;
+    private final ScenarioMap map;
 
     public EndingExploration(ScenarioMap map){
+        this.map = map;
         this.height = map.getHeight();
         this.width = map.getWidth();
         this.explorationMap = new int[this.height][this.width];
@@ -41,6 +43,11 @@ public class EndingExploration implements EndingConditionInterface {
     @Override
     public boolean mode() {
         return true;
+    }
+
+    @Override
+    public EndingConditionInterface newInstance() {
+        return new EndingExploration(map);
     }
 
     public void updateExplorationMap(Vector2D coordinate) {

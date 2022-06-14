@@ -3,6 +3,7 @@ package gamelogic.agent;
 import datastructures.Vector2D;
 import gamelogic.agent.brains.BrainInterface;
 import gamelogic.agent.tasks.TaskContainer;
+import gamelogic.agent.tasks.TaskInterface;
 import gamelogic.datacarriers.Sound;
 import gamelogic.datacarriers.Vision;
 import gamelogic.datacarriers.VisionMemory;
@@ -39,7 +40,7 @@ public class Agent {
         return brain.makeDecision(explorationGraph, orientation, pheromoneMarkersDirectionGuard, sounds, guardsSeen, intrudersSeen, guardYells);
     }
 
-    private void updateGraph(Vision[] inVision) {
+    public void updateGraph(Vision[] inVision) {
         ArrayList<Integer> walls = new ArrayList<>();
         for (int i=0; i<inVision.length; i++) {
             if (inVision[i].tile().getType() == Type.WALL) {
@@ -91,6 +92,12 @@ public class Agent {
         }
     }
 
+    public int makeDecision(double pheromoneMarkersDirectionGuard, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen, List<Sound> guardYells) {
+        return brain.makeDecision(explorationGraph, orientation, pheromoneMarkersDirectionGuard, sounds, guardsSeen, intrudersSeen, guardYells);
+    }
+    public TaskInterface getTaskFromDecider(double pheromoneMarkersDirectionGuard, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen, List<Sound> guardYells) {
+        return brain.getTaskFromDecider(explorationGraph, orientation, pheromoneMarkersDirectionGuard, sounds, guardsSeen, intrudersSeen, guardYells);
+    }
     public TaskContainer.TaskType getCurrentTask() { return brain.getCurrentTask(); }
 
     @Override

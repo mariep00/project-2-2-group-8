@@ -23,7 +23,7 @@ public class ControllerSurveillance extends Controller {
     private final EndingSurveillance endingSurveillance;
     private final ExplorationGraph mapGraph;
     public final SoundController soundController;
-    private final double[] yellCooldowns;
+    private double[] yellCooldowns;
     private final double yellCooldown = 1;
 
     public ControllerSurveillance(ScenarioMap scenarioMap, EndingSurveillance endingCondition, TaskContainer taskContainer, int seed) {
@@ -127,6 +127,12 @@ public class ControllerSurveillance extends Controller {
     @Override
     public void end() {
         //System.out.println("----- SURVEILLANCE ENDED, IT TOOK " + time  + " SECONDS -----");
+    }
+
+    @Override
+    public void reset() {
+        this.yellCooldowns = new double[scenarioMap.getNumGuards()];
+        Arrays.fill(this.yellCooldowns, yellCooldown);
     }
 
     private VisionMemory[] updateAgentVisionMemory(int agentIndex, State state) {

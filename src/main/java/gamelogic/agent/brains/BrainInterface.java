@@ -1,6 +1,7 @@
 package gamelogic.agent.brains;
 
 import gamelogic.agent.tasks.TaskContainer;
+import gamelogic.agent.tasks.TaskInterface;
 import gamelogic.datacarriers.Sound;
 import gamelogic.datacarriers.VisionMemory;
 import gamelogic.maps.graph.ExplorationGraph;
@@ -13,5 +14,6 @@ public interface BrainInterface {
         throw new UnsupportedOperationException("This method is not supported for this class");
     }
 
+    TaskInterface getTaskFromDecider(ExplorationGraph graph, double orientation, double pheromoneMarkersDirectionGuard, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen, List<Sound> guardYells);
     TaskContainer.TaskType getCurrentTask();
 }

@@ -33,6 +33,11 @@ public class IntruderBrain implements BrainInterface {
     }
 
     @Override
+    public TaskInterface getTaskFromDecider(ExplorationGraph graph, double orientation, double pheromoneMarkersDirectionGuard, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen, List<Sound> guardYells) {
+        return taskDecider.getTaskToPerform(graph, sounds, guardsSeen, intrudersSeen, currentTask);
+    }
+
+    @Override
     public TaskType getCurrentTask() {
         return currentTask.getType();
     }

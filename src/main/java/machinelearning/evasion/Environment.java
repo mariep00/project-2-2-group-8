@@ -1,7 +1,8 @@
 package machinelearning.evasion;
 
 import gamelogic.agent.tasks.TaskContainer;
-import gamelogic.controller.State;
+import gamelogic.agent.tasks.TaskInterface;
+import gamelogic.agent.tasks.intruder.EvasionTaskBaseline;
 import gamelogic.controller.gamemodecontrollers.ControllerSurveillanceRLEvasion;
 import org.deeplearning4j.gym.StepReply;
 import org.deeplearning4j.rl4j.mdp.MDP;
@@ -21,7 +22,7 @@ public class Environment implements MDP<GameState, Integer, DiscreteSpace> {
     }
 
     @Override
-    public ObservationSpace<State> getObservationSpace() {
+    public ObservationSpace<GameState> getObservationSpace() {
         return new GameObservationSpace();
     }
 
@@ -31,14 +32,12 @@ public class Environment implements MDP<GameState, Integer, DiscreteSpace> {
     }
 
     @Override
-    public State reset() {
-        return null;
+    public GameState reset() {
+        return controller.buildStateObservation(agentIndex, -1, true);
     }
 
     @Override
-    public void close() {
-
-    }
+    public void close() { }
 
     @Override
     public StepReply<GameState> step(Integer movementTask) {
@@ -47,45 +46,55 @@ public class Environment implements MDP<GameState, Integer, DiscreteSpace> {
                 controller.tickAgent(i);
             }
         }
+        while (controller.getAgent(agentIndex) == null) {
+            agentIndex++;
+            if (agentIndex >= controller.getNumberOfGuards() + controller.getNumberOfIntruders()) {
+                agentIndex = controller.getNumberOfGuards();
+            }
+        }
+        System.out.println("Is this really the task, or is it the index? " + movementTask);
         int reward = 0;
-        if (controller.getAgent(agentIndex).getCurrentTask() == TaskContainer.TaskType.INTRUDER_EVASION) {
+        GameState observation;
+        controller.getAgent(agentIndex).updateGraph(controller.getVisions(agentIndex)); // Update the intruders' graph
+
+        TaskInterface intruderWantsToPerformTask = controller.getAgent(agentIndex).getTaskFromDecider(controller.markerController.getPheromoneMarkersDirection(agentIndex, controller.getCurrentState().getAgentPosition(agentIndex)),
+                controller.soundController.getSoundDirections(agentIndex), Arrays.copyOfRange(controller.getCurrentState().getAgentsSeen(agentIndex), 0, controller.getNumberOfGuards()),
+                Arrays.copyOfRange(controller.getCurrentState().getAgentsSeen(agentIndex), controller.getNumberOfGuards(), controller.getNumberOfGuards() + controller.getNumberOfIntruders()),
+                controller.soundController.getGuardYellDirections(agentIndex));
+
+        // Check if the intruder wants to do evasion
+        if (intruderWantsToPerformTask.getType() == TaskContainer.TaskType.INTRUDER_EVASION) {
             reward = controller.tickIntruder(agentIndex, movementTask);
+            observation = controller.buildStateObservation(agentIndex, ((EvasionTaskBaseline) intruderWantsToPerformTask).getTargetAngle(), false);
         }
         else {
-            int tempMovementTask = controller.getAgent(agentIndex).tick(controller.getVisions(agentIndex),
-                    controller.markerController.getPheromoneMarkersDirection(agentIndex, controller.getCurrentState().getAgentPosition(agentIndex)),
+            int tempMovementTask = controller.getAgent(agentIndex).makeDecision(controller.markerController.getPheromoneMarkersDirection(agentIndex, controller.getCurrentState().getAgentPosition(agentIndex)),
                     controller.soundController.getSoundDirections(agentIndex), Arrays.copyOfRange(controller.getCurrentState().getAgentsSeen(agentIndex), 0, controller.getNumberOfGuards()),
                     Arrays.copyOfRange(controller.getCurrentState().getAgentsSeen(agentIndex), controller.getNumberOfGuards(), controller.getNumberOfGuards() + controller.getNumberOfIntruders()),
                     controller.soundController.getGuardYellDirections(agentIndex));
 
-            if (controller.getAgent(agentIndex).getCurrentTask() == TaskContainer.TaskType.INTRUDER_EVASION) {
-                tempMovementTask = movementTask;
-            }
-
             controller.movementController.moveAgent(agentIndex, tempMovementTask);
             controller.getNextState().setAgentVision(agentIndex, controller.calculateFOVAbsolute(agentIndex, controller.getNextState().getAgentPosition(agentIndex), controller.getNextState()));
+            observation = controller.buildStateObservation(agentIndex, -1, true);
         }
 
         agentIndex++;
-        if (agentIndex >= controller.getNumberOfGuards()+ controller.getNumberOfIntruders()) {
+        if (agentIndex >= controller.getNumberOfGuards() + controller.getNumberOfIntruders()) {
             agentIndex = controller.getNumberOfGuards();
             controller.switchToNextState();
         }
 
-        GameState observation;
-        if (controller.getAgent(agentIndex).getCurrentTask() == TaskContainer.TaskType.INTRUDER_EVASION) {
-            observation = controller.buildStateObservation(agentIndex, (Evascontroller.getAgent(agentIndex).getCurrentTask());
-        }
         return new StepReply<>(observation, reward, controller.getEndingCondition().gameFinished(), "IntruderEvasionRL");
     }
 
     @Override
     public boolean isDone() {
-        return false;
+        return controller.getEndingCondition().gameFinished();
     }
 
     @Override
-    public MDP<State, Integer, DiscreteSpace> newInstance() {
-        return null;
+    public MDP<GameState, Integer, DiscreteSpace> newInstance() {
+        controller.reset();
+        return new Environment(controller);
     }
 }

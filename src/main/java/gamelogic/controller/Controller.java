@@ -21,11 +21,11 @@ public abstract class Controller {
     public final MovementController movementController;
     public final MarkerController markerController;
     protected final ScenarioMap scenarioMap;
-    protected final EndingConditionInterface endingCondition;
+    protected EndingConditionInterface endingCondition;
     protected final int numberOfGuards;
     protected final int numberOfIntruders;
-    protected final Agent[] agents;
-    protected final Vector2D[] agentSpawnLocations;
+    protected Agent[] agents;
+    protected Vector2D[] agentSpawnLocations;
 
     protected State currentState;
     protected State nextState;
@@ -121,11 +121,11 @@ public abstract class Controller {
     protected List<Vector2D> calculateFOV(int agentIndex, Vector2D agentPosition) {
         return VisionController.calculateVision(agents[agentIndex].getView_angle(), agents[agentIndex].getView_range(), scenarioMap.createAreaMap(agentPosition, agents[agentIndex].getView_range()), agents[agentIndex].getOrientation()).getInVision();
     }
-    protected List<Vector2D> calculateFOVAbsolute(int agentIndex, Vector2D agentPosition, State state) {
+    public List<Vector2D> calculateFOVAbsolute(int agentIndex, Vector2D agentPosition, State state) {
         return convertRelativeCurrentPosToAbsolute(calculateFOV(agentIndex, agentPosition), agentIndex, state);
     }
 
-    protected Vision[] getVisions(int agentIndex) {
+    public Vision[] getVisions(int agentIndex) {
         List<Vector2D> positionsInVision = currentState.getVision(agentIndex);
         Vision[] visions = new Vision[positionsInVision.size()];
         for (int i = 0; i < visions.length; i++) {
@@ -249,5 +249,12 @@ public abstract class Controller {
             runnable.run();
             return null;
         };
+    }
+
+    public void reset() {
+        endingCondition = endingCondition.newInstance();
+        this.agentSpawnLocations = new Vector2D[numberOfGuards + numberOfIntruders];
+        this.agents = new Agent[numberOfGuards + numberOfIntruders];
+        init();
     }
 }

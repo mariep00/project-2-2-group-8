@@ -33,6 +33,11 @@ public class EndingSurveillance implements EndingConditionInterface {
         return false;
     }
 
+    @Override
+    public EndingConditionInterface newInstance() {
+        return new EndingSurveillance(map);
+    }
+
     public void updateState (Controller controller){
         for (int i = map.getNumGuards(); i < map.getNumGuards()+map.getNumIntruders(); i++) {
             if (controller.getAgent(i) == null) {

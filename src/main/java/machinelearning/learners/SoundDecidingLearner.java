@@ -47,13 +47,14 @@ public class SoundDecidingLearner {
             System.out.println("creating the model...");
             MultiLayerConfiguration configuration
                     = new NeuralNetConfiguration.Builder()
-                    .updater(new Adam.Builder().epsilon(1e-6).learningRate(5e-4).build())
+                    .updater(new Adam.Builder().epsilon(1e-6).learningRate(1e-3).build())
                     .l2(1e-4)
                     .activation(Activation.TANH)
                     .weightInit(WeightInit.XAVIER)
                     .list()
                     .layer(0, new DenseLayer.Builder().nIn(6).nOut(4).build())
-                    .layer(1, new OutputLayer.Builder(
+                    .layer(1, new DenseLayer.Builder().nIn(4).nOut(4).build())
+                    .layer(2, new OutputLayer.Builder(
                             LossFunctions.LossFunction.MEAN_SQUARED_LOGARITHMIC_ERROR)
                             .activation(Activation.SOFTMAX)
                             .nIn(4).nOut(2).build())
@@ -95,13 +96,13 @@ public class SoundDecidingLearner {
             evalTestData.eval(testingData.getLabels(), outputTestData);
 
             BufferedWriter bufferedWriter1 = new BufferedWriter(new FileWriter("src/main/java/machinelearning/data/results/sound_deciding_epoch_vs_accuracy.csv", true));
-            bufferedWriter1.write(evalTrainingData.accuracy() + "," + evalTestData.accuracy());
+            bufferedWriter1.write(evalTrainingData.accuracy() + "," + evalTestData.accuracy() + "," + evalTrainingData.f1() + "," + evalTestData.f1());
             bufferedWriter1.newLine();
             bufferedWriter1.close();
 
             ModelSerializer.writeModel(model, "src/main/java/machinelearning/data/results/sound_deciding_model", true);
 
-            if (i % 10 == 0) ModelSerializer.writeModel(model, "src/main/java/machinelearning/data/results/sound_deciding_model_"+(i+654), true);
+            if (i % 20 == 0) ModelSerializer.writeModel(model, "src/main/java/machinelearning/data/results/sound_deciding_model_"+(i+654), true);
 
             /*
             BufferedWriter bufferedWriter2 = new BufferedWriter(new FileWriter("src/main/java/machinelearning/data/results/sound_deciding_epoch_vs_confusion_matrix.csv", true));

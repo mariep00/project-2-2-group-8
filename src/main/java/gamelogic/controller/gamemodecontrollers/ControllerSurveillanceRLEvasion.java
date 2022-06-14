@@ -16,7 +16,7 @@ public class ControllerSurveillanceRLEvasion extends ControllerSurveillance {
         super.tickAgent(agentIndex, movementTask);
         // Check if agent finished evasion
         if (agents[agentIndex].getCurrentTask() != TaskContainer.TaskType.INTRUDER_EVASION) {
-            reward += 15;
+            reward += 15; // TODO This reward won't work
         }
         if (willBeAlive(agentIndex)) reward += 1;
         else reward -= 15;
@@ -68,13 +68,13 @@ public class ControllerSurveillanceRLEvasion extends ControllerSurveillance {
         if (!intruderAlive) reward -= 25; // All intruders got caught
     }*/
 
-    public GameState buildStateObservation(int agentIndex, double angle) {
+    public GameState buildStateObservation(int agentIndex, double angle, boolean skip) {
         return new GameState(new double[] {
                 GameStateUtil.getStateForDirection(agents[agentIndex], getScenarioMap().getMap(), currentState.getAgentPosition(agentIndex), angle, 0),
                 GameStateUtil.getStateForDirection(agents[agentIndex], getScenarioMap().getMap(), currentState.getAgentPosition(agentIndex), angle, 1),
                 GameStateUtil.getStateForDirection(agents[agentIndex], getScenarioMap().getMap(), currentState.getAgentPosition(agentIndex), angle, 3),
                 GameStateUtil.getStateForDirection(agents[agentIndex], getScenarioMap().getMap(), currentState.getAgentPosition(agentIndex), angle, 4),
-        });
+        }, skip);
     }
 
     /*

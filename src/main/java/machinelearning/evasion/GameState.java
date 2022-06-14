@@ -6,19 +6,21 @@ import org.nd4j.linalg.factory.Nd4j;
 
 public class GameState implements Encodable {
     private final double[] inputs;
+    private final boolean skip;
 
-    public GameState(final double[] inputs) {
+    public GameState(final double[] inputs, boolean skip) {
         this.inputs = inputs;
+        this.skip = skip;
     }
 
     @Override
     public double[] toArray() {
-        return inputs
+        return inputs;
     }
 
     @Override
     public boolean isSkipped() {
-        return false;
+        return skip;
     }
 
     @Override
