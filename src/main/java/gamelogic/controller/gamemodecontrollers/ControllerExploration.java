@@ -43,7 +43,7 @@ public class ControllerExploration extends Controller {
     }
 
     @Override
-    protected void updateProgress() {
+    public void updateProgress() {
         for (int i = 0; i < numberOfGuards+numberOfIntruders; i++) {
             for (Vector2D vector : nextState.getVision(i)) {
                 endingExploration.updateExplorationMap(vector);

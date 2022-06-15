@@ -14,11 +14,13 @@ import java.util.Arrays;
 public class Environment implements MDP<GameState, Integer, DiscreteSpace> {
     private final ControllerSurveillanceRLEvasion controller;
     private final DiscreteSpace actionSpace = new DiscreteSpace(4);
+    private final boolean[] intruderPerformsEvasion;
 
     private int agentIndex;
 
     public Environment(ControllerSurveillanceRLEvasion controller) {
         this.controller = controller;
+        this.intruderPerformsEvasion = new boolean[controller.getNumberOfIntruders()];
     }
 
     @Override
@@ -64,11 +66,16 @@ public class Environment implements MDP<GameState, Integer, DiscreteSpace> {
 
         // Check if the intruder wants to do evasion
         if (intruderWantsToPerformTask.getType() == TaskContainer.TaskType.INTRUDER_EVASION) {
+            intruderPerformsEvasion[agentIndex-controller.getNumberOfGuards()] = true;
             reward = controller.tickIntruder(agentIndex, movementTask);
             EvasionTaskBaseline evasionTaskBaseline = ((EvasionTaskBaseline) intruderWantsToPerformTask);
             observation = controller.buildStateObservation(agentIndex, evasionTaskBaseline.getSoundToEvadeFrom(), evasionTaskBaseline.getVisionToEvadeFrom(), false);
         }
         else {
+            if (intruderPerformsEvasion[agentIndex-controller.getNumberOfGuards()]) {
+                reward += 15;
+                intruderPerformsEvasion[agentIndex-controller.getNumberOfGuards()] = false;
+            }
             int tempMovementTask = controller.getAgent(agentIndex).makeDecision(controller.markerController.getPheromoneMarkersDirection(agentIndex, controller.getCurrentState().getAgentPosition(agentIndex)),
                     controller.soundController.getSoundDirections(agentIndex), Arrays.copyOfRange(controller.getCurrentState().getAgentsSeen(agentIndex), 0, controller.getNumberOfGuards()),
                     Arrays.copyOfRange(controller.getCurrentState().getAgentsSeen(agentIndex), controller.getNumberOfGuards(), controller.getNumberOfGuards() + controller.getNumberOfIntruders()),
@@ -82,6 +89,10 @@ public class Environment implements MDP<GameState, Integer, DiscreteSpace> {
         agentIndex++;
         if (agentIndex >= controller.getNumberOfGuards() + controller.getNumberOfIntruders()) {
             agentIndex = controller.getNumberOfGuards();
+
+            controller.updateAgentsSeen();
+            controller.markerController.tick();
+            controller.updateProgress();
             controller.switchToNextState();
         }
 

@@ -25,10 +25,6 @@ public class ControllerSurveillanceRLEvasion extends ControllerSurveillance {
     public int tickIntruder(int agentIndex, int movementTask) {
         int reward = 0;
         super.tickAgent(agentIndex, movementTask);
-        // Check if agent finished evasion
-        if (agents[agentIndex].getCurrentTask() != TaskContainer.TaskType.INTRUDER_EVASION) {
-            reward += 15; // TODO This reward won't work
-        }
         if (willBeAlive(agentIndex)) reward += 1;
         else reward -= 15;
 
@@ -67,6 +63,12 @@ public class ControllerSurveillanceRLEvasion extends ControllerSurveillance {
             visionInput[1] = visionEvadingFrom.position().magnitude();
             visionInput[2] = visionEvadingFrom.secondsAgo();
             visionInput[3] = convertAgentType(visionEvadingFrom.agentType());
+        }
+        else {
+            visionInput[0] = -1;
+            visionInput[1] = -1;
+            visionInput[2] = -1;
+            visionInput[3] = -1;
         }
 
 
@@ -134,7 +136,7 @@ public class ControllerSurveillanceRLEvasion extends ControllerSurveillance {
     }
 
     private double[] getPheromoneMarkerInput(int agentIndex) {
-        return new double[]{markerController.getPheromoneMarkersDirection(agentIndex, currentState.getAgentPosition(agentIndex))}; // TODO Change to intruder marker
+        return new double[]{-1}; // TODO Change to intruder pheromone markers
     }
 
     private double[] getSoundInput(int agentIndex, Sound soundEvadingFrom) {
@@ -174,7 +176,6 @@ public class ControllerSurveillanceRLEvasion extends ControllerSurveillance {
             }
             count++;
         }
-
         return soundInput;
     }
 

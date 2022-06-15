@@ -34,7 +34,7 @@ public class MarkerController {
         }
         return tilesWithMarker;
     }
-    protected void tick() {
+    public void tick() {
         Iterator<Tile> iterator = controller.nextState.getTilesWithMarkerGuard().iterator(); // *** This ALSO updates the marker in the currentState, while it's the same reference! ***
         while (iterator.hasNext()) {
             Tile tile = iterator.next();

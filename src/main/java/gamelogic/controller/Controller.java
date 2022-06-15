@@ -221,11 +221,11 @@ public abstract class Controller {
 
     public void tickAgent(int agentIndex) { tickAgent(agentIndex, -1); }
 
-    protected void updateAgentsSeen() {}
+    public void updateAgentsSeen() {}
     public void tickAgent(int agentIndex, int movementTask) {}
     protected void updateGui() {}
     protected void initializeAgents() {}
-    protected void updateProgress() {}
+    public void updateProgress() {}
     public void end() {}
 
     public int getNumberOfGuards() { return numberOfGuards; }
