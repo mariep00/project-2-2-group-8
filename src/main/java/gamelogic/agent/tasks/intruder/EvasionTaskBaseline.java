@@ -22,6 +22,8 @@ public class EvasionTaskBaseline implements TaskInterface {
     private TaskType type = TaskType.INTRUDER_EVASION;
     private Stack<Integer> futureMoves;
     private double targetAngle;
+    private VisionMemory visionToEvadeFrom;
+    private Sound soundToEvadeFrom;
     private boolean finished = false;
 
     @Override
@@ -91,6 +93,8 @@ public class EvasionTaskBaseline implements TaskInterface {
     }
 
     public double getTargetAngle() { return targetAngle; }
+    public Sound getSoundToEvadeFrom() { return soundToEvadeFrom; }
+    public VisionMemory getVisionToEvadeFrom() { return visionToEvadeFrom; }
 
     @Override
     public boolean isFinished() {
@@ -108,8 +112,15 @@ public class EvasionTaskBaseline implements TaskInterface {
     }
 
     @Override
-    public void setTarget(double target) {
+    public void setTarget(double target, VisionMemory visionMemory) {
         this.targetAngle = target;
+        this.visionToEvadeFrom = visionMemory;
+    }
+
+    @Override
+    public void setTarget(double target, Sound sound) {
+        this.targetAngle = target;
+        this.soundToEvadeFrom = sound;
     }
 
     @Override

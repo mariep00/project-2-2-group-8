@@ -10,4 +10,10 @@ public record Sound(double angle, double loudness) {
         }
         return false;
     }
+
+    public int compareTo(Sound other) {
+        if (other == null) return 1;
+        else if (loudness >= other.loudness) return 1;
+        else return 0;
+    }
 }

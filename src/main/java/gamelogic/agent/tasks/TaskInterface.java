@@ -34,7 +34,10 @@ public interface TaskInterface {
     default void setTarget(Vector2D target) {
         throw new UnsupportedOperationException("This method is not supported for this class");
     }
-    default void setTarget(double angle) {
+    default void setTarget(double angle, Sound soundEvadingFrom) {
+        throw new UnsupportedOperationException("This method is not supported for this class");
+    }
+    default void setTarget(double angle, VisionMemory visionEvadingFrom) {
         throw new UnsupportedOperationException("This method is not supported for this class");
     }
     default void setTarget(ExplorationGraph graph, double orientation, LinkedList<Vector2D> path) {

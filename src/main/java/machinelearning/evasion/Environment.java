@@ -33,7 +33,7 @@ public class Environment implements MDP<GameState, Integer, DiscreteSpace> {
 
     @Override
     public GameState reset() {
-        return controller.buildStateObservation(agentIndex, -1, true);
+        return controller.buildStateObservation(agentIndex, null, null, true);
     }
 
     @Override
@@ -65,7 +65,8 @@ public class Environment implements MDP<GameState, Integer, DiscreteSpace> {
         // Check if the intruder wants to do evasion
         if (intruderWantsToPerformTask.getType() == TaskContainer.TaskType.INTRUDER_EVASION) {
             reward = controller.tickIntruder(agentIndex, movementTask);
-            observation = controller.buildStateObservation(agentIndex, ((EvasionTaskBaseline) intruderWantsToPerformTask).getTargetAngle(), false);
+            EvasionTaskBaseline evasionTaskBaseline = ((EvasionTaskBaseline) intruderWantsToPerformTask);
+            observation = controller.buildStateObservation(agentIndex, evasionTaskBaseline.getSoundToEvadeFrom(), evasionTaskBaseline.getVisionToEvadeFrom(), false);
         }
         else {
             int tempMovementTask = controller.getAgent(agentIndex).makeDecision(controller.markerController.getPheromoneMarkersDirection(agentIndex, controller.getCurrentState().getAgentPosition(agentIndex)),
@@ -75,7 +76,7 @@ public class Environment implements MDP<GameState, Integer, DiscreteSpace> {
 
             controller.movementController.moveAgent(agentIndex, tempMovementTask);
             controller.getNextState().setAgentVision(agentIndex, controller.calculateFOVAbsolute(agentIndex, controller.getNextState().getAgentPosition(agentIndex), controller.getNextState()));
-            observation = controller.buildStateObservation(agentIndex, -1, true);
+            observation = controller.buildStateObservation(agentIndex, null, null, true);
         }
 
         agentIndex++;

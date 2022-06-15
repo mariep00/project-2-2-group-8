@@ -39,7 +39,7 @@ public class TaskDeciderIntruder implements TaskDeciderInterface{
         if (closestGuard != null && (currentTask.getPriority()<=TaskContainer.TaskType.INTRUDER_EVASION.priority || currentTask.isFinished())) {
             TaskInterface evasionTask = tasks.getTask(TaskType.INTRUDER_EVASION);
             // set the target to the angle of the guard which is in vision
-            evasionTask.setTarget(getTargetAngle(360.0 - Math.atan2(closestGuard.position().y, closestGuard.position().x)));
+            evasionTask.setTarget(getTargetAngle(360.0 - Math.atan2(closestGuard.position().y, closestGuard.position().x)), closestGuard);
             return evasionTask;
         }
 
@@ -48,7 +48,7 @@ public class TaskDeciderIntruder implements TaskDeciderInterface{
         // if there is a relevant sound and the priority of the current task is less than the one of this task, then we should switch to this task
         if (soundToAvoid != null && (currentTask.getPriority()<=TaskContainer.TaskType.INTRUDER_EVASION.priority || currentTask.isFinished())) {
             TaskInterface evasionTask = tasks.getTask(TaskType.INTRUDER_EVASION);
-            evasionTask.setTarget(getTargetAngle(soundToAvoid.angle()));
+            evasionTask.setTarget(getTargetAngle(soundToAvoid.angle()), soundToAvoid);
             return evasionTask;
         }
 
