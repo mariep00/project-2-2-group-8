@@ -252,6 +252,7 @@ public abstract class Controller {
     }
 
     public void reset() {
+        Controller.rand = new Random(new Random().nextInt());
         endingCondition = endingCondition.newInstance();
         this.agentSpawnLocations = new Vector2D[numberOfGuards + numberOfIntruders];
         this.agents = new Agent[numberOfGuards + numberOfIntruders];

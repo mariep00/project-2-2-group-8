@@ -18,6 +18,7 @@ public class Environment implements MDP<GameState, Integer, DiscreteSpace> {
     private final ControllerSurveillanceRLEvasion controller;
     private final DiscreteSpace actionSpace = new DiscreteSpace(4);
     private final boolean[] intruderPerformsEvasion;
+    private int count = 0;
 
     private int agentIndex;
 
@@ -39,6 +40,9 @@ public class Environment implements MDP<GameState, Integer, DiscreteSpace> {
 
     @Override
     public GameState reset() {
+        System.out.println("NEW GAME " + count);
+        count++;
+        controller.reset();
         return controller.buildStateObservation(agentIndex, null, null, null, null, -1, true);
     }
 
@@ -109,11 +113,13 @@ public class Environment implements MDP<GameState, Integer, DiscreteSpace> {
 
     @Override
     public boolean isDone() {
+        System.out.println("Game finished");
         return controller.getEndingCondition().gameFinished();
     }
 
     @Override
     public MDP<GameState, Integer, DiscreteSpace> newInstance() {
+        System.out.println("RESET");
         controller.reset();
         return new Environment(controller);
     }
