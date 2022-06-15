@@ -38,7 +38,7 @@ public class MarkerController {
         return tilesWithMarker;
     }
 
-    protected void tick(){
+    public void tick(){
         tick(AgentType.GUARD);
         tick(AgentType.INTRUDER);
     }
