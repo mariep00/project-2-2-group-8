@@ -92,8 +92,8 @@ public class Agent {
         }
     }
 
-    public int makeDecision(double pheromoneMarkersDirectionGuard, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen, List<Sound> guardYells) {
-        return brain.makeDecision(explorationGraph, orientation, pheromoneMarkersDirectionGuard, sounds, guardsSeen, intrudersSeen, guardYells);
+    public int makeDecision(double pheromoneMarkersDirectionGuard, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen, List<Sound> guardYells, List<Sound> guardYellsCaught) {
+        return brain.makeDecision(explorationGraph, orientation, pheromoneMarkersDirectionGuard, sounds, guardsSeen, intrudersSeen, guardYells, guardYellsCaught);
     }
     public TaskInterface getTaskFromDecider(double pheromoneMarkersDirectionGuard, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen, List<Sound> guardYells) {
         return brain.getTaskFromDecider(explorationGraph, orientation, pheromoneMarkersDirectionGuard, sounds, guardsSeen, intrudersSeen, guardYells);

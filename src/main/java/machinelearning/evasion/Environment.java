@@ -6,6 +6,8 @@ import gamelogic.agent.tasks.intruder.EvasionTaskBaseline;
 import gamelogic.controller.gamemodecontrollers.ControllerSurveillanceRLEvasion;
 import gamelogic.datacarriers.Sound;
 import gamelogic.datacarriers.VisionMemory;
+import gui.gamescreen.AgentType;
+
 import org.deeplearning4j.gym.StepReply;
 import org.deeplearning4j.rl4j.mdp.MDP;
 import org.deeplearning4j.rl4j.space.DiscreteSpace;
@@ -68,7 +70,7 @@ public class Environment implements MDP<GameState, Integer, DiscreteSpace> {
         GameState observation;
         controller.getAgent(agentIndex).updateGraph(controller.getVisions(agentIndex)); // Update the intruders' graph
 
-        double phermoneMarkersDirection = controller.markerController.getPheromoneMarkersDirection(agentIndex, controller.getCurrentState().getAgentPosition(agentIndex));
+        double phermoneMarkersDirection = controller.markerController.getPheromoneMarkersDirection(agentIndex, controller.getCurrentState().getAgentPosition(agentIndex), (agentIndex < controller.getNumberOfGuards() ? AgentType.GUARD : AgentType.INTRUDER));
         List<Sound> sounds = controller.soundController.getSoundDirections(agentIndex);
         VisionMemory[] visionMemories = controller.getCurrentState().getAgentsSeen(agentIndex);
         TaskInterface intruderWantsToPerformTask = controller.getAgent(agentIndex).getTaskFromDecider(phermoneMarkersDirection, sounds,
@@ -91,7 +93,7 @@ public class Environment implements MDP<GameState, Integer, DiscreteSpace> {
             int tempMovementTask = controller.getAgent(agentIndex).makeDecision(phermoneMarkersDirection, sounds,
                     Arrays.copyOfRange(visionMemories, 0, controller.getNumberOfGuards()),
                     Arrays.copyOfRange(visionMemories, controller.getNumberOfGuards(), controller.getNumberOfGuards() + controller.getNumberOfIntruders()),
-                    null);
+                    null, null);
 
             controller.movementController.moveAgent(agentIndex, tempMovementTask);
             controller.getNextState().setAgentVision(agentIndex, controller.calculateFOVAbsolute(agentIndex, controller.getNextState().getAgentPosition(agentIndex), controller.getNextState()));

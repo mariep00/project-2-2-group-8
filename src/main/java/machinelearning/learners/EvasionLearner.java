@@ -2,10 +2,12 @@ package machinelearning.learners;
 
 import gamelogic.agent.tasks.TaskContainer;
 import gamelogic.agent.tasks.general.AvoidCollisionTask;
+import gamelogic.agent.tasks.general.CaptureTargetAreaTask;
 import gamelogic.agent.tasks.general.ExplorationInDirection;
 import gamelogic.agent.tasks.general.ExplorationTaskFrontier;
 import gamelogic.agent.tasks.general.PathfindingTask;
 import gamelogic.agent.tasks.guard.ClosePursuingTask;
+import gamelogic.agent.tasks.guard.FarPursuingTask;
 import gamelogic.agent.tasks.guard.FindSoundSource;
 import gamelogic.agent.tasks.guard.VisitLastSeenIntruderPositions;
 import gamelogic.agent.tasks.intruder.EvasionTaskBaseline;
@@ -27,8 +29,8 @@ import java.util.Random;
 
 public class EvasionLearner {
     private final static String FILE_NAME = "ExperimentSurveillance2FlippedSpawns.txt"; // Change this string to the file name of the map you want to run. Make sure the map is located in resources/maps.
-    private final static TaskContainer TASK_CONTAINER = new TaskContainer(new ExplorationTaskFrontier(), new FindSoundSource(), new ClosePursuingTask(), new ClosePursuingTask(), new EvasionTaskBaseline(),
-            new VisitLastSeenIntruderPositions(), new PathfindingTask(), new ExplorationInDirection(), new AvoidCollisionTask()); // Change this to change the tasks that can be performed by agents
+    private final static TaskContainer TASK_CONTAINER = new TaskContainer(new ExplorationTaskFrontier(), new FindSoundSource(), new ClosePursuingTask(), new FarPursuingTask(), new EvasionTaskBaseline(),
+            new VisitLastSeenIntruderPositions(), new PathfindingTask(), new ExplorationInDirection(), new AvoidCollisionTask(), new CaptureTargetAreaTask()); // Change this to change the tasks that can be performed by agents
 
 
     public static void main(String[] args) throws IOException {
