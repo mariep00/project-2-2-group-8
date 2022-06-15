@@ -28,7 +28,7 @@ import java.nio.file.Paths;
 import java.util.Random;
 
 public class EvasionLearner {
-    private final static String FILE_NAME = "ExperimentSurveillance2FlippedSpawns.txt"; // Change this string to the file name of the map you want to run. Make sure the map is located in resources/maps.
+    private final static String FILE_NAME = "ChangedAdvancedSurveillance.txt"; // Change this string to the file name of the map you want to run. Make sure the map is located in resources/maps.
     private final static TaskContainer TASK_CONTAINER = new TaskContainer(new ExplorationTaskFrontier(), new FindSoundSource(), new ClosePursuingTask(), new FarPursuingTask(), new EvasionTaskBaseline(),
             new VisitLastSeenIntruderPositions(), new PathfindingTask(), new ExplorationInDirection(), new AvoidCollisionTask(), new CaptureTargetAreaTask()); // Change this to change the tasks that can be performed by agents
 
