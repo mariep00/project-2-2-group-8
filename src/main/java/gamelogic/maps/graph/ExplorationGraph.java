@@ -14,6 +14,7 @@ public class ExplorationGraph {
     private Node currentPosition;
     private final LinkedList<Node> seenTeleports;
     private final LinkedList<Node> seenTargetArea;
+    private final LinkedList<Vector2D> walls;
     private boolean sawTargetArea;
     private final Random random;
 
@@ -25,6 +26,7 @@ public class ExplorationGraph {
         this.frontiers = new HashMap<>(1000);
         this.seenTeleports = new LinkedList<>();
         this.seenTargetArea = new LinkedList<>();
+        this.walls = new LinkedList<>();
         sawTargetArea = false;
         random = new Random();
         Tile t = new Tile();
@@ -77,6 +79,9 @@ public class ExplorationGraph {
         if (node != null) {
             addSelfEdge(node, direction);
             checkEdges(node);
+        }
+        if (!walls.contains(vector)) {
+            walls.add(vector);
         }
     }
 
@@ -226,5 +231,20 @@ public class ExplorationGraph {
 
     public int getNumberOfNodes() {
         return nodes.getNumberOfNodes();
+    }
+
+    public boolean isWall(Vector2D position) {
+        Vector2D[] neighbours = position.getNeighbours();
+        for (int i=0; i<neighbours.length; i++) {
+            Node node = nodes.getValue(neighbours[i]);
+            if (node != null) {
+                if (node.hasWall(i)) return true;
+            }
+        }
+        return false;
+    }
+
+    public LinkedList<Vector2D> getWalls() {
+        return walls;
     }
 }

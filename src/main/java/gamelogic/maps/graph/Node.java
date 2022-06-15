@@ -106,4 +106,8 @@ public class Node {
         return this.COORDINATES;
     }
 
+    public boolean hasWall (int index) {
+        return walls[index];
+    }
+
 }

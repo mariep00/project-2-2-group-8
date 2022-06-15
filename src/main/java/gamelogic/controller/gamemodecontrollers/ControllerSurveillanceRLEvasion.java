@@ -5,10 +5,16 @@ import gamelogic.controller.endingconditions.EndingSurveillance;
 import gamelogic.datacarriers.Sound;
 import gamelogic.datacarriers.VisionMemory;
 import gamelogic.maps.ScenarioMap;
+import gamelogic.maps.graph.ExplorationGraph;
 import machinelearning.evasion.GameState;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
+
+import datastructures.Vector2D;
+import datastructures.quicksort.QuickSort;
+import datastructures.quicksort.SortObject;
 
 public class ControllerSurveillanceRLEvasion extends ControllerSurveillance {
     public ControllerSurveillanceRLEvasion(ScenarioMap scenarioMap, EndingSurveillance endingCondition, TaskContainer taskContainer, int seed) {
@@ -87,7 +93,35 @@ public class ControllerSurveillanceRLEvasion extends ControllerSurveillance {
     }
 
     private double[] getWallsInput(int agentIndex) {
-        return null;
+        int xClosest = 15;
+        double[] wallsInput = new double[xClosest*2];
+        ExplorationGraph agentGraph = agents[agentIndex].explorationGraph;
+        Vector2D agentPosition = agentGraph.getCurrentPosition().COORDINATES;
+        LinkedList<Vector2D> walls = agentGraph.getWalls();
+        if (walls.size()<xClosest) {
+            for (int i=0; i<walls.size(); i++) {
+                wallsInput[i*2] = agentPosition.getAngleBetweenVector(walls.get(i));
+                wallsInput[(i*2)+1] = agentPosition.dist(walls.get(i));
+            }
+            for (int i=walls.size(); i<xClosest; i++) {
+                wallsInput[i*2] = -1.0;
+                wallsInput[(i*2)+1] = -1.0;
+            }
+        } else {
+            SortObject<Vector2D>[] sortObjects = new SortObject[walls.size()];
+            QuickSort<Vector2D> quickSort = new QuickSort<>();
+            for (int i=0; i<walls.size(); i++) {
+                Vector2D wall = walls.get(i);
+                sortObjects[i] = new SortObject<Vector2D>(wall, agentPosition.dist(wall));
+            }
+            SortObject<Vector2D>[] sortedObjects = quickSort.sort(sortObjects, 0, sortObjects.length-1);
+
+            for (int i=0; i<xClosest; i++) {
+                wallsInput[i*2] = agentPosition.getAngleBetweenVector(sortedObjects[i].object);
+                wallsInput[(i*2)+1] = sortedObjects[i].sortParameter;
+            }
+        }
+        return wallsInput;
     }
 
     private double[] getPheromoneMarkerInput(int agentIndex) {
