@@ -135,6 +135,7 @@ public class ControllerSurveillance extends Controller {
 
     @Override
     public void reset() {
+        super.reset();
         this.yellCooldowns = new double[scenarioMap.getNumGuards()];
         Arrays.fill(this.yellCooldowns, yellCooldown);
     }

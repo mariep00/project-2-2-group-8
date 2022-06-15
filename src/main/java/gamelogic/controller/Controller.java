@@ -255,10 +255,11 @@ public abstract class Controller {
     }
 
     public void reset() {
-        Controller.rand = new Random(new Random().nextInt());
+        Controller.rand = new Random();
         endingCondition = endingCondition.newInstance();
         this.agentSpawnLocations = new Vector2D[numberOfGuards + numberOfIntruders];
         this.agents = new Agent[numberOfGuards + numberOfIntruders];
+        time = 0.0;
         init();
     }
 }

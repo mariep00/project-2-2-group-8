@@ -80,6 +80,7 @@ public class Environment implements MDP<GameState, Integer, DiscreteSpace> {
 
         // Check if the intruder wants to do evasion
         if (intruderWantsToPerformTask.getType() == TaskContainer.TaskType.INTRUDER_EVASION) {
+            System.out.println("Intruder performs evasion");
             intruderPerformsEvasion[agentIndex-controller.getNumberOfGuards()] = true;
             reward = controller.tickIntruder(agentIndex, movementTask);
             EvasionTaskBaseline evasionTaskBaseline = ((EvasionTaskBaseline) intruderWantsToPerformTask);
@@ -115,7 +116,6 @@ public class Environment implements MDP<GameState, Integer, DiscreteSpace> {
 
     @Override
     public boolean isDone() {
-        System.out.println("Game finished");
         return controller.getEndingCondition().gameFinished();
     }
 
