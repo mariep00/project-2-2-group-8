@@ -35,4 +35,12 @@ public class NetworkUtil {
         return new DQNFactoryStdDense(build);
     }
 
+    public static int taskIndexToMovementTask(int taskIndex) {
+        if (taskIndex == 0) return 0;
+        else if (taskIndex == 1) return 1;
+        else if (taskIndex == 2) return 3;
+        else if (taskIndex == 3) return 4;
+        else return -1;
+    }
+
 }

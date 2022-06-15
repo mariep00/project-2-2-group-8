@@ -21,6 +21,7 @@ public class Environment implements MDP<GameState, Integer, DiscreteSpace> {
     public Environment(ControllerSurveillanceRLEvasion controller) {
         this.controller = controller;
         this.intruderPerformsEvasion = new boolean[controller.getNumberOfIntruders()];
+        this.agentIndex = controller.getNumberOfGuards();
     }
 
     @Override
@@ -42,7 +43,8 @@ public class Environment implements MDP<GameState, Integer, DiscreteSpace> {
     public void close() { }
 
     @Override
-    public StepReply<GameState> step(Integer movementTask) {
+    public StepReply<GameState> step(Integer taskIndex) {
+        int movementTask = NetworkUtil.taskIndexToMovementTask(taskIndex);
         if (agentIndex == controller.getNumberOfGuards()) {
             for (int i = 0; i < controller.getNumberOfGuards(); i++) {
                 controller.tickAgent(i);
@@ -54,7 +56,7 @@ public class Environment implements MDP<GameState, Integer, DiscreteSpace> {
                 agentIndex = controller.getNumberOfGuards();
             }
         }
-        System.out.println("Is this really the task, or is it the index? " + movementTask);
+
         int reward = 0;
         GameState observation;
         controller.getAgent(agentIndex).updateGraph(controller.getVisions(agentIndex)); // Update the intruders' graph
