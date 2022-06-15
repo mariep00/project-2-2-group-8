@@ -19,10 +19,6 @@ public class ControllerSurveillanceRLEvasion extends ControllerSurveillance {
     public int tickIntruder(int agentIndex, int movementTask) {
         int reward = 0;
         super.tickAgent(agentIndex, movementTask);
-        // Check if agent finished evasion
-        if (agents[agentIndex].getCurrentTask() != TaskContainer.TaskType.INTRUDER_EVASION) {
-            reward += 15; // TODO This reward won't work
-        }
         if (willBeAlive(agentIndex)) reward += 1;
         else reward -= 15;
 
