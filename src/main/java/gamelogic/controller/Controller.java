@@ -7,6 +7,8 @@ import gamelogic.controller.endingconditions.EndingConditionInterface;
 import gamelogic.datacarriers.Vision;
 import gamelogic.datacarriers.VisionMemory;
 import gamelogic.maps.ScenarioMap;
+import gamelogic.maps.Tile;
+import gui.gamescreen.AgentType;
 
 import java.util.*;
 import java.util.concurrent.*;
@@ -59,7 +61,8 @@ public abstract class Controller {
             currentState.setAgentVision(i, visions[i]);
         }
 
-        currentState = new State(initialPositions, visions, markerController.init(initialPositions),
+
+        currentState = new State(initialPositions, visions, markerController.init(initialPositions, AgentType.GUARD), markerController.init(initialPositions, AgentType.INTRUDER),
                 new VisionMemory[numberOfGuards + numberOfIntruders][numberOfGuards + numberOfIntruders]);
 
         nextState = currentState.copyOf();

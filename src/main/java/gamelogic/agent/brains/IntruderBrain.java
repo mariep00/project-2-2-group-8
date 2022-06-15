@@ -25,11 +25,11 @@ public class IntruderBrain implements BrainInterface {
     }
 
     @Override
-    public int makeDecision(ExplorationGraph graph, double orientation, double pheromoneMarkersDirectionGuard, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen, List<Sound> guardYells) {
+    public int makeDecision(ExplorationGraph graph, double orientation, double pheromoneMarkersDirectionIntruder, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen, List<Sound> guardYells, List<Sound> guardYellsCaught) {
         currentTask = taskDecider.getTaskToPerform(graph, sounds, guardsSeen, intrudersSeen, currentTask);
         //System.out.println("INTRUDER PERFORMS TASK " + currentTask.getType());
         // TODO Add intruder pheromone markers
-        return currentTask.performTask(graph, orientation, -1, sounds, guardsSeen, intrudersSeen);
+        return currentTask.performTask(graph, orientation, pheromoneMarkersDirectionIntruder, sounds, guardsSeen, intrudersSeen);
     }
 
     @Override

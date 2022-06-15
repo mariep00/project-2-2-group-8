@@ -34,9 +34,10 @@ public class AStar {
             if (open.isEmpty() && upperBound == -1) return null;
             if (isFinished) break;
             ANode current = open.removeFirst();
-
+            //System.out.println(current);
             if(current.POSITION.equals(goal)) {
                 goalANode = current;
+                lastNode = current;
                 break;
             }
 
@@ -57,7 +58,8 @@ public class AStar {
                     node.setH(node.POSITION.manhattanDist(goal));
                     node.setParent(current);
                     open.add(node);
-                } else { isFinished = true; }
+                } else { 
+                    isFinished = true; }
             }
         }
 
@@ -163,4 +165,9 @@ class ANode implements HeapItemInterface<ANode> {
         ANode other = (ANode) o;
         return POSITION.equals(other.POSITION);
     }   
+
+    @Override
+    public String toString() {
+        return POSITION.toString();
+    }
 }

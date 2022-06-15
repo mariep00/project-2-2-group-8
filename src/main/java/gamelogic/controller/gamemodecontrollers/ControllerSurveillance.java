@@ -91,6 +91,8 @@ public class ControllerSurveillance extends Controller {
                 if (agents[j] != null) {
                     if (nextState.getAgentPosition(i).dist(nextState.getAgentPosition(j)) <= Math.sqrt(2)) {
                         removeAgent(j);
+                        //add new guard yell --> generated in soundController
+                        soundController.generateGuardYell2(i);
                     }
                 }
             }
@@ -101,10 +103,11 @@ public class ControllerSurveillance extends Controller {
     public void tickAgent(int agentIndex, int movementTask) {
         if (movementTask == -1) {
             movementTask = agents[agentIndex].tick(getVisions(agentIndex),
-                    markerController.getPheromoneMarkersDirection(agentIndex, currentState.getAgentPosition(agentIndex)),
-                    soundController.getSoundDirections(agentIndex), Arrays.copyOfRange(currentState.getAgentsSeen(agentIndex), 0, numberOfGuards),
-                    Arrays.copyOfRange(currentState.getAgentsSeen(agentIndex), numberOfGuards, numberOfGuards + numberOfIntruders),
-                    soundController.getGuardYellDirections(agentIndex));
+                markerController.getPheromoneMarkersDirection(agentIndex, currentState.getAgentPosition(agentIndex), convertAgentIndexToAgentType(agentIndex)),
+                soundController.getSoundDirections(agentIndex), Arrays.copyOfRange(currentState.getAgentsSeen(agentIndex), 0, numberOfGuards),
+                Arrays.copyOfRange(currentState.getAgentsSeen(agentIndex), numberOfGuards, numberOfGuards+numberOfIntruders),
+                soundController.getGuardYellDirections(agentIndex, soundController.getController().getCurrentState().getGuardYells()),
+                soundController.getGuardYellDirections(agentIndex, soundController.getController().getCurrentState().getGuardYellsCaught()));
 
         }
         movementController.moveAgent(agentIndex, movementTask);
@@ -175,7 +178,8 @@ public class ControllerSurveillance extends Controller {
                         otherAgentsSeen[i].secondsAgo() + timestep, otherAgentsSeen[i].orientation(), convertAgentIndexToAgentType(i));
             }
         }
-        if (agentIndex < numberOfGuards && !isZero(yellCooldowns[agentIndex])) {
+        if (agentIndex <
+                numberOfGuards && !isZero(yellCooldowns[agentIndex])) {
             yellCooldowns[agentIndex] -= timestep;
         }
         return otherAgentsSeen;

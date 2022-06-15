@@ -3,10 +3,7 @@ package gamelogic.controller;
 import datastructures.Vector2D;
 import gamelogic.agent.AStar;
 import gamelogic.controller.gamemodecontrollers.ControllerSurveillance;
-import gamelogic.datacarriers.GuardYell;
-import gamelogic.datacarriers.Sound;
-import gamelogic.datacarriers.SoundOrigin;
-import gamelogic.datacarriers.SoundType;
+import gamelogic.datacarriers.*;
 import gamelogic.maps.graph.ExplorationGraph;
 
 import java.util.ArrayList;
@@ -52,9 +49,10 @@ public class SoundController {
         return sounds;
     }
 
-    public List<Sound> getGuardYellDirections(int agentIndex) {
+    public List<Sound> getGuardYellDirections(int agentIndex, List<GuardYell> guardYells) {
+        //System.out.println(guardYells);
         Vector2D currentPos = controller.getCurrentState().getAgentPosition(agentIndex);
-        List<GuardYell> guardYells = controller.getCurrentState().getGuardYells();
+        //List<GuardYell> guardYells = controller.getCurrentState().getGuardYells();
         ArrayList<Sound> anglesOfGuardYell = new ArrayList<>();
 
         for (GuardYell guardYell : guardYells) {
@@ -68,6 +66,8 @@ public class SoundController {
         }
         return anglesOfGuardYell;
     }
+
+
 
     private double getDistanceToSound(Vector2D origin, Vector2D currentPosition, int threshold) {
         double distance = -1;
@@ -92,5 +92,12 @@ public class SoundController {
     }
     public void generateGuardYell(int agentIndex) {
         controller.nextState.addGuardYell(new GuardYell(controller.getCurrentState().getAgentPosition(agentIndex), agentIndex));
+    }
+    //create a new guard yell and put a record
+    public void generateGuardYell2(int agentIndex) {
+        controller.nextState.addGuardYell(new GuardYell(controller.getCurrentState().getAgentPosition(agentIndex), agentIndex));
+    }
+    public Controller getController() {
+        return controller;
     }
 }
