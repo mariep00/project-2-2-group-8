@@ -6,7 +6,7 @@ import org.deeplearning4j.rl4j.network.dqn.DQNFactoryStdDense;
 import org.nd4j.linalg.learning.config.RmsProp;
 
 public class NetworkUtil {
-    public static final int NUMBER_OF_INPUTS = 49;
+    public static final int NUMBER_OF_INPUTS = 56; // 16+30+1+8+1
     public static QLearningConfiguration buildConfig() {
         return QLearningConfiguration.builder()
                 .maxEpochStep(200)

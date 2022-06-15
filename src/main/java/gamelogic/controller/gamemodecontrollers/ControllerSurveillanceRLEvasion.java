@@ -43,6 +43,7 @@ public class ControllerSurveillanceRLEvasion extends ControllerSurveillance {
         double[] wallsInput = getWallsInput(agentIndex);
         double[] pheromoneInput = getPheromoneMarkerInput(agentIndex);
         double[] soundInput = getSoundInput(agentIndex, soundEvadingFrom);
+        System.out.println(soundInput.length);
         double[] orientationInput = getOrientationInput(agentIndex);
 
         double[] mergedArray = ArrayUtils.addAll(ArrayUtils.addAll(ArrayUtils.addAll(ArrayUtils.addAll(visionInput, wallsInput), pheromoneInput), soundInput), orientationInput);
@@ -101,7 +102,7 @@ public class ControllerSurveillanceRLEvasion extends ControllerSurveillance {
     }
 
     private double[] getPheromoneMarkerInput(int agentIndex) {
-        return new double[]{markerController.getPheromoneMarkersDirection(agentIndex, currentState.getAgentPosition(agentIndex))}; // TODO Change to intruder marker
+        return new double[]{-1}; // TODO Change to intruder pheromone markers
     }
 
     private double[] getSoundInput(int agentIndex, Sound soundEvadingFrom) {

@@ -112,12 +112,12 @@ public class ControllerSurveillance extends Controller {
     }
 
     @Override
-    protected void updateProgress() {
+    public void updateProgress() {
         endingSurveillance.updateState(this);
     }
 
     @Override
-    protected void updateAgentsSeen() {
+    public void updateAgentsSeen() {
         for (int i = 0; i < agents.length; i++) {
             if (agents[i] != null) {
                 nextState.setAgentsSeen(i, updateAgentVisionMemory(i, nextState));
