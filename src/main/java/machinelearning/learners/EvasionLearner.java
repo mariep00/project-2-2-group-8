@@ -47,6 +47,6 @@ public class EvasionLearner {
         dql.train();
         env.close();
 
-        dql.getNeuralNet().save("src/main/java/machinelearning/evasion/results");
+        dql.getNeuralNet().save("src/main/java/machinelearning/evasion/results/evasion_model");
     }
 }

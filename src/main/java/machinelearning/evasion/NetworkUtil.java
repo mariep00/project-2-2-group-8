@@ -10,7 +10,7 @@ public class NetworkUtil {
     public static QLearningConfiguration buildConfig() {
         return QLearningConfiguration.builder()
                 .maxEpochStep(200)
-                .maxStep(15000)
+                .maxStep(750)
                 .expRepMaxSize(150000)
                 .batchSize(128)
                 .targetDqnUpdateFreq(500)
