@@ -4,12 +4,15 @@ import gamelogic.agent.tasks.TaskContainer;
 import gamelogic.agent.tasks.TaskInterface;
 import gamelogic.agent.tasks.intruder.EvasionTaskBaseline;
 import gamelogic.controller.gamemodecontrollers.ControllerSurveillanceRLEvasion;
+import gamelogic.datacarriers.Sound;
+import gamelogic.datacarriers.VisionMemory;
 import org.deeplearning4j.gym.StepReply;
 import org.deeplearning4j.rl4j.mdp.MDP;
 import org.deeplearning4j.rl4j.space.DiscreteSpace;
 import org.deeplearning4j.rl4j.space.ObservationSpace;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class Environment implements MDP<GameState, Integer, DiscreteSpace> {
     private final ControllerSurveillanceRLEvasion controller;
@@ -36,7 +39,7 @@ public class Environment implements MDP<GameState, Integer, DiscreteSpace> {
 
     @Override
     public GameState reset() {
-        return controller.buildStateObservation(agentIndex, null, null, true);
+        return controller.buildStateObservation(agentIndex, null, null, null, null, -1, true);
     }
 
     @Override
@@ -61,31 +64,34 @@ public class Environment implements MDP<GameState, Integer, DiscreteSpace> {
         GameState observation;
         controller.getAgent(agentIndex).updateGraph(controller.getVisions(agentIndex)); // Update the intruders' graph
 
-        TaskInterface intruderWantsToPerformTask = controller.getAgent(agentIndex).getTaskFromDecider(controller.markerController.getPheromoneMarkersDirection(agentIndex, controller.getCurrentState().getAgentPosition(agentIndex)),
-                controller.soundController.getSoundDirections(agentIndex), Arrays.copyOfRange(controller.getCurrentState().getAgentsSeen(agentIndex), 0, controller.getNumberOfGuards()),
-                Arrays.copyOfRange(controller.getCurrentState().getAgentsSeen(agentIndex), controller.getNumberOfGuards(), controller.getNumberOfGuards() + controller.getNumberOfIntruders()),
-                controller.soundController.getGuardYellDirections(agentIndex));
+        double phermoneMarkersDirection = controller.markerController.getPheromoneMarkersDirection(agentIndex, controller.getCurrentState().getAgentPosition(agentIndex));
+        List<Sound> sounds = controller.soundController.getSoundDirections(agentIndex);
+        VisionMemory[] visionMemories = controller.getCurrentState().getAgentsSeen(agentIndex);
+        TaskInterface intruderWantsToPerformTask = controller.getAgent(agentIndex).getTaskFromDecider(phermoneMarkersDirection, sounds,
+                Arrays.copyOfRange(visionMemories, 0, controller.getNumberOfGuards()),
+                Arrays.copyOfRange(visionMemories, controller.getNumberOfGuards(), controller.getNumberOfGuards() + controller.getNumberOfIntruders()),
+                null);
 
         // Check if the intruder wants to do evasion
         if (intruderWantsToPerformTask.getType() == TaskContainer.TaskType.INTRUDER_EVASION) {
             intruderPerformsEvasion[agentIndex-controller.getNumberOfGuards()] = true;
             reward = controller.tickIntruder(agentIndex, movementTask);
             EvasionTaskBaseline evasionTaskBaseline = ((EvasionTaskBaseline) intruderWantsToPerformTask);
-            observation = controller.buildStateObservation(agentIndex, evasionTaskBaseline.getSoundToEvadeFrom(), evasionTaskBaseline.getVisionToEvadeFrom(), false);
+            observation = controller.buildStateObservation(agentIndex, evasionTaskBaseline.getSoundToEvadeFrom(), evasionTaskBaseline.getVisionToEvadeFrom(), visionMemories, sounds, phermoneMarkersDirection, false);
         }
         else {
             if (intruderPerformsEvasion[agentIndex-controller.getNumberOfGuards()]) {
                 reward += 15;
                 intruderPerformsEvasion[agentIndex-controller.getNumberOfGuards()] = false;
             }
-            int tempMovementTask = controller.getAgent(agentIndex).makeDecision(controller.markerController.getPheromoneMarkersDirection(agentIndex, controller.getCurrentState().getAgentPosition(agentIndex)),
-                    controller.soundController.getSoundDirections(agentIndex), Arrays.copyOfRange(controller.getCurrentState().getAgentsSeen(agentIndex), 0, controller.getNumberOfGuards()),
-                    Arrays.copyOfRange(controller.getCurrentState().getAgentsSeen(agentIndex), controller.getNumberOfGuards(), controller.getNumberOfGuards() + controller.getNumberOfIntruders()),
-                    controller.soundController.getGuardYellDirections(agentIndex));
+            int tempMovementTask = controller.getAgent(agentIndex).makeDecision(phermoneMarkersDirection, sounds,
+                    Arrays.copyOfRange(visionMemories, 0, controller.getNumberOfGuards()),
+                    Arrays.copyOfRange(visionMemories, controller.getNumberOfGuards(), controller.getNumberOfGuards() + controller.getNumberOfIntruders()),
+                    null);
 
             controller.movementController.moveAgent(agentIndex, tempMovementTask);
             controller.getNextState().setAgentVision(agentIndex, controller.calculateFOVAbsolute(agentIndex, controller.getNextState().getAgentPosition(agentIndex), controller.getNextState()));
-            observation = controller.buildStateObservation(agentIndex, null, null, true);
+            observation = controller.buildStateObservation(agentIndex, null, null, null, null, -1, true);
         }
 
         agentIndex++;

@@ -1,5 +1,8 @@
 package gamelogic.controller.gamemodecontrollers;
 
+import datastructures.Vector2D;
+import datastructures.quicksort.QuickSort;
+import datastructures.quicksort.SortObject;
 import gamelogic.agent.tasks.TaskContainer;
 import gamelogic.controller.endingconditions.EndingSurveillance;
 import gamelogic.datacarriers.Sound;
@@ -7,15 +10,13 @@ import gamelogic.datacarriers.VisionMemory;
 import gamelogic.maps.ScenarioMap;
 import gamelogic.maps.graph.ExplorationGraph;
 import machinelearning.evasion.GameState;
+import machinelearning.evasion.NetworkUtil;
 import org.apache.commons.lang.ArrayUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
-
-import datastructures.Vector2D;
-import datastructures.quicksort.QuickSort;
-import datastructures.quicksort.SortObject;
+import java.util.List;
 
 public class ControllerSurveillanceRLEvasion extends ControllerSurveillance {
     public ControllerSurveillanceRLEvasion(ScenarioMap scenarioMap, EndingSurveillance endingCondition, TaskContainer taskContainer, int seed) {
@@ -40,20 +41,29 @@ public class ControllerSurveillanceRLEvasion extends ControllerSurveillance {
         return true;
     }
 
-    public GameState buildStateObservation(int agentIndex, Sound soundEvadingFrom, VisionMemory visionEvadingFrom, boolean skip) {
-        double[] visionInput = getVisionInput(agentIndex, visionEvadingFrom);
-        double[] wallsInput = getWallsInput(agentIndex);
-        double[] pheromoneInput = getPheromoneMarkerInput(agentIndex);
-        double[] soundInput = getSoundInput(agentIndex, soundEvadingFrom);
-        double[] orientationInput = getOrientationInput(agentIndex);
+    public GameState buildStateObservation(int agentIndex, Sound soundEvadingFrom, VisionMemory visionEvadingFrom, VisionMemory[] visionMemories, List<Sound> sounds, double phermoneMarkersDirection, boolean skip) {
+        double[] normalizedData;
+        // Check if the intruder is performing evasion, if not return an array of only -1
+        // This is made s.t. when an intruder is not performing evasion all parameters are null
+        if (visionMemories != null) {
+            double[] visionInput = getVisionInput(visionMemories, visionEvadingFrom);
+            double[] wallsInput = getWallsInput(agentIndex);
+            double[] pheromoneInput = new double[]{phermoneMarkersDirection};
+            double[] soundInput = getSoundInput(sounds, soundEvadingFrom);
+            double[] orientationInput = getOrientationInput(agentIndex);
 
-        double[] mergedArray = ArrayUtils.addAll(ArrayUtils.addAll(ArrayUtils.addAll(ArrayUtils.addAll(visionInput, wallsInput), pheromoneInput), soundInput), orientationInput);
-        double[] normalizedData = normalize(mergedArray);
+            double[] mergedArray = ArrayUtils.addAll(ArrayUtils.addAll(ArrayUtils.addAll(ArrayUtils.addAll(visionInput, wallsInput), pheromoneInput), soundInput), orientationInput);
+            normalizedData = normalize(mergedArray);
+        }
+        else {
+            normalizedData = new double[NetworkUtil.NUMBER_OF_INPUTS];
+            Arrays.fill(normalizedData, -1);
+        }
         return new GameState(normalizedData, skip);
     }
 
-    private double[] getVisionInput(int agentIndex, VisionMemory visionEvadingFrom) {
-        VisionMemory[] visionMemoryArray = Arrays.copyOf(currentState.getAgentsSeen(agentIndex), numberOfGuards+numberOfIntruders);
+    private double[] getVisionInput(VisionMemory[] visionMemories, VisionMemory visionEvadingFrom) {
+        VisionMemory[] visionMemoryArray = Arrays.copyOf(visionMemories, numberOfGuards+numberOfIntruders);
         ArrayList<VisionMemory> visionMemoryList = new ArrayList<>(Arrays.stream(visionMemoryArray).toList());
         visionMemoryList.remove(visionEvadingFrom);
 
@@ -123,7 +133,7 @@ public class ControllerSurveillanceRLEvasion extends ControllerSurveillance {
             QuickSort<Vector2D> quickSort = new QuickSort<>();
             for (int i=0; i<walls.size(); i++) {
                 Vector2D wall = walls.get(i);
-                sortObjects[i] = new SortObject<Vector2D>(wall, agentPosition.dist(wall));
+                sortObjects[i] = new SortObject<>(wall, agentPosition.dist(wall));
             }
             SortObject<Vector2D>[] sortedObjects = quickSort.sort(sortObjects, 0, sortObjects.length-1);
 
@@ -135,12 +145,7 @@ public class ControllerSurveillanceRLEvasion extends ControllerSurveillance {
         return wallsInput;
     }
 
-    private double[] getPheromoneMarkerInput(int agentIndex) {
-        return new double[]{-1}; // TODO Change to intruder pheromone markers
-    }
-
-    private double[] getSoundInput(int agentIndex, Sound soundEvadingFrom) {
-        ArrayList<Sound> sounds = new ArrayList<>(soundController.getSoundDirections(agentIndex));
+    private double[] getSoundInput(List<Sound> sounds, Sound soundEvadingFrom) {
         double[] soundInput = new double[8];
         if (soundEvadingFrom != null) {
             soundInput[0] = soundEvadingFrom.angle();
