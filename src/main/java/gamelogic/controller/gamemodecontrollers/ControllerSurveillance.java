@@ -14,6 +14,7 @@ import gamelogic.maps.ScenarioMap;
 import gamelogic.maps.Tile;
 import gamelogic.maps.Tile.Type;
 import gamelogic.maps.graph.ExplorationGraph;
+import gui.gamescreen.AgentType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -146,7 +147,7 @@ public class ControllerSurveillance extends Controller {
                 if (i != agentIndex) {
                     for (Vector2D pos : state.getVision(agentIndex)) {
                         if (pos.equals(state.getAgentPosition(i))) {
-                            otherAgentsSeen[i] = new VisionMemory(convertAbsolutePosToRelativeToCurrentPos(pos, agentIndex, state), 0, agents[i].getOrientation());
+                            otherAgentsSeen[i] = new VisionMemory(convertAbsolutePosToRelativeToCurrentPos(pos, agentIndex, state), 0, agents[i].getOrientation(), convertAgentIndexToAgentType(i));
                             // Check if agent we're updating is a guard and agent we're seeing is an intruder, then yell
                             if (otherAgentsSeen[i].position().equals(new Vector2D(0, 0))) {
                                try {
@@ -171,7 +172,7 @@ public class ControllerSurveillance extends Controller {
                 // Position is updated s.t. it stays relative to the current position of the agent
                 // Seconds ago is incremented with the timestep
                 otherAgentsSeen[i] = new VisionMemory(otherAgentsSeen[i].position().subtract((nextState.getAgentPosition(agentIndex).subtract(currentState.getAgentPosition(agentIndex)))),
-                        otherAgentsSeen[i].secondsAgo() + timestep, otherAgentsSeen[i].orientation());
+                        otherAgentsSeen[i].secondsAgo() + timestep, otherAgentsSeen[i].orientation(), convertAgentIndexToAgentType(i));
             }
         }
         if (agentIndex < numberOfGuards && !isZero(yellCooldowns[agentIndex])) {
@@ -221,6 +222,13 @@ public class ControllerSurveillance extends Controller {
         if (guardsWin) {
             return 0;
         } else return 1;
+    }
+
+    public int convertAgentType(AgentType agentType) {
+        return agentType == AgentType.GUARD ? 0 : 1;
+    }
+    public AgentType convertAgentIndexToAgentType(int agentIndex) {
+        return agentIndex < numberOfGuards ? AgentType.GUARD : AgentType.INTRUDER;
     }
 
     public ExplorationGraph getMapGraph() { return mapGraph; }

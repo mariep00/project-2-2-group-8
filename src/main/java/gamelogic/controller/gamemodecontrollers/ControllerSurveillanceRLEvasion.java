@@ -6,6 +6,7 @@ import gamelogic.datacarriers.Sound;
 import gamelogic.datacarriers.VisionMemory;
 import gamelogic.maps.ScenarioMap;
 import machinelearning.evasion.GameState;
+import org.apache.commons.lang.ArrayUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,24 +39,33 @@ public class ControllerSurveillanceRLEvasion extends ControllerSurveillance {
     }
 
     public GameState buildStateObservation(int agentIndex, Sound soundEvadingFrom, VisionMemory visionEvadingFrom, boolean skip) {
-        double[] visionInput = getVisionInput(agentIndex);
+        double[] visionInput = getVisionInput(agentIndex, visionEvadingFrom);
         double[] wallsInput = getWallsInput(agentIndex);
         double[] pheromoneInput = getPheromoneMarkerInput(agentIndex);
         double[] soundInput = getSoundInput(agentIndex, soundEvadingFrom);
         double[] orientationInput = getOrientationInput(agentIndex);
-        /*
-        return new GameState(new double[] {
-                GameStateUtil.getStateForDirection(agents[agentIndex], getScenarioMap().getMap(), currentState.getAgentPosition(agentIndex), angle, 0),
-                GameStateUtil.getStateForDirection(agents[agentIndex], getScenarioMap().getMap(), currentState.getAgentPosition(agentIndex), angle, 1),
-                GameStateUtil.getStateForDirection(agents[agentIndex], getScenarioMap().getMap(), currentState.getAgentPosition(agentIndex), angle, 3),
-                GameStateUtil.getStateForDirection(agents[agentIndex], getScenarioMap().getMap(), currentState.getAgentPosition(agentIndex), angle, 4),
-        }, skip);*/
-        return null;
+
+        double[] mergedArray = ArrayUtils.addAll(ArrayUtils.addAll(ArrayUtils.addAll(ArrayUtils.addAll(visionInput, wallsInput), pheromoneInput), soundInput), orientationInput);
+
+        // TODO Apply normalization to the mergedArray
+        return new GameState(mergedArray, skip);
     }
 
-    private double[] getVisionInput(int agentIndex) {
+    private double[] getVisionInput(int agentIndex, VisionMemory visionEvadingFrom) {
         VisionMemory[] visionMemoryArray = Arrays.copyOf(currentState.getAgentsSeen(agentIndex), numberOfGuards+numberOfIntruders);
-        Arrays.sort(visionMemoryArray, (visionMemory1, visionMemory2) -> {
+        ArrayList<VisionMemory> visionMemoryList = new ArrayList<>(Arrays.stream(visionMemoryArray).toList());
+        visionMemoryList.remove(visionEvadingFrom);
+
+        double[] visionInput = new double[16];
+        if (visionEvadingFrom != null) {
+            visionInput[0] = visionEvadingFrom.position().angle();
+            visionInput[1] = visionEvadingFrom.position().magnitude();
+            visionInput[2] = visionEvadingFrom.secondsAgo();
+            visionInput[3] = convertAgentType(visionEvadingFrom.agentType());
+        }
+
+
+        visionMemoryList.sort((visionMemory1, visionMemory2) -> {
             if (visionMemory1 == null && visionMemory2 == null) {
                 return 0;
             }
@@ -68,19 +78,19 @@ public class ControllerSurveillanceRLEvasion extends ControllerSurveillance {
             return visionMemory1.compareTo(visionMemory2);
         });
 
-        VisionMemory[] bestThreeVisionMemory = Arrays.copyOfRange(visionMemoryArray, 0, 3);
-        double[] visionInput = new double[9];
-        for (int i = 0; i < bestThreeVisionMemory.length; i++) {
-            VisionMemory visionMemory = bestThreeVisionMemory[i];
+        for (int i = 0; i < 3; i++) {
+            VisionMemory visionMemory = visionMemoryList.get(i);
             if (visionMemory != null) {
-                visionInput[i * 3] = visionMemory.position().angle();
-                visionInput[1 + (i * 3)] = visionMemory.position().magnitude();
-                visionInput[2 + (i * 3)] = visionMemory.secondsAgo();
+                visionInput[(i * 4)+4] = visionMemory.position().angle();
+                visionInput[(1 + (i * 4))+4] = visionMemory.position().magnitude();
+                visionInput[(2 + (i * 4))+4] = visionMemory.secondsAgo();
+                visionInput[(3 + (i * 4))+4] = convertAgentType(visionMemory.agentType());
             }
             else {
-                visionInput[i * 3] = -1;
-                visionInput[1 + (i * 3)] = -1;
-                visionInput[2 + (i * 3)] = -1;
+                visionInput[(i * 4)+4] = -1;
+                visionInput[(1 + (i * 4))+4] = -1;
+                visionInput[(2 + (i * 4))+4] = -1;
+                visionInput[(3 + (i * 4))+4] = -1;
             }
         }
         return visionInput;
@@ -122,12 +132,12 @@ public class ControllerSurveillanceRLEvasion extends ControllerSurveillance {
         int count = 0;
         for (int i = sounds.size()-1; i >= sounds.size()-3; i--) {
             if (i >= 0) {
-                soundInput[count*2] = sounds.get(i).angle();
-                soundInput[1+(count*2)] = sounds.get(i).loudness();
+                soundInput[(count*2)+2] = sounds.get(i).angle();
+                soundInput[(1+(count*2))+2] = sounds.get(i).loudness();
             }
             else {
-                soundInput[count*2] = -1;
-                soundInput[1+(count*2)] = -1;
+                soundInput[(count*2)+2] = -1;
+                soundInput[(1+(count*2))+2] = -1;
             }
             count++;
         }
