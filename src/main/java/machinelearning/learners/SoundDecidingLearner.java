@@ -47,13 +47,13 @@ public class SoundDecidingLearner {
             System.out.println("creating the model...");
             MultiLayerConfiguration configuration
                     = new NeuralNetConfiguration.Builder()
-                    .updater(new Adam.Builder().epsilon(1e-6).learningRate(1e-3).build())
+                    .updater(new Adam.Builder().epsilon(1e-6).learningRate(8e-4).build())
                     .l2(1e-4)
                     .activation(Activation.TANH)
                     .weightInit(WeightInit.XAVIER)
                     .list()
-                    .layer(0, new DenseLayer.Builder().nIn(6).nOut(4).build())
-                    .layer(1, new DenseLayer.Builder().nIn(4).nOut(4).build())
+                    .layer(0, new DenseLayer.Builder().nIn(6).nOut(5).build())
+                    .layer(1, new DenseLayer.Builder().nIn(5).nOut(4).build())
                     .layer(2, new OutputLayer.Builder(
                             LossFunctions.LossFunction.MEAN_SQUARED_LOGARITHMIC_ERROR)
                             .activation(Activation.SOFTMAX)
@@ -67,7 +67,8 @@ public class SoundDecidingLearner {
 
         System.out.println("Learning...");
 
-        /*UIServer uiServer = UIServer.getInstance();
+        /*
+        UIServer uiServer = UIServer.getInstance();
 
         //Configure where the network information (gradients, activations, score vs. time etc) is to be stored
         //Then add the StatsListener to collect this information from the network, as it trains
@@ -77,7 +78,8 @@ public class SoundDecidingLearner {
 
         uiServer.attach(statsStorage); //Attach the StatsStorage instance to the UI: this allows the contents of the StatsStorage to be visualized
         */
-        final int NUMBER_OF_EPOCHS = 50000;
+
+        final int NUMBER_OF_EPOCHS = 2000;
         for (int i = 0; i < NUMBER_OF_EPOCHS; i++) {
             System.out.println("Current epoch: " + (i+1) + "...");
 

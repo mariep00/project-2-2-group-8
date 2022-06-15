@@ -12,4 +12,11 @@ public record VisionMemory(Vector2D position, double secondsAgo, double orientat
         }
         return false;
     }
+
+    public int compareTo(VisionMemory other) {
+        if (other == null) return 1;
+        else if (secondsAgo < other.secondsAgo) return 1;
+        else if (secondsAgo == other.secondsAgo) return position.magnitude() < other.position.magnitude() ? 1 : 0;
+        return -1;
+    }
 }
