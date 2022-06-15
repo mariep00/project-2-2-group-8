@@ -39,7 +39,6 @@ public class ControllerSurveillanceRLEvasion extends ControllerSurveillance {
         double[] wallsInput = getWallsInput(agentIndex);
         double[] pheromoneInput = getPheromoneMarkerInput(agentIndex);
         double[] soundInput = getSoundInput(agentIndex, soundEvadingFrom);
-        System.out.println(soundInput.length);
         double[] orientationInput = getOrientationInput(agentIndex);
 
         double[] mergedArray = ArrayUtils.addAll(ArrayUtils.addAll(ArrayUtils.addAll(ArrayUtils.addAll(visionInput, wallsInput), pheromoneInput), soundInput), orientationInput);
@@ -59,6 +58,12 @@ public class ControllerSurveillanceRLEvasion extends ControllerSurveillance {
             visionInput[1] = visionEvadingFrom.position().magnitude();
             visionInput[2] = visionEvadingFrom.secondsAgo();
             visionInput[3] = convertAgentType(visionEvadingFrom.agentType());
+        }
+        else {
+            visionInput[0] = -1;
+            visionInput[1] = -1;
+            visionInput[2] = -1;
+            visionInput[3] = -1;
         }
 
 
@@ -138,7 +143,6 @@ public class ControllerSurveillanceRLEvasion extends ControllerSurveillance {
             }
             count++;
         }
-
         return soundInput;
     }
 
