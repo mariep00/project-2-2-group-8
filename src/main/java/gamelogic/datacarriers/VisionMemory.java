@@ -1,8 +1,9 @@
 package gamelogic.datacarriers;
 
 import datastructures.Vector2D;
+import gui.gamescreen.AgentType;
 
-public record VisionMemory(Vector2D position, double secondsAgo, double orientation) {
+public record VisionMemory(Vector2D position, double secondsAgo, double orientation, AgentType agentType) {
     @Override
     public boolean equals(Object other) {
         if (other == null) return false;
