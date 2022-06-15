@@ -2,7 +2,6 @@ package gamelogic.controller;
 
 import datastructures.Vector2D;
 import gamelogic.agent.Agent;
-import gamelogic.agent.tasks.TaskContainer;
 import gamelogic.maps.MarkerInterface;
 import gamelogic.maps.PheromoneMarker;
 import gamelogic.maps.Tile;
@@ -105,13 +104,5 @@ public class MarkerController {
             angleSum += position.getAngleBetweenVector(pheromoneMarker.getPosition()) * pheromoneMarker.getStrength();
         }
         return angleSum/divider;
-    }
-
-    public double getGuardsPheromoneMarkersDirection(int agentIndex, Vector2D position) {
-        return getPheromoneMarkersDirection(agentIndex, position, AgentType.GUARD);
-    }
-
-    public double getIntrudersPheromoneMarkersDirection(int agentIndex, Vector2D position) {
-        return getPheromoneMarkersDirection(agentIndex, position, AgentType.INTRUDER);
     }
 }

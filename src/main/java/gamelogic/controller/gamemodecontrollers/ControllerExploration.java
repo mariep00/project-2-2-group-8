@@ -7,6 +7,7 @@ import gamelogic.agent.tasks.TaskContainer;
 import gamelogic.controller.Controller;
 import gamelogic.controller.endingconditions.EndingExploration;
 import gamelogic.maps.ScenarioMap;
+import gui.gamescreen.AgentType;
 
 public class ControllerExploration extends Controller {
     private final EndingExploration endingExploration;
@@ -34,7 +35,7 @@ public class ControllerExploration extends Controller {
     @Override
     protected void tickAgent(int agentIndex) {
         int movementTask = agents[agentIndex].tick(getVisions(agentIndex),
-                markerController.getGuardsPheromoneMarkersDirection(agentIndex, currentState.getAgentPosition(agentIndex)),
+                markerController.getPheromoneMarkersDirection(agentIndex, currentState.getAgentPosition(agentIndex), AgentType.GUARD),
                 null, null, null, null, null);
 
         movementController.moveAgent(agentIndex, movementTask);

@@ -14,6 +14,7 @@ import gamelogic.maps.ScenarioMap;
 import gamelogic.maps.Tile;
 import gamelogic.maps.Tile.Type;
 import gamelogic.maps.graph.ExplorationGraph;
+import gui.gamescreen.AgentType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -101,7 +102,7 @@ public class ControllerSurveillance extends Controller {
     @Override
     protected void tickAgent(int agentIndex) {
         int movementTask = agents[agentIndex].tick(getVisions(agentIndex),
-                markerController.getGuardsPheromoneMarkersDirection(agentIndex, currentState.getAgentPosition(agentIndex)),
+                markerController.getPheromoneMarkersDirection(agentIndex, currentState.getAgentPosition(agentIndex), convertAgentIndexToAgentType(agentIndex)),
                 soundController.getSoundDirections(agentIndex), Arrays.copyOfRange(currentState.getAgentsSeen(agentIndex), 0, numberOfGuards),
                 Arrays.copyOfRange(currentState.getAgentsSeen(agentIndex), numberOfGuards, numberOfGuards+numberOfIntruders),
                 soundController.getGuardYellDirections(agentIndex, soundController.getController().getCurrentState().getGuardYells()),
@@ -217,6 +218,10 @@ public class ControllerSurveillance extends Controller {
         if (guardsWin) {
             return 0;
         } else return 1;
+    }
+
+    public AgentType convertAgentIndexToAgentType(int agentIndex) {
+        return agentIndex < numberOfGuards ? AgentType.GUARD : AgentType.INTRUDER;
     }
 
     public ExplorationGraph getMapGraph() { return mapGraph; }
