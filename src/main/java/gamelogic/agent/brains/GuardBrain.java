@@ -2,8 +2,8 @@ package gamelogic.agent.brains;
 
 import gamelogic.agent.tasks.TaskContainer;
 import gamelogic.agent.tasks.TaskContainer.TaskType;
-import gamelogic.agent.tasks.deciders.TaskDeciderInterface;
 import gamelogic.agent.tasks.TaskInterface;
+import gamelogic.agent.tasks.deciders.TaskDeciderInterface;
 import gamelogic.datacarriers.Sound;
 import gamelogic.datacarriers.VisionMemory;
 import gamelogic.maps.graph.ExplorationGraph;

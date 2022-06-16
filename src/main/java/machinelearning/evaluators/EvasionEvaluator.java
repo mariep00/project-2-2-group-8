@@ -1,20 +1,7 @@
 package machinelearning.evaluators;
 
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.Paths;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-
 import gamelogic.agent.tasks.TaskContainer;
-import gamelogic.agent.tasks.general.AvoidCollisionTask;
-import gamelogic.agent.tasks.general.CaptureTargetAreaTask;
-import gamelogic.agent.tasks.general.ExplorationInDirection;
-import gamelogic.agent.tasks.general.ExplorationTaskFrontier;
-import gamelogic.agent.tasks.general.PathfindingTask;
+import gamelogic.agent.tasks.general.*;
 import gamelogic.agent.tasks.guard.ClosePursuingTask;
 import gamelogic.agent.tasks.guard.FarPursuingTask;
 import gamelogic.agent.tasks.guard.FindSoundSource;
@@ -25,6 +12,15 @@ import gamelogic.controller.endingconditions.EndingSurveillance;
 import gamelogic.controller.gamemodecontrollers.ControllerSurveillance;
 import gamelogic.maps.MapBuilder;
 import gamelogic.maps.ScenarioMap;
+
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Paths;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 public class EvasionEvaluator {
 
@@ -45,7 +41,7 @@ public class EvasionEvaluator {
     public static void main(String[] args) throws InterruptedException {
         createFile();
         
-        for (int j=0; j<MAPS; j++) {
+        for (int j = 0; j < MAPS; j++) {
             URL url = EvasionEvaluator.class.getClassLoader().getResource("maps/"+FILE_NAME[j]);
             totalTimeIntruder = new double[2];
             winIntruder = new int[2];

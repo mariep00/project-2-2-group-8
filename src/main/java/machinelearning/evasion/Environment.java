@@ -70,7 +70,7 @@ public class Environment implements MDP<GameState, Integer, DiscreteSpace> {
         GameState observation;
         controller.getAgent(agentIndex).updateGraph(controller.getVisions(agentIndex)); // Update the intruders' graph
 
-        double phermoneMarkersDirection = controller.markerController.getPheromoneMarkersDirection(agentIndex, controller.getCurrentState().getAgentPosition(agentIndex), (agentIndex < controller.getNumberOfGuards() ? AgentType.GUARD : AgentType.INTRUDER));
+        double phermoneMarkersDirection = controller.markerController.getPheromoneMarkersDirection(agentIndex, controller.getCurrentState().getAgentPosition(agentIndex), AgentType.INTRUDER);
         List<Sound> sounds = controller.soundController.getSoundDirections(agentIndex);
         VisionMemory[] visionMemories = controller.getCurrentState().getAgentsSeen(agentIndex);
         TaskInterface intruderWantsToPerformTask = controller.getAgent(agentIndex).getTaskFromDecider(phermoneMarkersDirection, sounds,
@@ -80,7 +80,7 @@ public class Environment implements MDP<GameState, Integer, DiscreteSpace> {
 
         // Check if the intruder wants to do evasion
         if (intruderWantsToPerformTask.getType() == TaskContainer.TaskType.INTRUDER_EVASION) {
-            System.out.println("Intruder performs evasion");
+            //System.out.println("Intruder performs evasion");
             intruderPerformsEvasion[agentIndex-controller.getNumberOfGuards()] = true;
             reward = controller.tickIntruder(agentIndex, movementTask);
             EvasionTaskBaseline evasionTaskBaseline = ((EvasionTaskBaseline) intruderWantsToPerformTask);
@@ -110,6 +110,8 @@ public class Environment implements MDP<GameState, Integer, DiscreteSpace> {
             controller.updateProgress();
             controller.switchToNextState();
         }
+
+        System.out.println(reward);
 
         return new StepReply<>(observation, reward, controller.getEndingCondition().gameFinished(), "IntruderEvasionRL");
     }

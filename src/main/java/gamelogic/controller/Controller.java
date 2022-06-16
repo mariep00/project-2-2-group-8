@@ -7,11 +7,12 @@ import gamelogic.controller.endingconditions.EndingConditionInterface;
 import gamelogic.datacarriers.Vision;
 import gamelogic.datacarriers.VisionMemory;
 import gamelogic.maps.ScenarioMap;
-import gamelogic.maps.Tile;
 import gui.gamescreen.AgentType;
 
-import java.util.*;
-import java.util.concurrent.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.concurrent.Callable;
 
 @SuppressWarnings("unchecked")
 

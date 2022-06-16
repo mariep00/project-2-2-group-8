@@ -35,6 +35,8 @@ public class ControllerSurveillanceRLEvasion extends ControllerSurveillance {
     private boolean willBeAlive(int agentIndex) {
         for (int i = 0; i < numberOfGuards; i++) {
             if (nextState.getAgentPosition(i).dist(nextState.getAgentPosition(agentIndex)) <= Math.sqrt(2)) {
+                removeAgent(agentIndex);
+                soundController.generateGuardYell2(i);
                 return false;
             }
         }

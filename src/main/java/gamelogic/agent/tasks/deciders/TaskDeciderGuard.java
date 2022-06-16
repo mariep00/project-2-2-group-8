@@ -145,9 +145,17 @@ public class TaskDeciderGuard implements TaskDeciderInterface {
                     }
                 }
                 if (!matchedSound) {
-                    double diff = Math.abs(sound.angle()-pheromoneMarkerDirection);
-                    if ((diff > 180 ? 360 - diff : diff) >= soundAndMarkerThreshold && (closestUnmatchedSound == null || sound.loudness() < closestUnmatchedSound.loudness())) {
-                        closestUnmatchedSound = sound;
+                    double diff;
+                    if (pheromoneMarkerDirection != -1) {
+                        diff = Math.abs(sound.angle()-pheromoneMarkerDirection);
+                        if ((diff > 180 ? 360 - diff : diff) >= soundAndMarkerThreshold && (closestUnmatchedSound == null || sound.loudness() < closestUnmatchedSound.loudness())) {
+                            closestUnmatchedSound = sound;
+                        }
+                    }
+                    else {
+                        if (closestUnmatchedSound == null || sound.loudness() < closestUnmatchedSound.loudness()) {
+                            closestUnmatchedSound = sound;
+                        }
                     }
                 }
             }
