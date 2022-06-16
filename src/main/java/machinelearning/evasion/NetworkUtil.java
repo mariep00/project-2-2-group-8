@@ -26,8 +26,8 @@ public class NetworkUtil {
 
     public static DQNFactoryStdDense buildDQNFactory() {
         final DQNDenseNetworkConfiguration build = DQNDenseNetworkConfiguration.builder()
-                .l2(1e-3)
-                .updater(new RmsProp(2.5e-4))
+                .l2(1e-4)
+                .updater(new RmsProp(5e-4))
                 .numHiddenNodes(300)
                 .numLayers(2)
                 .build();
