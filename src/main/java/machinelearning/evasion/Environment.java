@@ -84,9 +84,10 @@ public class Environment implements MDP<GameState, Integer, DiscreteSpace> {
             //System.out.println("Intruder performs evasion " + count + " " + movementTask);
             //count++;
             intruderPerformsEvasion[agentIndex-controller.getNumberOfGuards()] = true;
-            reward = controller.tickIntruder(agentIndex, movementTask);
             EvasionTaskBaseline evasionTaskBaseline = ((EvasionTaskBaseline) intruderWantsToPerformTask);
             observation = controller.buildStateObservation(agentIndex, evasionTaskBaseline.getSoundToEvadeFrom(), evasionTaskBaseline.getVisionToEvadeFrom(), visionMemories, sounds, phermoneMarkersDirection, false);
+
+            reward = controller.tickIntruder(agentIndex, movementTask);
         }
         else {
             if (intruderPerformsEvasion[agentIndex-controller.getNumberOfGuards()]) {

@@ -1,0 +1,24 @@
+ --- MAP: ExperimentSurveillance1.txt
+ ------ ML INTRUDER WINS COUNT: 9 ---- AVG TIME FOR WIN: 1.3111111111111082
+ ------ INTRUDER WINS COUNT: 13 ---- AVG TIME FOR WIN: 15.361538461538428
+ --- MAP: ExperimentSurveillance1FlippedSpawns.txt
+ ------ ML INTRUDER WINS COUNT: 0 ---- AVG TIME FOR WIN: NaN
+ ------ INTRUDER WINS COUNT: 17 ---- AVG TIME FOR WIN: 19.970588235294137
+ --- MAP: ExperimentSurveillance2.txt
+ ------ ML INTRUDER WINS COUNT: 0 ---- AVG TIME FOR WIN: NaN
+ ------ INTRUDER WINS COUNT: 16 ---- AVG TIME FOR WIN: 12.056249999999974
+ --- MAP: ExperimentSurveillance2FlippedSpawns.txt
+ ------ ML INTRUDER WINS COUNT: 0 ---- AVG TIME FOR WIN: NaN
+ ------ INTRUDER WINS COUNT: 21 ---- AVG TIME FOR WIN: 7.752380952380942
+ --- MAP: SimpleTestSurveillance.txt
+ ------ ML INTRUDER WINS COUNT: 0 ---- AVG TIME FOR WIN: NaN
+ ------ INTRUDER WINS COUNT: 4 ---- AVG TIME FOR WIN: 21.12500000000003
+ --- MAP: SimpleTestSurveillanceFlippedSpawns.txt
+ ------ ML INTRUDER WINS COUNT: 0 ---- AVG TIME FOR WIN: NaN
+ ------ INTRUDER WINS COUNT: 11 ---- AVG TIME FOR WIN: 12.554545454545433
+ --- MAP: AdvancedTestSurveillance.txt
+ ------ ML INTRUDER WINS COUNT: 0 ---- AVG TIME FOR WIN: NaN
+ ------ INTRUDER WINS COUNT: 1 ---- AVG TIME FOR WIN: 44.10000000000036
+ --- MAP: AdvancedTestSurveillanceFlippedSpawns.txt
+ ------ ML INTRUDER WINS COUNT: 0 ---- AVG TIME FOR WIN: NaN
+ ------ INTRUDER WINS COUNT: 21 ---- AVG TIME FOR WIN: 5.461904761904758
