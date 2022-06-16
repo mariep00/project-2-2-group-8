@@ -43,7 +43,7 @@ public class Environment implements MDP<GameState, Integer, DiscreteSpace> {
     @Override
     public GameState reset() {
         System.out.println("NEW GAME " + count);
-        //count++;
+        count++;
         controller.reset();
         return controller.buildStateObservation(agentIndex, null, null, null, null, -1, true);
     }
@@ -82,7 +82,7 @@ public class Environment implements MDP<GameState, Integer, DiscreteSpace> {
         if (intruderWantsToPerformTask.getType() == TaskContainer.TaskType.INTRUDER_EVASION) {
             //System.out.println("Intruder performs evasion");
             //System.out.println("Intruder performs evasion " + count + " " + movementTask);
-            count++;
+            //count++;
             intruderPerformsEvasion[agentIndex-controller.getNumberOfGuards()] = true;
             reward = controller.tickIntruder(agentIndex, movementTask);
             EvasionTaskBaseline evasionTaskBaseline = ((EvasionTaskBaseline) intruderWantsToPerformTask);

@@ -16,6 +16,7 @@ import machinelearning.evasion.Environment;
 import machinelearning.evasion.GameState;
 import machinelearning.evasion.NetworkUtil;
 import org.deeplearning4j.rl4j.learning.sync.qlearning.discrete.QLearningDiscreteDense;
+import org.deeplearning4j.rl4j.network.dqn.DQN;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -29,6 +30,7 @@ public class EvasionLearner {
             new VisitLastSeenIntruderPositions(), new PathfindingTask(), new ExplorationInDirection(), new AvoidCollisionTask(), new CaptureTargetAreaTask()); // Change this to change the tasks that can be performed by agents
 
     public static void main(String[] args) throws IOException {
+        System.out.println("Setting up the learning environment..");
         URL url = Launcher.class.getClassLoader().getResource("maps/"+FILE_NAME);
         ScenarioMap scenarioMap = null;
         try {
@@ -40,10 +42,22 @@ public class EvasionLearner {
         ControllerSurveillanceRLEvasion controller = new ControllerSurveillanceRLEvasion(scenarioMap, new EndingSurveillance(scenarioMap), TASK_CONTAINER, new Random().nextInt());
         controller.init();
         Environment env = new Environment(controller);
-        QLearningDiscreteDense<GameState> dql = new QLearningDiscreteDense<GameState>(env, NetworkUtil.buildDQNFactory(), NetworkUtil.buildConfig());
+
+        QLearningDiscreteDense<GameState> dql;
+        try {
+            System.out.println("Loading model..");
+            dql = new QLearningDiscreteDense<>(env, DQN.load("src/main/java/machinelearning/evasion/results/evasion_model"), NetworkUtil.buildConfig());
+        } catch (IOException e) {
+            System.out.println("* Model does not exist yet *");
+            System.out.println("Creating model..");
+            dql = new QLearningDiscreteDense<>(env, NetworkUtil.buildDQNFactory(), NetworkUtil.buildConfig());
+        }
+
+        System.out.println("Training model..");
         dql.train();
         env.close();
 
+        System.out.println("Saving model..");
         dql.getNeuralNet().save("src/main/java/machinelearning/evasion/results/evasion_model");
     }
 }

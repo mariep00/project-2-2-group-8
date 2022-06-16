@@ -28,7 +28,7 @@ public class IntruderBrain implements BrainInterface {
     public int makeDecision(ExplorationGraph graph, double orientation, double pheromoneMarkersDirectionIntruder, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen, List<Sound> guardYells, List<Sound> guardYellsCaught) {
         currentTask = taskDecider.getTaskToPerform(graph, sounds, guardsSeen, intrudersSeen, currentTask);
         //System.out.println("INTRUDER PERFORMS TASK " + currentTask.getType());
-        return currentTask.performTask(graph, orientation, pheromoneMarkersDirectionIntruder, sounds, guardsSeen, intrudersSeen);
+        return currentTask.performTask(graph, orientation, -1, sounds, guardsSeen, intrudersSeen); // TODO Add pheromones back
     }
 
     @Override

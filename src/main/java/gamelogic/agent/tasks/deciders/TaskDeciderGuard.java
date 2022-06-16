@@ -23,7 +23,7 @@ public class TaskDeciderGuard implements TaskDeciderInterface {
     private final double angleThreshold = 50;
     private final double soundAndMarkerThreshold = 50;
     private final MultiLayerNetwork soundDecidingModel;
-    private final boolean useModel = true;
+    private final boolean useModel = false;
 
     public TaskDeciderGuard(TaskContainer taskContainer) {
         MultiLayerNetwork soundDecidingModelTemp;
@@ -43,7 +43,7 @@ public class TaskDeciderGuard implements TaskDeciderInterface {
     public TaskInterface getTaskToPerform(ExplorationGraph graph, double pheromoneMarkerDirection, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen, List<Sound> guardYells, TaskInterface currentTask, double orientation) {
         // We're going to check on what task to perform based on the priority of a task
         // For example, starting the pursuit when the guard sees an intruder is the most important, thus has the highest priority,
-        // thus we will start by checking this.
+        // thus we will start by checking this.What a
 
         // 1. Check if intruder is in vision
         VisionMemory intruderToPursuit = getIntruderInVision(intrudersSeen);
@@ -101,7 +101,7 @@ public class TaskDeciderGuard implements TaskDeciderInterface {
     }
 
     private TaskInterface getPursuingTask(VisionMemory[] guardsSeen, VisionMemory intruder) {
-        /*double closestGuardDistance = Integer.MAX_VALUE;
+        double closestGuardDistance = Integer.MAX_VALUE;
         VisionMemory closestGuard = null;
         for (VisionMemory visionMemory : guardsSeen) {
             if (visionMemory != null && visionMemory.secondsAgo() == 0) {
@@ -118,7 +118,7 @@ public class TaskDeciderGuard implements TaskDeciderInterface {
                 return taskToRetrun;
             }
         }
-            */
+
         TaskInterface taskToReturn = tasks.getTask(TaskContainer.TaskType.GUARD_PURSUIT_CLOSE);
         taskToReturn.setTarget(intruder);
         return taskToReturn;
