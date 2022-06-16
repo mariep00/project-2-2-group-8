@@ -6,8 +6,10 @@ import gamelogic.datacarriers.Sound;
 import gamelogic.datacarriers.VisionMemory;
 import gamelogic.maps.graph.ExplorationGraph;
 import machinelearning.evasion.GameStateUtil;
+import machinelearning.evasion.NetworkUtil;
 import org.apache.commons.lang.ArrayUtils;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
+import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.cpu.nativecpu.NDArray;
 import org.nd4j.shade.guava.collect.ObjectArrays;
 
@@ -45,9 +47,14 @@ public class EvasionTaskRL implements TaskInterface{
                 GameStateUtil.normalizePheromoneMarkerInput(pheromoneInput)), GameStateUtil.normalizeSoundInput(soundInput)), GameStateUtil.normalizeOrientationInput(orientationInput));
         double[][] normalizedData2D = new double[1][mergedNormalizedData.length];
         System.arraycopy(mergedNormalizedData, 0, normalizedData2D[0], 0, mergedNormalizedData.length);
-        System.out.println(model.output(new NDArray(normalizedData2D))); // Make decision on output, should probably convert the index to the actual movement task
-
-        return -1;
+        INDArray output = model.output(new NDArray(normalizedData2D));
+        int largestIndex = 0;
+        for (int i = 1; i < output.length(); i++) {
+            if (output.getDouble(i) > output.getDouble(largestIndex)) {
+                largestIndex = i;
+            }
+        }
+        return NetworkUtil.taskIndexToMovementTask(largestIndex);
     }
 
     @Override
@@ -62,7 +69,7 @@ public class EvasionTaskRL implements TaskInterface{
 
     @Override 
     public boolean isFinished() {
-        return false;
+        return true;
     }
 
     @Override

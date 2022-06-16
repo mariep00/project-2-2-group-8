@@ -177,24 +177,6 @@ public class GameStateUtil {
         return 2*((value - minValue) / (maxValue - minValue)) - 1;
     }
 
-    // Normalises between [-1,1]
-    /*
-    public static double[] normalize(double[] data) {
-        double min = Double.POSITIVE_INFINITY;
-        double max = Double.NEGATIVE_INFINITY;
-        for (double x : data) {
-            if (x < min) min = x;
-            if (x > max) max = x;
-        }
-        double average = (min+max)/2.0;
-        double range = (max-min)/2.0;
-        for (int i=0; i<data.length; i++) {
-            data[i] = (data[i] - average)/range;
-        }
-        return data;
-    }*/
-
-
     public static int convertAgentType(AgentType agentType) {
         return agentType == AgentType.GUARD ? 0 : 1;
     }

@@ -113,8 +113,6 @@ public class Environment implements MDP<GameState, Integer, DiscreteSpace> {
             controller.switchToNextState();
         }
 
-        System.out.println("Reward " + reward);
-
         return new StepReply<>(observation, reward, controller.getEndingCondition().gameFinished(), "IntruderEvasionRL");
     }
 
