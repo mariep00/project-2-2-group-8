@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 ;
@@ -41,6 +42,18 @@ public class SoundDecidingLearner {
         try {
             System.out.println("Loading the model...");
             model = ModelSerializer.restoreMultiLayerNetwork("src/main/java/machinelearning/data/results/sound_deciding_model");
+
+            /*
+            for (DataSet d : testingData) {
+                double[][] temp = new double[1][6];
+                for (int i = 0; i < 6; i++) {
+                    temp[0][i] = d.getFeatures().getDouble(i);
+                }
+                NDArray arr = new NDArray(temp);
+                System.out.println(arr);
+                //System.out.println(model.output(arr));
+            }*/
+
         }
         catch (IOException e) {
             System.out.println("* Model does not exist yet *");
@@ -153,12 +166,31 @@ public class SoundDecidingLearner {
         DataSet testDataMerged = DataSet.merge(testData);
 
         System.out.println("Normalizing the data...");
-
+        //System.out.println("BEFORE " + Arrays.toString(Arrays.copyOf(testDataMerged.asList().toArray(), 20)));
+        getMinMax(trainingDataMerged);
         DataNormalization normalizer = new NormalizerMinMaxScaler();
         normalizer.fit(trainingDataMerged);
         normalizer.transform(trainingDataMerged);
         normalizer.transform(testDataMerged);
+        //System.out.println("AFTER " + Arrays.toString(Arrays.copyOf(testDataMerged.asList().toArray(), 20)));
+
+
 
         return new DataSet[]{trainingDataMerged, testDataMerged};
+    }
+
+    private static void getMinMax(DataSet dataSet) {
+        List<DataSet> data = dataSet.asList();
+        double[] min = new double[]{Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE};
+        double[] max = new double[]{Double.MIN_VALUE, Double.MIN_VALUE, Double.MIN_VALUE, Double.MIN_VALUE, Double.MIN_VALUE, Double.MIN_VALUE};
+        for (DataSet d : data) {
+            INDArray arr = d.getFeatures();
+            for (int i = 0; i < arr.length(); i++) {
+                if (arr.getDouble(i) < min[i]) min[i] = arr.getDouble(i);
+                if (arr.getDouble(i) > max[i]) max[i] = arr.getDouble(i);
+            }
+        }
+        System.out.println(Arrays.toString(min));
+        System.out.println(Arrays.toString(max));
     }
 }

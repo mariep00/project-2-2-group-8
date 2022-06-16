@@ -7,7 +7,12 @@ import gamelogic.agent.tasks.guard.FindSoundSource;
 import gamelogic.datacarriers.Sound;
 import gamelogic.datacarriers.VisionMemory;
 import gamelogic.maps.graph.ExplorationGraph;
+import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
+import org.deeplearning4j.util.ModelSerializer;
+import org.nd4j.linalg.api.ndarray.INDArray;
+import org.nd4j.linalg.cpu.nativecpu.NDArray;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,12 +22,23 @@ public class TaskDeciderGuard implements TaskDeciderInterface {
     private final double secondsAgoThreshold = 2.5;
     private final double angleThreshold = 50;
     private final double soundAndMarkerThreshold = 50;
+    private final MultiLayerNetwork soundDecidingModel;
+    private final boolean useModel = true;
 
     public TaskDeciderGuard(TaskContainer taskContainer) {
+        MultiLayerNetwork soundDecidingModelTemp;
         this.tasks = taskContainer;
+        if (useModel) {
+            try {
+                soundDecidingModelTemp = ModelSerializer.restoreMultiLayerNetwork("src/main/java/machinelearning/data/results/sound_deciding_model");
+            } catch (IOException e) {
+                e.printStackTrace();
+                soundDecidingModelTemp = null;
+            }
+            this.soundDecidingModel = soundDecidingModelTemp;
+        } else this.soundDecidingModel = null;
     }
 
-    // TODO Would be good to have a guard yell variant for when guard catches an intruder
     @Override
     public TaskInterface getTaskToPerform(ExplorationGraph graph, double pheromoneMarkerDirection, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen, List<Sound> guardYells, TaskInterface currentTask, double orientation) {
         // We're going to check on what task to perform based on the priority of a task
@@ -133,28 +149,54 @@ public class TaskDeciderGuard implements TaskDeciderInterface {
     private Sound getUnmatchedSound(List<Sound> sounds, VisionMemory[] guardsSeen, double pheromoneMarkerDirection) {
         if (!sounds.isEmpty()) {
             // There are sounds, so we should check if we need to act on this
-            List<Double> guardsSeenAngles = anglesOfGuardsSeen(guardsSeen);
+
             Sound closestUnmatchedSound = null;
-            for (Sound sound : sounds) {
-                boolean matchedSound = false;
-                for (Double guardAngle : guardsSeenAngles) {
-                    double diff = Math.abs(guardAngle - sound.angle());
-                    if ((diff > 180 ? 360 - diff : diff) <= angleThreshold) {
-                        matchedSound = true;
-                        break;
+            if (useModel) {
+                for (Sound sound : sounds) {
+                    VisionMemory bestUnmatched = null;
+                    boolean isAMatch = false;
+                    for (VisionMemory visionMemory : guardsSeen) {
+                        if (visionMemory != null) {
+                            double[][] input = new double[][]{{sound.angle(), sound.loudness(), visionMemory.position().angle(), visionMemory.orientation(), visionMemory.secondsAgo(), visionMemory.position().magnitude()}};
+                            NDArray inputNDArray = new NDArray(normalize(input));
+                            INDArray output = soundDecidingModel.output(inputNDArray);
+                            if (output.getDouble(0) > 0.5) { // Model predicts unmatched
+                                if (bestUnmatched == null || visionMemory.secondsAgo() < bestUnmatched.secondsAgo()) {
+                                    bestUnmatched = visionMemory;
+                                }
+                            }
+                            else isAMatch = true;
+                        }
                     }
-                }
-                if (!matchedSound) {
-                    double diff;
-                    if (pheromoneMarkerDirection != -1) {
-                        diff = Math.abs(sound.angle()-pheromoneMarkerDirection);
-                        if ((diff > 180 ? 360 - diff : diff) >= soundAndMarkerThreshold && (closestUnmatchedSound == null || sound.loudness() < closestUnmatchedSound.loudness())) {
+                    if (!isAMatch && bestUnmatched != null) {
+                        if (closestUnmatchedSound == null || sound.loudness() > closestUnmatchedSound.loudness()) {
                             closestUnmatchedSound = sound;
                         }
                     }
-                    else {
-                        if (closestUnmatchedSound == null || sound.loudness() < closestUnmatchedSound.loudness()) {
-                            closestUnmatchedSound = sound;
+                }
+            }
+            else {
+                List<Double> guardsSeenAngles = anglesOfGuardsSeen(guardsSeen);
+                for (Sound sound : sounds) {
+                    boolean matchedSound = false;
+                    for (Double guardAngle : guardsSeenAngles) {
+                        double diff = Math.abs(guardAngle - sound.angle());
+                        if ((diff > 180 ? 360 - diff : diff) <= angleThreshold) {
+                            matchedSound = true;
+                            break;
+                        }
+                    }
+                    if (!matchedSound) {
+                        double diff;
+                        if (pheromoneMarkerDirection != -1) {
+                            diff = Math.abs(sound.angle() - pheromoneMarkerDirection);
+                            if ((diff > 180 ? 360 - diff : diff) >= soundAndMarkerThreshold && (closestUnmatchedSound == null || sound.loudness() > closestUnmatchedSound.loudness())) {
+                                closestUnmatchedSound = sound;
+                            }
+                        } else {
+                            if (closestUnmatchedSound == null || sound.loudness() < closestUnmatchedSound.loudness()) {
+                                closestUnmatchedSound = sound;
+                            }
                         }
                     }
                 }
@@ -189,5 +231,14 @@ public class TaskDeciderGuard implements TaskDeciderInterface {
             }
         }
         return angles;
+    }
+
+    private double[][] normalize(double[][] array) {
+        double[] maxValues = new double[]{360, 1, 360, 270, 81, 100};
+        double[][] temp = new double[1][6];
+        for (int i = 0; i < array[0].length; i++) {
+            temp[0][i] = array[0][i] / maxValues[i];
+        }
+       return temp;
     }
 }

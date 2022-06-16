@@ -189,6 +189,7 @@ public class ControllerSurveillanceRLEvasion extends ControllerSurveillance {
     private double[] getOrientationInput(int agentIndex) {
         return new double[]{agents[agentIndex].getOrientation()};
     }
+
     // Normalises between [-1,1]
     private double[] normalize(double[] data) {
         double min = Double.POSITIVE_INFINITY;
