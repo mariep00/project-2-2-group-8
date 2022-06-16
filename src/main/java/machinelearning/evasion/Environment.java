@@ -42,7 +42,7 @@ public class Environment implements MDP<GameState, Integer, DiscreteSpace> {
 
     @Override
     public GameState reset() {
-        System.out.println("NEW GAME " + count);
+        System.out.println("Game count " + count);
         count++;
         controller.reset();
         return controller.buildStateObservation(agentIndex, null, null, null, null, -1, true);
