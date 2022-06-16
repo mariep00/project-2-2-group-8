@@ -65,7 +65,7 @@ public class ExplorationTaskFrontier implements TaskInterface {
                     updateGoal(frontierIndexToGoTo, pheromoneMarkerDirection);
                 }
             }
-            System.out.println("        " + futureMoves.toString());
+            //System.out.println("        " + futureMoves.toString());
             markerThreshold = 0;
             markerIndex = 0;
             sortedArray = null;
