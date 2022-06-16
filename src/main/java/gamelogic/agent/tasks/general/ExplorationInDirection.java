@@ -28,6 +28,7 @@ public class ExplorationInDirection extends ExplorationTaskFrontier{
         // Only sort when starting with a new selection of nodes
         if (index == 0) {
             if (pheromoneMarkerDirection != -1) {
+                //System.out.println("----- Pheromone Angle: " + pheromoneMarkerDirection);
                 sortObjects = new SortObject[nodes.size()];
                 for (int i = 0; i < nodes.size(); i++) {
                     sortObjects[i] = new SortObject<>(nodes.get(i), nodes.get(i).COORDINATES.dist(targetCenter));
@@ -38,17 +39,19 @@ public class ExplorationInDirection extends ExplorationTaskFrontier{
                 ArrayList<Node> candidates = new ArrayList<>();
                 double smallestDistance = sortedArray[0].sortParameter;
                 double largestDistance = sortedArray[sortedArray.length-1].sortParameter;
-                double distanceThreshold = largestDistance-(Math.abs(largestDistance-smallestDistance)/2.0);
+                double distanceThreshold = smallestDistance + (Math.abs(largestDistance-smallestDistance)/1.5);
+                //System.out.println("----- Threshold: " + distanceThreshold);
                 for (int i=0; i<sortedArray.length; i++) {
                     SortObject<Node> sortObject = sortedArray[i];
                     if (sortObject.sortParameter<=distanceThreshold) {
                         candidates.add(sortObject.object);
                     }
                 }
+                //System.out.println("----- Candidate Size: " +candidates.size() );
                 if (sortedArrayPheromoneAngle == null) {
                     double[] frontierAnglesDiffPheromone = new double[candidates.size()];
                     for (int i = 0; i < frontierAnglesDiffPheromone.length; i++) {
-                        frontierAnglesDiffPheromone[i] = Math.abs(180 - Math.abs(pheromoneMarkerDirection - candidates.get(i).COORDINATES.getAngleBetweenVector(graph.getCurrentPosition().COORDINATES)));
+                        frontierAnglesDiffPheromone[i] = Math.abs(graph.getCurrentPosition().COORDINATES.getAngleBetweenVector(candidates.get(i).COORDINATES) - checkAngle(pheromoneMarkerDirection - 180));
                     }
 
                     for (int i = 0; i < candidates.size(); i++) {
@@ -67,20 +70,25 @@ public class ExplorationInDirection extends ExplorationTaskFrontier{
         }
         //System.out.println("Corresponding sorted array " + Arrays.toString(sortedArrayPheromoneAngle));
         //System.out.println("        Goal Frontier: " + sortedArrayPheromoneAngle[index].object);
+        /*System.out.println("----- Chose Frontier at: " + sortedArrayPheromoneAngle[index].object);
+        System.out.println("----- With Target center at: "+ targetCenter);
+        System.out.println("----- Angle to Frontier: " + graph.getCurrentPosition().COORDINATES.getAngleBetweenVector(sortedArrayPheromoneAngle[index].object.COORDINATES));
+        System.out.println("----- Angle difference: " + sortedArrayPheromoneAngle[index].sortParameter);*/
         return sortedArrayPheromoneAngle[index].object;
     }
+
     @Override
-    public boolean isFinished() { return graph.getCurrentPosition().COORDINATES.dist(targetCenter) <= 5; }
+    public boolean isFinished() { return graph.getCurrentPosition().COORDINATES.dist(targetCenter) < 4; }
+    
     @Override
-    public TaskType getType() {
-        return type;
-    }
+    public TaskType getType() { return type; }
+
     @Override
-    public TaskInterface newInstance() {
-        return new ExplorationInDirection();
-    }
+    public TaskInterface newInstance() { return new ExplorationInDirection(); }
+
     @Override
     public void setTarget(Vector2D target) { this.targetCenter = target; }
+
     @Override
     public boolean equals(Object other) {
         if (other == null) return false;
@@ -89,8 +97,19 @@ public class ExplorationInDirection extends ExplorationTaskFrontier{
         }
         return false;
     }
+
     @Override
     public Object getTarget() {
         return targetCenter;
+    }
+
+    private double checkAngle(double angle) {
+        if (angle > 360) {
+            return angle-360.0;
+        } else if ( angle < 0) {
+            return angle+360.0;
+        } else {
+            return angle;
+        }
     }
 }

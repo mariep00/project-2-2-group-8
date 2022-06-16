@@ -102,6 +102,8 @@ public class ControllerSurveillance extends Controller {
     @Override
     public void tickAgent(int agentIndex, int movementTask) {
         if (movementTask == -1) {
+            if (agentIndex>= numberOfGuards) System.out.println("TICK AGENT " + agentIndex);
+            
             movementTask = agents[agentIndex].tick(getVisions(agentIndex),
                 markerController.getPheromoneMarkersDirection(agentIndex, currentState.getAgentPosition(agentIndex), convertAgentIndexToAgentType(agentIndex)),
                 soundController.getSoundDirections(agentIndex), Arrays.copyOfRange(currentState.getAgentsSeen(agentIndex), 0, numberOfGuards),

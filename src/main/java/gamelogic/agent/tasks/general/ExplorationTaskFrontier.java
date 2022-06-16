@@ -20,11 +20,11 @@ import java.util.*;
 public class ExplorationTaskFrontier implements TaskInterface {
     public Node goalNode;
     private Node lastNode;
-    private Stack<Integer> futureMoves;
+    protected Stack<Integer> futureMoves;
     private double orientation;
     protected ExplorationGraph graph;
 
-    private TaskType type = TaskType.EXPLORATION;
+    protected TaskType type = TaskType.EXPLORATION;
     protected int markerThreshold = 0;
     protected int markerIndex = 0;
     protected SortObject<Node>[] sortedArray;
@@ -38,6 +38,7 @@ public class ExplorationTaskFrontier implements TaskInterface {
     @Override
     public int performTask(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen) {
         if (futureMoves == null || futureMoves.isEmpty()) {
+            System.out.println("New moves");
             finished = false;
             futureMoves = new Stack<>();
             this.orientation = orientation;
@@ -47,13 +48,15 @@ public class ExplorationTaskFrontier implements TaskInterface {
             updateGoal(frontierIndexToGoTo, pheromoneMarkerDirection);
             boolean foundReachableNode = false;
             while (!foundReachableNode) {
-                if (goalNode == lastNode) {
-                    //whenStuck();
-                }
+                
                 foundReachableNode = moveTo();
                 if (!foundReachableNode) {
+                    System.out.println("----- Didnt find reachable Node: " + frontierIndexToGoTo);
                     frontierIndexToGoTo++;
-                    if (goalNode == lastNode) {whenStuck();}
+                    if (goalNode == lastNode) {
+                        System.out.println("HMMM");
+                        whenStuck();
+                    }
 
                     if (sortedArray != null && frontierIndexToGoTo == sortedArray.length) {
                         markerThreshold++;
@@ -62,7 +65,7 @@ public class ExplorationTaskFrontier implements TaskInterface {
                     updateGoal(frontierIndexToGoTo, pheromoneMarkerDirection);
                 }
             }
-            //System.out.println("        " + futureMoves.toString());
+            System.out.println("        " + futureMoves.toString());
             markerThreshold = 0;
             markerIndex = 0;
             sortedArray = null;

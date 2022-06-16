@@ -57,21 +57,21 @@ public class TaskDeciderIntruder implements TaskDeciderInterface{
         // check if there is a friendly agent close by
         VisionMemory agentInFront = checkAgentInFront(intrudersSeen);
         // if there is an agent in front and the priority of the current task is less than the one of this task, then we should switch to this task
-        if (agentInFront != null && (currentTask.getPriority()<TaskContainer.TaskType.AVOID_COLLISION.priority || currentTask.isFinished())) {
+        if (currentTask != null && agentInFront != null && (currentTask.getPriority()<TaskContainer.TaskType.AVOID_COLLISION.priority || currentTask.isFinished())) {
             return tasks.getTask(TaskType.AVOID_COLLISION);
         }
         
         // set the lastEvasionAngle to -1 because the last task was not evasion
-        if (currentTask.getType()!=TaskType.INTRUDER_EVASION) lastEvasionAngle = -1.0;
+        if (currentTask != null && currentTask.getType()!=TaskType.INTRUDER_EVASION) lastEvasionAngle = -1.0;
 
-        if (currentTask.getPriority() < TaskType.CAPTURE_TARGET_AREA.priority || currentTask.isFinished()){
+        if (currentTask != null && (currentTask.getPriority() < TaskType.CAPTURE_TARGET_AREA.priority || currentTask.isFinished())){
             if (graph.getCurrentPosition().getTile().getType() == Tile.Type.TARGET_AREA){
                 return  tasks.getTask(TaskType.CAPTURE_TARGET_AREA);
             }
         }
         
         // if there is nothing more important than exploring or going to the goal
-        if(currentTask.getPriority()<=TaskContainer.TaskType.PATHFINDING.priority || currentTask.isFinished()) {
+        if(currentTask == null || (currentTask.getPriority()<=TaskContainer.TaskType.PATHFINDING.priority || currentTask.isFinished())) {
             // check if the target area has already been discovered by this agent
             LinkedList<Node> targetArea = graph.getTargetArea();
             // if the target area has been discovered, then perform pathfinding to it
@@ -82,10 +82,12 @@ public class TaskDeciderIntruder implements TaskDeciderInterface{
                 pathfindingTask.setTarget(goal);
                 return pathfindingTask;
             } else { //if the target area is unkown try to find it by exploring in that direction
-                Vector2D anticipatedGoal = getAnticipatedGoal(graph);
-                TaskInterface explorationTask = tasks.getTask(TaskType.EXPLORATION_DIRECTION);
-                explorationTask.setTarget(anticipatedGoal);
-                return explorationTask;
+                if (currentTask == null || currentTask.getType() != TaskType.EXPLORATION_DIRECTION || currentTask.isFinished()) {
+                    Vector2D anticipatedGoal = getAnticipatedGoal(graph);
+                    TaskInterface explorationTask = tasks.getTask(TaskType.EXPLORATION_DIRECTION);
+                    explorationTask.setTarget(anticipatedGoal);
+                    return explorationTask;
+                }
             }
         }
         return currentTask;
@@ -151,15 +153,19 @@ public class TaskDeciderIntruder implements TaskDeciderInterface{
 
     private Vector2D getAnticipatedGoal(ExplorationGraph graph) {
         Vector2D potentialGoal = VisionController.calculatePoint(new Vector2D(0, 0), currentAnticipatedDistance, angleSpawnToGoal);
+        //System.out.println("ANGLE TO TARGET AREA: " + angleSpawnToGoal);
         //System.out.println("        Potential Goal for Exploration Direction: " + potentialGoal);
         Vector2D[] potentialArea = potentialGoal.getArea();
         int counter = 0;
         for(Vector2D vector : potentialArea) {
-            if(graph.isVisited(vector)) {
-                counter++;
+            Vector2D[] area = vector.getArea();
+            for (Vector2D vectorA : area) {
+                if(graph.isVisited(vectorA)) {
+                    counter++;
+                }
             }
         }
-        if (counter>=3) currentAnticipatedDistance = currentAnticipatedDistance + 10;
+        if (counter>=1) currentAnticipatedDistance = currentAnticipatedDistance + 10;
         
         return potentialGoal;
     }
