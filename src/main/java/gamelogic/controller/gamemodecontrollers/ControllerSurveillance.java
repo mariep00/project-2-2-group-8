@@ -102,15 +102,21 @@ public class ControllerSurveillance extends Controller {
     @Override
     public void tickAgent(int agentIndex, int movementTask) {
         if (movementTask == -1) {
-            //if (agentIndex>= numberOfGuards) System.out.println("TICK AGENT " + agentIndex);
-            
-            movementTask = agents[agentIndex].tick(getVisions(agentIndex),
-                markerController.getPheromoneMarkersDirection(agentIndex, currentState.getAgentPosition(agentIndex), convertAgentIndexToAgentType(agentIndex)),
-                soundController.getSoundDirections(agentIndex), Arrays.copyOfRange(currentState.getAgentsSeen(agentIndex), 0, numberOfGuards),
-                Arrays.copyOfRange(currentState.getAgentsSeen(agentIndex), numberOfGuards, numberOfGuards+numberOfIntruders),
-                soundController.getGuardYellDirections(agentIndex, soundController.getController().getCurrentState().getGuardYells()),
-                soundController.getGuardYellDirections(agentIndex, soundController.getController().getCurrentState().getGuardYellsCaught()));
-
+            if (agentIndex < numberOfGuards) {
+                movementTask = agents[agentIndex].tick(getVisions(agentIndex),
+                        markerController.getPheromoneMarkersDirection(agentIndex, currentState.getAgentPosition(agentIndex), convertAgentIndexToAgentType(agentIndex)),
+                        soundController.getSoundDirections(agentIndex), Arrays.copyOfRange(currentState.getAgentsSeen(agentIndex), 0, numberOfGuards),
+                        Arrays.copyOfRange(currentState.getAgentsSeen(agentIndex), numberOfGuards, numberOfGuards + numberOfIntruders),
+                        soundController.getGuardYellDirections(agentIndex, soundController.getController().getCurrentState().getGuardYells()),
+                        soundController.getGuardYellDirections(agentIndex, soundController.getController().getCurrentState().getGuardYellsCaught()));
+            }
+            else {
+                movementTask = agents[agentIndex].tick(getVisions(agentIndex),
+                        markerController.getPheromoneMarkersDirection(agentIndex, currentState.getAgentPosition(agentIndex), convertAgentIndexToAgentType(agentIndex)),
+                        soundController.getSoundDirections(agentIndex), Arrays.copyOfRange(currentState.getAgentsSeen(agentIndex), 0, numberOfGuards),
+                        Arrays.copyOfRange(currentState.getAgentsSeen(agentIndex), numberOfGuards, numberOfGuards + numberOfIntruders),
+                        null, null);
+            }
         }
         movementController.moveAgent(agentIndex, movementTask);
         nextState.setAgentVision(agentIndex, calculateFOVAbsolute(agentIndex, nextState.getAgentPosition(agentIndex), nextState));

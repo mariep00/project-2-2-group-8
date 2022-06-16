@@ -85,6 +85,7 @@ public class TaskDeciderIntruder implements TaskDeciderInterface{
                 if (currentTask == null || currentTask.getType() != TaskType.EXPLORATION_DIRECTION || currentTask.isFinished()) {
                     Vector2D anticipatedGoal = getAnticipatedGoal(graph);
                     TaskInterface explorationTask = tasks.getTask(TaskType.EXPLORATION_DIRECTION);
+                    //System.out.println("Intruder performs exploration in direction with goal " + anticipatedGoal +", current pos is " + graph.getCurrentPosition());
                     explorationTask.setTarget(anticipatedGoal);
                     return explorationTask;
                 }

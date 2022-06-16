@@ -38,7 +38,7 @@ public class ExplorationTaskFrontier implements TaskInterface {
     @Override
     public int performTask(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen) {
         if (futureMoves == null || futureMoves.isEmpty()) {
-            System.out.println("New moves");
+            //System.out.println("New moves");
             finished = false;
             futureMoves = new Stack<>();
             this.orientation = orientation;
@@ -51,7 +51,7 @@ public class ExplorationTaskFrontier implements TaskInterface {
                 
                 foundReachableNode = moveTo();
                 if (!foundReachableNode) {
-                    System.out.println("----- Didnt find reachable Node: " + frontierIndexToGoTo);
+                    //System.out.println("----- Goal not reachable: " + goalNode);
                     frontierIndexToGoTo++;
                     if (goalNode == lastNode) {
                         System.out.println("HMMM");
@@ -153,7 +153,7 @@ public class ExplorationTaskFrontier implements TaskInterface {
     }
 
     public boolean moveTo() {
-        
+
         LinkedList<Vector2D> nodesToGoal = AStar.calculate(graph, graph.getCurrentPosition(), goalNode);
         if (nodesToGoal == null) return false;
         //System.out.println("        " + nodesToGoal.toString());

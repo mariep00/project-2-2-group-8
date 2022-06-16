@@ -7,7 +7,6 @@ import gamelogic.agent.tasks.TaskContainer.TaskType;
 import gamelogic.agent.tasks.TaskInterface;
 import gamelogic.maps.graph.Node;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 
 @SuppressWarnings("unchecked")
@@ -29,37 +28,23 @@ public class ExplorationInDirection extends ExplorationTaskFrontier{
         if (index == 0) {
             if (pheromoneMarkerDirection != -1) {
                 //System.out.println("----- Pheromone Angle: " + pheromoneMarkerDirection);
+                double[] diffNodeAndPheromone = new double[nodes.size()];
+                double[] distances = new double[nodes.size()];
+                for (int i = 0; i < nodes.size(); i++) {
+                    diffNodeAndPheromone[i] = Math.abs(graph.getCurrentPosition().COORDINATES.getAngleBetweenVector(nodes.get(i).COORDINATES) - checkAngle(pheromoneMarkerDirection - 180));
+                    distances[i] = nodes.get(i).COORDINATES.dist(targetCenter);
+                }
+
+                diffNodeAndPheromone = normalizeBetweenZeroAndTen(diffNodeAndPheromone);
+                distances = normalizeBetweenZeroAndTen(distances);
+
                 sortObjects = new SortObject[nodes.size()];
                 for (int i = 0; i < nodes.size(); i++) {
-                    sortObjects[i] = new SortObject<>(nodes.get(i), nodes.get(i).COORDINATES.dist(targetCenter));
+                    sortObjects[i] = new SortObject<>(nodes.get(i), Math.pow(distances[i], 1.38)+diffNodeAndPheromone[i]);
                 }
 
-                sortedArray = quickSort.sort(sortObjects, 0, sortObjects.length - 1);
-                
-                ArrayList<Node> candidates = new ArrayList<>();
-                double smallestDistance = sortedArray[0].sortParameter;
-                double largestDistance = sortedArray[sortedArray.length-1].sortParameter;
-                double distanceThreshold = smallestDistance + (Math.abs(largestDistance-smallestDistance)/1.5);
-                //System.out.println("----- Threshold: " + distanceThreshold);
-                for (int i=0; i<sortedArray.length; i++) {
-                    SortObject<Node> sortObject = sortedArray[i];
-                    if (sortObject.sortParameter<=distanceThreshold) {
-                        candidates.add(sortObject.object);
-                    }
-                }
-                //System.out.println("----- Candidate Size: " +candidates.size() );
-                if (sortedArrayPheromoneAngle == null) {
-                    double[] frontierAnglesDiffPheromone = new double[candidates.size()];
-                    for (int i = 0; i < frontierAnglesDiffPheromone.length; i++) {
-                        frontierAnglesDiffPheromone[i] = Math.abs(graph.getCurrentPosition().COORDINATES.getAngleBetweenVector(candidates.get(i).COORDINATES) - checkAngle(pheromoneMarkerDirection - 180));
-                    }
+                sortedArrayPheromoneAngle = quickSort.sort(sortObjects, 0, sortObjects.length - 1);
 
-                    for (int i = 0; i < candidates.size(); i++) {
-                        sortObjects[i] = new SortObject<>(candidates.get(i), frontierAnglesDiffPheromone[i]);
-                    }
-
-                    sortedArrayPheromoneAngle = quickSort.sort(sortObjects, 0, sortObjects.length - 1);
-                }
             } else {
                 for (int i = 0; i < nodes.size(); i++) {
                     sortObjects[i] = new SortObject<>(nodes.get(i), nodes.get(i).COORDINATES.dist(targetCenter));
@@ -69,12 +54,27 @@ public class ExplorationInDirection extends ExplorationTaskFrontier{
             }
         }
         //System.out.println("Corresponding sorted array " + Arrays.toString(sortedArrayPheromoneAngle));
+        //System.out.println("        Available Frontiers: " + Arrays.toString(graph.frontiers.getAllNodes().toArray()));
         //System.out.println("        Goal Frontier: " + sortedArrayPheromoneAngle[index].object);
         /*System.out.println("----- Chose Frontier at: " + sortedArrayPheromoneAngle[index].object);
         System.out.println("----- With Target center at: "+ targetCenter);
         System.out.println("----- Angle to Frontier: " + graph.getCurrentPosition().COORDINATES.getAngleBetweenVector(sortedArrayPheromoneAngle[index].object.COORDINATES));
         System.out.println("----- Angle difference: " + sortedArrayPheromoneAngle[index].sortParameter);*/
         return sortedArrayPheromoneAngle[index].object;
+    }
+
+    private double[] normalizeBetweenZeroAndTen(double[] array) {
+        double max = Double.MIN_VALUE;
+        double min = Double.MAX_VALUE;
+
+        for (double v : array) {
+            if (v > max) max = v;
+            if (v < min) min = v;
+        }
+        for (int i = 0; i < array.length; i++) {
+            array[i] = (10*(array[i]-min)/(max-min));
+        }
+        return array;
     }
 
     @Override
