@@ -76,6 +76,7 @@ public class EvasionEvaluator {
                     machineLearning = false;
                 }
             }
+            System.out.println();
 
             out.println(" --- MAP: " + FILE_NAME[j] );
             out.println(" ------ ML INTRUDER WINS COUNT: " + winIntruder[0] + " ---- AVG TIME FOR WIN: " + (totalTimeIntruder[0]/winIntruder[0]));
