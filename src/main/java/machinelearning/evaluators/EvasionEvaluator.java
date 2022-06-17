@@ -18,9 +18,6 @@ import java.io.PrintWriter;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Paths;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 public class EvasionEvaluator {
 
@@ -42,47 +39,43 @@ public class EvasionEvaluator {
         createFile();
         
         for (int j = 0; j < MAPS; j++) {
+            System.out.println("Current map: " + j);
             URL url = EvasionEvaluator.class.getClassLoader().getResource("maps/"+FILE_NAME[j]);
             totalTimeIntruder = new double[2];
             winIntruder = new int[2];
-            ThreadPoolExecutor threadPool = new ThreadPoolExecutor(Runtime.getRuntime().availableProcessors(), 50, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
+            System.out.println("Iteration: ");
             for (int i = 0; i <= ITERATIONS; i++) {
-                int finalI = i;
-                threadPool.submit(() -> {
-                    ScenarioMap scenarioMap = null;
-                    try {
-                        scenarioMap = new MapBuilder(Paths.get(url.toURI()).toFile()).getMap();
-                    } catch (URISyntaxException e) {
-                        e.printStackTrace();
-                    }
-                    ControllerSurveillance controller;
-                    if (machineLearning) {
-                        controller = new ControllerSurveillance(scenarioMap, new EndingSurveillance(scenarioMap), new TaskContainer(new ExplorationTaskFrontier(), new FindSoundSource(), new ClosePursuingTask(), new FarPursuingTask(), new EvasionTaskRL(), new VisitLastSeenIntruderPositions(), new PathfindingTask(), new ExplorationInDirection(), new AvoidCollisionTask(), new CaptureTargetAreaTask()), finalI);
-                    } else {
-                        controller = new ControllerSurveillance(scenarioMap, new EndingSurveillance(scenarioMap), new TaskContainer(new ExplorationTaskFrontier(), new FindSoundSource(), new ClosePursuingTask(), new FarPursuingTask(), new EvasionTaskBaseline(), new VisitLastSeenIntruderPositions(), new PathfindingTask(), new ExplorationInDirection(), new AvoidCollisionTask(), new CaptureTargetAreaTask()), finalI);
-                    }
-                    controller.init();
-                    controller.engine();
+                System.out.print(i +" ");
+                ScenarioMap scenarioMap = null;
+                try {
+                    scenarioMap = new MapBuilder(Paths.get(url.toURI()).toFile()).getMap();
+                } catch (URISyntaxException e) {
+                    e.printStackTrace();
+                }
+                ControllerSurveillance controller;
+                if (machineLearning) {
+                    controller = new ControllerSurveillance(scenarioMap, new EndingSurveillance(scenarioMap), new TaskContainer(new ExplorationTaskFrontier(), new FindSoundSource(), new ClosePursuingTask(), new FarPursuingTask(), new EvasionTaskRL(), new VisitLastSeenIntruderPositions(), new PathfindingTask(), new ExplorationInDirection(), new AvoidCollisionTask(), new CaptureTargetAreaTask()), i);
+                } else {
+                    controller = new ControllerSurveillance(scenarioMap, new EndingSurveillance(scenarioMap), new TaskContainer(new ExplorationTaskFrontier(), new FindSoundSource(), new ClosePursuingTask(), new FarPursuingTask(), new EvasionTaskBaseline(), new VisitLastSeenIntruderPositions(), new PathfindingTask(), new ExplorationInDirection(), new AvoidCollisionTask(), new CaptureTargetAreaTask()), i);
+                }
+                controller.init();
+                controller.engine();
 
-                    int team = controller.getWhoWon();
-                    if (team == 1) {
-                        if (machineLearning) {
-                            winIntruder[0]++;
-                            totalTimeIntruder[0] = totalTimeIntruder[team] + controller.time;
-                        } else {
-                            winIntruder[1]++;
-                            totalTimeIntruder[1] = totalTimeIntruder[team] + controller.time;
-                        }
+                int team = controller.getWhoWon();
+                if (team == 1) {
+                    if (machineLearning) {
+                        winIntruder[0]++;
+                        totalTimeIntruder[0] = totalTimeIntruder[team] + controller.time;
+                    } else {
+                        winIntruder[1]++;
+                        totalTimeIntruder[1] = totalTimeIntruder[team] + controller.time;
                     }
-                    
-                });
+                }
                 if (i == ITERATIONS && machineLearning) {
                     i = 0;
                     machineLearning = false;
                 }
             }
-            threadPool.shutdown();
-            threadPool.awaitTermination(Integer.MAX_VALUE, TimeUnit.SECONDS);
 
             out.println(" --- MAP: " + FILE_NAME[j] );
             out.println(" ------ ML INTRUDER WINS COUNT: " + winIntruder[0] + " ---- AVG TIME FOR WIN: " + (totalTimeIntruder[0]/winIntruder[0]));

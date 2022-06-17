@@ -237,9 +237,6 @@ public class ControllerSurveillance extends Controller {
         } else return 1;
     }
 
-    public int convertAgentType(AgentType agentType) {
-        return agentType == AgentType.GUARD ? 0 : 1;
-    }
     public AgentType convertAgentIndexToAgentType(int agentIndex) {
         return agentIndex < numberOfGuards ? AgentType.GUARD : AgentType.INTRUDER;
     }

@@ -26,8 +26,8 @@ public class NetworkUtil {
 
     public static DQNFactoryStdDense buildDQNFactory() {
         final DQNDenseNetworkConfiguration build = DQNDenseNetworkConfiguration.builder()
-                .l2(1e-3)
-                .updater(new RmsProp(2.5e-4))
+                .l2(1e-4)
+                .updater(new RmsProp(5e-4))
                 .numHiddenNodes(300)
                 .numLayers(2)
                 .build();
@@ -40,7 +40,15 @@ public class NetworkUtil {
         else if (taskIndex == 1) return 1;
         else if (taskIndex == 2) return 3;
         else if (taskIndex == 3) return 4;
-        else return -1;
+        else {
+            try {
+                throw new Exception("An invalid taskIndex was given, namely " + taskIndex + ". The taskIndex should be in range [0,3]");
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.exit(1);
+            }
+        }
+        return -1;
     }
 
 }
