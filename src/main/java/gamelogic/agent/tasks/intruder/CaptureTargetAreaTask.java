@@ -1,4 +1,4 @@
-package gamelogic.agent.tasks.general;
+package gamelogic.agent.tasks.intruder;
 
 import gamelogic.agent.tasks.TaskContainer.TaskType;
 import gamelogic.agent.tasks.TaskInterface;

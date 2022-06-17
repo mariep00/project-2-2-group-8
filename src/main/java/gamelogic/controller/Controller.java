@@ -12,7 +12,6 @@ import gui.gamescreen.AgentType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.Callable;
 
 @SuppressWarnings("unchecked")
 
@@ -247,13 +246,6 @@ public abstract class Controller {
     }
 
     public Agent getAgent(int agentIndex) { return agents[agentIndex]; }
-
-    private Callable<Void> toCallable(final Runnable runnable) {
-        return () -> {
-            runnable.run();
-            return null;
-        };
-    }
 
     public void reset() {
         Controller.rand = new Random();
