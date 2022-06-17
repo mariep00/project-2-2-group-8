@@ -11,7 +11,6 @@ import gamelogic.datacarriers.VisionMemory;
 import gamelogic.maps.graph.ExplorationGraph;
 import util.MathHelpers;
 
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
@@ -81,7 +80,7 @@ public class FarPursuingTask implements TaskInterface{
             //System.out.println(goal + ", " + graph.getCurrentPosition() + ", " + (int)(distanceThresholdFirstPath*distance) + ", " + Arrays.toString(path1.toArray()));
             if(path1.getFirst().equals(goal)) {
                 LinkedList<Vector2D> path2 = AStar.calculate(graph, graph.getNode(goal), graph.getNode(intruder.position().add(graph.getCurrentPosition().COORDINATES)), (int)(distanceThresholdSecondPath*goal.dist(intruder.position().add(graph.getCurrentPosition().COORDINATES))));
-                if (path2.getFirst().equals(intruder.position().add(graph.getCurrentPosition().COORDINATES))) {
+                if (path2 == null || path2.getFirst().equals(intruder.position().add(graph.getCurrentPosition().COORDINATES))) { // TODO Added this == null when the intruder's position cannot be reached due to vision and walls
                     return path1;
                 }
             }
@@ -107,7 +106,7 @@ public class FarPursuingTask implements TaskInterface{
             LinkedList<Vector2D> path1 = AStar.calculate(graph, graph.getCurrentPosition(), graph.getNode(goal), (int)(distanceThresholdFirstPath*distance));
             if(path1.getFirst().equals(goal)) {
                 LinkedList<Vector2D> path2 = AStar.calculate(graph, graph.getNode(goal), graph.getNode(intruder.position().add(graph.getCurrentPosition().COORDINATES)), (int)(distanceThresholdSecondPath*goal.dist(intruder.position())));
-                if (path2.getFirst().equals(intruder.position().add(graph.getCurrentPosition().COORDINATES))) {
+                if (path2 == null || path2.getFirst().equals(intruder.position().add(graph.getCurrentPosition().COORDINATES))) {
                     return path1;
                 }
             }

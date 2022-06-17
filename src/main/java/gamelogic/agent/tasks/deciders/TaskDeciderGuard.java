@@ -23,12 +23,12 @@ public class TaskDeciderGuard implements TaskDeciderInterface {
     private final double angleThreshold = 50;
     private final double soundAndMarkerThreshold = 50;
     private final MultiLayerNetwork soundDecidingModel;
-    private final boolean useModel = false;
+    private final boolean useSoundDecidingModel = false;
 
     public TaskDeciderGuard(TaskContainer taskContainer) {
         MultiLayerNetwork soundDecidingModelTemp;
         this.tasks = taskContainer;
-        if (useModel) {
+        if (useSoundDecidingModel) {
             try {
                 soundDecidingModelTemp = ModelSerializer.restoreMultiLayerNetwork("src/main/java/machinelearning/data/results/sound_deciding_model");
             } catch (IOException e) {
@@ -151,24 +151,20 @@ public class TaskDeciderGuard implements TaskDeciderInterface {
             // There are sounds, so we should check if we need to act on this
 
             Sound closestUnmatchedSound = null;
-            if (useModel) {
+            if (useSoundDecidingModel) {
                 for (Sound sound : sounds) {
-                    VisionMemory bestUnmatched = null;
                     boolean isAMatch = false;
                     for (VisionMemory visionMemory : guardsSeen) {
                         if (visionMemory != null) {
                             double[][] input = new double[][]{{sound.angle(), sound.loudness(), visionMemory.position().angle(), visionMemory.orientation(), visionMemory.secondsAgo(), visionMemory.position().magnitude()}};
                             NDArray inputNDArray = new NDArray(normalize(input));
                             INDArray output = soundDecidingModel.output(inputNDArray);
-                            if (output.getDouble(0) > 0.5) { // Model predicts unmatched
-                                if (bestUnmatched == null || visionMemory.secondsAgo() < bestUnmatched.secondsAgo()) {
-                                    bestUnmatched = visionMemory;
-                                }
+                            if (output.getDouble(1) > 0.5) { // Model predicts matched with this vision memory
+                                isAMatch = true;
                             }
-                            else isAMatch = true;
                         }
                     }
-                    if (!isAMatch && bestUnmatched != null) {
+                    if (!isAMatch) {
                         if (closestUnmatchedSound == null || sound.loudness() > closestUnmatchedSound.loudness()) {
                             closestUnmatchedSound = sound;
                         }
