@@ -52,6 +52,7 @@ public class EvasionTaskBaseline implements TaskInterface {
             possibleAngles.add(items[1]);
         }
         AngleItem bestAngle = possibleAngles.removeFirst();
+        
         return VisionController.calculatePoint(graph.getCurrentPosition().COORDINATES, bestAngle.distance, bestAngle.angle);
     }
 
@@ -158,17 +159,17 @@ public class EvasionTaskBaseline implements TaskInterface {
         @Override
         public int compareTo(AngleItem o) {
             if (this.distance < o.distance) {
-                return -1;
+                return 1;
             } else if (this.distance == o.distance) {
                 if (this.difference < o.difference) {
-                    return 1;
-                } else if (this.difference > o.difference) {
                     return -1;
+                } else if (this.difference > o.difference) {
+                    return 1;
                 } else {
                     return 0;
                 }
             } else {
-                return 1;
+                return -1;
             }
         }
 

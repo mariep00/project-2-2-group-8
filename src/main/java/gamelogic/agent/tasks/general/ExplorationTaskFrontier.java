@@ -54,7 +54,7 @@ public class ExplorationTaskFrontier implements TaskInterface {
                     //System.out.println("----- Goal not reachable: " + goalNode);
                     frontierIndexToGoTo++;
                     if (goalNode == lastNode) {
-                        System.out.println("HMMM");
+                        //System.out.println("HMMM");
                         whenStuck();
                     }
 
