@@ -38,7 +38,7 @@ public class ExperimentsSurveillance {
 
     private static final Random rand = new Random();
 
-    private static final int[][] numberAgents = {{3,3}}; //{{1,1},{3,1},{5,1},{1,3},{3,3},{5,3},{1,5},{3,5},{5,5}};
+    private static final int[][] numberAgents = {{1,1},{3,1},{5,1},{1,3},{3,3},{5,3},{1,5},{3,5},{5,5}};
 
     // ONLY CHANGE THESE VALUES:
     // Specify Map name from the maps folder here
