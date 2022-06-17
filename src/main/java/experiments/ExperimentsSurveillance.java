@@ -34,16 +34,27 @@ import java.util.concurrent.TimeUnit;
  */
 
 public class ExperimentsSurveillance {
-    public static final int NUMBER_OF_ITERATIONS = 25;
+    public static final int NUMBER_OF_ITERATIONS_PER_MAP = 1000;
 
     private static final Random rand = new Random();
 
-    private static final int[][] numberAgents = {{1,1},{3,1},{5,1},{1,3},{3,3},{5,3},{1,5},{3,5},{5,5}};
+    private static final int[][] numberAgents = {{3,3}}; //{{1,1},{3,1},{5,1},{1,3},{3,3},{5,3},{1,5},{3,5},{5,5}};
 
     // ONLY CHANGE THESE VALUES:
     // Specify Map name from the maps folder here
     private final static String[] MAP_FILE_NAMES = {"ExperimentSurveillance1.txt", "ExperimentSurveillance1FlippedSpawns.txt", "ExperimentSurveillance2.txt", "ExperimentSurveillance2FlippedSpawns.txt"};
     // Change these values to the ones from the table you want to run
+    // Use array of size 1 to only use that value
+    // Because of the loops it will perform experiments on all combinations of these array entries
+    // Example:
+    // FD = {16, 24} (i.e. FD = 16, FD = 24)
+    // RD = {5, 10} (i.e. RD = 5, RD = 10)
+    // YD = {30} (i.e. YD = 30)
+    // Will result in performing the experiments on:
+    // FD = 16, RD = 5, YD = 30
+    // FD = 24, RD = 5, YD = 30
+    // FD = 16, RD = 10, YD = 30
+    // FD = 24, RD = 10, YD = 30
     private static final int[] footStepMaxHearingDistance = {16};
     private static final int[] rotationMaxHearingDistance = {5};
     private static final int[] yellMaxHearingDistance = {30};
@@ -81,11 +92,8 @@ public class ExperimentsSurveillance {
 
                             ThreadPoolExecutor threadPool = new ThreadPoolExecutor(Runtime.getRuntime().availableProcessors(), 50, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
                             ScenarioMap finalScenarioMap = scenarioMap;
-                            System.out.println("Iteration ");
-                            for (int iteration = 0; iteration < NUMBER_OF_ITERATIONS; iteration++) {
-                                int finalIteration = iteration;
+                            for (int iteration = 0; iteration < NUMBER_OF_ITERATIONS_PER_MAP; iteration++) {
                                 threadPool.submit(() -> {
-                                    System.out.print(finalIteration + ", ");
                                     Object[] result = runGame(finalScenarioMap);
                                     winForTeam[(int) result[0]]++;
                                     totalTimeForTeam[(int) result[0]] += (double) result[1];
@@ -104,16 +112,10 @@ public class ExperimentsSurveillance {
                             bufferedWriter.newLine();
 
                             stringBuilder.setLength(0);
-                            double[] confidenceIntervalWins = calculateConfidenceInterval( winForTeam);
+                            double[] confidenceIntervalWins = calculateConfidenceInterval(winForTeam);
                             stringBuilder.append(confidenceIntervalWins[0]).append(",").append(confidenceIntervalWins[1]).append(",").append(confidenceIntervalWins[2]);
                             bufferedWriter.write(stringBuilder.toString());
-                            bufferedWriter.newLine();
 
-                            stringBuilder.setLength(0);
-                            double[] confidenceIntervalTime = calculateConfidenceInterval(totalTimeForTeam);
-                            stringBuilder.append(confidenceIntervalTime[0]).append(",").append(confidenceIntervalTime[1]).append(",").append(confidenceIntervalTime[2]);
-
-                            bufferedWriter.write(stringBuilder.toString());
                             bufferedWriter.close();
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -129,23 +131,21 @@ public class ExperimentsSurveillance {
         double mean = values[0]/numberOfGames;
 
         Random rand = new Random();
-        double[] bootstrapSamplesDiff = new double[500];
+        double[] bootstrapSamplesDiff = new double[1000];
         for (int i = 0; i < bootstrapSamplesDiff.length; i++) {
-            double bootstrap = rand.nextInt(numberOfGames);
+            double bootstrap = 0;
+            for (int j = 0; j < numberOfGames; j++) {
+                int sample = rand.nextInt(numberOfGames+1);
+                if (sample < values[0]) bootstrap += 1;
+            }
+
             bootstrapSamplesDiff[i] = (bootstrap/numberOfGames)-mean;
         }
         Arrays.sort(bootstrapSamplesDiff);
-        int upperboundIndex = (int) (bootstrapSamplesDiff.length*0.025);
-        int lowerboundIndex = (int) (bootstrapSamplesDiff.length*0.975);
-
-        System.out.println(Arrays.toString(bootstrapSamplesDiff));
+        int lowerboundIndex = (int) (bootstrapSamplesDiff.length*0.025);
+        int upperboundIndex = (int) (bootstrapSamplesDiff.length*0.975);
 
         return new double[]{mean, bootstrapSamplesDiff[lowerboundIndex], bootstrapSamplesDiff[upperboundIndex]};
-
-        /*double std = Math.sqrt(((Math.pow(1-mean, 2)*values[0])+(Math.pow(0-mean, 2)*values[1]))/(values[0]+values[1]-1));
-        double division = std / Math.sqrt(values[0]+values[1]);
-        double studentTValue = 1.984217;
-        return new double[]{mean, mean-(studentTValue*division), mean+(studentTValue+division)};*/
     }
 
     private static Object[] runGame(ScenarioMap scenarioMap) {
