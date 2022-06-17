@@ -20,8 +20,8 @@ public class TaskDeciderIntruder implements TaskDeciderInterface{
 
     private final TaskContainer tasks;
     private double angleSpawnToGoal;
-    private final double soundThreshold = 0.5;
-    private final double secondsAgoThreshold = 1.0;
+    private final double soundThreshold = 0.3;
+    private final double secondsAgoThreshold = 2.0;
     private final double angleThreshold = 40.0;
 
     private double currentAnticipatedDistance;
@@ -35,22 +35,21 @@ public class TaskDeciderIntruder implements TaskDeciderInterface{
     @Override
     public TaskInterface getTaskToPerform(ExplorationGraph graph, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen, TaskInterface currentTask) {
         // First check if there is a guard in vision
-        //System.out.println("Number of nodes " + graph.getNumberOfNodes());
         VisionMemory closestGuard = isGuardInVision(guardsSeen);
         // if there is a guard in vision and the priority of the current task is less than the one of this task, then we should switch to the evasion task
-        if (closestGuard != null && (currentTask.getPriority()<=TaskContainer.TaskType.INTRUDER_EVASION.priority || currentTask.isFinished())) {
+        if (closestGuard != null && (currentTask.getPriority()<TaskContainer.TaskType.INTRUDER_EVASION.priority || currentTask.isFinished())) {
             TaskInterface evasionTask = tasks.getTask(TaskType.INTRUDER_EVASION);
             // set the target to the angle of the guard which is in vision
-            evasionTask.setTarget(getTargetAngle(360.0 - Math.atan2(closestGuard.position().y, closestGuard.position().x)), closestGuard);
+            evasionTask.setTarget(closestGuard.position().angle(), closestGuard);
             return evasionTask;
         }
 
         // check if there is an unknown sound close by
         Sound soundToAvoid = checkForSound(sounds, intrudersSeen);
         // if there is a relevant sound and the priority of the current task is less than the one of this task, then we should switch to this task
-        if (soundToAvoid != null && (currentTask.getPriority()<=TaskContainer.TaskType.INTRUDER_EVASION.priority || currentTask.isFinished())) {
+        if (soundToAvoid != null && (currentTask.getPriority()<TaskContainer.TaskType.INTRUDER_EVASION.priority || currentTask.isFinished())) {
             TaskInterface evasionTask = tasks.getTask(TaskType.INTRUDER_EVASION);
-            evasionTask.setTarget(getTargetAngle(soundToAvoid.angle()), soundToAvoid);
+            evasionTask.setTarget(soundToAvoid.angle(), soundToAvoid);
             return evasionTask;
         }
 
@@ -85,7 +84,6 @@ public class TaskDeciderIntruder implements TaskDeciderInterface{
                 if (currentTask == null || currentTask.getType() != TaskType.EXPLORATION_DIRECTION || currentTask.isFinished()) {
                     Vector2D anticipatedGoal = getAnticipatedGoal(graph);
                     TaskInterface explorationTask = tasks.getTask(TaskType.EXPLORATION_DIRECTION);
-                    //System.out.println("Intruder performs exploration in direction with goal " + anticipatedGoal +", current pos is " + graph.getCurrentPosition());
                     explorationTask.setTarget(anticipatedGoal);
                     return explorationTask;
                 }
@@ -133,7 +131,6 @@ public class TaskDeciderIntruder implements TaskDeciderInterface{
             if (sound.loudness() > soundThreshold) {
                 //check if there was an intruder in that direction, if so then the sound should not be considered
                 if (!isSoundMatched(sound, anglesIntruders)) {
-                    //System.out.println("sound angle " + sound + ", " + Arrays.toString(anglesIntruders.toArray()));
                     if (soundToAvoid == null) soundToAvoid = sound;
                     if (sound.loudness() > soundToAvoid.loudness()) soundToAvoid = sound;
                 }
@@ -154,8 +151,7 @@ public class TaskDeciderIntruder implements TaskDeciderInterface{
 
     private Vector2D getAnticipatedGoal(ExplorationGraph graph) {
         Vector2D potentialGoal = VisionController.calculatePoint(new Vector2D(0, 0), currentAnticipatedDistance, angleSpawnToGoal);
-        //System.out.println("ANGLE TO TARGET AREA: " + angleSpawnToGoal);
-        //System.out.println("        Potential Goal for Exploration Direction: " + potentialGoal);
+        
         Vector2D[] potentialArea = potentialGoal.getArea();
         int counter = 0;
         for(Vector2D vector : potentialArea) {

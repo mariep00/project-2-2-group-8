@@ -20,13 +20,15 @@ public class Heap<T extends HeapItemInterface<T>> {
     }
 
     public T removeFirst() {
-        T firstItem = items[0];
-        itemCount--;
-        swap(0, itemCount);
-        items[itemCount] = null;
-        sortDown(0);
+        if(items[0] != null) {
+            T firstItem = items[0];
+            itemCount--;
+            swap(0, itemCount);
+            items[itemCount] = null;
+            sortDown(0);
 
-        return firstItem;
+            return firstItem;
+        } else return null;
     }
 
     private void sortUp(int index) {

@@ -29,9 +29,10 @@ public class EvasionTaskBaseline implements TaskInterface {
     @Override
     public int performTask(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen) {
         if (futureMoves == null || futureMoves.isEmpty()) {
+            finished = false;
             this.graph = graph;
             futureMoves = new Stack<>();
-
+            
             double angle = targetAngle - 180.0;
             Vector2D goal = findGoal(angle);
             LinkedList<Vector2D> nodesToGoal = AStar.calculate(graph, graph.getCurrentPosition(), graph.getNode(goal), 3);
@@ -52,8 +53,14 @@ public class EvasionTaskBaseline implements TaskInterface {
             possibleAngles.add(items[1]);
         }
         AngleItem bestAngle = possibleAngles.removeFirst();
-        
-        return VisionController.calculatePoint(graph.getCurrentPosition().COORDINATES, bestAngle.distance, bestAngle.angle);
+        for (int i=0; i < 5; i++) { 
+            AngleItem option = possibleAngles.removeFirst();
+            if (option != null && option.difference< bestAngle.difference && option.distance>=bestAngle.distance/2) {
+                bestAngle = option;
+            }
+        }
+        Vector2D goal = VisionController.calculatePoint(graph.getCurrentPosition().COORDINATES, bestAngle.distance, bestAngle.angle);
+        return goal;
     }
 
     private AngleItem[] calculateAngleItems(double angle, double i) {
@@ -62,8 +69,8 @@ public class EvasionTaskBaseline implements TaskInterface {
         double angle2 = angle - i;
         angle1 = checkAngle(angle1);
         angle2 = checkAngle(angle2);
-        AngleItem item1 = new AngleItem(angle1, Math.abs(angle-i), findMaxDistance(angle1));
-        AngleItem item2 = new AngleItem(angle2, Math.abs(angle-i), findMaxDistance(angle2));
+        AngleItem item1 = new AngleItem(angle1, i, findMaxDistance(angle1));
+        AngleItem item2 = new AngleItem(angle2, i, findMaxDistance(angle2));
         
         return new AngleItem[] {item1,item2};
     }
