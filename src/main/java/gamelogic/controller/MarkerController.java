@@ -5,7 +5,6 @@ import gamelogic.agent.Agent;
 import gamelogic.maps.MarkerInterface;
 import gamelogic.maps.PheromoneMarker;
 import gamelogic.maps.Tile;
-import gui.gamescreen.AgentType;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -24,84 +23,75 @@ public class MarkerController {
         this.pheromoneReduction = controller.scenarioMap.getPheromoneReduction();
     }
 
-    public LinkedList<Tile> init(Vector2D[] startingAgentPositions, AgentType agentType) {
+    public LinkedList<Tile> init(Vector2D[] startingAgentPositions) {
         LinkedList<Tile> tilesWithMarker = new LinkedList<>();
-        int startIngIndex = agentType == AgentType.GUARD?0:controller.numberOfGuards;
-        int endingIndex = agentType == AgentType.GUARD? controller.numberOfGuards:controller.numberOfGuards+controller.numberOfIntruders;
-        for (int i = startIngIndex; i < endingIndex; i++) {
+        for (int i = 0; i < controller.numberOfGuards+controller.numberOfIntruders; i++) {
             Vector2D pos = startingAgentPositions[i];
             Agent agent = controller.getAgent(i);
 
             tilesWithMarker.add(controller.scenarioMap.getTile(pos));
-            controller.scenarioMap.getTile(pos).addMarker(new PheromoneMarker(agent, pos, pheromoneMaxSmellingDistance, pheromoneReduction), agentType);
+            controller.scenarioMap.getTile(pos).addMarker(new PheromoneMarker(agent, pos, pheromoneMaxSmellingDistance, pheromoneReduction));
         }
         return tilesWithMarker;
     }
-
-    public void tick(){
-        tick(AgentType.GUARD);
-        tick(AgentType.INTRUDER);
-    }
-
-    protected void tick(AgentType agentType) {
-        Iterator<Tile> iterator = controller.nextState.getTilesWithMarkerOf(agentType).iterator(); // *** This ALSO updates the marker in the currentState, while it's the same reference! ***
+    protected void tick() {
+        Iterator<Tile> iterator = controller.nextState.getTilesWithMarkerGuard().iterator(); // *** This ALSO updates the marker in the currentState, while it's the same reference! ***
         while (iterator.hasNext()) {
             Tile tile = iterator.next();
-            PheromoneMarker marker = tile.getPheromoneMarker(agentType);
-            if (marker != null) {
-                marker.updateMarker(controller.getTimestep());
-                if (marker.shouldRemove()) {
-                    tile.removeMarker(marker, agentType); // *** This ALSO removes the marker in the Tile of the currentState because same reference! ***
-                    iterator.remove();
+            MarkerInterface[] markers = tile.getMarkers();
+            for (MarkerInterface marker : markers) {
+                if (marker != null) {
+                    marker.updateMarker(controller.getTimestep());
+                    if (marker.shouldRemove()) {
+                        tile.removeMarker(marker); // *** This ALSO removes the marker in the Tile of the currentState because same reference! ***
+                        iterator.remove();
+                    }
                 }
             }
         }
-        int startIngIndex = agentType == AgentType.GUARD?0:controller.numberOfGuards;
-        int endingIndex = agentType == AgentType.GUARD? controller.numberOfGuards:controller.numberOfGuards+controller.numberOfIntruders;
-        // Add the new pheromone markers
-        for (int i = startIngIndex; i<endingIndex; i++) {
+
+        // Add the new pheromone markers for the guards
+        for (int i = 0; i < controller.numberOfGuards; i++) {
             addMarker(controller.nextState.getAgentPosition(i), new PheromoneMarker(controller.agents[i],
-                    controller.nextState.getAgentPosition(i), pheromoneMaxSmellingDistance, pheromoneReduction), agentType);
+                    controller.nextState.getAgentPosition(i), pheromoneMaxSmellingDistance, pheromoneReduction));
         }
     }
 
-    private void addMarker(Vector2D position, MarkerInterface marker, AgentType agentType) {
-        if (position != null) {
-            controller.scenarioMap.getTile(position).addMarker(marker, agentType);
-            Iterator<Tile> iterator = controller.nextState.getTilesWithMarkerOf(agentType).iterator();
-            while (iterator.hasNext()) {
-                Tile tile = iterator.next();
-                // Remove the old marker, in case the agent didn't move
-                if (tile.getPheromoneMarker(agentType).getPosition().equals(position)) {
-                    iterator.remove();
-                    break;
-                }
+    private void addMarker(Vector2D position, MarkerInterface marker) {
+        controller.scenarioMap.getTile(position).addMarker(marker);
+        Iterator<Tile> iterator = controller.nextState.getTilesWithMarkerGuard().iterator();
+        while (iterator.hasNext()) {
+            Tile tile = iterator.next();
+            // Remove the old marker, in case the agent didn't move
+            if (tile.getPheromoneMarker().getPosition().equals(position)) {
+                iterator.remove();
+                break;
             }
-            controller.nextState.addTileWithMarkerOf(controller.scenarioMap.getTile(position), agentType);
         }
+        controller.nextState.addTileWithMarkerGuard(controller.scenarioMap.getTile(position));
     }
 
-    private List<PheromoneMarker> getPheromoneMarkersCloseEnough(int agentIndex, AgentType agentType) {
+    private List<PheromoneMarker> getPheromoneMarkersCloseEnough(int agentIndex) {
         ArrayList<PheromoneMarker> markersCloseEnough = new ArrayList<>();
-        for (Tile tile : controller.currentState.getTilesWithMarkerOf(agentType)) {
-            if (( tile.getPheromoneMarker(agentType) != null && tile.getPheromoneMarker(agentType).getAgent() != controller.agents[agentIndex])
-                    && controller.currentState.getAgentPosition(agentIndex).dist(tile.getPheromoneMarker(agentType).getPosition()) <= tile.getPheromoneMarker(agentType).getDistance()
-                    && !controller.isWallInBetween(controller.currentState.getAgentPosition(agentIndex), tile.getPheromoneMarker(agentType).getPosition())) {
-                markersCloseEnough.add(tile.getPheromoneMarker(agentType));
+        for (Tile tile : controller.currentState.getTilesWithMarkerGuard()) {
+            if (tile.getPheromoneMarker().getAgent() != controller.agents[agentIndex]
+                    && controller.currentState.getAgentPosition(agentIndex).dist(tile.getPheromoneMarker().getPosition()) <= tile.getPheromoneMarker().getDistance()
+                    && !controller.isWallInBetween(controller.currentState.getAgentPosition(agentIndex), tile.getPheromoneMarker().getPosition())) {
+                markersCloseEnough.add(tile.getPheromoneMarker());
             }
         }
         return markersCloseEnough;
     }
 
-    public double getPheromoneMarkersDirection(int agentIndex, Vector2D position, AgentType agentType) {
-        List<PheromoneMarker> pheromoneMarkers = getPheromoneMarkersCloseEnough(agentIndex, agentType);
+    public double getPheromoneMarkersDirection(int agentIndex, Vector2D agentPosition) {
+        List<PheromoneMarker> pheromoneMarkers = getPheromoneMarkersCloseEnough(agentIndex);
         if (pheromoneMarkers.size() == 0) return -1;
 
         double divider = 0;
         double angleSum = 0;
         for (PheromoneMarker pheromoneMarker : pheromoneMarkers) {
             divider += pheromoneMarker.getStrength();
-            angleSum += position.getAngleBetweenVector(pheromoneMarker.getPosition()) * pheromoneMarker.getStrength();
+            angleSum += agentPosition.getAngleBetweenVector(pheromoneMarker.getPosition()) * pheromoneMarker.getStrength();
         }
         return angleSum/divider;
     }
