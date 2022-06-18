@@ -55,9 +55,9 @@ public class ExperimentsSurveillance {
     // FD = 24, RD = 5, YD = 30
     // FD = 16, RD = 10, YD = 30
     // FD = 24, RD = 10, YD = 30
-    private static final int[] footStepMaxHearingDistance = {16};
-    private static final int[] rotationMaxHearingDistance = {5};
-    private static final int[] yellMaxHearingDistance = {30};
+    private static final int[] footStepMaxHearingDistance = {8, 16, 24};
+    private static final int[] rotationMaxHearingDistance = {5, 10};
+    private static final int[] yellMaxHearingDistance = {70};
 
     public static void main(String[] args) throws InterruptedException {
         for (int footStepDistance : footStepMaxHearingDistance) {
@@ -74,7 +74,7 @@ public class ExperimentsSurveillance {
                         double[] winForTeam = new double[2];
 
                         for (int mapIndex = 0; mapIndex < MAP_FILE_NAMES.length; mapIndex++) {
-                            System.out.println("---- Current map " + (mapIndex+1) + " of " + MAP_FILE_NAMES.length + " ----");
+                            System.out.println("Current map " + (mapIndex+1) + " of " + MAP_FILE_NAMES.length);
 
                             URL url = ExperimentsSurveillance.class.getClassLoader().getResource("maps/" + MAP_FILE_NAMES[mapIndex]);
                             ScenarioMap scenarioMap = null;
@@ -101,7 +101,6 @@ public class ExperimentsSurveillance {
                             }
                             threadPool.shutdown();
                             threadPool.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
-                            System.out.println();
                         }
                         try {
                             BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("src/main/java/experiments/results/surveillance_"+numGuards+"_"+numIntruders+"_"+footStepDistance+"_"+rotationDistance+"_"+yellDistance+".csv", true));
