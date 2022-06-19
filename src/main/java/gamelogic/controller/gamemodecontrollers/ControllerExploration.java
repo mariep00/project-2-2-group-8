@@ -57,6 +57,6 @@ public class ControllerExploration extends Controller {
         int hours = (int) time / 3600;
         int minutes = ((int)time % 3600) / 60;
         double seconds = time % 60;
-        System.out.println("Everything is explored. It took " + hours + " hour(s) " + minutes + " minutes " + seconds + " seconds.");
+        //System.out.println("Everything is explored. It took " + hours + " hour(s) " + minutes + " minutes " + seconds + " seconds.");
     }
 }

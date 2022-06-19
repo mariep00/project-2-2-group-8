@@ -24,7 +24,7 @@ import java.net.URL;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Random;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -76,25 +76,25 @@ public class ExperimentsSurveillance {
                         for (int mapIndex = 0; mapIndex < MAP_FILE_NAMES.length; mapIndex++) {
                             System.out.println("---- Current map " + (mapIndex+1) + " of " + MAP_FILE_NAMES.length + " ----");
 
-                            URL url = ExperimentsSurveillance.class.getClassLoader().getResource("maps/" + MAP_FILE_NAMES[mapIndex]);
-                            ScenarioMap scenarioMap = null;
-                            try {
-                                scenarioMap = new MapBuilder(Paths.get(url.toURI()).toFile()).getMap();
-                            } catch (URISyntaxException e) {
-                                e.printStackTrace();
-                            }
-
-                            scenarioMap.setNumGuards(numGuards);
-                            scenarioMap.setNumIntruders(numIntruders);
-                            scenarioMap.setRotatingMaxHearingDistance(rotationDistance);
-                            scenarioMap.setYellMaxHearingDistance(yellDistance);
-                            scenarioMap.setFootstepMaxHearingDistance(footStepDistance);
-
-                            ThreadPoolExecutor threadPool = new ThreadPoolExecutor(Runtime.getRuntime().availableProcessors(), 50, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
-                            ScenarioMap finalScenarioMap = scenarioMap;
+                            ThreadPoolExecutor threadPool = (ThreadPoolExecutor) Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
                             for (int iteration = 0; iteration < NUMBER_OF_ITERATIONS_PER_MAP; iteration++) {
+                                int finalMapIndex = mapIndex;
                                 threadPool.submit(() -> {
-                                    Object[] result = runGame(finalScenarioMap);
+                                    URL url = ExperimentsSurveillance.class.getClassLoader().getResource("maps/" + MAP_FILE_NAMES[finalMapIndex]);
+                                    ScenarioMap scenarioMap = null;
+                                    try {
+                                        scenarioMap = new MapBuilder(Paths.get(url.toURI()).toFile()).getMap();
+                                    } catch (URISyntaxException e) {
+                                        e.printStackTrace();
+                                    }
+
+                                    scenarioMap.setNumGuards(numGuards);
+                                    scenarioMap.setNumIntruders(numIntruders);
+                                    scenarioMap.setRotatingMaxHearingDistance(rotationDistance);
+                                    scenarioMap.setYellMaxHearingDistance(yellDistance);
+                                    scenarioMap.setFootstepMaxHearingDistance(footStepDistance);
+
+                                    Object[] result = runGame(scenarioMap);
                                     winForTeam[(int) result[0]]++;
                                     totalTimeForTeam[(int) result[0]] += (double) result[1];
                                 });
