@@ -32,7 +32,7 @@ public class EvasionLearner {
     private final static String[] MAP_POOL = {"ExperimentSurveillance1.txt", "ExperimentSurveillance2.txt", "ExperimentSurveillance1FlippedSpawns.txt", "ExperimentSurveillance2FlippedSpawns.txt", "ChangedAdvancedSurveillance.txt", "AdvancedTestSurveillance.txt", "SimpleTestSurveillance.txt"};
     private final static TaskContainer TASK_CONTAINER = new TaskContainer(new ExplorationTaskFrontier(), new FindSoundSource(), new ClosePursuingTask(), new FarPursuingTask(), new EvasionTaskBaseline(),
             new VisitLastSeenIntruderPositions(), new PathfindingTask(), new ExplorationInDirection(), new AvoidCollisionTask(), new CaptureTargetAreaTask()); // Change this to change the tasks that can be performed by agents
-    private final static int NUMBER_OF_ITERATIONS_PER_MAP = 3; // One iteration is around 24 games, depending on the map
+    private final static int NUMBER_OF_ITERATIONS_PER_MAP = 2; // One iteration is around 24 games, depending on the map
 
     public static void main(String[] args) throws IOException {
         ArrayList<String> map_pool_shuffled = new ArrayList<>(List.of(MAP_POOL));
