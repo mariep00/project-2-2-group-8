@@ -30,7 +30,7 @@ public class TaskDeciderGuard implements TaskDeciderInterface {
         this.tasks = taskContainer;
         if (useSoundDecidingModel) {
             try {
-                soundDecidingModelTemp = ModelSerializer.restoreMultiLayerNetwork("src/main/java/machinelearning/data/results/sound_deciding_model");
+                soundDecidingModelTemp = ModelSerializer.restoreMultiLayerNetwork("src/main/java/machinelearning/data/experiments.results/sound_deciding_model");
             } catch (IOException e) {
                 e.printStackTrace();
                 soundDecidingModelTemp = null;

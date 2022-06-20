@@ -26,7 +26,7 @@ public class EvasionTaskRL implements TaskInterface{
     public EvasionTaskRL() {
         MultiLayerNetwork modelTemp;
         try {
-            modelTemp = MultiLayerNetwork.load(new File("src/main/java/machinelearning/evasion/results/evasion_model"), true);
+            modelTemp = MultiLayerNetwork.load(new File("src/main/java/machinelearning/evasion/experiments.results/evasion_model"), true);
         }
         catch (IOException e) {
             e.printStackTrace();

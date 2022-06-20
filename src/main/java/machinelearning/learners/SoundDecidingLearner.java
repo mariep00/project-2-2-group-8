@@ -41,7 +41,7 @@ public class SoundDecidingLearner {
         MultiLayerNetwork model;
         try {
             System.out.println("Loading the model...");
-            model = ModelSerializer.restoreMultiLayerNetwork("src/main/java/machinelearning/data/results/sound_deciding_model");
+            model = ModelSerializer.restoreMultiLayerNetwork("src/main/java/machinelearning/data/experiments.results/sound_deciding_model");
 
             /*
             for (DataSet d : testingData) {
@@ -85,7 +85,7 @@ public class SoundDecidingLearner {
 
         //Configure where the network information (gradients, activations, score vs. time etc) is to be stored
         //Then add the StatsListener to collect this information from the network, as it trains
-        StatsStorage statsStorage = new FileStatsStorage(new File("src/main/java/machinelearning/data/results/sound_deciding_results"));
+        StatsStorage statsStorage = new FileStatsStorage(new File("src/main/java/machinelearning/data/experiments.results/sound_deciding_results"));
         int listenerFrequency = 100;
         model.setListeners(new StatsListener(statsStorage, listenerFrequency));
 
@@ -110,17 +110,17 @@ public class SoundDecidingLearner {
             Evaluation evalTestData = new Evaluation(2);
             evalTestData.eval(testingData.getLabels(), outputTestData);
 
-            BufferedWriter bufferedWriter1 = new BufferedWriter(new FileWriter("src/main/java/machinelearning/data/results/sound_deciding_epoch_vs_accuracy.csv", true));
+            BufferedWriter bufferedWriter1 = new BufferedWriter(new FileWriter("src/main/java/machinelearning/data/experiments.results/sound_deciding_epoch_vs_accuracy.csv", true));
             bufferedWriter1.write(evalTrainingData.accuracy() + "," + evalTestData.accuracy() + "," + evalTrainingData.f1() + "," + evalTestData.f1());
             bufferedWriter1.newLine();
             bufferedWriter1.close();
 
-            ModelSerializer.writeModel(model, "src/main/java/machinelearning/data/results/sound_deciding_model", true);
+            ModelSerializer.writeModel(model, "src/main/java/machinelearning/data/experiments.results/sound_deciding_model", true);
 
-            if (i % 20 == 0) ModelSerializer.writeModel(model, "src/main/java/machinelearning/data/results/sound_deciding_model_"+(i+654), true);
+            if (i % 20 == 0) ModelSerializer.writeModel(model, "src/main/java/machinelearning/data/experiments.results/sound_deciding_model_"+(i+654), true);
 
             /*
-            BufferedWriter bufferedWriter2 = new BufferedWriter(new FileWriter("src/main/java/machinelearning/data/results/sound_deciding_epoch_vs_confusion_matrix.csv", true));
+            BufferedWriter bufferedWriter2 = new BufferedWriter(new FileWriter("src/main/java/machinelearning/data/experiments.results/sound_deciding_epoch_vs_confusion_matrix.csv", true));
             bufferedWriter2.write(evalTrainingData.falsePositiveRate() + "," + evalTrainingData.falseNegativeRate() + "," + evalTestData.falsePositiveRate() + "," + evalTestData.falseNegativeRate());
             bufferedWriter2.newLine();
             bufferedWriter2.close();*/
