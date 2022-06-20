@@ -61,8 +61,7 @@ public class ClosePursuingTask implements TaskInterface {
         return futureMoves.pop();
     }
 
-    // TODO We should consider the case when guards are approaching an intruder from the same direction, the closest guard should stay in "close pursuit, while the other guard should try to cut off the path of the intruder. Because right now they will just follow each other.
-    private LinkedList<Vector2D> getPursuitTaskToGoal(Vector2D goalInFrontOfIntruder, double distanceInFrontOfIntruder, double orientation) {
+   private LinkedList<Vector2D> getPursuitTaskToGoal(Vector2D goalInFrontOfIntruder, double distanceInFrontOfIntruder, double orientation) {
         boolean firstGoForward = false;
         Vector2D intruderPos = target.position().add(graph.getCurrentPosition().COORDINATES);
         int xDiff = Math.abs(graph.getCurrentPosition().COORDINATES.x-intruderPos.x);

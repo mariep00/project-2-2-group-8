@@ -19,7 +19,6 @@ public class IntruderBrain implements BrainInterface {
 
     public IntruderBrain (TaskContainer taskContainer, double angleSpawnToGoal) {
         this.tasks = taskContainer;
-        //this.currentTask = tasks.getTask(TaskType.EXPLORATION_DIRECTION);
         this.taskDecider = tasks.getTaskDeciderIntruder();
         ((TaskDeciderIntruder)taskDecider).setTargetAngle(angleSpawnToGoal);
     }
@@ -28,7 +27,6 @@ public class IntruderBrain implements BrainInterface {
     public int makeDecision(ExplorationGraph graph, double orientation, double pheromoneMarkersDirectionIntruder, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen, List<Sound> guardYells, List<Sound> guardYellsCaught) {
         currentTask = taskDecider.getTaskToPerform(graph, sounds, guardsSeen, intrudersSeen, currentTask);
         //System.out.println("-- INTRUDER PERFORMS TASK " + currentTask.getType());
-        //System.out.println("Intruder hears sounds " + Arrays.toString(sounds.toArray()));
         
         return currentTask.performTask(graph, orientation, pheromoneMarkersDirectionIntruder, sounds, guardsSeen, intrudersSeen);
     }

@@ -15,7 +15,7 @@ public class NetworkUtil {
                 .batchSize(128)
                 .targetDqnUpdateFreq(500)
                 .updateStart(10)
-                .rewardFactor(0.01)
+                .rewardFactor(0.1)
                 .gamma(0.99)
                 .errorClamp(1)
                 .minEpsilon(0.1)
