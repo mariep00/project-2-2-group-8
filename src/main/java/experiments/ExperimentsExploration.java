@@ -20,7 +20,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 public class ExperimentsExploration {
-    public static final int NUMBER_OF_ITERATIONS_PER_MAP = 200;
+    public static final int NUMBER_OF_ITERATIONS_PER_MAP = 4000;
     private static final Random rand = new Random();
 
     private static final int[] numberAgents = {1,3,4,6};
