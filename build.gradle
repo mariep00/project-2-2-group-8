@@ -31,3 +31,9 @@ dependencies {
     implementation 'org.deeplearning4j:rl4j-core:1.0.0-M1.1'
 }
 
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(16))
+    }
+}
+

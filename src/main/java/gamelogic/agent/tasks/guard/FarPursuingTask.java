@@ -17,7 +17,6 @@ import java.util.Stack;
 
 public class FarPursuingTask implements TaskInterface{
 
-    //TODO Adjust the distanceThresholds to make sense
     private final double angleDifference = 30;
     private final double walkingDistanceThreshold = 0.3; // Is multiplied with distance to Intruder
     private final double distanceThresholdFirstPath = 50.0; //Thresholds are multiplied with how long we want to walk
@@ -80,7 +79,7 @@ public class FarPursuingTask implements TaskInterface{
             //System.out.println(goal + ", " + graph.getCurrentPosition() + ", " + (int)(distanceThresholdFirstPath*distance) + ", " + Arrays.toString(path1.toArray()));
             if(path1.getFirst().equals(goal)) {
                 LinkedList<Vector2D> path2 = AStar.calculate(graph, graph.getNode(goal), graph.getNode(intruder.position().add(graph.getCurrentPosition().COORDINATES)), (int)(distanceThresholdSecondPath*goal.dist(intruder.position().add(graph.getCurrentPosition().COORDINATES))));
-                if (path2 == null || path2.getFirst().equals(intruder.position().add(graph.getCurrentPosition().COORDINATES))) { // TODO Added this == null when the intruder's position cannot be reached due to vision and walls
+                if (path2 == null || path2.getFirst().equals(intruder.position().add(graph.getCurrentPosition().COORDINATES))) {
                     return path1;
                 }
             }

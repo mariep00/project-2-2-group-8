@@ -34,7 +34,7 @@ public class AStar {
             if (open.isEmpty() && upperBound == -1) return null;
             if (isFinished) break;
             ANode current = open.removeFirst();
-            if (current == null) return null; // TODO IMPORTANT; I added this line to prevent AStar from crashing, because @Johann changed the returning of the heap. Is this valid?
+            if (current == null) return null;
             //System.out.println(current);
             if(current.POSITION.equals(goal)) {
                 goalANode = current;

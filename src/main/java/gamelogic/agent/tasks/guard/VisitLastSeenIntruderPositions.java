@@ -19,7 +19,6 @@ public class VisitLastSeenIntruderPositions implements TaskInterface {
     private Vector2D target;
     private boolean isFinished = false;
 
-    // TODO I know this task can get stuck, should be fixed (at least partially :)) by adding a new task to perform to the decider
     @Override
     public int performTask(ExplorationGraph graph, double orientation, double pheromoneMarkerDirection, List<Sound> sounds, VisionMemory[] guardsSeen, VisionMemory[] intrudersSeen) {
         if (target == null || target.equals(graph.getCurrentPosition().COORDINATES)) {

@@ -85,7 +85,6 @@ public class TaskDeciderGuard implements TaskDeciderInterface {
                 return tasks.getTask(TaskContainer.TaskType.EXPLORATION);
             }
             else if (currentTask.getType() == TaskContainer.TaskType.VISIT_LAST_SEEN_INTRUDER_POSITIONS) {
-                // TODO Create some follow up task
             }
             else {
                 return tasks.getTask(TaskContainer.TaskType.VISIT_LAST_SEEN_INTRUDER_POSITIONS);

@@ -137,10 +137,6 @@ public class ScenarioMenu extends Application implements TransitionInterface {
         hBox.setAlignment(Pos.CENTER);
         BorderPane.setMargin(hBox, new Insets(0, 0, 30, 0));
 
-        // TODO Add option to export map --> move from MapCreator
-        // TODO Button to go back (back to LoadCreateMap or MapCreator, depending where user came from)
-        // TODO Add fields to customize agent i.e. choose what algorithms agent should use
-
         Scene scene = new Scene(borderPane);
         MainGUI.setupScene(this, scene, stage);
         stage.setScene(scene);

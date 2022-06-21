@@ -226,7 +226,7 @@ public class MapCreator extends Application implements TransitionInterface {
                         scenarioMap.insertElement((x-mapBuildIndices[0]), (y-mapBuildIndices[2]), gamelogic.maps.Tile.Type.TARGET_AREA);
                         scenarioMap.insertTargetArea(x-mapBuildIndices[0], y-mapBuildIndices[2]);
                     }
-                    else if (tiles[y][x].isTeleport()) scenarioMap.setTeleport((x-mapBuildIndices[0]), (y-mapBuildIndices[2]), (x-mapBuildIndices[0]), (y-mapBuildIndices[2]), (x-mapBuildIndices[0])+1, (y-mapBuildIndices[2])+1, 0); // TODO input for custom exit and rotation, can cause errors now
+                    else if (tiles[y][x].isTeleport()) scenarioMap.setTeleport((x-mapBuildIndices[0]), (y-mapBuildIndices[2]), (x-mapBuildIndices[0]), (y-mapBuildIndices[2]), (x-mapBuildIndices[0])+1, (y-mapBuildIndices[2])+1, 0);
                     if (tiles[y][x].isShaded()) scenarioMap.setShaded((x-mapBuildIndices[0]), (y-mapBuildIndices[2]));
                 }
             }
@@ -314,7 +314,7 @@ public class MapCreator extends Application implements TransitionInterface {
                     else if (tile.isSpawnAreaGuards()) writer.println("spawnAreaGuards = " + (x-mapBuildIndices[0]) + " " + (y-mapBuildIndices[2]) + " " + (x-mapBuildIndices[0]) + " " + (y-mapBuildIndices[2]));
                     else if (tile.isSpawnAreaIntruders()) writer.println("spawnAreaIntruders = " + (x-mapBuildIndices[0]) + " " + (y-mapBuildIndices[2]) + " " + (x-mapBuildIndices[0]) + " " + (y-mapBuildIndices[2]));
                     else if (tile.isTargetArea()) writer.println("targetArea = " + (x-mapBuildIndices[0]) + " " + (y-mapBuildIndices[2]) + " " + (x-mapBuildIndices[0]) + " " + (y-mapBuildIndices[2]));
-                    else if (tile.isTeleport()) writer.println("teleport = " + (x-mapBuildIndices[0]) + " " + (y-mapBuildIndices[2]) + " " + (x-mapBuildIndices[0]) + " " + (y-mapBuildIndices[2]) + " " + ((x-mapBuildIndices[0])+1) + " " + ((y-mapBuildIndices[2])+1) + " " + 0); // TODO input for custom exit and rotation, can cause errors now
+                    else if (tile.isTeleport()) writer.println("teleport = " + (x-mapBuildIndices[0]) + " " + (y-mapBuildIndices[2]) + " " + (x-mapBuildIndices[0]) + " " + (y-mapBuildIndices[2]) + " " + ((x-mapBuildIndices[0])+1) + " " + ((y-mapBuildIndices[2])+1) + " " + 0);
                     if (tile.isShaded()) writer.println("shaded = " + (x-mapBuildIndices[0]) + " " + (y-mapBuildIndices[2]) + " " + (x-mapBuildIndices[0]) + " " + (y-mapBuildIndices[2]));
                 }
             }
