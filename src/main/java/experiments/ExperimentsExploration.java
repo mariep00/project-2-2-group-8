@@ -64,7 +64,7 @@ public class ExperimentsExploration {
                         threadPool.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
 
                         try {
-                            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("src/main/java/experiments/results/exploration_"+mapIndex+"_"+numberOfExplorationAgents+"_"+pheromoneRange+"_"+pheromoneReduction+".csv", true));
+                            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("src/main/java/experiments/experiments.results/exploration_"+mapIndex+"_"+numberOfExplorationAgents+"_"+pheromoneRange+"_"+pheromoneReduction+".csv", true));
                             StringBuilder stringBuilder = new StringBuilder();
 
                             for (int i = 0; i < timeToExplore.length; i++) {

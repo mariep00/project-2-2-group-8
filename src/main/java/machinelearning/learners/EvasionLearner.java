@@ -55,7 +55,7 @@ public class EvasionLearner {
 
                 QLearningDiscreteDense<GameState> dql;
                 try {
-                    dql = new QLearningDiscreteDense<>(env, DQN.load("src/main/java/machinelearning/evasion/results/evasion_model"), NetworkUtil.buildConfig());
+                    dql = new QLearningDiscreteDense<>(env, DQN.load("src/main/java/machinelearning/evasion/experiments.results/evasion_model"), NetworkUtil.buildConfig());
                 } catch (IOException e) {
                     System.out.println("* Model does not exist yet *");
                     System.out.println("Creating model..");
@@ -65,7 +65,7 @@ public class EvasionLearner {
                 dql.train();
                 env.close();
 
-                dql.getNeuralNet().save("src/main/java/machinelearning/evasion/results/evasion_model");
+                dql.getNeuralNet().save("src/main/java/machinelearning/evasion/experiments.results/evasion_model");
             }
         }
     }
