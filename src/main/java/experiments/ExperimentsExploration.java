@@ -32,10 +32,16 @@ public class ExperimentsExploration {
 
     public static void main(String[] args) throws InterruptedException {
         int count = 0;
-        for (int pheromoneRange : pheromoneRanges) {
-            for (double pheromoneReduction : pheromoneReductions) {
-                for (int numberOfExplorationAgents : numberAgents) {
-                    for (int mapIndex = 0; mapIndex < MAP_FILE_NAMES.length; mapIndex++) {
+        //
+        int pheromoneRange = 10;
+        double pheromoneReduction = 0.05;
+        int mapIndex = 0;
+        int numberOfExplorationAgents = 1;
+        //
+        //for (int pheromoneRange : pheromoneRanges) {
+            //for (double pheromoneReduction : pheromoneReductions) {
+                //for (int numberOfExplorationAgents : numberAgents) {
+                    //for (int mapIndex = 0; mapIndex < MAP_FILE_NAMES.length; mapIndex++) {
                         System.out.println();
                         System.out.println("Percentage done " + ((double) count/(numberAgents.length*pheromoneRanges.length*pheromoneReductions.length*MAP_FILE_NAMES.length)*100) + "%");
                         double[] timeToExplore = new double[NUMBER_OF_ITERATIONS_PER_MAP];
@@ -64,7 +70,7 @@ public class ExperimentsExploration {
                         threadPool.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
 
                         try {
-                            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("src/main/java/experiments/results/exploration_"+mapIndex+"_"+numberOfExplorationAgents+"_"+pheromoneRange+"_"+pheromoneReduction+".csv", true));
+                            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("src/main/java/experiments/exploration_"+mapIndex+"_"+numberOfExplorationAgents+"_"+pheromoneRange+"_"+pheromoneReduction+".csv", true));
                             StringBuilder stringBuilder = new StringBuilder();
 
                             for (int i = 0; i < timeToExplore.length; i++) {
@@ -84,10 +90,10 @@ public class ExperimentsExploration {
                             e.printStackTrace();
                         }
                         count++;
-                    }
-                }
-            }
-        }
+                    //}
+                //}
+            //}
+        //}
     }
 
     private static double[] calculateConfidenceInterval(double[] timeToExplore) {
