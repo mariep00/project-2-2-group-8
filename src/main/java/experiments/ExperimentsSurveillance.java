@@ -55,9 +55,9 @@ public class ExperimentsSurveillance {
     // FD = 24, RD = 5, YD = 30
     // FD = 16, RD = 10, YD = 30
     // FD = 24, RD = 10, YD = 30
-    private static final int[] footStepMaxHearingDistance = {16};
-    private static final int[] rotationMaxHearingDistance = {5};
-    private static final int[] yellMaxHearingDistance = {30};
+    private static final int[] footStepMaxHearingDistance = {8, 16, 24};
+    private static final int[] rotationMaxHearingDistance = {5, 10};
+    private static final int[] yellMaxHearingDistance = {50};
 
     public static void main(String[] args) throws InterruptedException {
         for (int footStepDistance : footStepMaxHearingDistance) {
