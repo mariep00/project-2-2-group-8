@@ -16,7 +16,7 @@ public class ControllerExplorationGUI extends ControllerExploration implements C
     private final GameScreen gameScreen;
     private final ControllerGUI controllerGUI;
     public ControllerExplorationGUI(ScenarioMap scenarioMap, EndingExploration endingCondition, GameScreen gameScreen, TaskContainer taskContainer) {
-        super(scenarioMap, endingCondition, taskContainer, 0);
+        super(scenarioMap, endingCondition, taskContainer, -1368057528);
         this.gameScreen = gameScreen;
         this.controllerGUI = new ControllerGUI(this, gameScreen);
     }

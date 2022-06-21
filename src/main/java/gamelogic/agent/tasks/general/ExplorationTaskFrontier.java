@@ -48,7 +48,10 @@ public class ExplorationTaskFrontier implements TaskInterface {
             updateGoal(frontierIndexToGoTo, pheromoneMarkerDirection);
             boolean foundReachableNode = false;
             while (!foundReachableNode) {
-                
+                if (goalNode == lastNode) {
+                    whenStuck();
+                    break;
+                }
                 foundReachableNode = moveTo();
                 if (!foundReachableNode) {
                     //System.out.println("----- Goal not reachable: " + goalNode);
