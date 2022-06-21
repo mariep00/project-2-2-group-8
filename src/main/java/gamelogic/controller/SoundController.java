@@ -70,8 +70,6 @@ public class SoundController {
         return anglesOfGuardYell;
     }
 
-
-
     private double getDistanceToSound(Vector2D origin, Vector2D currentPosition, int threshold) {
         double distance = -1;
         if (origin.dist(currentPosition) <= threshold) {

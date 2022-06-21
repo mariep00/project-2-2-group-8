@@ -22,7 +22,7 @@ public class ControllerSurveillanceRLEvasion extends ControllerSurveillance {
         int reward = 0;
         super.tickAgent(agentIndex, movementTask);
         if (willBeAlive(agentIndex)) reward += 1;
-        else reward -= 15;
+        else reward -= 25;
 
         return reward;
     }
