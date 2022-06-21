@@ -28,7 +28,7 @@ public class ExperimentsExploration {
     private final static String[] MAP_FILE_NAMES = {"Map1.txt","Map2.txt"};
 
     private final static int[] pheromoneRanges = {0};
-    private final static double[] pheromoneReductions = {1000000};
+    private final static double[] pheromoneReductions = {100000};
 
     public static void main(String[] args) throws InterruptedException {
         int count = 0;
@@ -45,9 +45,7 @@ public class ExperimentsExploration {
                             int finalMapIndex = mapIndex;
                             int finalIteration = iteration;
 
-                            int finalIteration1 = iteration;
-                            threadPool.submit(() -> {
-                                System.out.println(finalIteration1);
+                            //threadPool.submit(() -> {
                                 URL url = ExperimentsSurveillance.class.getClassLoader().getResource("maps/" + MAP_FILE_NAMES[finalMapIndex]);
                                 ScenarioMap scenarioMap = null;
                                 try {
@@ -60,7 +58,9 @@ public class ExperimentsExploration {
                                 scenarioMap.setPheromoneMaxSmellingDistance(pheromoneRange);
                                 scenarioMap.setPheromoneReduction(pheromoneReduction);
                                 timeToExplore[finalIteration] = runGame(scenarioMap);
-                            });
+
+                            System.out.println(iteration);
+                           // });
                         }
                         threadPool.shutdown();
                         threadPool.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
