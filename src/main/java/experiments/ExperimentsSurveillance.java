@@ -10,7 +10,7 @@ import gamelogic.agent.tasks.guard.FarPursuingTask;
 import gamelogic.agent.tasks.guard.FindSoundSource;
 import gamelogic.agent.tasks.guard.VisitLastSeenIntruderPositions;
 import gamelogic.agent.tasks.intruder.CaptureTargetAreaTask;
-import gamelogic.agent.tasks.intruder.EvasionTaskBaseline;
+import gamelogic.agent.tasks.intruder.EvasionTaskRL;
 import gamelogic.controller.endingconditions.EndingSurveillance;
 import gamelogic.controller.gamemodecontrollers.ControllerSurveillance;
 import gamelogic.maps.MapBuilder;
@@ -55,9 +55,9 @@ public class ExperimentsSurveillance {
     // FD = 24, RD = 5, YD = 30
     // FD = 16, RD = 10, YD = 30
     // FD = 24, RD = 10, YD = 30
-    private static final int[] footStepMaxHearingDistance = {8, 16, 24};
-    private static final int[] rotationMaxHearingDistance = {5, 10};
-    private static final int[] yellMaxHearingDistance = {70};
+    private static final int[] footStepMaxHearingDistance = {16};
+    private static final int[] rotationMaxHearingDistance = {5};
+    private static final int[] yellMaxHearingDistance = {50};
 
     public static void main(String[] args) throws InterruptedException {
         for (int footStepDistance : footStepMaxHearingDistance) {
@@ -103,7 +103,7 @@ public class ExperimentsSurveillance {
                             threadPool.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
                         }
                         try {
-                            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("src/main/java/experiments/results/surveillance_"+numGuards+"_"+numIntruders+"_"+footStepDistance+"_"+rotationDistance+"_"+yellDistance+".csv", true));
+                            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("src/main/java/experiments/results/surveillance_rlevasion_"+numGuards+"_"+numIntruders+"_"+footStepDistance+"_"+rotationDistance+"_"+yellDistance+".csv", true));
                             StringBuilder stringBuilder = new StringBuilder();
 
                             stringBuilder.append(winForTeam[0]).append(",").append(totalTimeForTeam[0] / winForTeam[0]).append(",").append(winForTeam[1]).append(",").append(totalTimeForTeam[1] / winForTeam[1]);
@@ -127,7 +127,7 @@ public class ExperimentsSurveillance {
 
     private static double[] calculateConfidenceInterval(double[] values) {
         int numberOfGames = (int) (values[0]+values[1]);
-        double mean = values[0]/numberOfGames;
+        double mean = values[0] != 0 ? values[0]/numberOfGames : 0;
 
         Random rand = new Random();
         double[] bootstrapSamplesDiff = new double[1000];
@@ -148,7 +148,7 @@ public class ExperimentsSurveillance {
     }
 
     private static Object[] runGame(ScenarioMap scenarioMap) {
-        ControllerSurveillance controller = new ControllerSurveillance(scenarioMap, new EndingSurveillance(scenarioMap), new TaskContainer(new ExplorationTaskFrontier(), new FindSoundSource(), new ClosePursuingTask(), new FarPursuingTask(), new EvasionTaskBaseline(), new VisitLastSeenIntruderPositions(), new PathfindingTask(), new ExplorationInDirection(), new AvoidCollisionTask(), new CaptureTargetAreaTask()), rand.nextInt());
+        ControllerSurveillance controller = new ControllerSurveillance(scenarioMap, new EndingSurveillance(scenarioMap), new TaskContainer(new ExplorationTaskFrontier(), new FindSoundSource(), new ClosePursuingTask(), new FarPursuingTask(), new EvasionTaskRL(), new VisitLastSeenIntruderPositions(), new PathfindingTask(), new ExplorationInDirection(), new AvoidCollisionTask(), new CaptureTargetAreaTask()), rand.nextInt());
         controller.init();
         controller.engine();
         return new Object[]{controller.getWhoWon(), controller.time};

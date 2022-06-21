@@ -43,10 +43,7 @@ public class SoundController {
                     double angle = controller.getCurrentState().getAgentPosition(agentIndex).getAngleBetweenVector(soundOrigin.origin());
                     double angleNormalDistributed = Controller.addNoise(angle, soundStandardDeviation, true);
                     double maxThreshold = Math.max(footstepMaxHearingDistance, rotatingMaxHearingDistance); // Divide by maximum to have a normalised loudness
-                    //sounds.add(new Sound(angleNormalDistributed >= 360 ? angleNormalDistributed - 360 : angleNormalDistributed, ((float) maxThreshold - distance) / maxThreshold));
-                    if (!(agentIndex >= controller.numberOfGuards && soundOrigin.agentIndex() >= controller.numberOfGuards)) { // TODO REMOVE BACK, just for RL to prevent intruders evading from intruders
-                        sounds.add(new Sound(angleNormalDistributed >= 360 ? angleNormalDistributed - 360 : angleNormalDistributed, ((float) maxThreshold - distance) / maxThreshold));
-                    }
+                    sounds.add(new Sound(angleNormalDistributed >= 360 ? angleNormalDistributed - 360 : angleNormalDistributed, ((float) maxThreshold - distance) / maxThreshold));
 
                     //SoundDecidingDataGenerator.generateData(sounds.get(sounds.size()-1), controller.getCurrentState().getAgentsSeen(agentIndex), soundOrigin.agentIndex());
                 }

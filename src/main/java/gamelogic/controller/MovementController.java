@@ -38,7 +38,7 @@ public class MovementController {
     protected void updateAgentPosition(int agentIndex, Vector2D pos) {
         controller.nextState.setAgentPosition(agentIndex, pos);
         controller.agents[agentIndex].updatePosition(controller.convertAbsoluteToRelativeSpawn(pos, agentIndex));
-         if (controller instanceof ControllerSurveillance) {
+         if (controller instanceof ControllerSurveillance && !controller.currentState.getAgentPosition(agentIndex).equals(pos)) {
             ((ControllerSurveillance) controller).soundController.generateWalkSound(agentIndex);
         }
     }
